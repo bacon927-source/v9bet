@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>V9Bet · Analytics & Event Tracking</title>
+<style>
+  :root{--ink:#2b2b2b;--line:#c9c9c9;--line2:#9a9a9a;--muted:#8a8a8a;--paper:#fff;--bg:#ececed;--fill:#f4f4f5;--solid:#3a3a3a;--strike:#b56;--good:#5a8}
+  *{box-sizing:border-box}
+  body{margin:0;font:13px/1.55 -apple-system,"Noto Sans TC",Arial,sans-serif;color:var(--ink);background:var(--bg)}
+  .app{display:grid;grid-template-columns:230px 1fr;min-height:100vh}
+  aside{background:var(--paper);border-right:1px solid var(--line);padding:16px;overflow:auto;max-height:100vh;position:sticky;top:0}
+  main{padding:24px 30px;overflow:auto;max-width:920px}
+  h1{font-size:15px;margin:0 0 4px}.sub{color:var(--muted);font-size:12px;margin:0 0 12px}
+  .nav{display:block;width:100%;text-align:left;border:1px solid transparent;background:none;border-radius:6px;padding:7px 9px;font-size:12.5px;cursor:pointer;color:#333}
+  .nav:hover{background:var(--fill)}.nav.on{background:#e3e3e6;border-color:var(--line2);font-weight:600}
+  .ct{font-size:19px;font-weight:700;margin:0 0 2px}
+  .cn{color:var(--muted);font-size:12.5px;margin-bottom:18px}
+  h3{font-size:13px;margin:22px 0 8px;border-bottom:1px solid var(--line);padding-bottom:5px}
+  /* scorecards */
+  .cards{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+  .sc{border:1px solid var(--line2);border-radius:9px;background:#fff;padding:11px 12px}
+  .sc .k{font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+  .sc .v{font-size:20px;font-weight:800;margin:3px 0}
+  .sc .d{font-size:10.5px}.sc .d.up{color:var(--good)}.sc .d.down{color:var(--strike)}
+  .sc.ns{border-color:var(--solid);border-width:2px;background:var(--fill)}
+  /* funnel */
+  .funnel{max-width:560px}
+  .fn{display:flex;align-items:center;gap:10px;margin:6px 0;font-size:12px}
+  .fn .lab{width:150px;color:#444}
+  .fn .barwrap{flex:1;height:24px;background:#eee;border-radius:5px;overflow:hidden}
+  .fn .bar{height:100%;background:var(--solid);display:flex;align-items:center;justify-content:flex-end;color:#fff;font-size:10.5px;padding-right:7px}
+  .fn .drop{width:64px;text-align:right;color:var(--strike);font-size:10.5px}
+  .twocol{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+  /* event catalog */
+  .cat b{font-size:12px}
+  .ev{font-family:ui-monospace,Menlo,monospace;font-size:11px;background:var(--fill);border:1px solid var(--line);border-radius:5px;padding:3px 8px;margin:3px 4px 0 0;display:inline-block;color:#444}
+  /* table */
+  table{width:100%;border-collapse:collapse;font-size:12px;margin-top:4px}
+  th,td{border:1px solid var(--line);padding:7px 9px;text-align:left;vertical-align:top}
+  th{background:var(--fill);font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:#555}
+  td code{font-family:ui-monospace,Menlo,monospace;font-size:11px;color:#444}
+  /* dashboard tiles */
+  .dash{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+  .dt{border:1px solid var(--line2);border-radius:9px;background:#fff;padding:11px;text-align:center}
+  .dt .h{font-weight:700;font-size:12px}.dt .s{font-size:10px;color:var(--muted);margin:4px 0}
+  .dt .mini{height:34px;border:1px dashed var(--line2);border-radius:5px;background:var(--fill);margin-top:6px;display:grid;place-items:center;color:#bbb;font-size:9px}
+  .note{border-left:3px solid var(--solid);background:#fafafa;padding:9px 12px;margin:12px 0;font-size:12px;border-radius:0 6px 6px 0}
+  .note.warn{border-left-color:var(--strike)}
+  ul{margin:6px 0;padding-left:18px}li{margin:4px 0}
+  .src{font-size:11px;color:#999}
+  .pill{font-size:10.5px;border:1px solid var(--line2);border-radius:11px;padding:2px 9px;background:var(--fill);margin:2px}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside>
+    <h1>Analytics &amp; Tracking</h1>
+    <p class="sub">Event taxonomy · funnels · KPIs · governance<br>docx 51 (journey drop-off) · 55 (behavior)</p>
+    <div id="nav"></div>
+  </aside>
+  <main>
+    <div id="ct" class="ct"></div>
+    <div id="cn" class="cn"></div>
+    <div id="body"></div>
+  </main>
+</div>
+
+<script>
+const SC=(k,v,d,dir='',ns=false)=>`<div class="sc ${ns?'ns':''}"><div class="k">${k}</div><div class="v">${v}</div>${d?`<div class="d ${dir}">${d}</div>`:''}</div>`;
+const FN=(rows)=>`<div class="funnel">${rows.map((r,i)=>`<div class="fn"><span class="lab">${r[0]}</span><div class="barwrap"><div class="bar" style="width:${r[1]}%">${r[1]}%</div></div><span class="drop">${i?'-'+(rows[i-1][1]-r[1])+'pt':''}</span></div>`).join('')}</div>`;
+const EVS=(arr)=>arr.map(e=>`<span class="ev">${e}</span>`).join('');
+
+const S={
+overview:["Overview · KPI scorecard","The few numbers that tell us if the optimization is working. North-star first.",()=>
+  `<h3>North-star + headline KPIs</h3>
+   <div class="cards">
+     ${SC('North-star','Weekly Active Depositors','▲ retention × monetization','up',true)}
+     ${SC('Signup → First deposit','31%','▲ vs 24% (old)','up')}
+     ${SC('D7 retention','—','target ≥ 35%','')}
+     ${SC('DAU / MAU (stickiness)','—','target ≥ 0.25','')}
+   </div>
+   <h3>By stage (AARRR)</h3>
+   <div class="cards">
+     ${SC('Acquisition','Signups / day','+ source split','')}
+     ${SC('Activation','First-deposit rate','+ time-to-deposit','')}
+     ${SC('Retention','D1 / D7 / D30','+ churn %','')}
+     ${SC('Revenue','ARPU / NGR','+ deposit volume','')}
+   </div>
+   <div class="note">Each KPI must map to events below — if a number can't be computed from a tracked event, it isn't real. Targets are placeholders for the data team to set.</div>`],
+
+domains:["Tracking Domains · what else to track","Acquisition funnels are just the start. A betting site must track across six fronts — most leaks & risks live outside the signup funnel.",()=>{
+  const G=(title,items)=>`<h3>${title}</h3><div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px">`+items.map(d=>`<div style="border:1px solid var(--line2);border-radius:9px;background:#fff;padding:10px 12px"><b style="font-size:12.5px">${d[0]}</b><div style="font-size:10.5px;color:var(--muted);margin:2px 0 3px">${d[1]}</div><div style="font-size:11px">${d[2]}</div></div>`).join('')+`</div>`;
+  return G('Growth',[
+     ['Acquisition & Onboarding','signup→deposit funnel · source','First touch to activated (covered in Funnels)'],
+     ['Retention & Stickiness','D1/D7/D30 · streak/mission completion','The core of "do they come back"'],
+     ['Referral & Affiliate','RAF k-factor · affiliate quality/fraud','Cheapest growth — but watch for abuse'],
+     ['Notifications','push opt-in · open→action · unsubscribe','Health of the re-engagement channel']])
+   + G('Money',[
+     ['Deposits & Monetization','deposit volume · ARPU · NGR','The revenue line'],
+     ['Promotion economics','claim rate · bonus cost · turnover done · abuse · ROI/promo','docx116 needs this to set % by LTV'],
+     ['Wallet & churn mechanics','bonus-wallet use · wallet switch · churn completion/product','Monitors the docx28–31 risk-control model'],
+     ['Game / Product economics','GGR per game/provider · actual RTP · dead games','Decides which games to feature or cut (your "minimize unimportant games")']])
+   + G('Product / UX',[
+     ['Betting behavior','bets · odds-tap-without-bet (intent) · cash-out · in-play vs pre-match','Where the new card-feed / one-tap should pay off'],
+     ['Recommendation & discovery','rec CTR · tag performance · search no-results','docx52 personalization depends on this'],
+     ['Live stream & PiP','stream opens · PiP use · watch→bet lift','Does watch-and-bet actually lift betting?'],
+     ['Support & Live Chat','volume · AI deflection % · CSAT · top topics','docx46/108 — measures AI efficiency']])
+   + G('Trust & Safety',[
+     ['KYC / Risk / Fraud','KYC pass rate · risk triggers · multi-account · velocity','Protects margin (docx26)'],
+     ['Responsible Gaming','limit hits · reality-check response · self-exclusion · harm signals (loss-chasing)','Compliance + duty of care — never use these for engagement targeting']])
+   + G('Quality & Method',[
+     ['Reliability / Errors','failed deposits · payment/API errors · OTP failures · stream errors','Silent conversion killers hide here'],
+     ['Performance','web vitals · API latency · skeleton time','Speed = conversion'],
+     ['Experimentation (A/B)','variant exposure & outcomes','So the optimizations are proven, not assumed']])
+   + `<div class="note">Rule of thumb: every box here needs an owner, a dashboard, and at least one event in the taxonomy. The signup funnel is ~1 of 16 things worth watching.</div>`;
+ }],
+
+funnels:["Funnels · where users drop","docx51: find the drop/bounce. Four funnels matter most; each step = one event.",()=>
+  `<h3>1 · Registration funnel</h3>
+   ${FN([['Open Sign Up',100],['Enter phone',72],['Submit',58],['OTP verified',49],['Setup completed',31],['First deposit',19]])}
+   <div class="note">Biggest leak today: OTP → setup (-18pt) and the old deposit gate. The optimization (phone-first + setup wizard + frictionless deposit) targets exactly these.</div>
+   <div class="twocol">
+     <div><h3>2 · Deposit funnel</h3>${FN([['Open deposit',100],['Amount entered',81],['Method chosen',70],['Submitted',63],['Succeeded',58]])}<div class="src" style="margin-top:6px">↳ 44% applied a coupon (optional branch, not a funnel step)</div></div>
+     <div><h3>3 · First-bet funnel</h3>${FN([['Home',100],['Product opened',64],['Match viewed',47],['Odds tapped',33],['Bet placed',21]])}</div>
+   </div>
+   <h3>4 · KYC funnel</h3>${FN([['Prompted',100],['Upload started',58],['Submitted',46],['Approved',38]])}`],
+
+taxonomy:["Event Taxonomy","Naming: <code>object_action</code>, snake_case, past tense. One catalog, owned centrally.",()=>
+  `<div class="note">Convention: <b>object_action</b> · snake_case · past tense (e.g. <code>deposit_succeeded</code>). Params in snake_case. Avoid free-form names — every event lives in this catalog.</div>
+   <div class="twocol">
+     <div class="cat"><b>Auth</b><br>${EVS(['register_started','register_submitted','otp_sent','otp_verified','otp_failed','login_succeeded','login_failed','account_recovery_started'])}
+       <br><br><b>Setup (onboarding)</b><br>${EVS(['setup_started','currency_set','faceid_enabled','notifications_optin','profile_saved','bank_added','email_added','setup_completed'])}
+       <br><br><b>Wallet / Payments</b><br>${EVS(['deposit_started','deposit_method_selected','coupon_applied','deposit_succeeded','deposit_failed','withdrawal_requested','withdrawal_completed','wallet_switched'])}</div>
+     <div class="cat"><b>Betting</b><br>${EVS(['product_opened','match_viewed','odds_tapped','betslip_opened','bet_placed','bet_settled','rebet_tapped','stream_opened','stream_pip_opened','bet_shared'])}
+       <br><br><b>Promo / Gamification</b><br>${EVS(['promo_viewed','promo_claimed','spin_played','scratch_played','lottery_entered','mission_completed','streak_checked_in','streak_broken','reward_claimed'])}
+       <br><br><b>Engagement / Messaging</b><br>${EVS(['notification_received','push_optin','inbox_opened','livechat_opened','idle_prompt_shown','leaderboard_viewed','referral_shared'])}</div>
+   </div>`],
+
+eventspec:["Event Spec template","How to define each event so IT implements it consistently — like the component contract.",()=>
+  `<table><tr><th>Field</th><th>Meaning</th><th>Example</th></tr>
+   <tr><td>name</td><td>object_action, snake_case</td><td><code>deposit_succeeded</code></td></tr>
+   <tr><td>trigger</td><td>Exact UI/system moment it fires</td><td>Deposit confirmed by PSP callback</td></tr>
+   <tr><td>properties</td><td>Params (snake_case, typed)</td><td><code>{amount, currency, method, coupon_id?, is_first}</code></td></tr>
+   <tr><td>identity</td><td>user_id (or anon_id pre-login)</td><td><code>user_id</code> + <code>session_id</code></td></tr>
+   <tr><td>source</td><td>client or server (prefer server for money)</td><td>server</td></tr>
+   <tr><td>platform</td><td>web / mobile-web / app</td><td>app</td></tr>
+   <tr><td>dedupe</td><td>Idempotency for retries</td><td><code>txn_id</code></td></tr></table>
+   <div class="note">Money/critical events (deposit/withdrawal/bet) fire <b>server-side</b> for accuracy; UI events (odds_tapped, stream_opened) fire client-side.</div>`],
+
+dashboards:["Dashboards","Five boards, one per AARRR stage — so each team sees its own funnel.",()=>
+  `<div class="dash">
+    ${['Acquisition|signups, source, CAC','Activation|first-deposit, setup %','Retention|D1/D7/D30, cohorts','Revenue|ARPU, NGR, deposits','Referral|RAF invites, k-factor'].map(d=>{const p=d.split('|');return `<div class="dt"><div class="h">${p[0]}</div><div class="s">${p[1]}</div><div class="mini">▢ chart</div></div>`}).join('')}
+   </div>
+   <h3>Retention / Stickiness board (ties to the new components)</h3>
+   <div class="cards">
+     ${SC('Check-in streak','completion %','from Daily Check-in','')}
+     ${SC('Mission','completion %','from Quest Tracker','')}
+     ${SC('Reward','claim rate','from Rewards Center','')}
+     ${SC('Day-over-day','return rate','streak lift on D7','')}
+   </div>`],
+
+segments:["Segments &amp; Cohorts","Slice every funnel/metric by these — averages hide the truth.",()=>
+  `<ul>
+    <li><b>New vs returning</b> — onboarding & first-deposit funnels differ wildly</li>
+    <li><b>VIP tier</b> — VIP0–N (ties to Loyalty); high-value behavior</li>
+    <li><b>By product</b> — Sports / Live Casino / Slots (Sports-first concept needs this)</li>
+    <li><b>By channel / source</b> — affiliate, organic, RAF, paid</li>
+    <li><b>By platform</b> — app vs mobile-web vs desktop</li>
+    <li><b>Signup cohort</b> — weekly cohorts for D1/D7/D30 retention curves</li>
+   </ul>
+   <div class="note">Recommend an <b>acquisition cohort retention curve</b> as the default health view — it catches problems weeks before revenue does.</div>`],
+
+governance:["Implementation &amp; Governance","How it's wired + the rules — especially compliance for a betting site.",()=>
+  `<h3>Stack</h3>
+   <ul>
+    <li><b>Data layer / SDK</b> — single tracking wrapper; events defined once, fired everywhere</li>
+    <li><b>Tools</b> — product analytics (e.g. Amplitude/Mixpanel/GA4) + warehouse for joins</li>
+    <li><b>Server vs client</b> — money/critical = server; interaction = client (see Event Spec)</li>
+    <li><b>Identity</b> — anon_id pre-login → stitched to user_id on login</li>
+   </ul>
+   <h3>Governance</h3>
+   <ul>
+    <li>Central event catalog (this page) — no ad-hoc event names</li>
+    <li>Versioning + change log; deprecate, don't rename silently</li>
+   </ul>
+   <div class="note warn"><b>Compliance (betting):</b> respect <b>Responsible Gaming</b> — do not profile self-excluded / underage users for engagement; honor consent & privacy; minimize PII in event params; align with the Responsible Gaming module in foundations.</div>
+   <div class="src" style="margin-top:8px">Sources: docx 51 (journey drop-off), 55 (behavior tracking), 52 (recommendation needs game/odds events).</div>`],
+};
+
+const order=["overview","domains","funnels","taxonomy","eventspec","dashboards","segments","governance"];
+const navEl=document.getElementById('nav');
+function buildNav(a){navEl.innerHTML=order.map(id=>`<button class="nav ${id===a?'on':''}" data-id="${id}">${S[id][0].replace(/&amp;/g,'&').replace(/ ·.*/,'')}</button>`).join('');navEl.querySelectorAll('.nav').forEach(b=>b.onclick=()=>render(b.dataset.id));}
+function render(id){const s=S[id];document.getElementById('ct').innerHTML=s[0];document.getElementById('cn').innerHTML=s[1];document.getElementById('body').innerHTML=s[2]();buildNav(id);}
+render('overview');
+</script>
+</body>
+</html>

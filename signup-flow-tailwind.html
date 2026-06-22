@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>V9Bet · New Customer Sign Up — Tailwind</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: { sans: ["-apple-system","Noto Sans TC","Arial","sans-serif"] },
+        colors: {
+          v9: {
+            bg:"#0e141b", card:"#161e27", input:"#121a23", border:"#28323e",
+            text:"#eef2f6", mut:"#7c8896", green:"#19c37d", err:"#ff6b6b", ink:"#04150d"
+          }
+        }
+      }
+    }
+  };
+</script>
+</head>
+<body class="bg-neutral-200 font-sans text-neutral-800">
+<div class="grid min-h-screen" style="grid-template-columns:260px 1fr 340px">
+  <!-- LEFT: flow nav -->
+  <aside class="overflow-auto border-r border-neutral-300 bg-white p-4">
+    <h1 class="text-[15px] font-bold">New Customer Sign Up</h1>
+    <p class="mb-3.5 mt-1 text-xs text-neutral-500">Tailwind mockup · V9 dark theme<br>Mobile / App first</p>
+    <div id="nav" class="flex flex-col gap-0.5"></div>
+    <div class="mt-3.5 border-t border-neutral-300 pt-2.5 text-[11px] text-neutral-500">
+      <b class="text-neutral-800">tailwind.config tokens</b><br>
+      <span class="mr-1 inline-block h-3 w-3 rounded-sm align-middle" style="background:#19c37d"></span>v9-green #19C37D<br>
+      <span class="mr-1 inline-block h-3 w-3 rounded-sm border border-neutral-300 align-middle" style="background:#0e141b"></span>v9-bg #0E141B<br>
+      <span class="mr-1 inline-block h-3 w-3 rounded-sm border border-neutral-300 align-middle" style="background:#161e27"></span>v9-card #161E27<br>
+      radius: input rounded-[14px] / button rounded-[26px]<br>
+      Right side = dev spec / states / API.
+    </div>
+  </aside>
+
+  <!-- CENTER: phone -->
+  <main class="flex flex-col items-center gap-3.5 p-6">
+    <div class="flex flex-wrap items-center justify-center gap-2">
+      <button id="prev" class="rounded-md border border-neutral-400 bg-white px-3 py-1.5 text-xs hover:bg-neutral-100">← Previous</button>
+      <div id="states" class="flex gap-1 rounded-lg border border-neutral-300 bg-white p-[3px]"></div>
+      <button id="next" class="rounded-md border border-neutral-400 bg-white px-3 py-1.5 text-xs hover:bg-neutral-100">Next →</button>
+    </div>
+    <div class="rounded-[42px] border-[10px] border-[#05080c] bg-[#05080c] shadow-2xl" style="width:380px">
+      <div class="relative flex h-[26px] justify-center rounded-t-[32px] bg-v9-bg">
+        <span class="absolute top-2 h-[22px] w-[120px] rounded-[14px] bg-[#05080c]"></span>
+      </div>
+      <div id="screen" class="overflow-auto rounded-b-[32px] bg-v9-bg px-5 pb-6 pt-[22px] text-v9-text" style="height:672px"></div>
+    </div>
+    <div id="bread" class="text-xs text-neutral-500"></div>
+  </main>
+
+  <!-- RIGHT: spec -->
+  <div id="spec" class="overflow-auto border-l border-neutral-300 bg-white p-4"></div>
+</div>
+
+<script>
+/* ---------- Tailwind component helpers ---------- */
+const TITLE = (text, icon='', badge='') =>
+  `<div class="relative mb-1 mt-1.5 text-center text-lg font-bold text-white">${icon?`<span class="absolute left-0 top-px text-xl font-normal text-v9-mut">${icon}</span>`:''}${text}${badge}</div>`;
+const STEP = (t) => `<div class="mb-[18px] text-center text-[13px] text-v9-mut">${t}</div>`;
+const BADGE = (t, req=false) => `<span class="ml-1.5 inline-block rounded-[5px] border px-1.5 align-middle text-[10px] ${req?'border-v9-err text-v9-err':'border-[#3a4654] text-v9-mut'}">${t}</span>`;
+const HINT = (t) => `<div class="my-2 px-0.5 text-xs text-v9-mut">${t}</div>`;
+const LINK = (t) => `<div class="mt-2.5 text-center text-[13px] text-v9-mut">${t}</div>`;
+const GB = (t) => `<b class="font-semibold text-v9-green">${t}</b>`;
+
+const F = (label, sub='') =>
+  `<div class="my-3 flex items-center justify-between rounded-[14px] border border-v9-border bg-v9-input px-4 py-[15px] text-v9-mut"><span>${label}</span>${sub?`<small class="text-[#566270]">${sub}</small>`:''}</div>`;
+
+const CTA = (t, mod='') => {
+  const sty = mod==='disabled' ? 'bg-[#222c37] text-[#566270]'
+            : mod==='ghost'    ? 'border border-v9-border bg-transparent text-v9-text'
+            :                    'bg-v9-green text-v9-ink';
+  return `<div class="my-4 cursor-pointer rounded-[26px] py-[15px] text-center font-bold ${sty}">${t}</div>`;
+};
+
+const DOT = (sel) => `<span class="h-5 w-5 flex-none rounded-full border-2 ${sel?'border-v9-green shadow-[inset_0_0_0_4px_#19c37d,inset_0_0_0_6px_#0e141b]':'border-[#3a4654]'}"></span>`;
+const SQ  = (sel) => `<span class="relative h-5 w-5 flex-none rounded-md border-2 ${sel?'border-v9-green bg-v9-green':'border-[#3a4654]'}">${sel?'<span class="absolute inset-0 grid place-items-center text-[13px] font-bold text-v9-ink">✓</span>':''}</span>`;
+const OPT = (t, sel=false, kind='dot') =>
+  `<div class="my-[10px] flex items-center gap-3 rounded-[14px] border px-4 py-[14px] text-v9-text ${sel?'border-v9-green bg-v9-green/[0.08]':'border-v9-border bg-v9-card'}">${kind==='sq'?SQ(sel):DOT(sel)}<span class="flex-1">${t}</span></div>`;
+
+const PLACE = (t, h=90) => `<div class="my-3 grid place-items-center rounded-[14px] border border-dashed border-[#39434f] bg-v9-card text-[#4f5a67]" style="height:${h}px">${t}</div>`;
+
+const TABS = (opts, active) =>
+  `<div class="mx-auto my-2.5 flex w-fit gap-1 rounded-lg border border-v9-border bg-v9-card p-[3px]">${opts.map((o,i)=>`<button class="rounded-md px-2.5 py-[5px] text-xs ${i===active?'bg-v9-green font-semibold text-v9-ink':'text-v9-mut'}">${o}</button>`).join('')}</div>`;
+
+const OTP = (n=6, focusFirst=true) =>
+  `<div class="my-[22px] flex justify-center gap-2.5">${Array.from({length:n}).map((_,i)=>`<span class="grid h-[54px] w-11 place-items-center rounded-xl border bg-v9-input text-xl text-v9-mut ${focusFirst&&i===0?'border-v9-green shadow-[0_0_0_1px_#19c37d]':'border-v9-border'}">_</span>`).join('')}</div>`;
+
+const ERR = (t) => `<div class="my-2.5 rounded-xl border border-v9-err/40 bg-v9-err/[0.08] px-3 py-[11px] text-[12.5px] text-[#ff9a9a]">${t}</div>`;
+
+const TOG = (label, on) =>
+  `<div class="my-[10px] flex items-center gap-3 rounded-[14px] border border-v9-border bg-v9-card px-4 py-[14px] text-v9-text"><span class="flex-1">${label}</span><span class="relative h-6 w-[42px] flex-none rounded-[13px] ${on?'bg-v9-green':'bg-[#2a3340]'}"><span class="absolute top-0.5 h-[18px] w-[18px] rounded-full bg-white ${on?'right-0.5':'left-0.5'}"></span></span></div>`;
+
+const CI = (n, label, tag, done) =>
+  `<div class="my-[9px] flex items-center gap-3 rounded-[14px] border bg-v9-card px-[13px] py-[13px] ${done?'border-v9-green/40':'border-v9-border'}"><span class="grid h-6 w-6 flex-none place-items-center rounded-full border-2 text-[11px] ${done?'border-v9-green bg-v9-green text-v9-ink':'border-[#3a4654] text-v9-mut'}">${done?'✓':n}</span><span class="flex-1 text-v9-text">${label}${tag?`<small class="block text-[11px] text-v9-mut">${tag}</small>`:''}</span><span class="text-[#4f5a67]">›</span></div>`;
+
+const DOTS = (active, n=4) =>
+  `<div class="my-4 flex justify-center gap-1.5">${Array.from({length:n}).map((_,i)=>`<span class="inline-block h-[7px] ${i===active?'w-5 rounded bg-v9-green':'w-[7px] rounded-full bg-[#374250]'}"></span>`).join('')}</div>`;
+
+/* ---------- screens ---------- */
+const screens = [
+{
+  group:"A · Sign Up", id:"signup", title:"Sign Up",
+  states:["Default","Ready to submit","Captcha (conditional)"],
+  render:(s)=>
+    TITLE("Sign Up","✕") + STEP("Sign up with phone number (default method)") +
+    F("Country code ▾ &nbsp; Phone number","Required") +
+    F("Referral code","Optional") +
+    `<div class="my-[10px] flex items-center gap-3 rounded-[14px] border border-v9-border bg-v9-card px-4 py-[14px] text-v9-text">${SQ(s>0)}<span class="flex-1">I am 21+ and agree to the ${GB("Terms")} and ${GB("Privacy Policy")}</span></div>` +
+    (s===2 ? PLACE("Captcha (hCaptcha)") : HINT("＊ With phone OTP verification, Captcha is skipped by default and only shown when risk control triggers it.")) +
+    CTA("Sign Up", s===0?'disabled':'') +
+    `<div class="mt-2.5 text-center text-[13px] text-v9-mut">Already have an account? ${GB("Login here")}</div>`,
+  spec:{
+    goal:"Phone number as the default sign-up entry to lower the barrier.",
+    states:["default (button disabled)","button enabled after terms checked","Captcha shown conditionally (risk-control trigger)","submitting loading","phone already exists error","format error inline error"],
+    fields:["country_code","phone","referral_code?","accept_terms(bool)","captcha_token?"],
+    api:"POST /register/start\n→ { phone, country_code, referral_code?, accept_terms }\n← { register_token, otp_sent:true }\nerr: PHONE_EXISTS / INVALID_PHONE / RATE_LIMITED",
+    notes:["Terms not checked → Sign Up disabled.","Login here routes to the existing login flow.","Google sign-up: docx note pending confirmation; placeholder only, not built."]
+  }
+},
+{
+  group:"A · Sign Up", id:"otp", title:"OTP Verification",
+  states:["Awaiting input","Verification error","OTP failed → WhatsApp"],
+  render:(s)=>
+    TITLE("Verify phone","←") + STEP("Verification code sent to +xx ****1234") + OTP(6) +
+    (s===1 ? ERR("Wrong code, please try again (2 attempts left)") : '') +
+    (s===2 ? ERR("Too many failed attempts. Verify via WhatsApp instead?") + CTA("Verify with WhatsApp",'ghost') : '') +
+    LINK(`Didn't get it? ${GB(s===2?'Resend locked':'Resend (60s)')}`) +
+    LINK(GB("Change phone number")) +
+    CTA("Verify and continue"),
+  spec:{
+    goal:"Verify phone ownership before entering account setup.",
+    states:["pending (resend countdown)","verifying loading","wrong_code (attempts left)","expired (resend)","locked (too many failures)","fallback → WhatsApp verification"],
+    fields:["register_token","otp_code","channel(sms|whatsapp)"],
+    api:"POST /register/verify-otp\n→ { register_token, otp_code }\n← { verified:true, customer_id }\nPOST /register/resend-otp { channel }\nerr: OTP_WRONG / OTP_EXPIRED / OTP_LOCKED",
+    notes:["docx: 'Consider OTP failure processes — use WhatsApp as alternative' → WhatsApp fallback appears after N failures.","On success, enter account setup immediately (no return to home)."]
+  }
+},
+{
+  group:"B · Account Setup", id:"checklist", title:"Setup Overview",
+  states:["Just entered","Partially done"],
+  render:(s)=>
+    TITLE("Set up your account") + STEP("Finish setup to start using (required items first)") +
+    `<div>${CI(1,"Choose account currency","mandatory",s>0)}${CI(2,"Face ID / biometrics","mandatory · app only",s>0)}${CI(3,"Notification permission","",false)}${CI(4,"Complete profile + bank/USDT","",false)}${CI(5,"Add email (account recovery)","Optional*",false)}${CI(6,"Set password / PIN","",false)}${CI(7,"Theme (dark/light/system)","",false)}${CI(8,"Language","",false)}${CI(9,"Interactive tutorial","",false)}${CI(10,"Download V9 App","",false)}</div>` +
+    CTA("Start setup"),
+  spec:{
+    goal:"After sign-up (FE UX), immediately guide the user through the account setup checklist.",
+    states:["initial (nothing done)","partial (some items done)","cannot skip while mandatory items incomplete","all done → welcome page"],
+    fields:["customer_id","setup_progress[]"],
+    api:"GET /account/setup-status → { steps:[{key,done,required}] }",
+    notes:["docx: 'immediately run through account configuration settings'.","Required: currency, Face ID (app). The rest can be completed later in Profile.","Uses 'overview entry → step-by-step wizard' combo (decided)."]
+  }
+},
+{
+  group:"B · Account Setup", id:"currency", title:"Choose Currency", step:"1 / 10",
+  states:["None selected","VND selected"],
+  render:(s)=>
+    TITLE("Account currency","←",BADGE("Required",true)) + STEP("Currency cannot be changed once set") +
+    OPT("🇻🇳 &nbsp; VND — Vietnamese dong", s===1) + OPT("🇹🇭 &nbsp; THB — Thai baht", false) + OPT("💲 &nbsp; USDT — crypto", false) +
+    CTA("Confirm currency", s===0?'disabled':''),
+  spec:{
+    goal:"Set the account settlement currency (mandatory).",
+    states:["none selected (button disabled)","selected","confirm double-check (cannot be changed)"],
+    fields:["customer_id","currency(enum)"],
+    api:"PUT /account/currency → { currency }\nerr: CURRENCY_LOCKED",
+    notes:["Currency affects all later wallet/deposit displays.","List is opened per market from the backend, CMS-controlled."]
+  }
+},
+{
+  group:"B · Account Setup", id:"biometric", title:"Face ID", step:"2 / 10",
+  states:["Prompt","Enabled"],
+  render:(s)=>
+    TITLE("Face ID / biometrics","←",BADGE("app only")) + PLACE("[ Face ID icon ]",140) +
+    STEP("Once enabled, log in fast with face/fingerprint") +
+    (s===1 ? OPT("Face ID enabled", true) : '') +
+    CTA(s===1?"Enabled, continue":"Enable Face ID") + LINK(GB("Later")),
+  spec:{
+    goal:"Enable biometric login on app (mandatory on app).",
+    states:["prompt","system permission denied → guide to settings","enabled","Web: this step auto-skipped"],
+    fields:["biometric_enabled(bool)","device_id"],
+    api:"Device-side keychain/biometric API; backend only stores enabled flag + device binding.",
+    notes:["docx: 'Allow face ID or biometrics (for mobile app only), mandatory'.","Web/Mobile Web do not show this step."]
+  }
+},
+{
+  group:"B · Account Setup", id:"notif", title:"Notifications", step:"3 / 10",
+  states:["Prompt"],
+  render:()=>
+    TITLE("Notification settings","←") + STEP("Choose the notification types you want") +
+    TOG("Deposit / withdrawal status",true) + TOG("Bet settlement alerts",true) + TOG("Exclusive promotions / events",true) + TOG("System / maintenance notices",false) +
+    CTA("Allow and continue") + LINK(GB("Later")),
+  spec:{
+    goal:"Get push permission and set notification preferences.",
+    states:["prompt","system permission denied → still record in-app prefs","saved"],
+    fields:["push_token?","prefs:{deposit,settlement,promo,system}"],
+    api:"PUT /account/notification-prefs",
+    notes:["Maps to docx Messaging: push notifications / system messages / bet settlement notice."]
+  }
+},
+{
+  group:"B · Account Setup", id:"profile", title:"Profile + Payout", step:"4 / 10",
+  states:["Bank account","USDT address"],
+  render:(s)=>
+    TITLE("Profile + payout method","←") + STEP("Used for withdrawals, can complete later") +
+    F("Name (must match payout account)") +
+    `<div class="flex gap-2.5">${F("Date of birth")}${F("Gender ▾")}</div>` +
+    `<div class="mb-2 mt-4 font-semibold text-white">Withdrawal payout method</div>` +
+    TABS(["Bank account","USDT"], s) +
+    (s===0 ? F("Bank ▾")+F("Bank account number")+F("Account holder name") : F("USDT chain ▾ (TRC20/ERC20)")+F("USDT wallet address")) +
+    CTA("Save") + LINK(GB("Later")),
+  spec:{
+    goal:"Collect personal info and payout account (bank / USDT) for withdrawals.",
+    states:["bank tab","usdt tab","verifying","format error","linked (KYC may trigger before withdrawal)"],
+    fields:["full_name","dob","gender","payout:{type, bank/usdt fields}"],
+    api:"PUT /account/profile · POST /account/payout-method",
+    notes:["Can complete later; but if missing at withdrawal / promotion claim, it's blocked and must be completed.","Linked to KYC module (doc upload / risk triggers)."]
+  }
+},
+{
+  group:"B · Account Setup", id:"email", title:"Email", step:"5 / 10",
+  states:["Phone verified (optional)","Email-only sign-up (verify required)"],
+  render:(s)=>
+    TITLE("Add email","←",BADGE(s===1?"Required":"Optional*", s===1)) + STEP("Secondary contact for account recovery") +
+    F("Email address") +
+    (s===1 ? HINT("You signed up with email; phone verification is required before claiming promotions / withdrawing.") : HINT("＊ Phone verified, email can be added later in Profile.")) +
+    CTA("Send verification email and continue") + (s===0 ? LINK(GB("Later")) : ''),
+  spec:{
+    goal:"Add and verify a secondary email for account recovery.",
+    states:["optional (phone verified)","required (email-only sign-up path)","verification email sent","verified","verification link expired"],
+    fields:["email","email_verified(bool)"],
+    api:"POST /account/email + verification link callback",
+    notes:["docx BE rule: phone verified → email optional; email only → phone verification required before promotion claim/withdrawal.","Maps to account recovery email."]
+  }
+},
+{
+  group:"B · Account Setup", id:"pin", title:"Password / PIN", step:"6 / 10",
+  states:["Set password","Set PIN"],
+  render:(s)=>
+    TITLE("Set login security","←") + TABS(["Password","Simple PIN"], s) +
+    (s===0 ? F("Password","8+ chars")+F("Re-enter password") : OTP(4,false)+STEP("Set a 4-digit PIN")) +
+    CTA("Set"),
+  spec:{
+    goal:"Set a login password or simple PIN.",
+    states:["password tab","pin tab","too weak","mismatch","set"],
+    fields:["auth_secret(hashed)","auth_type(password|pin)"],
+    api:"PUT /account/credentials",
+    notes:["docx: 'Set account password or simple pin'.","Coexists with Face ID: biometrics for fast login, password/PIN as fallback."]
+  }
+},
+{
+  group:"B · Account Setup", id:"theme", title:"Theme + Language", step:"7-8 / 10",
+  states:["Theme","Language"],
+  render:(s)=>
+    TITLE("Appearance","←") +
+    (s===0 ? STEP("Choose theme")+OPT("🌙 Dark",true)+OPT("☀️ Light",false)+OPT("⚙️ Follow system settings",false)
+           : STEP("Choose language")+OPT("繁體中文",true)+OPT("English",false)+OPT("Tiếng Việt",false)+OPT("ไทย",false)) +
+    CTA("Continue"),
+  spec:{
+    goal:"Set theme (dark/light/follow system) and interface language.",
+    states:["theme select","language select","instant preview after applying"],
+    fields:["theme(dark|light|system)","language(locale)"],
+    api:"PUT /account/preferences",
+    notes:["docx: 'Set black or white theme or based on phone settings' + 'Set language'.","Language list shared with the CMS translation module."]
+  }
+},
+{
+  group:"B · Account Setup", id:"tutorial", title:"Interactive Tutorial", step:"9 / 10",
+  states:["Promotions","Inbox","Profile","Refer a friend"],
+  render:(s)=>{
+    const t=[["Exclusive promotions","View and claim the promotions that are yours"],["Inbox messages","In-app mail and system notices live here"],["Profile","Manage account, security and preferences"],["Refer a friend","Invite friends, both sides earn rewards"]][s];
+    return TITLE("Quick tour","✕") + PLACE(`[ Tutorial illustration: ${t[0]} ]`,220) +
+      `<div class="text-center text-[17px] font-bold text-white">${t[0]}</div>` + STEP(t[1]) +
+      DOTS(s) + CTA(s===3?"Done":"Next") + LINK(GB("Skip tour"));
+  },
+  spec:{
+    goal:"Interactive tutorial covers promotions / inbox / profile / refer a friend.",
+    states:["4-step carousel","skippable","mark tutorial_seen on completion"],
+    fields:["tutorial_seen(bool)"],
+    api:"PUT /account/flags { tutorial_seen:true }",
+    notes:["docx: 'interactive tutorial (include promotion, inbox messages, profile and refer a friend program)'.","Content managed by CMS, swappable per campaign."]
+  }
+},
+{
+  group:"C · Wrap-up", id:"app", title:"Download App", step:"10 / 10",
+  states:["Default"],
+  render:()=>
+    TITLE("Download V9 App","✕") + PLACE("[ QR Code ]",140) + STEP("Faster login and more instant notifications via the App") +
+    CTA("Download V9 App") + LINK(GB("Keep using the web version")),
+  spec:{
+    goal:"Guide native App download (with QR / store links).",
+    states:["default","already in App → skip this step"],
+    fields:["platform_detect"],
+    api:"Static links / QR; route to the right store by device.",
+    notes:["docx: 'V9 app download'. Shown on Web only, auto-skipped inside the App."]
+  }
+},
+{
+  group:"C · Wrap-up", id:"welcome", title:"Welcome + Promotions", step:"Done",
+  states:["Default"],
+  render:()=>
+    TITLE("🎉 Welcome to V9Bet") + STEP("Your account is ready. Here are new-player exclusive promotions") +
+    `<div class="my-3 rounded-2xl border border-v9-border bg-gradient-to-b from-v9-green/10 to-v9-card p-4"><span class="rounded-[5px] border border-v9-green px-1.5 py-0.5 text-[10px] text-v9-green">New player</span><div class="mb-0.5 mt-2 font-bold text-v9-text">100% first deposit bonus</div><div class="text-xs text-v9-mut">Valid on Sports / Live, churn x10</div>${CTA("Claim now")}</div>` +
+    `<div class="my-3 rounded-2xl border border-v9-border bg-gradient-to-b from-v9-green/10 to-v9-card p-4"><span class="rounded-[5px] border border-v9-green px-1.5 py-0.5 text-[10px] text-v9-green">Task</span><div class="mb-0.5 mt-2 font-bold text-v9-text">Make your first deposit</div><div class="text-xs text-v9-mut">Unlock free bet x1</div></div>` +
+    CTA("Go to deposit") + CTA("Browse the home page first",'ghost'),
+  spec:{
+    goal:"Welcome the new member and instantly surface applicable promotions → route to deposit.",
+    states:["has applicable promotions (list)","no promotions (empty copy)","promotions loading / error"],
+    fields:["customer_id","eligible_promotions[]"],
+    api:"GET /promotions/eligible?segment=new_customer\n← { promotions:[{id,title,terms,churn,cta}] }",
+    notes:["docx: 'Welcome customer and inform of the immediate promotions applicable to him as new sign up'.","Promotions decided by the promo module + customer segmentation, CMS / API driven.","BE: a random unique id is already assigned as the default username (editable in profile)."]
+  }
+},
+];
+
+/* ---------- runtime ---------- */
+let idx=0, st=0;
+const navEl=document.getElementById('nav');
+function buildNav(){
+  let html='', lastG='';
+  screens.forEach((sc,i)=>{
+    if(sc.group!==lastG){html+=`<div class="mb-1.5 mt-3.5 text-[11px] uppercase tracking-wider text-neutral-500">${sc.group}</div>`;lastG=sc.group;}
+    const on=i===idx;
+    html+=`<div class="flex cursor-pointer items-center gap-2 rounded-md border px-2 py-[7px] text-[13px] ${on?'border-neutral-400 bg-neutral-200 font-semibold':'border-transparent hover:bg-neutral-100'}" data-i="${i}"><span class="grid h-5 w-5 flex-none place-items-center rounded-full border text-[11px] ${on?'border-v9-green bg-v9-green text-v9-ink':'border-neutral-400 text-neutral-500'}">${i+1}</span>${sc.title}</div>`;
+  });
+  navEl.innerHTML=html;
+  navEl.querySelectorAll('[data-i]').forEach(n=>n.onclick=()=>{idx=+n.dataset.i;st=0;draw();});
+}
+function draw(){
+  const sc=screens[idx];
+  document.getElementById('screen').innerHTML=sc.render(st);
+  const stWrap=document.getElementById('states');
+  stWrap.innerHTML=sc.states.map((s,i)=>`<button class="rounded-md px-2.5 py-[5px] text-xs ${i===st?'bg-v9-green font-semibold text-v9-ink':'text-neutral-500'}" data-s="${i}">${s}</button>`).join('');
+  stWrap.querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>{st=+b.dataset.s;draw();});
+  document.getElementById('bread').textContent=`Screen ${idx+1} / ${screens.length} · ${sc.title}${sc.step?' · '+sc.step:''}`;
+  const sp=sc.spec;
+  const pill=x=>`<span class="rounded-xl border border-neutral-400 bg-neutral-100 px-[9px] py-0.5 text-[11px]">${x}</span>`;
+  document.getElementById('spec').innerHTML=`
+    <h2 class="mb-1.5 text-xs uppercase tracking-wide text-neutral-500">Screen goal</h2><p class="text-[13px]">${sp.goal}</p>
+    <h2 class="mb-1.5 mt-[18px] text-xs uppercase tracking-wide text-neutral-500">States</h2><div class="flex flex-wrap gap-1.5">${sp.states.map(pill).join('')}</div>
+    <h2 class="mb-1.5 mt-[18px] text-xs uppercase tracking-wide text-neutral-500">Fields</h2><div class="flex flex-wrap gap-1.5">${sp.fields.map(pill).join('')}</div>
+    <h2 class="mb-1.5 mt-[18px] text-xs uppercase tracking-wide text-neutral-500">API / Data</h2><pre class="whitespace-pre-wrap rounded-md border border-neutral-300 bg-neutral-100 p-2 font-mono text-[11px] text-neutral-600">${sp.api}</pre>
+    <h2 class="mb-1.5 mt-[18px] text-xs uppercase tracking-wide text-neutral-500">Dev notes</h2><ul class="list-disc pl-4">${sp.notes.map(x=>`<li class="my-1 text-[12.5px]">${x}</li>`).join('')}</ul>`;
+  buildNav();
+}
+document.getElementById('prev').onclick=()=>{if(idx>0){idx--;st=0;draw();}};
+document.getElementById('next').onclick=()=>{if(idx<screens.length-1){idx++;st=0;draw();}};
+draw();
+</script>
+</body>
+</html>

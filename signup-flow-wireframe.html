@@ -1,0 +1,430 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>V9Bet · New Customer Sign Up — Wireframe</title>
+<style>
+  :root{
+    --ink:#2b2b2b; --line:#c9c9c9; --line2:#9a9a9a; --muted:#8a8a8a;
+    --paper:#ffffff; --bg:#ececed; --fill:#f3f3f4; --solid:#3a3a3a;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font:14px/1.5 -apple-system,"Noto Sans TC",Arial,sans-serif;color:var(--ink);background:var(--bg)}
+  /* ---- layout ---- */
+  .app{display:grid;grid-template-columns:260px 1fr 340px;min-height:100vh}
+  aside{background:var(--paper);border-right:1px solid var(--line);padding:16px;overflow:auto}
+  main{padding:24px;display:flex;flex-direction:column;align-items:center;gap:14px}
+  .spec{background:var(--paper);border-left:1px solid var(--line);padding:16px;overflow:auto}
+  h1{font-size:15px;margin:0 0 4px}
+  .sub{color:var(--muted);font-size:12px;margin:0 0 14px}
+  .navlist{display:flex;flex-direction:column;gap:2px}
+  .nav{display:flex;gap:8px;align-items:center;border:1px solid transparent;border-radius:6px;padding:7px 8px;cursor:pointer;font-size:13px}
+  .nav:hover{background:var(--fill)}
+  .nav.active{background:#e3e3e6;border-color:var(--line2);font-weight:600}
+  .nav .num{width:20px;height:20px;flex:0 0 20px;border:1px solid var(--line2);border-radius:50%;display:grid;place-items:center;font-size:11px;color:var(--muted)}
+  .nav.active .num{background:var(--solid);color:#fff;border-color:var(--solid)}
+  .group-title{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:14px 0 6px}
+  /* ---- phone ---- */
+  .stage{display:flex;flex-direction:column;align-items:center;gap:10px}
+  .toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:center}
+  .btn{border:1px solid var(--line2);background:#fff;border-radius:6px;padding:6px 12px;font-size:12px;cursor:pointer}
+  .btn:hover{background:var(--fill)}
+  .state-tabs{display:flex;gap:4px;border:1px solid var(--line);border-radius:8px;padding:3px;background:#fff}
+  .state-tabs button{border:0;background:none;padding:5px 10px;border-radius:6px;font-size:12px;cursor:pointer;color:var(--muted)}
+  .state-tabs button.on{background:var(--solid);color:#fff}
+  .phone{width:380px;border:2px solid var(--ink);border-radius:28px;background:var(--paper);padding:10px;box-shadow:0 6px 24px rgba(0,0,0,.12)}
+  .notch{height:20px;display:flex;justify-content:center}
+  .notch::after{content:"";width:120px;height:18px;background:var(--ink);border-radius:0 0 12px 12px}
+  .screen{height:680px;overflow:auto;border:1px solid var(--line);border-radius:18px;padding:18px;background:#fff}
+  .screen::-webkit-scrollbar{width:6px}.screen::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px}
+  .scr-title{text-align:center;font-weight:700;font-size:16px;margin:2px 0 4px;position:relative}
+  .scr-title .x{position:absolute;left:0;top:0;color:var(--muted);font-weight:400}
+  .scr-step{text-align:center;color:var(--muted);font-size:12px;margin-bottom:14px}
+  /* wireframe primitives */
+  .field{border:1px dashed var(--line2);border-radius:10px;padding:13px 14px;color:var(--muted);margin:10px 0;display:flex;justify-content:space-between;align-items:center;background:var(--fill)}
+  .field small{color:#b0b0b0}
+  .row{display:flex;gap:10px}
+  .row>*{flex:1}
+  .opt{border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin:8px 0;display:flex;align-items:center;gap:12px}
+  .opt.sel{border-color:var(--solid);border-width:2px}
+  .dot{width:18px;height:18px;border:1px solid var(--line2);border-radius:50%;flex:0 0 18px}
+  .dot.on{border-color:var(--solid);border-width:5px}
+  .sq{width:18px;height:18px;border:1px solid var(--line2);border-radius:4px;flex:0 0 18px}
+  .sq.on{background:var(--solid)}
+  .ph{height:90px;border:1px dashed var(--line2);border-radius:10px;display:grid;place-items:center;color:#b6b6b6;background:var(--fill);margin:10px 0}
+  .cta{background:var(--solid);color:#fff;text-align:center;border-radius:24px;padding:14px;margin:16px 0 8px;font-weight:600}
+  .cta.ghost{background:#fff;color:var(--muted);border:1px solid var(--line2)}
+  .cta.disabled{background:#cfcfcf;color:#fff}
+  .link{text-align:center;color:#666;font-size:13px;margin-top:8px}
+  .link b{color:var(--ink);text-decoration:underline}
+  .hint{font-size:12px;color:var(--muted);margin:6px 2px}
+  .badge{display:inline-block;font-size:10px;border:1px solid var(--line2);border-radius:4px;padding:1px 6px;color:var(--muted);vertical-align:middle;margin-left:6px}
+  .badge.req{border-color:#b56;color:#b56}
+  .otpcells{display:flex;gap:8px;justify-content:center;margin:18px 0}
+  .otpcells span{width:42px;height:52px;border:1px solid var(--line2);border-radius:8px;display:grid;place-items:center;font-size:20px;color:var(--muted)}
+  .otpcells span.f{border-color:var(--solid);border-width:2px}
+  .err{border:1px solid #c98;background:#fbf2ef;color:#a55;border-radius:8px;padding:10px 12px;font-size:12px;margin:8px 0}
+  .checklist .ci{display:flex;align-items:center;gap:12px;border:1px solid var(--line);border-radius:10px;padding:12px;margin:8px 0}
+  .checklist .ci .num{width:22px;height:22px;border:1px solid var(--line2);border-radius:50%;display:grid;place-items:center;font-size:11px;color:var(--muted);flex:0 0 22px}
+  .checklist .ci.done .num{background:var(--solid);color:#fff;border-color:var(--solid)}
+  .checklist .ci .g{flex:1}
+  .checklist .ci .g small{color:var(--muted);font-size:11px;display:block}
+  .dots{display:flex;gap:6px;justify-content:center;margin:14px 0}
+  .dots i{width:7px;height:7px;border-radius:50%;background:var(--line2)}
+  .dots i.on{background:var(--solid);width:18px;border-radius:4px}
+  .promo{border:1px dashed var(--line2);border-radius:12px;padding:14px;margin:10px 0;background:var(--fill)}
+  .promo .tag{font-size:10px;border:1px solid var(--line2);border-radius:4px;padding:1px 6px;color:var(--muted)}
+  /* spec panel */
+  .spec h2{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:18px 0 6px}
+  .spec h2:first-child{margin-top:0}
+  .spec ul{margin:0;padding-left:16px}
+  .spec li{margin:4px 0;font-size:12.5px}
+  .stlist{display:flex;flex-wrap:wrap;gap:6px}
+  .pill{font-size:11px;border:1px solid var(--line2);border-radius:12px;padding:2px 9px;background:var(--fill)}
+  .api{font-family:ui-monospace,Menlo,monospace;font-size:11px;background:var(--fill);border:1px solid var(--line);border-radius:6px;padding:8px;white-space:pre-wrap;color:#555}
+  .legend{font-size:11px;color:var(--muted);border-top:1px solid var(--line);margin-top:14px;padding-top:10px}
+</style>
+</head>
+<body>
+<div class="app">
+  <!-- LEFT: flow nav -->
+  <aside>
+    <h1>New Customer Sign Up</h1>
+    <p class="sub">Low-fidelity wireframe · Mobile / App first<br>Source: New customers sign up flow (Jun 10)</p>
+    <div id="nav"></div>
+    <div class="legend">
+      Grayscale wireframe only, no visual design.<br>
+      <span class="badge req">Required</span> = mandatory ·
+      <span class="badge">app only</span> = App only<br>
+      Right panel: spec / states / API fields for Dev.
+    </div>
+  </aside>
+
+  <!-- CENTER: phone -->
+  <main>
+    <div class="toolbar">
+      <button class="btn" id="prev">← Previous</button>
+      <div class="state-tabs" id="states"></div>
+      <button class="btn" id="next">Next →</button>
+    </div>
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="screen" id="screen"></div>
+    </div>
+    <div class="hint" id="bread"></div>
+  </main>
+
+  <!-- RIGHT: spec -->
+  <div class="spec" id="spec"></div>
+</div>
+
+<script>
+/* ---------- wireframe component helpers ---------- */
+const F = (label, sub='') => `<div class="field"><span>${label}</span>${sub?`<small>${sub}</small>`:''}</div>`;
+const CTA = (t, mod='') => `<div class="cta ${mod}">${t}</div>`;
+const OPT = (t, sel=false, kind='dot') => `<div class="opt ${sel?'sel':''}"><span class="${kind} ${sel?'on':''}"></span><span style="flex:1">${t}</span></div>`;
+
+/* ---------- screen definitions ---------- */
+const screens = [
+{
+  group:"A · Sign Up", id:"signup", title:"Sign Up",
+  states:["Default","Ready to submit","Captcha (conditional)"],
+  render:(s)=>`
+    <div class="scr-title"><span class="x">✕</span>Sign Up</div>
+    <div class="scr-step">Sign up with phone number (default method)</div>
+    ${F("Country code ▾ &nbsp; Phone number","Required")}
+    ${F("Referral code","Optional")}
+    <div class="opt"><span class="sq ${s>0?'on':''}"></span>
+      <span style="flex:1">I am 21+ and agree to the <b style="text-decoration:underline">Terms of Service</b> and <b style="text-decoration:underline">Privacy Policy</b></span></div>
+    ${s===2?`<div class="ph">Captcha (hCaptcha)<br><small>Shown only when risk control is triggered</small></div>`
+            :`<div class="hint">＊ With phone OTP verification, Captcha is skipped by default and appears only on risk triggers.</div>`}
+    ${CTA("Sign Up", s===0?'disabled':'')}
+    <div class="link">Already have an account? <b>Login here</b></div>`,
+  spec:{
+    goal:"Use phone number as the default sign-up entry to lower the barrier.",
+    states:["default (button disabled)","button enabled after Terms checked","Captcha shown conditionally (risk trigger)","submitting loading","phone already exists error","format error inline error"],
+    fields:["country_code","phone","referral_code?","accept_terms(bool)","captcha_token?"],
+    api:"POST /register/start\n→ { phone, country_code, referral_code?, accept_terms }\n← { register_token, otp_sent:true }\nerr: PHONE_EXISTS / INVALID_PHONE / RATE_LIMITED",
+    notes:["Terms not checked → Sign Up disabled.","Login here routes to the existing login flow.","Google sign-up: docx note pending confirmation, leave placeholder for now."]
+  }
+},
+{
+  group:"A · Sign Up", id:"otp", title:"OTP Verification",
+  states:["Awaiting input","Verification error","OTP failed → WhatsApp"],
+  render:(s)=>`
+    <div class="scr-title"><span class="x">←</span>Verify Phone</div>
+    <div class="scr-step">OTP sent to +xx ****1234</div>
+    <div class="otpcells"><span class="f">_</span><span>_</span><span>_</span><span>_</span><span>_</span><span>_</span></div>
+    ${s===1?`<div class="err">Wrong code, please try again (2 attempts left)</div>`:''}
+    ${s===2?`<div class="err">Too many failed attempts. Receive OTP via WhatsApp instead?</div>${CTA("Verify via WhatsApp",'ghost')}`:''}
+    <div class="link">Didn't get it? <b>${s===2?'Resend locked':'Resend (60s)'}</b></div>
+    <div class="link"><b>Change phone number</b></div>
+    ${CTA("Verify and continue", s===0?'':'')}`,
+  spec:{
+    goal:"Verify phone ownership; only then proceed to account setup.",
+    states:["pending (resend countdown)","verifying loading","wrong_code (attempts left)","expired (resend)","locked (too many failures)","fallback → WhatsApp verification"],
+    fields:["register_token","otp_code","channel(sms|whatsapp)"],
+    api:"POST /register/verify-otp\n→ { register_token, otp_code }\n← { verified:true, customer_id }\nPOST /register/resend-otp { channel }\nerr: OTP_WRONG / OTP_EXPIRED / OTP_LOCKED",
+    notes:["docx: 'Consider OTP failure processes — use WhatsApp as alternative' → WhatsApp fallback appears after N failures.","On success, go straight into account setup (do not return to home)."]
+  }
+},
+{
+  group:"B · Account Setup", id:"checklist", title:"Setup Overview",
+  states:["Just entered","Partially done"],
+  render:(s)=>`
+    <div class="scr-title">Set Up Your Account</div>
+    <div class="scr-step">Finish setup to start playing (required items first)</div>
+    <div class="checklist">
+      ${ci(1,"Choose account currency","mandatory",s>0)}
+      ${ci(2,"Face ID / biometrics","mandatory · app only",s>0)}
+      ${ci(3,"Notification permission","",false)}
+      ${ci(4,"Complete profile + bank/USDT","",false)}
+      ${ci(5,"Add Email (account recovery)","Optional*",false)}
+      ${ci(6,"Set password / PIN","",false)}
+      ${ci(7,"Theme (dark/light/system)","",false)}
+      ${ci(8,"Language","",false)}
+      ${ci(9,"Interactive tutorial","",false)}
+      ${ci(10,"Download V9 App","",false)}
+    </div>
+    ${CTA("Start Setup")}`,
+  spec:{
+    goal:"Right after sign-up (FE UX), guide the user through the full account setup checklist.",
+    states:["initial (nothing done)","partial (some items done)","cannot skip while mandatory items incomplete","all done → welcome page"],
+    fields:["customer_id","setup_progress[]"],
+    api:"GET /account/setup-status → { steps:[{key,done,required}] }",
+    notes:["docx: 'immediately run through account configuration settings'.","Required: currency, Face ID (app). Others can be completed later in Profile.","This page can be a step-by-step wizard or a free-pick checklist — wireframe both states."]
+  }
+},
+{
+  group:"B · Account Setup", id:"currency", title:"Choose Currency", step:"1 / 10",
+  states:["None selected","VND selected"],
+  render:(s)=>`
+    <div class="scr-title"><span class="x">←</span>Account Currency<span class="badge req">Required</span></div>
+    <div class="scr-step">Currency cannot be changed once set</div>
+    ${OPT("🇻🇳 &nbsp; VND — Vietnamese Dong", s===1)}
+    ${OPT("🇹🇭 &nbsp; THB — Thai Baht", false)}
+    ${OPT("💲 &nbsp; USDT — Crypto", false)}
+    ${CTA("Confirm Currency", s===0?'disabled':'')}`,
+  spec:{
+    goal:"Set the account settlement currency (mandatory).",
+    states:["none selected (button disabled)","selected","confirm second confirmation (cannot be changed)"],
+    fields:["customer_id","currency(enum)"],
+    api:"PUT /account/currency → { currency }\nerr: CURRENCY_LOCKED",
+    notes:["Currency affects all wallet/deposit displays afterward.","List is opened per market by backend, CMS-controlled."]
+  }
+},
+{
+  group:"B · Account Setup", id:"biometric", title:"Face ID", step:"2 / 10",
+  states:["Prompt","Enabled"],
+  render:(s)=>`
+    <div class="scr-title"><span class="x">←</span>Face ID / Biometrics<span class="badge">app only</span></div>
+    <div class="ph" style="height:140px">[ Face ID icon ]</div>
+    <div class="scr-step">Enable for quick login with face/fingerprint</div>
+    ${s===1?`<div class="opt sel"><span class="dot on"></span><span>Face ID enabled</span></div>`:''}
+    ${CTA(s===1?"Enabled, continue":"Enable Face ID")}
+    <div class="link"><b>Later</b></div>`,
+  spec:{
+    goal:"Enable biometric login on the app (mandatory on app).",
+    states:["prompt","system permission denied → guide to settings","enabled","Web: this step auto-skipped"],
+    fields:["biometric_enabled(bool)","device_id"],
+    api:"Device-side keychain/biometric API; backend only stores enabled flag + device binding.",
+    notes:["docx: 'Allow face ID or biometrics (for mobile app only), mandatory'.","Not shown on Web/Mobile Web."]
+  }
+},
+{
+  group:"B · Account Setup", id:"notif", title:"Notifications", step:"3 / 10",
+  states:["Prompt"],
+  render:()=>`
+    <div class="scr-title"><span class="x">←</span>Notification Settings</div>
+    <div class="scr-step">Choose which notifications you want to receive</div>
+    ${tog("Deposit / withdrawal status",true)}
+    ${tog("Bet settlement notice",true)}
+    ${tog("Exclusive offers / events",true)}
+    ${tog("System / maintenance notice",false)}
+    ${CTA("Allow and continue")}
+    <div class="link"><b>Later</b></div>`,
+  spec:{
+    goal:"Obtain push permission and set notification preferences.",
+    states:["prompt","system permission denied → still record in-app preferences","saved"],
+    fields:["push_token?","prefs:{deposit,settlement,promo,system}"],
+    api:"PUT /account/notification-prefs",
+    notes:["Maps to docx Messaging: push notifications / system messages / bet settlement notice."]
+  }
+},
+{
+  group:"B · Account Setup", id:"profile", title:"Profile + Payout", step:"4 / 10",
+  states:["Bank account","USDT address"],
+  render:(s)=>`
+    <div class="scr-title"><span class="x">←</span>Profile + Payout Method</div>
+    <div class="scr-step">Used for withdrawals, can complete later</div>
+    ${F("Full name (must match payout account)")}
+    <div class="row">${F("Date of birth")}${F("Gender ▾")}</div>
+    <div style="margin:14px 0 6px;font-weight:600">Withdrawal payout method</div>
+    <div class="state-tabs" style="margin-bottom:8px"><button class="${s===0?'on':''}">Bank account</button><button class="${s===1?'on':''}">USDT</button></div>
+    ${s===0?F("Bank ▾")+F("Bank account number")+F("Account holder name"):F("USDT network ▾ (TRC20/ERC20)")+F("USDT wallet address")}
+    ${CTA("Save")}
+    <div class="link"><b>Later</b></div>`,
+  spec:{
+    goal:"Collect profile info and payout account (bank / USDT) for withdrawals.",
+    states:["bank tab","usdt tab","verifying","format error","linked (KYC may trigger before withdrawal)"],
+    fields:["full_name","dob","gender","payout:{type, bank/usdt fields}"],
+    api:"PUT /account/profile · POST /account/payout-method",
+    notes:["Can complete later; but if missing at withdrawal / promo claim, user is blocked and asked to complete.","Linked to KYC module (doc upload / risk triggers)."]
+  }
+},
+{
+  group:"B · Account Setup", id:"email", title:"Email", step:"5 / 10",
+  states:["Phone verified (optional)","Email-only sign-up (verify required)"],
+  render:(s)=>`
+    <div class="scr-title"><span class="x">←</span>Add Email<span class="badge ${s===1?'req':''}">${s===1?'Required':'Optional*'}</span></div>
+    <div class="scr-step">A secondary contact for account recovery</div>
+    ${F("Email address")}
+    ${s===1?`<div class="hint">You signed up with Email; phone verification is required before claiming offers / withdrawing.</div>`
+            :`<div class="hint">＊Phone verified, Email can be added later in Profile.</div>`}
+    ${CTA("Send verification email and continue")}
+    ${s===0?`<div class="link"><b>Later</b></div>`:''}`,
+  spec:{
+    goal:"Add and verify a secondary Email for account recovery.",
+    states:["optional (phone verified)","required (email-only sign-up path)","verification email sent","verified","verification link expired"],
+    fields:["email","email_verified(bool)"],
+    api:"POST /account/email + verification link callback",
+    notes:["docx BE rule: phone verified → Email optional; Email-only → must complete phone verification before claiming offers/withdrawing.","Maps to account recovery email."]
+  }
+},
+{
+  group:"B · Account Setup", id:"pin", title:"Password / PIN", step:"6 / 10",
+  states:["Set password","Set PIN"],
+  render:(s)=>`
+    <div class="scr-title"><span class="x">←</span>Set Login Security</div>
+    <div class="state-tabs" style="justify-content:center;margin:10px auto"><button class="${s===0?'on':''}">Password</button><button class="${s===1?'on':''}">Simple PIN</button></div>
+    ${s===0?F("Password","8+ chars")+F("Re-enter password"):`<div class="otpcells"><span>_</span><span>_</span><span>_</span><span>_</span></div><div class="scr-step">Set a 4-digit PIN</div>`}
+    ${CTA("Set")}`,
+  spec:{
+    goal:"Set a login password or a simple PIN.",
+    states:["password tab","pin tab","too weak","mismatch","set"],
+    fields:["auth_secret(hashed)","auth_type(password|pin)"],
+    api:"PUT /account/credentials",
+    notes:["docx: 'Set account password or simple pin'.","Coexists with Face ID: biometrics for quick login, password/PIN as fallback."]
+  }
+},
+{
+  group:"B · Account Setup", id:"theme", title:"Theme + Language", step:"7-8 / 10",
+  states:["Theme","Language"],
+  render:(s)=>`
+    <div class="scr-title"><span class="x">←</span>Appearance</div>
+    ${s===0?`<div class="scr-step">Choose theme</div>${OPT("🌙 Dark",true)}${OPT("☀️ Light",false)}${OPT("⚙️ Follow system settings",false)}`
+            :`<div class="scr-step">Choose language</div>${OPT("繁體中文",true)}${OPT("English",false)}${OPT("Tiếng Việt",false)}${OPT("ไทย",false)}`}
+    ${CTA("Continue")}`,
+  spec:{
+    goal:"Set theme (dark/light/system) and interface language.",
+    states:["theme select","language select","live preview after applying"],
+    fields:["theme(dark|light|system)","language(locale)"],
+    api:"PUT /account/preferences",
+    notes:["docx: 'Set black or white theme or based on phone settings' + 'Set language'.","Language list shared with the CMS translation module."]
+  }
+},
+{
+  group:"B · Account Setup", id:"tutorial", title:"Interactive Tutorial", step:"9 / 10",
+  states:["Offers","Inbox","Profile","Refer a friend"],
+  render:(s)=>{
+    const t=[["Exclusive Offers","View and claim the offers available to you here"],["Inbox Messages","In-app messages and system notices live here"],["Profile","Manage your account, security and preferences"],["Refer a Friend","Invite friends, both of you earn rewards"]][s];
+    return `
+    <div class="scr-title"><span class="x">✕</span>Quick Tour</div>
+    <div class="ph" style="height:220px">[ Tutorial illustration: ${t[0]} ]</div>
+    <div style="text-align:center;font-weight:700;font-size:16px">${t[0]}</div>
+    <div class="scr-step">${t[1]}</div>
+    <div class="dots">${[0,1,2,3].map(i=>`<i class="${i===s?'on':''}"></i>`).join('')}</div>
+    ${CTA(s===3?"Done":"Next")}
+    <div class="link"><b>Skip tour</b></div>`;
+  },
+  spec:{
+    goal:"Interactive tutorial covering Offers / Inbox / Profile / Refer a friend.",
+    states:["4-step carousel","skippable","mark tutorial_seen on completion"],
+    fields:["tutorial_seen(bool)"],
+    api:"PUT /account/flags { tutorial_seen:true }",
+    notes:["docx: 'interactive tutorial (include promotion, inbox messages, profile and refer a friend program)'.","Content managed by CMS, swappable per campaign."]
+  }
+},
+{
+  group:"C · Finish", id:"app", title:"Download App", step:"10 / 10",
+  states:["Default"],
+  render:()=>`
+    <div class="scr-title"><span class="x">✕</span>Download V9 App</div>
+    <div class="ph" style="height:140px">[ QR Code ]</div>
+    <div class="scr-step">Faster login and more timely notifications in the app</div>
+    ${CTA("Download V9 App")}
+    <div class="link"><b>Continue on web</b></div>`,
+  spec:{
+    goal:"Guide download of the native app (with QR / store links).",
+    states:["default","already in app → skip this step"],
+    fields:["platform_detect"],
+    api:"Static link / QR; route to the matching store by device.",
+    notes:["docx: 'V9 app download'. Shown on Web only, auto-skipped in app."]
+  }
+},
+{
+  group:"C · Finish", id:"welcome", title:"Welcome + Offers", step:"Done",
+  states:["Default"],
+  render:()=>`
+    <div class="scr-title">🎉 Welcome to V9Bet</div>
+    <div class="scr-step">Your account is ready. Here are your new-member offers</div>
+    <div class="promo"><span class="tag">New member offer</span>
+      <div style="font-weight:700;margin:8px 0 2px">100% First Deposit Bonus</div>
+      <div class="hint" style="margin:0">For Sports / Live, churn x10</div>
+      ${CTA("Claim now")}</div>
+    <div class="promo"><span class="tag">Mission</span>
+      <div style="font-weight:700;margin:8px 0 2px">Make your first deposit</div>
+      <div class="hint" style="margin:0">Unlock free bet x1</div></div>
+    ${CTA("Go to deposit")}
+    ${CTA("Browse home first",'ghost')}`,
+  spec:{
+    goal:"Welcome the new member and instantly surface applicable offers → drive to deposit.",
+    states:["has applicable offers (list)","no offers (empty copy)","offers loading / error"],
+    fields:["customer_id","eligible_promotions[]"],
+    api:"GET /promotions/eligible?segment=new_customer\n← { promotions:[{id,title,terms,churn,cta}] }",
+    notes:["docx: 'Welcome customer and inform of the immediate promotions applicable to him as new sign up'.","Offers determined by promo module + audience segmentation, CMS / API driven.","BE: a random unique id is already assigned as the default username (editable in profile)."]
+  }
+},
+];
+
+/* small components used inside screens */
+function ci(n,label,tag,done){return `<div class="ci ${done?'done':''}"><span class="num">${done?'✓':n}</span><span class="g">${label}${tag?`<small>${tag}</small>`:''}</span><span style="color:#bbb">›</span></div>`}
+function tog(label,on){return `<div class="opt"><span style="flex:1">${label}</span><span style="width:40px;height:22px;border-radius:12px;border:1px solid var(--line2);background:${on?'var(--solid)':'#fff'};position:relative"><span style="position:absolute;top:2px;${on?'right:2px':'left:2px'};width:16px;height:16px;border-radius:50%;background:#fff;border:1px solid var(--line2)"></span></span></div>`}
+
+/* ---------- runtime ---------- */
+let idx=0, st=0;
+const navEl=document.getElementById('nav');
+function buildNav(){
+  let html='', lastG='';
+  screens.forEach((sc,i)=>{
+    if(sc.group!==lastG){html+=`<div class="group-title">${sc.group}</div>`;lastG=sc.group;}
+    html+=`<div class="nav ${i===idx?'active':''}" data-i="${i}"><span class="num">${i+1}</span>${sc.title}</div>`;
+  });
+  navEl.innerHTML=html;
+  navEl.querySelectorAll('.nav').forEach(n=>n.onclick=()=>{idx=+n.dataset.i;st=0;draw();});
+}
+function draw(){
+  const sc=screens[idx];
+  document.getElementById('screen').innerHTML=sc.render(st);
+  // states
+  const stWrap=document.getElementById('states');
+  stWrap.innerHTML=sc.states.map((s,i)=>`<button class="${i===st?'on':''}" data-s="${i}">${s}</button>`).join('');
+  stWrap.querySelectorAll('button').forEach(b=>b.onclick=()=>{st=+b.dataset.s;draw();});
+  document.getElementById('bread').textContent=`Screen ${idx+1} / ${screens.length} · ${sc.title}${sc.step?' · '+sc.step:''}`;
+  // spec
+  const sp=sc.spec;
+  document.getElementById('spec').innerHTML=`
+    <h2>Screen Goal</h2><p style="font-size:13px;margin:0">${sp.goal}</p>
+    <h2>States</h2><div class="stlist">${sp.states.map(x=>`<span class="pill">${x}</span>`).join('')}</div>
+    <h2>Fields</h2><div class="stlist">${sp.fields.map(x=>`<span class="pill">${x}</span>`).join('')}</div>
+    <h2>API / Data</h2><div class="api">${sp.api}</div>
+    <h2>Dev Notes</h2><ul>${sp.notes.map(x=>`<li>${x}</li>`).join('')}</ul>`;
+  buildNav();
+}
+document.getElementById('prev').onclick=()=>{if(idx>0){idx--;st=0;draw();}};
+document.getElementById('next').onclick=()=>{if(idx<screens.length-1){idx++;st=0;draw();}};
+draw();
+</script>
+</body>
+</html>

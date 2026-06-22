@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>V9Bet · Foundations & Globals Wireframe</title>
+<style>
+  :root{--ink:#2b2b2b;--line:#c9c9c9;--line2:#9a9a9a;--muted:#8a8a8a;--paper:#fff;--bg:#ececed;--fill:#f4f4f5;--solid:#3a3a3a;--strike:#b56}
+  *{box-sizing:border-box}
+  body{margin:0;font:13px/1.5 -apple-system,"Noto Sans TC",Arial,sans-serif;color:var(--ink);background:var(--bg)}
+  .app{display:grid;grid-template-columns:230px 1fr 330px;min-height:100vh}
+  aside{background:var(--paper);border-right:1px solid var(--line);padding:14px;overflow:auto;max-height:100vh}
+  main{padding:20px;overflow:auto}
+  .spec{background:var(--paper);border-left:1px solid var(--line);padding:16px;overflow:auto;max-height:100vh}
+  h1{font-size:15px;margin:0 0 4px}.sub{color:var(--muted);font-size:12px;margin:0 0 10px}
+  .grp{font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);font-weight:700;margin:12px 0 4px}
+  .nav{display:block;width:100%;text-align:left;border:1px solid transparent;background:none;border-radius:6px;padding:6px 8px;font-size:12.5px;cursor:pointer;color:#333}
+  .nav:hover{background:var(--fill)}.nav.on{background:#e3e3e6;border-color:var(--line2);font-weight:600}
+  .ctitle{font-size:16px;font-weight:700;margin:0 0 2px}.cnote{font-size:12px;color:var(--muted);margin-bottom:14px}
+  .crit{display:inline-block;font-size:10px;border:1px solid var(--strike);color:var(--strike);border-radius:4px;padding:0 6px;margin-left:6px;vertical-align:middle}
+  .stage{border:1px solid var(--line2);border-radius:10px;background:#fafafa;min-height:300px;padding:16px}
+  .vl{font-size:10.5px;color:var(--muted);margin:13px 0 5px;font-weight:600}.vl:first-child{margin-top:0}
+  .row{display:flex;gap:10px;flex-wrap:wrap}
+  /* generic boxes */
+  .box{border:1px dashed var(--line2);border-radius:7px;background:var(--fill);color:#9a9a9a;display:grid;place-items:center;text-align:center;font-size:11px;padding:8px}
+  .card{border:1px solid var(--line);border-radius:8px;background:#fff;padding:10px;font-size:12px}
+  .b{border:1px solid var(--line2);background:#fff;border-radius:7px;padding:6px 12px;font-size:11.5px;text-align:center}.b.k{background:var(--solid);color:#fff;border-color:var(--solid)}
+  /* header bar */
+  .hdr{display:flex;align-items:center;gap:10px;border:1px solid var(--line2);border-radius:8px;background:#fff;padding:8px 12px;font-size:12px}
+  .hdr .logo{font-weight:800}.hdr .mn{display:flex;gap:10px;flex:1;color:#555;flex-wrap:wrap}.hdr .ic{width:24px;height:24px;border:1px solid var(--line2);border-radius:6px;display:grid;place-items:center;font-size:11px;color:#888}
+  /* footer cols */
+  .ft{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;border:1px solid var(--line2);border-radius:8px;background:#fff;padding:12px}
+  .ft .col b{font-size:11px}.ft .col div{font-size:10.5px;color:#777;margin:3px 0}
+  /* breakpoints */
+  .bk{display:flex;align-items:center;gap:8px;margin:6px 0;font-size:11.5px}
+  .bk .barwrap{flex:1;height:18px;background:#eee;border-radius:4px;overflow:hidden}.bk .bar{height:100%;background:var(--solid)}
+  .gridcols{display:grid;gap:4px;margin-top:6px}.gridcols div{height:34px;background:var(--fill);border:1px dashed var(--line2);border-radius:4px}
+  /* form field states */
+  .fld{border:1px solid var(--line2);border-radius:8px;padding:9px 11px;font-size:12px;color:#888;margin:5px 0;background:#fff}
+  .fld.focus{border-color:var(--solid);box-shadow:0 0 0 2px #ddd}
+  .fld.filled{color:#333}
+  .fld.err{border-color:var(--strike)}
+  .fld.dis{background:#f0f0f0;color:#bbb}
+  .emsg{font-size:10.5px;color:var(--strike);margin:-2px 0 6px}
+  /* phone mini */
+  .ph{width:220px;border:2px solid var(--ink);border-radius:16px;background:#fff;padding:5px}
+  .ph .scr{min-height:300px;border:1px solid var(--line);border-radius:11px;padding:11px;position:relative}
+  .cap{text-align:center;font-size:10px;color:var(--muted);margin-top:4px}
+  .bar2{display:flex;align-items:center;justify-content:space-between;font-weight:700;font-size:13px;margin-bottom:8px}.bar2 .l{color:#999;font-weight:400}
+  .empty{text-align:center;color:#aaa;padding:18px}.empty .e{font-size:28px}
+  .modal{background:#fff;border:2px solid var(--solid);border-radius:10px;padding:14px;max-width:230px;margin:0 auto;font-size:12px}
+  .toast{display:flex;gap:8px;align-items:center;background:#fff;border:1px solid var(--line2);border-left:4px solid var(--solid);border-radius:8px;padding:8px 11px;font-size:11.5px;margin:5px 0}
+  /* funnel */
+  .funnel{display:flex;flex-direction:column;gap:5px;max-width:340px}
+  .fn{display:flex;align-items:center;gap:8px;font-size:11.5px}
+  .fn .barwrap{flex:1;height:20px;background:#eee;border-radius:4px;overflow:hidden}.fn .bar{height:100%;background:var(--solid);display:flex;align-items:center;justify-content:flex-end;color:#fff;font-size:10px;padding-right:5px}
+  .fn .drop{color:var(--strike);font-size:10px;width:40px;text-align:right}
+  .ev{font-family:ui-monospace,Menlo,monospace;font-size:11px;background:var(--fill);border:1px solid var(--line);border-radius:5px;padding:3px 7px;margin:3px 3px 0 0;display:inline-block;color:#555}
+  /* spec */
+  .spec h2{font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin:14px 0 6px}.spec h2:first-child{margin-top:0}
+  .spec table{width:100%;border-collapse:collapse;font-size:12px}.spec td{border-bottom:1px solid var(--line);padding:5px 4px;vertical-align:top}.spec td.k{color:var(--muted);width:78px}
+  .spec ul{margin:0;padding-left:15px}.spec li{font-size:12px;margin:3px 0}
+  .src{font-size:10.5px;color:#999;margin-top:4px}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside>
+    <h1>Foundations & Globals</h1>
+    <p class="sub">Foundations & Globals · grayscale, no UI<br>Cross-site definitions beyond pages/components</p>
+    <div id="nav"></div>
+  </aside>
+  <main>
+    <div id="ct" class="ctitle"></div>
+    <div id="cn" class="cnote"></div>
+    <div id="stage" class="stage"></div>
+  </main>
+  <div class="spec" id="spec"></div>
+</div>
+
+<script>
+const VL=t=>`<div class="vl">${t}</div>`;
+const SEC=(h,html)=>`<h2>${h}</h2>${html}`;
+const TBL=rows=>`<table>${rows.map(r=>`<tr><td class="k">${r[0]}</td><td>${r[1]}</td></tr>`).join('')}</table>`;
+const UL=items=>`<ul>${items.map(x=>`<li>${x}</li>`).join('')}</ul>`;
+
+const C={
+/* ===== Global Chrome ===== */
+header:{g:"Global Chrome",name:"Global Header",note:"Persistent bar at the top of every page; before/after login states.",
+ render:()=>VL("Before login")+`<div class="hdr"><span class="logo">V9BET</span><span class="mn">Sports·Live·Slots·Lottery·Promotion</span><span class="b">Log In</span><span class="b k">Sign Up</span><span class="ic">🌐</span></div>`+
+  VL("After login")+`<div class="hdr"><span class="logo">V9BET</span><span class="mn">Sports·Live·Slots·Lottery·Promotion</span><span style="font-size:11px;color:#555">₫1,250,000</span><span class="ic">＋</span><span class="ic">👛</span><span class="ic">✉</span><span class="ic">🎧</span><span class="ic">👤</span></div>`,
+ spec:[["States",TBL([["Before login","Logo + top menu + Log In/Sign Up + language"],["After login","+ balance/deposit/wallet/messages/support/account"],["sticky","Sticks on scroll (App docx73)"],["Product pages","Left menu collapses to icon rail (live capture)"]])],
+   ["RWD",UL(["Desktop: top menu (docx59)","Mobile: hamburger + bottom tab","Balance updates in real time (WebSocket)"])],
+   ["docx",`<div class="src">02,59,73 · live-capture top icons</div>`]]},
+
+footer:{g:"Global Chrome",name:"Global Footer",note:"Site-wide footer with legal links (live capture).",
+ render:()=>`<div class="ft">
+   <div class="col"><b>About V9Bet</b><div>About Us</div><div>Contact Us</div><div>FAQs</div><div>How To?</div></div>
+   <div class="col"><b>Legal</b><div>Terms & Conditions</div><div>Privacy Policy</div><div>Responsible Gaming</div></div>
+   <div class="col"><b>Programs</b><div>Partnership</div><div>Sponsorships</div><div>Refer A Friend</div></div>
+   <div class="col"><b>More</b><div>Join Community</div><div>App Download</div><div>Latest Offer</div></div>
+ </div>`,
+ spec:[["Sections",UL(["About / FAQ / How To","Legal: T&C / Privacy / Responsible Gaming","Programs: Partnership / Sponsorship / RAF","Community / App / Offer"])],
+   ["Content source","CMS-controlled (links/copy/translations)"],["Legal","T&C · Privacy · Responsible Gaming required"],["docx",`<div class="src">live-capture footer · docx60 CMS</div>`]]},
+
+nav:{g:"Global Chrome",name:"Navigation model + Breadcrumb",note:"Navigation differences across 3 platforms + breadcrumb (live capture: Home > Slots).",
+ render:()=>VL("Desktop top menu")+`<div class="hdr"><span class="logo">V9</span><span class="mn">Sports·Live·Slots·Lottery·Card games·Promotion</span></div>`+
+  VL("Mobile bottom tab — floating pill (IG-style)")+`<div style="border:1px solid var(--line2);border-radius:22px;background:#fff;padding:6px 4px;box-shadow:0 6px 16px rgba(0,0,0,.16);display:flex;margin:0 12px">${['⌂Home','▦Products','🎁Offers','✉Messages','👤Account'].map((x,i)=>`<div style="flex:1;text-align:center;font-size:10px;color:${i===0?'#3a3a3a':'#999'};font-weight:${i===0?700:400}">${x}</div>`).join('')}</div><div class="src" style="margin-top:4px">Detached rounded pill, floats over content (sticky), with side margins — not edge-to-edge.</div>`+
+  VL("Breadcrumb")+`<div class="card" style="background:var(--fill)">Home › Slots › Pragmatic</div>`,
+ spec:[["Platforms",TBL([["Desktop","Top main menu (docx59)"],["Mobile Web","Hamburger + <b>floating pill</b> bottom nav (IG-style)"],["App","Sticky top menu (docx73)"]])],
+   ["Breadcrumb","Shows path on deep pages (live capture)"],["Deep links","Modal/panel can act as route (#banking, live capture)"],["docx",`<div class="src">59,73,02 · live capture</div>`]]},
+
+search:{g:"Global Chrome",name:"Global Search",note:"Site-wide / product search + suggestions.",
+ render:()=>VL("Search box + suggestions")+`<div class="fld">🔍 Search games / events…</div>`+`<div class="card"><div style="font-size:10.5px;color:#999;margin-bottom:4px">Popular / Recent</div>${['World Cup','Lucky Cat','Roulette','Mahjong'].map(x=>`<span class="b" style="display:inline-block;margin:2px">${x}</span>`).join('')}</div>`,
+ spec:[["Scope",UL(["Games (tags/providers)","Events","Help/FAQ"])],["Behavior",UL(["Debounced live suggestions","Popular/recent queries","No-results empty state"])],["Source","Search API + tags (docx52)"]]},
+
+/* ===== Foundations ===== */
+breakpoints:{g:"Foundations",name:"RWD breakpoints + grid",note:"Four environments and grid; which modules frame-in.",
+ render:()=>VL("Breakpoints")+
+  ['Mobile ≤480','Tablet 481–1024','Desktop 1025–1440','Wide ≥1441'].map((x,i)=>`<div class="bk"><span style="width:130px">${x}</span><div class="barwrap"><div class="bar" style="width:${[28,52,80,100][i]}%"></div></div></div>`).join('')+
+  VL("Grid (Desktop 12 cols · center-aligned)")+`<div class="gridcols" style="grid-template-columns:repeat(12,1fr)">${'x'.repeat(12).split('').map(()=>'<div></div>').join('')}</div>`,
+ spec:[["Environments",TBL([["Mobile Web","4–6 cols · bottom tab"],["Tablet","8 cols"],["Desktop","12 cols · center-aligned (docx53)"],["App","Native · sticky top menu"]])],
+   ["frame-in","Heavy modules (RAF etc.) embedded in desktop on mobile (docx02)"],["docx",`<div class="src">02,53,59</div>`]]},
+
+forms:{g:"Foundations",name:"Forms & validation",note:"Field states, validation rules, input masks.",
+ render:()=>VL("Field states")+`<div class="fld">Default placeholder</div><div class="fld focus">focus (2px ring)</div><div class="fld filled">Filled 0912345678</div><div class="fld err">Error</div><div class="emsg">⚠ Phone number format is invalid</div><div class="fld dis">disabled</div>`+
+  VL("Input mask")+`<div class="card">Phone: +xx ___ ___ ___ · Amount: 1,000,000 · OTP: _ _ _ _ _ _</div>`,
+ spec:[["Field states",UL(["default / focus / filled / error / disabled","Inline error with live validation"])],
+   ["Rules",UL(["Required","Format (phone/email/amount)","Match (password/PIN)","Length/range"])],
+   ["Mask",UL(["Phone country code + segments","Amount thousands separator","OTP per-digit boxes"])],["a11y","label + aria-invalid + error association"]]},
+
+i18n:{g:"Foundations",name:"i18n + format",note:"Translation framework (live capture: mixed locales) + number/currency/date formats.",
+ render:()=>VL("Language")+`<div class="row">${['繁中','EN','Tiếng Việt','ไทย'].map((x,i)=>`<span class="b ${i===0?'k':''}">${x}</span>`).join('')}</div>`+
+  VL("Format reference")+`<div class="card">${TBL([['Currency','₫ 1,250,000 / ฿ 1,250.00'],['Number','Thousands separator · decimals per currency'],['Date','19 Jun 2026 20:35 (GMT+8)'],['Timezone','Follows account setting']])}</div>`,
+ spec:[["Translation",UL(["All site strings use i18n keys (live capture: mixed VN/EN → must unify)","Shared with CMS translation module (docx60)","Support/notifications included too"])],
+   ["Format",UL(["Currency per account currency","Date/timezone GMT+8","Number thousands separator"])],["docx",`<div class="src">10,11,60 · live-capture locale issues</div>`]]},
+
+/* ===== System pages ===== */
+syspages:{g:"System/Error pages",name:"System / Error pages",note:"404 / 500 / maintenance / offline (geo-block covered in page compositions).",
+ render:()=>`<div class="row">
+   ${mini('404',`<div class="empty"><div class="e">🔍</div>Page not found<div class="b k" style="display:inline-block;margin-top:6px">Back to home</div></div>`)}
+   ${mini('500',`<div class="empty"><div class="e">⚠️</div>System busy<div class="b" style="display:inline-block;margin-top:6px">Retry</div></div>`)}
+   ${mini('Maintenance',`<div class="empty"><div class="e">🛠</div>Under maintenance<div style="font-size:10px;color:#aaa">02:00–04:00</div></div>`)}
+   ${mini('Offline',`<div class="empty"><div class="e">📡</div>Connection lost<div class="b" style="display:inline-block;margin-top:6px">Reconnect</div></div>`)}
+ </div>`,
+ spec:[["Pages",UL(["404 not found → home/search","500 server error → retry/support","Maintenance (site-wide vs single provider)","Offline/connection lost → auto-reconnect"])],
+   ["Maintenance","Site-wide or single provider (latter cross-sells, docx43)"],["docx",`<div class="src">43 · geo-block see page compositions (09/12/18)</div>`]]},
+
+/* ===== Cross-page states ===== */
+session:{g:"Cross-page states",name:"Session / re-auth",note:"Timeout, login elsewhere, re-authentication.",
+ render:()=>VL("Timeout warning (toast)")+`<div class="toast">⏳ Idle too long, auto logout in 60s <span style="margin-left:auto;text-decoration:underline">Stay logged in</span></div>`+
+  VL("Login elsewhere / re-auth (modal)")+`<div class="modal"><b>Login detected elsewhere</b><div style="font-size:11px;color:#888;margin:4px 0">Please re-authenticate to protect your account</div><div class="b k">Log in again</div></div>`,
+ spec:[["Scenarios",UL(["Idle timeout → warning → auto logout","Login elsewhere → forced re-auth","Sensitive actions → step-up auth (withdrawal/password change)"])],
+   ["Token","Access/refresh token; silent refresh or logout on expiry"],["docx",`<div class="src">16,27 · security</div>`]]},
+
+permission:{g:"Cross-page states",name:"Permission prompts",note:"Notifications / biometrics / camera (KYC).",
+ render:()=>`<div class="row">
+   ${mini('Notifications',`<div class="modal" style="margin-top:30px"><b>Turn on notifications?</b><div style="font-size:11px;color:#888;margin:4px 0">Real-time deposit/settlement alerts</div><div class="b k">Allow</div></div>`)}
+   ${mini('Biometrics',`<div class="modal" style="margin-top:30px"><b>Enable Face ID?</b><div style="font-size:11px;color:#888;margin:4px 0">Quick login (App)</div><div class="b k">Enable</div></div>`)}
+   ${mini('Camera',`<div class="modal" style="margin-top:30px"><b>Allow camera?</b><div style="font-size:11px;color:#888;margin:4px 0">Capture KYC documents</div><div class="b k">Allow</div></div>`)}
+ </div>`,
+ spec:[["Permissions",UL(["Notifications (push prefs, docx87)","Biometrics (App docx86)","Camera (KYC document capture, docx26)"])],
+   ["Denial handling","Record in-site preference / guide to system settings"],["docx",`<div class="src">26,86,87</div>`]]},
+
+/* ===== Compliance ===== */
+responsible:{g:"Compliance",name:"Responsible Gaming",note:"Present in live footer, missing from docx, but legally required.",crit:true,
+ render:()=>`<div class="row">
+   ${mini('Limits',`<div class="bar2">Deposit limit</div><div class="fld">Daily cap ₫____</div><div class="fld">Weekly cap ₫____</div><div class="b k">Save</div>`)}
+   ${mini('Reality check',`<div class="modal" style="margin-top:30px"><b>Reality check</b><div style="font-size:11px;color:#888;margin:4px 0">You've played for 60 minutes</div><div class="b">Continue</div><div class="b" style="margin-top:4px">Log out</div></div>`)}
+   ${mini('Self-exclusion',`<div class="bar2">Self-exclusion</div><div class="fld">Cooling-off 24h / 7d / 30d</div><div class="fld">Permanent self-exclusion</div><div class="b k">Submit</div>`)}
+ </div>`,
+ spec:[["Features",UL(["Deposit/loss/bet limits","Reality check reminder (play duration)","Cooling-off period","Self-exclusion","Underage protection / age verification"])],
+   ["Compliance","Legally mandated in most markets; footer must have entry point"],["Links","Age (Sign Up docx78), KYC (26), limits tied to risk control"],["Note",`<div class="src">⚠ Not listed in docx, but live footer has Responsible Gaming — must include</div>`]]},
+
+/* ===== Analytics ===== */
+analytics:{g:"Analytics",name:"Event tracking taxonomy",note:"docx51 journey drop-off → event taxonomy. → Full version moved to a dedicated page: v9bet-analytics.html",
+ render:()=>`<div class="box" style="margin-bottom:10px">📈 Expanded into a standalone deliverable → <b>v9bet-analytics.html</b> (funnels · taxonomy · KPIs · dashboards · governance). Summary below.</div>`+VL("Sign-up funnel (drop-off)")+`<div class="funnel">
+   ${[['Open sign-up',100],['Enter phone',72],['Submit',58],['OTP verify',49],['Setup complete',31]].map((x,i,a)=>`<div class="fn"><span style="width:80px">${x[0]}</span><div class="barwrap"><div class="bar" style="width:${x[1]}%">${x[1]}%</div></div><span class="drop">${i?'-'+(a[i-1][1]-x[1])+'%':''}</span></div>`).join('')}
+ </div>`+VL("Event examples")+`<div>${['register_start','otp_verified','setup_complete','deposit_start','coupon_applied','deposit_success','game_launch','withdraw_request'].map(e=>`<span class="ev">${e}</span>`).join('')}</div>`,
+ spec:[["Funnels",UL(["Sign-up funnel (find drop-off points)","Deposit funnel","Game launch/retention"])],
+   ["Events",UL(["snake_case naming + params","Page/section impressions","Error/abandon events"])],
+   ["Purpose","docx51 journey analysis + personalized recommendations (52) · docx55 behavior tracking"]]},
+
+/* ===== Realtime ===== */
+realtime:{g:"Realtime",name:"Realtime / connection",note:"WebSocket live updates · pull-to-refresh · infinite scroll.",
+ render:()=>VL("Live updates (WebSocket)")+`<div class="card">${TBL([['Odds','▲▼ live ticking'],['Balance','Bets/payouts in real time'],['Ticker','Winners/jackpot push'],['Support','Live messages']])}</div>`+
+  VL("Pull-to-refresh / infinite scroll")+`<div class="card"><div style="text-align:center;color:#aaa;font-size:11px">↓ Pull to refresh</div><div class="box" style="margin-top:6px">Game list… load more (infinite scroll)</div></div>`,
+ spec:[["Realtime",UL(["WebSocket: odds/balance/ticker/support","Auto-reconnect on drop + optimistic updates"])],
+   ["Lists",UL(["Infinite scroll / pagination","Pull-to-refresh (Mobile)"])],["Performance","Skeleton placeholders (live capture) + progressive loading"]]},
+};
+function mini(cap,inner){return `<div><div class="ph"><div class="scr">${inner}</div></div><div class="cap">${cap}</div></div>`;}
+
+const order=["header","footer","nav","search","breakpoints","forms","i18n","syspages","session","permission","responsible","analytics","realtime"];
+const navEl=document.getElementById('nav');
+function buildNav(active){
+ let html='',lastG='';
+ order.forEach(id=>{const c=C[id];if(c.g!==lastG){html+=`<div class="grp">${c.g}</div>`;lastG=c.g;}html+=`<button class="nav ${id===active?'on':''}" data-id="${id}">${c.name}${c.crit?' ⚠':''}</button>`;});
+ navEl.innerHTML=html;navEl.querySelectorAll('.nav').forEach(b=>b.onclick=()=>render(b.dataset.id));
+}
+function render(id){
+ const c=C[id];
+ document.getElementById('ct').innerHTML=c.name+(c.crit?'<span class="crit">Legally required</span>':'');
+ document.getElementById('cn').textContent=c.note;
+ document.getElementById('stage').innerHTML=c.render();
+ document.getElementById('spec').innerHTML=c.spec.map(s=>SEC(s[0],s[1])).join('');
+ buildNav(id);
+}
+render('header');
+</script>
+</body>
+</html>

@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>V9Bet · Home Composition Wireframe (Desktop / Mobile)</title>
+<style>
+  :root{--ink:#2b2b2b;--line:#c9c9c9;--line2:#9a9a9a;--muted:#8a8a8a;--paper:#fff;--bg:#ececed;--fill:#f4f4f5;--solid:#3a3a3a}
+  *{box-sizing:border-box}
+  body{margin:0;font:13px/1.5 -apple-system,"Noto Sans TC",Arial,sans-serif;color:var(--ink);background:var(--bg)}
+  .app{display:grid;grid-template-columns:300px 1fr;min-height:100vh}
+  aside{background:var(--paper);border-right:1px solid var(--line);padding:16px;overflow:auto;max-height:100vh}
+  main{padding:20px;overflow:auto}
+  h1{font-size:15px;margin:0 0 4px}
+  .sub{color:var(--muted);font-size:12px;margin:0 0 12px}
+  .toggle{display:inline-flex;border:1px solid var(--line2);border-radius:8px;overflow:hidden;margin-bottom:14px}
+  .toggle button{border:0;background:#fff;padding:8px 16px;font-size:13px;cursor:pointer;color:var(--muted)}
+  .toggle button.on{background:var(--solid);color:#fff;font-weight:600}
+  /* wireframe blocks */
+  .wb{position:relative;border:1px solid var(--line2);border-radius:8px;background:#fff;margin:8px 0;padding:12px}
+  .wb.dash{border-style:dashed;background:var(--fill)}
+  .wb .num{position:absolute;left:-9px;top:-9px;width:20px;height:20px;border-radius:50%;background:var(--solid);color:#fff;font-size:11px;display:grid;place-items:center;font-weight:700;z-index:2}
+  .wb .lbl{font-weight:700;font-size:12px;margin-bottom:6px;color:#222}
+  .wb .ph{border:1px dashed var(--line2);border-radius:6px;background:var(--fill);color:#b0b0b0;display:grid;place-items:center;text-align:center;font-size:11px;padding:8px}
+  .ghosttxt{color:#b0b0b0;font-size:11px}
+  .rowflex{display:flex;gap:8px}.rowflex>*{flex:1}
+  .chips{display:flex;gap:6px;flex-wrap:wrap}
+  .chip{border:1px solid var(--line);border-radius:14px;padding:3px 10px;font-size:11px;color:#666;background:#fff}
+  .chip.on{background:var(--solid);color:#fff;border-color:var(--solid)}
+  .scrollrow{display:flex;gap:8px;overflow:hidden}
+  .tile{flex:0 0 88px;height:70px;border:1px dashed var(--line2);border-radius:6px;background:var(--fill);display:grid;place-items:center;color:#b0b0b0;font-size:10px;text-align:center}
+  .marq{border:1px solid var(--line);border-radius:5px;background:var(--fill);padding:5px 10px;font-size:11px;color:#666;white-space:nowrap;overflow:hidden}
+  /* desktop browser frame */
+  .browser{border:2px solid var(--ink);border-radius:10px;background:#fff;overflow:hidden;max-width:1180px;margin:0 auto;box-shadow:0 8px 30px rgba(0,0,0,.12)}
+  .bchrome{display:flex;align-items:center;gap:8px;background:#ddd;padding:7px 10px;border-bottom:1px solid var(--line)}
+  .bdot{width:10px;height:10px;border-radius:50%;background:#bbb}
+  .burl{flex:1;background:#fff;border:1px solid var(--line);border-radius:5px;padding:3px 10px;font-size:11px;color:#888}
+  .topbar{display:flex;align-items:center;gap:14px;border-bottom:1px solid var(--line);padding:10px 16px}
+  .logo{font-weight:800;font-size:16px;letter-spacing:.5px}
+  .topmenu{display:flex;gap:13px;flex:1;flex-wrap:wrap}
+  .topmenu span{font-size:12px;color:#444}
+  .hicons{display:flex;gap:8px;align-items:center}
+  .ic{width:26px;height:26px;border:1px solid var(--line2);border-radius:6px;display:grid;place-items:center;font-size:11px;color:#888;background:var(--fill)}
+  .pgwrap{padding:14px;background:#fafafa}
+  .grid2{display:grid;grid-template-columns:2fr 1fr;gap:10px}
+  .gridP{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
+  .gi{border:1px dashed var(--line2);border-radius:6px;background:var(--fill);height:56px;display:grid;place-items:center;color:#b0b0b0;font-size:10px;text-align:center}
+  /* phone */
+  .phone{width:380px;border:2px solid var(--ink);border-radius:26px;background:#fff;padding:8px;margin:0 auto;box-shadow:0 8px 30px rgba(0,0,0,.12)}
+  .notch{height:14px;display:flex;justify-content:center}.notch::after{content:"";width:100px;height:12px;background:var(--ink);border-radius:0 0 9px 9px}
+  .pscreen{height:660px;overflow:auto;border:1px solid var(--line);border-radius:16px}
+  .mtop{display:flex;align-items:center;gap:8px;padding:10px 12px;border-bottom:1px solid var(--line)}
+  .mtop .logo{font-size:14px;flex:1;text-align:center}
+  .mbody{padding:10px}
+  .tabbar{position:sticky;bottom:12px;margin:10px 16px 4px;display:flex;border:1px solid var(--line2);border-radius:26px;background:rgba(255,255,255,.96);box-shadow:0 8px 22px rgba(0,0,0,.18);padding:6px 4px}
+  .tabbar div{flex:1;text-align:center;padding:4px 0;font-size:10px;color:#888}
+  .tabbar div.on{color:var(--solid);font-weight:700}
+  .tabbar div.on .d{background:var(--solid);color:#fff;border-color:var(--solid)}
+  .tabbar .d{width:24px;height:24px;border:1px solid var(--line2);border-radius:50%;margin:0 auto 2px;display:grid;place-items:center;font-size:11px}
+  .fab{position:absolute;right:18px;bottom:70px;width:42px;height:42px;border-radius:50%;border:1px solid var(--line2);background:#fff;display:grid;place-items:center;font-size:14px;box-shadow:0 3px 10px rgba(0,0,0,.15)}
+  /* legend */
+  aside h2{font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin:14px 0 6px}
+  .leg{display:flex;gap:8px;margin:6px 0;font-size:12px}
+  .leg .n{width:18px;height:18px;flex:0 0 18px;border-radius:50%;background:var(--solid);color:#fff;font-size:10px;display:grid;place-items:center;font-weight:700}
+  .leg small{display:block;color:var(--muted);font-size:10.5px}
+  .new{display:inline-block;font-size:9px;border:1px solid var(--line2);border-radius:3px;padding:0 4px;color:#666;margin-left:4px}
+  .legend2{font-size:10.5px;color:var(--muted);border-top:1px solid var(--line);margin-top:12px;padding-top:9px}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside>
+    <h1>Home Composition Wireframe</h1>
+    <p class="sub">Optimized home · module assembly · grayscale, no UI<br>Numbers map to modules below / docx lines</p>
+    <div id="legend"></div>
+    <div class="legend2">
+      <b style="color:var(--ink)">＝ existing on live site</b>(kept)<br>
+      <span class="new">NEW</span> ＝ docx addition / bonus item<br>
+      Desktop center-aligned (docx 53).
+    </div>
+  </aside>
+  <main>
+    <div class="toggle">
+      <button id="tD" class="on">🖥 Desktop Home</button>
+      <button id="tM">📱 Mobile Home</button>
+    </div>
+    <div id="canvas"></div>
+  </main>
+</div>
+
+<script>
+const NUM=n=>`<span class="num">${n}</span>`;
+/* legend shared */
+const legend=[
+ ["1","Top main menu IA","Left vertical menu→top menu; right side account/wallet/messages/Live Chat · M16 / docx59"],
+ ["2","Live winners marquee + jackpot ticker","Community buzz · NEW (maps to live-site High Margin Winners)"],
+ ["3","Hero: Live events + one-tap bet","Stream/odds, bet directly · M11 / docx38,54"],
+ ["4","Processing deposit/withdrawal time bar","Deposit/Withdrawal time (kept from live) · M6/7"],
+ ["5","Recommended for you (personalized)","By tags+behavior: You may like / Continue playing · M11 / docx51,52"],
+ ["6","Missions / check-in / spin","Gamification hub entry, drives return visits · M10 / docx36,71"],
+ ["7","Your Offers (claimable/personalized)","Claimable in-flow, personalized by LTV (not a static catalog) · M10 / docx47,116"],
+ ["8","Product grid + cross-product overlay shortcuts","SBK↔Live cross-sell · M11 / docx37,54"],
+ ["9","AI Live Chat (bottom-right / floating)","AI first line + carries transaction status + translation · M9 / docx46,108"],
+ ["10","Bottom tab (Mobile)","Home/Products/Offers/Messages/Account sticky · M16 / docx73"],
+];
+function buildLegend(){document.getElementById('legend').innerHTML=
+  '<h2>Block → Module Mapping</h2>'+legend.map(x=>`<div class="leg"><span class="n">${x[0]}</span><div><b>${x[1]}</b><small>${x[2]}</small></div></div>`).join('');}
+
+/* ---------- DESKTOP ---------- */
+function desktop(){return `
+<div class="browser">
+  <div class="bchrome"><span class="bdot"></span><span class="bdot"></span><span class="bdot"></span><span class="burl">https://www.v9bet.com/  (Desktop · center-aligned)</span></div>
+  <div class="topbar">
+    ${NUM(1)}<span class="logo">V9BET</span>
+    <div class="topmenu"><span>Sports</span><span>Virtual</span><span>e-Sports</span><span>Live Casino</span><span>Slots</span><span>Lottery</span><span>Card</span><span>Turbo</span><span>Promotion</span></div>
+    <div class="hicons"><span class="ghosttxt">Balance ₫</span><span class="ic">＋</span><span class="ic">👛</span><span class="ic">✉</span><span class="ic">🎧</span><span class="ic">👤</span></div>
+  </div>
+  <div class="pgwrap">
+    <div class="wb" style="padding:6px 12px">${NUM(2)}<div class="marq">🏆 Player ***8 just won ₫12,000,000 · JACKPOT ₫ 8,420,331,090 ▲ · ***2 hit a World Cup parlay…(live scrolling)</div></div>
+    <div class="grid2">
+      <div class="wb">${NUM(3)}<div class="lbl">Hero · Live event card + one-tap bet</div><div class="ph" style="height:150px">[ Live match · real-time score/odds · Home 2.10 / Draw 3.30 / Away 3.05 · "Bet now" · stackable stream overlay ]</div><div class="ghosttxt" style="text-align:center;margin-top:4px">● ○ ○ carousel</div></div>
+      <div>
+        <div class="wb">${NUM(6)}<div class="lbl">Missions / check-in / spin</div><div class="ph" style="height:42px">Daily check-in 3/7 · 🎡 spin x1</div></div>
+        <div class="wb">${NUM(7)}<div class="lbl">Your Offers (claimable/personalized)</div><div class="ph" style="height:74px">[ Offers picked for you · claim directly · mission progress ]</div></div>
+      </div>
+    </div>
+    <div class="wb" style="padding:8px 12px">${NUM(4)}<div class="rowflex"><span class="ghosttxt">⏱ Processing</span><span class="ghosttxt">Deposit ↓ 3min</span><span class="ghosttxt">Withdrawal ↓ 10min</span></div></div>
+    <div class="wb">${NUM(5)}<div class="lbl">Recommended for you (personalized · tags)</div>
+      <div class="chips" style="margin-bottom:8px"><span class="chip on">You may like</span><span class="chip">Continue playing</span><span class="chip">Popular</span><span class="chip">New</span></div>
+      <div class="scrollrow">${'x'.repeat(9).split('').map(()=>'<div class="tile">Game<br>RTP/♡</div>').join('')}</div></div>
+    <div class="wb">${NUM(8)}<div class="lbl">Products + cross-product overlay shortcuts</div>
+      <div class="gridP">${['Sports','Live Casino','Slots','Lottery','e-Sports','Card'].map(p=>`<div class="gi">${p}</div>`).join('')}</div>
+      <div class="ghosttxt" style="margin-top:6px">↳ Cross-product shortcuts (SBK↔Live) overlay appears when entering a product page</div></div>
+    <div class="wb dash">${NUM(2)}<div class="lbl">High Margin Slot Winners (existing on live, kept & enhanced)</div><div class="ph" style="height:54px">Winner · Win Rate/Amount · Game (live ranking)</div></div>
+    <div class="wb dash"><div class="lbl ghosttxt">Footer: Products / Promotions / About / Community / App / How To (kept)</div></div>
+  </div>
+</div>
+<div style="position:relative;max-width:1180px;margin:6px auto 0"><div style="position:absolute;right:0;top:-470px;width:230px" class="wb">${NUM(9)}<div class="lbl">AI Live Chat (bottom-right popup)</div><div class="ph" style="height:90px">AI bot first line · auto-carries recent transaction status · escalates to human only when needed (built-in translation)</div></div></div>
+`;}
+
+/* ---------- MOBILE ---------- */
+function mobile(){return `
+<div class="phone"><div class="notch"></div><div class="pscreen" style="position:relative">
+  <div class="mtop">${NUM(1)}<span class="ic">☰</span><span class="logo">V9BET</span><span class="ghosttxt">₫0</span><span class="ic">👤</span></div>
+  <div class="mbody">
+    <div class="wb" style="padding:5px 10px">${NUM(2)}<div class="marq">🏆 ***8 won ₫12,000,000 · JACKPOT ▲…</div></div>
+    <div class="wb">${NUM(3)}<div class="lbl">Hero · Live events + one-tap bet</div><div class="ph" style="height:110px">[ Real-time score/odds · Bet now ]</div></div>
+    <div class="wb" style="padding:8px 10px"><div class="rowflex"><span class="ghosttxt" style="text-align:center">＋Deposit</span><span class="ghosttxt" style="text-align:center">Withdrawal</span><span class="ghosttxt" style="text-align:center">Offers</span><span class="ghosttxt" style="text-align:center">Live Chat</span></div><div class="ghosttxt" style="text-align:center;margin-top:4px">Quick actions</div></div>
+    <div class="wb" style="padding:8px 10px">${NUM(4)}<div class="rowflex"><span class="ghosttxt">⏱Dep 3min</span><span class="ghosttxt">With 10min</span></div></div>
+    <div class="wb">${NUM(6)}<div class="lbl">Missions / check-in / spin</div><div class="ph" style="height:40px">Check-in 3/7 · 🎡 x1</div></div>
+    <div class="wb">${NUM(5)}<div class="lbl">Recommended for you (swipe)</div><div class="chips" style="margin-bottom:6px"><span class="chip on">You may like</span><span class="chip">Continue</span><span class="chip">Popular</span></div><div class="scrollrow">${'x'.repeat(5).split('').map(()=>'<div class="tile">Game<br>RTP/♡</div>').join('')}</div></div>
+    <div class="wb">${NUM(7)}<div class="lbl">Your Offers (claimable)</div><div class="ph" style="height:60px">[ Personalized offer card · claim directly ]</div></div>
+    <div class="wb">${NUM(8)}<div class="lbl">Products</div><div class="gridP" style="grid-template-columns:repeat(4,1fr)">${['Sports','Casino','Slots','Lottery','e-Sports','Card','Virtual','Turbo'].map(p=>`<div class="gi" style="height:44px">${p}</div>`).join('')}</div></div>
+    <div class="wb dash"><div class="lbl ghosttxt">Heavy modules (RAF etc.) framed in from Desktop (docx02)</div></div>
+  </div>
+  <div class="fab">${NUM(9)}💬</div>
+  <div class="tabbar">${[['Home','⌂',1],['Products','▦',0],['Offers','🎁',0],['Messages','✉',0],['Account','👤',0]].map(t=>`<div class="${t[2]?'on':''}"><div class="d">${t[1]}</div>${t[0]}</div>`).join('')}<span style="position:absolute;left:-7px;top:-9px" class="num">10</span></div>
+</div></div>
+`;}
+
+/* runtime */
+const cv=document.getElementById('canvas');
+function render(view){cv.innerHTML=view==='D'?desktop():mobile();
+  document.getElementById('tD').classList.toggle('on',view==='D');
+  document.getElementById('tM').classList.toggle('on',view==='M');}
+document.getElementById('tD').onclick=()=>render('D');
+document.getElementById('tM').onclick=()=>render('M');
+buildLegend();render('D');
+</script>
+</body>
+</html>

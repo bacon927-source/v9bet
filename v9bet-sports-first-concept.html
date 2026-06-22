@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>V9Bet · Sports-First Concept (social card-feed betting)</title>
+<style>
+  :root{--ink:#2b2b2b;--line:#c9c9c9;--line2:#9a9a9a;--muted:#8a8a8a;--paper:#fff;--bg:#ececed;--fill:#f4f4f5;--solid:#3a3a3a;--strike:#b56}
+  *{box-sizing:border-box}
+  body{margin:0;font:13px/1.5 -apple-system,"Noto Sans TC",Arial,sans-serif;color:var(--ink);background:var(--bg)}
+  .app{display:grid;grid-template-columns:280px 1fr;min-height:100vh}
+  aside{background:var(--paper);border-right:1px solid var(--line);padding:16px;overflow:auto;max-height:100vh}
+  main{padding:20px;overflow:auto}
+  h1{font-size:15px;margin:0 0 4px}.sub{color:var(--muted);font-size:12px;margin:0 0 12px}
+  .sel{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+  .sel button{border:1px solid var(--line2);background:#fff;border-radius:8px;padding:8px 13px;font-size:12.5px;cursor:pointer;color:var(--muted)}
+  .sel button.on{background:var(--solid);color:#fff;font-weight:600;border-color:var(--solid)}
+  .pt{font-size:15px;font-weight:700;margin:2px 0}.pn{font-size:12px;color:var(--muted);margin-bottom:12px}
+  .flow{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-start}
+  .arrow{align-self:center;color:var(--line2);font-size:18px}
+  /* phone */
+  .ph{width:250px;border:2px solid var(--ink);border-radius:20px;background:#fff;padding:6px;box-shadow:0 4px 16px rgba(0,0,0,.1)}
+  .ph .scr{height:486px;border:1px solid var(--line);border-radius:14px;padding:0;overflow:hidden;position:relative;display:flex;flex-direction:column}
+  .cap{text-align:center;font-size:10px;color:var(--muted);margin-top:5px}
+  .body{flex:1;overflow:hidden;padding:9px}
+  /* chrome */
+  .bar{display:flex;align-items:center;gap:7px;padding:8px 10px;border-bottom:1px solid var(--line);font-size:12px}
+  .bar .logo{font-weight:800;flex:1}.bar .ic{width:20px;height:20px;border:1px solid var(--line2);border-radius:5px;display:grid;place-items:center;font-size:10px;color:#888}
+  .tab{display:flex;margin:7px 12px 10px;border:1px solid var(--line2);border-radius:22px;background:rgba(255,255,255,.97);box-shadow:0 6px 16px rgba(0,0,0,.16);padding:5px 3px}
+  .tab div{flex:1;text-align:center;padding:3px 0;font-size:9.5px;color:#999}
+  .tab div.on{color:var(--solid);font-weight:700}
+  .tab div.on .d{background:var(--solid);color:#fff;border-color:var(--solid)}
+  .tab .d{width:21px;height:21px;border:1px solid var(--line2);border-radius:50%;margin:0 auto 2px;display:grid;place-items:center;font-size:10px}
+  /* stories */
+  .stories{display:flex;gap:7px;padding:8px 2px 4px;overflow:hidden}
+  .st{flex:0 0 44px;text-align:center}
+  .st .c{width:42px;height:42px;border-radius:50%;border:2px solid var(--solid);display:grid;place-items:center;font-size:9px;color:#888;background:var(--fill)}
+  .st small{font-size:8px;color:#999;display:block;margin-top:2px}
+  /* co-primary tiles */
+  .tilebig{border:2px solid var(--solid);border-radius:12px;background:var(--fill);padding:16px 12px;margin:8px 0;text-align:center}
+  .tilebig .ic{font-size:24px}.tilebig b{display:block;font-size:15px;margin-top:4px;letter-spacing:1px}
+  .tilebig small{color:#888;font-size:10px}
+  .minor{margin-top:6px}.minor .h{font-size:10px;color:#aaa;margin-bottom:4px;display:flex;justify-content:space-between}
+  .minorrow{display:flex;gap:6px;overflow:hidden}
+  .mi{flex:0 0 46px;text-align:center;border:1px dashed var(--line2);border-radius:8px;padding:6px 2px;font-size:9px;color:#aaa;background:#fafafa}
+  .mi .gic{font-size:14px;opacity:.5}
+  /* match card */
+  .mc{border:1px solid var(--line2);border-radius:12px;background:#fff;padding:10px;margin:8px 0;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+  .mc .lg{font-size:9px;color:#999;display:flex;justify-content:space-between}
+  .mc .teams{display:flex;align-items:center;justify-content:space-between;margin:7px 0;font-weight:700;font-size:14px}
+  .mc .teams .sc{font-size:12px;color:#444}
+  .odds{display:flex;gap:6px}
+  .odds .o{flex:1;border:1px solid var(--line2);border-radius:9px;padding:9px 4px;text-align:center;background:#fafafa}
+  .odds .o b{display:block;font-size:13px}.odds .o small{font-size:8px;color:#999}
+  .odds .o.tap{border-color:var(--solid);border-width:2px}
+  .more{font-size:10px;color:#888;text-align:center;margin-top:6px}
+  .stream{height:48px;border:1px dashed var(--line2);border-radius:8px;background:var(--fill);display:grid;place-items:center;color:#aaa;font-size:9px;margin:7px 0}
+  .social{display:flex;gap:11px;font-size:10px;color:#777;border-top:1px solid #eee;padding-top:6px;margin-top:7px}
+  .social .live{margin-left:auto;color:#555}
+  .swipe{text-align:center;font-size:10px;color:#bbb;margin-top:4px}
+  /* stake rail + slip */
+  .stake{display:flex;align-items:center;gap:5px;padding:7px 9px;border-top:1px solid var(--line);background:#fafafa;font-size:10px}
+  .stake .lab{color:#888}
+  .stake .ch{border:1px solid var(--line2);border-radius:12px;padding:3px 8px;font-size:10px;color:#666;background:#fff}
+  .stake .ch.on{background:var(--solid);color:#fff;border-color:var(--solid)}
+  .slip{display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--solid);color:#fff;font-size:10.5px}
+  .slip b{margin-left:auto;background:#fff;color:var(--solid);border-radius:6px;padding:3px 10px}
+  .toastmini{position:absolute;left:12px;right:12px;top:90px;background:#fff;border:1px solid var(--solid);border-left:4px solid var(--solid);border-radius:8px;padding:8px 11px;font-size:11px;box-shadow:0 6px 16px rgba(0,0,0,.18)}
+  /* old dense grid */
+  .oldgrid{font-size:8px;color:#777}
+  .oldrow{display:flex;align-items:center;gap:3px;border-bottom:1px solid #eee;padding:3px 0}
+  .oldrow .tm{flex:1;white-space:nowrap;overflow:hidden}
+  .oldrow .oc{width:24px;height:18px;border:1px solid var(--line);border-radius:3px;display:grid;place-items:center;font-size:8px;color:#666}
+  /* annotation + legend */
+  .ann{border-left:3px solid var(--solid);background:#fafafa;padding:8px 11px;margin:9px 0;font-size:11.5px;border-radius:0 6px 6px 0;max-width:760px}
+  .ann.bad{border-left-color:var(--strike)}
+  .ann b{color:#222}
+  aside h2{font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin:14px 0 6px}
+  .leg{display:flex;gap:8px;margin:6px 0;font-size:11.5px}
+  .leg .n{width:18px;height:18px;flex:0 0 18px;border-radius:50%;background:var(--solid);color:#fff;font-size:9px;display:grid;place-items:center;font-weight:700}
+  .leg small{display:block;color:var(--muted);font-size:10.5px}
+  .legend2{font-size:10.5px;color:var(--muted);border-top:1px solid var(--line);margin-top:12px;padding-top:9px}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside>
+    <h1>Sports-First Concept</h1>
+    <p class="sub">Social card-feed betting · grayscale, no UI<br>Sports & Live Casino co-primary · others minimized</p>
+    <div id="legend"></div>
+    <div class="legend2">An alternative direction: replace the dense odds grid with a readable, social, one-tap card feed. Separate concept file — does not change the main deliverables.</div>
+  </aside>
+  <main>
+    <div class="sel">
+      <button data-v="home" class="on">① Sports-first Home</button>
+      <button data-v="feed">② Card Feed (new bet UX)</button>
+      <button data-v="quick">③ One-tap Quick Bet</button>
+      <button data-v="ab">④ Old grid → New card</button>
+    </div>
+    <div id="pt" class="pt"></div>
+    <div id="pn" class="pn"></div>
+    <div id="canvas"></div>
+  </main>
+</div>
+
+<script>
+const PH=(inner,cap='')=>`<div><div class="ph"><div class="scr">${inner}</div></div>${cap?`<div class="cap">${cap}</div>`:''}</div>`;
+const ARR=()=>`<div class="arrow">→</div>`;
+const BAR=(r='')=>`<div class="bar"><span class="ic">☰</span><span class="logo">V9BET</span>${r}</div>`;
+const TAB=(act)=>`<div class="tab">${[['Sports','⚽'],['Live Casino','🃏'],['My Bets','🎟'],['Account','👤']].map((t,i)=>`<div class="${i===act?'on':''}"><div class="d">${t[1]}</div>${t[0]}</div>`).join('')}</div>`;
+const STORIES=()=>`<div class="stories">${[['🔴','LIVE'],['🔴','LIVE'],['⚽','EPL'],['🏀','NBA'],['⚽','UCL']].map(s=>`<div class="st"><div class="c">${s[0]}</div><small>${s[1]}</small></div>`).join('')}</div>`;
+const ODDS=(tap=-1)=>`<div class="odds">${[['1 Home','2.10'],['X Draw','3.30'],['2 Away','3.05']].map((o,i)=>`<div class="o ${i===tap?'tap':''}"><small>${o[0]}</small><b>${o[1]}</b></div>`).join('')}</div>`;
+const SOCIAL=()=>`<div class="social"><span>❤ 1.2k</span><span>💬 340</span><span>🔁 Share</span><span class="live">👁 1,204 betting</span></div>`;
+const CARD=(tap=-1,withStream=true)=>`<div class="mc"><div class="lg"><span>⚽ Premier League</span><span>🔴 67'</span></div><div class="teams"><span>Man City</span><span class="sc">2 — 1</span><span>Arsenal</span></div>${ODDS(tap)}<div class="more">+ 42 more markets ⌄</div>${withStream?`<div class="stream">📺 Watch live · tap ▢ PiP</div>`:''}${SOCIAL()}</div>`;
+
+const V={
+home:["Sports-first Home","Sports & Live Casino are co-primary; everything else is minimized.",
+ ()=>PH(
+   BAR(`<span style="font-size:10px;color:#666">₫1.25M</span><span class="ic">🔍</span>`)+
+   `<div class="body" style="overflow:auto">`+
+   STORIES()+
+   `<div class="tilebig"><div class="ic">⚽</div><b>SPORTS</b><small>Live matches · bet in a tap</small></div>`+
+   `<div class="tilebig"><div class="ic">🃏</div><b>LIVE CASINO</b><small>Live dealers streaming now</small></div>`+
+   `<div class="minor"><div class="h"><span>More games</span><span>See all ›</span></div><div class="minorrow">${['Slots','Lottery','Card','Virtual','e-Sports'].map(g=>`<div class="mi"><div class="gic">▦</div>${g}</div>`).join('')}</div></div>`+
+   `<div style="border:1px solid var(--line);border-radius:8px;background:var(--fill);padding:7px 9px;font-size:10px;color:#666;margin-top:8px;display:flex;justify-content:space-between"><span>🏆 ***8 won ₫12M</span><span>1,204 betting now</span></div>`+
+   `</div>`+TAB(0),'Home (Sports + Live Casino front)'),
+ [["1","Co-primary tiles","Sports & Live Casino equal, biggest on screen"],["2","Minimized strip","Slots/Lottery/Card… small, de-emphasized"],["3","Stories rail","Live matches as tappable story circles (social)"],["4","Bottom tab","Sports-centric: Sports / Live Casino / My Bets"]]],
+
+feed:["Card Feed — the new bet UX","Dense odds grid → a readable, social card feed you scroll like a feed.",
+ ()=>PH(
+   BAR(`<span class="ic">🔍</span>`)+
+   `<div class="body" style="overflow:auto">`+STORIES()+CARD(0)+
+   `<div class="mc" style="opacity:.55"><div class="lg"><span>🏀 NBA</span><span>20:30</span></div><div class="teams"><span>Lakers</span><span class="sc">vs</span><span>Celtics</span></div>${ODDS()}</div>`+
+   `<div class="swipe">↑ swipe up for the next match</div>`+
+   `</div>`+
+   `<div class="stake"><span class="lab">Stake</span><span class="ch">₫10</span><span class="ch on">₫50</span><span class="ch">₫100</span><span class="ch">⋯</span></div>`+TAB(0),'One match = one card'),
+ [["A","Card per match","Big teams + score, one primary market — easy to read"],["B","3 big tappable odds","Home / Draw / Away as large buttons, not tiny cells"],["C","Social row","❤ likes · 💬 comments · 🔁 share · 👁 live betting count"],["D","Inline live stream","Tap to watch → shrinks to PiP (ties to Live Stream Player)"],["E","Swipe up","Next match, feed-style (TikTok/IG)"]]],
+
+quick:["One-tap Quick Bet","Set the stake once → tap any odds → instant bet. Bet slip lives as a bottom sheet.",
+ ()=>`<div class="flow">${PH(
+   BAR(`<span class="ic">🔍</span>`)+`<div class="body" style="overflow:auto">`+CARD(0,false)+`<div class="toastmini">✓ Bet placed · ₫50 @ 2.10 (Man City) · <u>Undo</u></div>`+`</div>`+
+   `<div class="stake"><span class="lab">Stake</span><span class="ch">₫10</span><span class="ch on">₫50</span><span class="ch">₫100</span><span class="ch">⋯</span><span style="margin-left:auto;color:#555">↺ Re-bet</span></div>`+TAB(0),'Tap odds → instant confirm')}
+   ${ARR()}
+   ${PH(BAR(`<span class="ic">🔍</span>`)+`<div class="body" style="overflow:auto">`+CARD()+`</div>`+`<div class="slip">🧾 3 selections · stake ₫150 · win ₫420 <b>Place ▲</b></div>`+TAB(0),'Bet slip = bottom sheet')}
+ </div>`,
+ [["C1","Stake rail","Pick stake once (₫10/50/100/custom) at the bottom"],["C2","One-tap","Tap any odds = instant bet at that stake + micro-confirm toast (Undo)"],["C3","Bet slip sheet","Collapsible bottom sheet: count · stake · potential win · Place"],["C4","Re-bet","One tap repeats your last bet"]]],
+
+ab:["Old grid → New card","Why change: the old dense odds grid is hard to read. Cards are scannable + social.",
+ ()=>`<div class="flow">
+   ${PH(BAR()+`<div class="body" style="overflow:auto"><div class="oldgrid">`+
+     Array.from({length:9}).map((_,i)=>`<div class="oldrow"><span class="tm">${['Man City v Arsenal','Lakers v Celtics','PSG v Lyon','Bayern v Dortmund','Inter v Milan','Ajax v PSV','Liverpool v Spurs','Roma v Lazio','Porto v Benfica'][i]}</span>${['2.10','3.30','3.05','1.95','2.40'].map(o=>`<span class="oc">${o}</span>`).join('')}</div>`).join('')+
+     `</div></div>`+TAB(0),'❌ Old: dense odds grid')}
+   ${ARR()}
+   ${PH(BAR()+`<div class="body" style="overflow:auto">`+STORIES()+CARD(0)+`</div>`+`<div class="stake"><span class="lab">Stake</span><span class="ch on">₫50</span><span class="ch">₫100</span></div>`+TAB(0),'✅ New: card feed · one-tap · social')}
+ </div>`,
+ [["✗","Old grid","Rows of tiny numbers, many markets at once — cognitive overload"],["✓","New card","One match, big odds, score, stream, social — instantly readable"],["+","Social pull","Likes/comments/share + live betting count drive stickiness"],["+","Lower friction","One-tap + stake rail = fewer steps to bet"]]],
+};
+
+const cv=document.getElementById('canvas'),pt=document.getElementById('pt'),pn=document.getElementById('pn'),lg=document.getElementById('legend');
+function render(v){
+ const [title,note,fn,leg]=V[v];
+ pt.textContent=title;pn.textContent=note;
+ const html=fn();cv.innerHTML=html.trim().startsWith('<div class="flow"')?html:`<div class="flow">${html}</div>`;
+ lg.innerHTML='<h2>Highlights</h2>'+leg.map(x=>`<div class="leg"><span class="n">${x[0]}</span><div><b>${x[1]}</b><small>${x[2]}</small></div></div>`).join('');
+ document.querySelectorAll('.sel button').forEach(b=>b.classList.toggle('on',b.dataset.v===v));
+}
+document.querySelectorAll('.sel button').forEach(b=>b.onclick=()=>render(b.dataset.v));
+render('home');
+</script>
+</body>
+</html>

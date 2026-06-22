@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>V9Bet · All-Pages Composition Wireframe</title>
+<style>
+  :root{--ink:#2b2b2b;--line:#c9c9c9;--line2:#9a9a9a;--muted:#8a8a8a;--paper:#fff;--bg:#ececed;--fill:#f4f4f5;--solid:#3a3a3a;--strike:#b56}
+  *{box-sizing:border-box}
+  body{margin:0;font:13px/1.5 -apple-system,"Noto Sans TC",Arial,sans-serif;color:var(--ink);background:var(--bg)}
+  .app{display:grid;grid-template-columns:280px 1fr;min-height:100vh}
+  aside{background:var(--paper);border-right:1px solid var(--line);padding:14px;overflow:auto;max-height:100vh}
+  main{padding:18px;overflow:auto}
+  h1{font-size:15px;margin:0 0 4px}.sub{color:var(--muted);font-size:12px;margin:0 0 10px}
+  .gsel .grp{font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);font-weight:700;margin:11px 0 4px}
+  .gsel button{display:block;width:100%;text-align:left;border:1px solid transparent;background:none;border-radius:6px;padding:6px 8px;font-size:12.5px;cursor:pointer;color:#333}
+  .gsel button:hover{background:var(--fill)}
+  .gsel button.on{background:#e3e3e6;border-color:var(--line2);font-weight:600}
+  .pagetitle{font-size:15px;font-weight:700;margin:2px 0}
+  .pagenote{font-size:12px;color:var(--muted);margin-bottom:12px}
+  .flow{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-start}
+  .arrow{align-self:center;color:var(--line2);font-size:18px;padding:0 1px}
+  .ph{width:240px;border:2px solid var(--ink);border-radius:18px;background:#fff;padding:6px;box-shadow:0 4px 16px rgba(0,0,0,.1);position:relative}
+  .ph .scr{min-height:420px;border:1px solid var(--line);border-radius:12px;padding:10px;overflow:hidden;position:relative}
+  .ph.wide{width:320px}
+  .cap{position:absolute;left:0;right:0;bottom:-18px;text-align:center;font-size:10px;color:var(--muted)}
+  .stepnum{position:absolute;left:-8px;top:-8px;width:22px;height:22px;border-radius:50%;background:var(--solid);color:#fff;font-size:11px;display:grid;place-items:center;font-weight:700;z-index:2}
+  .bar{display:flex;align-items:center;justify-content:space-between;font-weight:700;font-size:13px;margin-bottom:8px}
+  .bar .l,.bar .r{color:var(--muted);font-weight:400}
+  .stp{text-align:center;color:var(--muted);font-size:11px;margin:-3px 0 8px}
+  .f{border:1px dashed var(--line2);border-radius:8px;padding:8px 10px;color:var(--muted);margin:6px 0;display:flex;justify-content:space-between;background:var(--fill);font-size:12px}
+  .f small{color:#b0b0b0}
+  .row{display:flex;gap:7px}.row>*{flex:1}
+  .seg{display:flex;border:1px solid var(--line2);border-radius:8px;overflow:hidden;margin:6px 0}
+  .seg span{flex:1;text-align:center;padding:6px;font-size:11px;color:var(--muted);border-right:1px solid var(--line)}
+  .seg span:last-child{border:0}.seg span.on{background:var(--solid);color:#fff}
+  .opt{border:1px solid var(--line);border-radius:8px;padding:8px 10px;margin:5px 0;display:flex;gap:8px;align-items:center;font-size:12px}
+  .opt.sel{border-color:var(--solid);border-width:2px}
+  .dot{width:15px;height:15px;border:1px solid var(--line2);border-radius:50%;flex:0 0 15px}.dot.on{border:5px solid var(--solid)}
+  .sq{width:15px;height:15px;border:1px solid var(--line2);border-radius:3px;flex:0 0 15px}.sq.on{background:var(--solid)}
+  .cta{background:var(--solid);color:#fff;text-align:center;border-radius:18px;padding:9px;margin:10px 0 4px;font-weight:600;font-size:12px}
+  .cta.gh{background:#fff;color:var(--muted);border:1px solid var(--line2)}
+  .cta.dis{background:#cfcfcf;color:#fff}
+  .cta.sm{padding:7px;border-radius:8px;margin:6px 0}
+  .box{border:1px dashed var(--line2);border-radius:8px;background:var(--fill);color:#9a9a9a;display:grid;place-items:center;text-align:center;font-size:10.5px;padding:8px;margin:6px 0}
+  .card{border:1px solid var(--line);border-radius:9px;padding:9px;margin:6px 0}
+  .amt{text-align:center;font-size:21px;font-weight:800;margin:3px 0}.amt small{display:block;font-size:10.5px;font-weight:400;color:var(--muted)}
+  .prog{height:8px;border-radius:5px;background:#e3e3e3;overflow:hidden;margin:4px 0}.prog i{display:block;height:100%;background:var(--solid)}
+  .pl{font-size:10px;color:var(--muted);display:flex;justify-content:space-between}
+  .chips{display:flex;gap:5px;flex-wrap:wrap;margin:5px 0}
+  .chip{border:1px solid var(--line);border-radius:13px;padding:2px 8px;font-size:10px;color:#666}.chip.on{background:var(--solid);color:#fff;border-color:var(--solid)}
+  .scrollrow{display:flex;gap:5px;overflow:hidden}
+  .tile{flex:0 0 60px;height:48px;border:1px dashed var(--line2);border-radius:6px;background:var(--fill);display:grid;place-items:center;color:#b0b0b0;font-size:9px;text-align:center}
+  .gridP{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin:5px 0}
+  .gi{border:1px dashed var(--line2);border-radius:6px;background:var(--fill);height:40px;display:grid;place-items:center;color:#b0b0b0;font-size:10px;text-align:center}
+  .gi3{grid-template-columns:repeat(3,1fr)}
+  .li{display:flex;align-items:center;justify-content:space-between;border:1px solid var(--line);border-radius:8px;padding:8px 10px;margin:5px 0;font-size:12px}
+  .li .ic{width:22px;height:22px;border:1px solid var(--line2);border-radius:50%;display:grid;place-items:center;font-size:10px;color:var(--muted);flex:0 0 22px}
+  .li .g{flex:1;margin:0 8px}.li .g small{display:block;color:var(--muted);font-size:10px}
+  .marq{border:1px solid var(--line);border-radius:5px;background:var(--fill);padding:4px 8px;font-size:10px;color:#666;white-space:nowrap;overflow:hidden;margin:5px 0}
+  .bub{max-width:80%;border:1px solid var(--line);background:var(--fill);border-radius:10px;padding:7px 9px;margin:5px 0;font-size:11px}
+  .bub.me{margin-left:auto;background:#e3e3e6;border-color:var(--line2)}
+  .tag{display:inline-block;font-size:9px;border:1px solid var(--line2);border-radius:3px;padding:0 5px;color:#666}
+  .tag.k{background:var(--solid);color:#fff;border-color:var(--solid)}
+  .badge{font-size:9px;border:1px solid var(--line2);border-radius:3px;padding:0 5px;color:var(--muted);margin-left:4px}
+  .badge.req{border-color:var(--strike);color:var(--strike)}
+  .err{border:1px solid #c98;background:#fbf2ef;color:#a55;border-radius:7px;padding:7px 9px;font-size:11px;margin:5px 0}
+  .pop{position:absolute;left:12px;right:12px;bottom:16px;border:2px solid var(--solid);border-radius:10px;background:#fff;padding:9px;box-shadow:0 6px 18px rgba(0,0,0,.2);font-size:10.5px}
+  .tog{display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:8px;padding:7px 10px;margin:5px 0;font-size:12px}
+  .sw{width:34px;height:19px;border-radius:10px;border:1px solid var(--line2);position:relative;flex:0 0 34px}
+  .sw i{position:absolute;top:2px;width:13px;height:13px;border-radius:50%;background:#fff;border:1px solid var(--line2)}
+  .sw.on{background:var(--solid)}.sw.on i{right:2px}.sw.off i{left:2px}
+  .ann{border-left:3px solid var(--solid);background:#fafafa;padding:7px 10px;margin:8px 0;font-size:11.5px;border-radius:0 6px 6px 0;max-width:820px}
+  .ann.fix{border-left-color:var(--strike)}
+  .ann b{color:#222}.strike{text-decoration:line-through;color:var(--strike)}
+  .leg{display:flex;gap:8px;margin:5px 0;font-size:11.5px}
+  .leg .n{width:17px;height:17px;flex:0 0 17px;border-radius:50%;background:var(--solid);color:#fff;font-size:9px;display:grid;place-items:center;font-weight:700}
+  .leg small{display:block;color:var(--muted);font-size:10px}
+  aside h2{font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin:12px 0 5px}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside>
+    <h1>V9Bet All-Pages Composition</h1>
+    <p class="sub">Current site→optimized · Grayscale no UI · Labels=module/docx</p>
+    <div class="gsel" id="gsel"></div>
+    <div id="legbox"></div>
+  </aside>
+  <main>
+    <div id="pt" class="pagetitle"></div>
+    <div id="pn" class="pagenote"></div>
+    <div id="canvas"></div>
+  </main>
+</div>
+
+<script>
+const N=n=>`<span class="stepnum">${n}</span>`;
+const P=(num,inner,cap='',wide=false)=>`<div class="ph ${wide?'wide':''}">${num?N(num):''}<div class="scr">${inner}</div>${cap?`<div class="cap">${cap}</div>`:''}</div>`;
+const A=()=>`<div class="arrow">→</div>`;
+const PLUS=()=>`<div class="arrow">＋</div>`;
+const BAR=(t,l='←',r='')=>`<div class="bar"><span class="l">${l}</span>${t}<span class="r">${r}</span></div>`;
+const F=(l,s='')=>`<div class="f"><span>${l}</span>${s?`<small>${s}</small>`:''}</div>`;
+const OPT=(t,sel=false,k='dot')=>`<div class="opt ${sel?'sel':''}"><span class="${k} ${sel?'on':''}"></span><span style="flex:1">${t}</span></div>`;
+const CTA=(t,m='')=>`<div class="cta ${m}">${t}</div>`;
+const BOX=(t)=>`<div class="box">${t}</div>`;
+const LI=(l,r='›',ic='',s='')=>`<div class="li">${ic?`<span class="ic">${ic}</span>`:''}<span class="g">${l}${s?`<small>${s}</small>`:''}</span><span>${r}</span></div>`;
+const SEG=(o,a)=>`<div class="seg">${o.map((x,i)=>`<span class="${i===a?'on':''}">${x}</span>`).join('')}</div>`;
+const PROG=(p,l='',r='')=>`<div class="prog"><i style="width:${p}%"></i></div><div class="pl"><span>${l}</span><span>${r}</span></div>`;
+const TOG=(l,on)=>`<div class="tog"><span style="flex:1">${l}</span><span class="sw ${on?'on':'off'}"><i></i></span></div>`;
+const BUB=(t,me=false)=>`<div class="bub ${me?'me':''}">${t}</div>`;
+const ANN=(t,fix=false)=>`<div class="ann ${fix?'fix':''}">${t}</div>`;
+const LEG=arr=>'<h2>Block→Module</h2>'+arr.map(x=>`<div class="leg"><span class="n">${x[0]}</span><div><b>${x[1]}</b><small>${x[2]}</small></div></div>`).join('');
+
+/* ============ Entry / Sign-up ============ */
+function prelogin(){
+ const m=BAR('','☰','Login / Sign Up')+`<div class="marq">🎏 Lucky-themed welcome · Live promo ticker…</div>`+BOX('Hero Banner / Carousel')+`<div style="font-size:11px;font-weight:700;margin:6px 0 2px">Product shortcuts</div>`+`<div class="gridP gi3">${['Sports','Live','Slots','Lottery','Cards','More'].map(x=>`<div class="gi">${x}</div>`).join('')}</div>`+`<div class="marq">🏆 Live winners feed (social buzz)</div>`+CTA('Sign Up & Claim Newcomer Gift')+`<div style="text-align:center;font-size:11px;color:#666">Already a member? <b>Login</b></div>`;
+ return ANN('<b>docx59/58:</b> Desktop left menu→<b>top menu</b>; lucky-themed welcome; add live-winners social buzz. Pre-login also shows product shortcuts and sign-up CTA.')+
+   `<div class="flow">${P(1,m,'Pre-login Home (Mobile)')}</div>`;
+}
+function authflow(){
+ const login=BAR('Login','✕')+BOX('V9 Logo')+F('Account / Phone / Email')+F('Password')+SEG(['Password','PIN','Biometric'],0)+CTA('Login')+`<div style="text-align:center;font-size:11px;color:#666"><b>Forgot account/password?</b></div>`;
+ const method=BAR('Choose verification method')+`<div class="stp">Selectable when multiple are linked</div>`+OPT('📱 V9 App push',true)+OPT('💬 Social message (first time)')+OPT('📨 SMS')+OPT('✉️ Email')+CTA('Send code');
+ const forgot=BAR('Account recovery')+`<div class="stp">Recover by matching existing info</div>`+F('Registered phone / recovery Email')+F('Any password you used before')+BOX('Match by one past password + basic info')+CTA('Submit for matching');
+ return ANN('<b>Current site:</b> Account ID + password only. <b>docx15–17 changes:</b> multiple verification methods, PIN/biometric, recovery by matching past passwords.')+
+   `<div class="flow">${P(6,login,'Login')}${PLUS()}${P(0,method,'Verification method (15)')}${PLUS()}${P(0,forgot,'Forgot/Recovery (17)')}</div>`;
+}
+function signup(){
+ const su=BAR('Sign Up','✕')+`<div class="stp">Phone-number sign-up (default)</div>`+F('Country code ▾ Phone number','Required')+F('Referral code','Optional')+`<div class="opt"><span class="sq"></span><span style="flex:1">21+ & agree to terms</span></div>`+`<div style="font-size:10.5px;color:#999;margin:5px 2px">＊OTP verification, Captcha skipped by default</div>`+CTA('Sign Up','dis')+`<div style="text-align:center;font-size:11px;color:#666">Already have an account? <b>Login</b></div>`;
+ const otp=BAR('Verify phone')+`<div class="stp">Code sent +xx ****1234</div>`+`<div style="display:flex;gap:5px;justify-content:center;margin:12px 0">${'______'.split('').map((_,i)=>`<span style="width:30px;height:38px;border:${i===0?2:1}px solid ${i===0?'#3a3a3a':'#9a9a9a'};border-radius:6px;display:inline-grid;place-items:center;color:#aaa">_</span>`).join('')}</div>`+`<div class="err">Too many failures → switch to WhatsApp</div>`+CTA('Verify via WhatsApp','gh')+CTA('Verify and continue');
+ return ANN('<b>Current site→change:</b> <span class="strike">Account ID + password + currency radio</span> → phone OTP as primary; currency moved down to new-customer wizard; OTP failure→WhatsApp (docx49).')+
+   `<div class="flow">${P(1,su,'Sign Up')}${A()}${P(2,otp,'OTP (fail→WhatsApp)')}${A()}${BOX('Hand off to new-customer wizard')}</div>`;
+}
+function wiz(){
+ const prog=n=>`<div class="prog"><i style="width:${n}%"></i></div>`;
+ const a=BAR('Verify phone')+`<div class="stp">OTP success</div>`+BOX('✓ Verified<br>Go straight to setup (no home detour)')+CTA('Start setup');
+ const b=BAR('Setup overview')+`<div class="stp">Finish required items first</div>`+['Currency ★Required','Face ID ★app','Notifications','Profile + bank','Email Optional*','Password/PIN'].map((x,i)=>LI(x,'›',i+1)).join('')+BOX('…9 steps total');
+ const c=BAR('Currency ★Required')+prog(11)+OPT('🇻🇳 VND',true)+OPT('🇹🇭 THB')+OPT('USDT')+CTA('Confirm');
+ const d=BAR('Profile + payout')+prog(44)+BOX('★ Move profile/bank needed for<br>deposit up to here')+F('Name')+SEG(['Bank','USDT'],0)+F('Bank ▾')+F('Account no.')+CTA('Save');
+ const e=BAR('🎉 Welcome aboard','')+prog(100)+`<div class="stp">Account ready + exclusive offer</div>`+`<div class="card"><b>First Deposit 100%</b><div style="font-size:10px;color:#888">churn x10</div>${CTA('Claim now','sm')}</div>`+CTA('Go to deposit');
+ return ANN('<b>Main flow (docx83–95):</b> OTP→setup wizard (progress + required-item gating)→welcome + offer→route to deposit.')+
+   `<div class="flow">${P(1,a,'OTP success')}${A()}${P(2,b,'Overview')}${A()}${P(3,c,'Required')}${A()}${P(4,d,'Profile moved earlier★')}${A()}${P(5,e,'Welcome')}</div>`+
+   ANN('<b>Key:</b> Step 4 = profile/bank that the current site stalls on at deposit, moved here → zero-friction deposit.',true);
+}
+
+/* ============ Account ============ */
+function account(){
+ const m=BAR('My Account','←','⚙️')+`<div class="card"><div style="display:flex;justify-content:space-between"><div><b>Member T99WEB0004</b><div style="font-size:10px;color:#888">VIP1 · VND</div></div><span class="tag">Verified</span></div></div>`+`<div class="amt">₫ 1,250,000<small>Main Wallet</small></div>`+`<div class="row">${CTA('Deposit','sm')}${CTA('Withdraw','sm gh')}</div>`+LI('Profile & Preferences','›','👤')+LI('Account Security','›','🔒')+LI('KYC','Pending ›','🪪')+LI('Account Status','Active ›','🟢')+LI('Statement','›','📄');
+ return ANN('<b>Current site:</b> username = back-office random ID "T99WEB0004" (confirms docx97, editable). <b>docx21/24:</b> central entry for each setting.')+
+   `<div class="flow">${P(0,m,'Account Home')}</div>`;
+}
+function profile(){
+ const m=BAR('Profile & Preferences')+LI('Username','Editable ›')+LI('Face ID','Enabled ›')+LI('Theme','Dark ›')+LI('Time zone','GMT+8 ›')+LI('Language','EN ›')+LI('Notifications','›')+LI('Account recovery Email','Add ›')+LI('Product preferences','›');
+ return ANN('<b>docx24:</b> Face ID/theme/time zone/language/notifications/recovery Email/product preferences (affect sorting & recommendations). Username editable (97).')+
+   `<div class="flow">${P(0,m,'Profile & Preferences')}</div>`;
+}
+function statuskyc(){
+ const st=BAR('Account Status')+`<div class="card"><div style="font-size:18px;font-weight:700">🟢 Active</div><div style="font-size:11px;color:#888">Normal use</div></div>`+`<div class="err">🔴 Blacklisted → restricted, can appeal</div>`+CTA('Contact support','gh');
+ const kyc=BAR('KYC verification')+SEG(['To upload','In review','Passed','Rejected'],0)+BOX('📷 ID front')+BOX('📷 ID back')+BOX('🤳 Selfie holding ID')+CTA('Upload & submit');
+ const sec=BAR('Account Security')+`<div style="font-size:11px;font-weight:700">Logged-in devices</div>`+LI('iPhone·this device','Current ›','📱')+LI('Chrome·Win','2 days ago ›','💻')+`<div style="font-size:11px;font-weight:700;margin-top:6px">Login history</div>`+BOX('06-19 10:22 · IP 1.2.3.4 · Taipei')+CTA('Log out other devices','gh');
+ return ANN('<b>docx25–27:</b> account status (Active/Suspend/Blacklist), KYC (risk-control triggered + document upload), security (devices/history/IP/logout).')+
+   `<div class="flow">${P(0,st,'Account Status (25)')}${PLUS()}${P(0,kyc,'KYC (26)')}${PLUS()}${P(0,sec,'Account Security (27)')}</div>`;
+}
+
+/* ============ Wallet / Banking ============ */
+function wal(){
+ const main=BAR('My Wallet','←','Details')+`<div class="card" style="background:var(--fill);border-style:dashed"><div class="amt">₫ 1,250,000<small>Main Wallet · deposit churn x1</small></div>${CTA('Transfer/Withdraw','sm gh')}</div>`+`<div style="font-size:11px;font-weight:700;margin:6px 0 2px">Bonus wallets (separated by product)</div>`+`<div class="card"><div style="display:flex;justify-content:space-between"><b>Sports bonus</b><span>₫1,000,000</span></div>${PROG(40,'churn x10','40%·per-bet limit ₫10')}</div>`+`<div class="card"><div style="display:flex;justify-content:space-between"><b>Live bonus</b><span>₫500,000</span></div>${PROG(0,'churn x10','0%')}</div>`+BOX('Churn done→to main · Wiped out→reset');
+ const pick=BAR('Pick betting wallet','✕')+`<div class="stp">Choose before launching game</div>`+OPT('Main Wallet ₫1,250,000 (no limit)',true)+OPT('Sports bonus ₫1,000,000 (₫10/bet)')+BOX('Pick bonus: per-bet limit, winnings to bonus')+CTA('Enter game with this wallet');
+ return ANN('<b>docx28–31:</b> main + bonus wallets separated; pick wallet before betting; bonus has per-bet limit, winnings go to bonus until churn is done, then to main.')+
+   `<div class="flow">${P(0,main,'Wallet Overview')}${PLUS()}${P(0,pick,'Pick wallet before betting (30)')}</div>`;
+}
+function dep(){
+ const s1=BAR('Banking','✕','?')+SEG(['Deposit','Withdrawal'],0)+`<div style="font-size:11px;font-weight:700;margin:6px 0 3px">Payment method</div>`+`<div class="gridP">${['Bank','QR','USDT','e-Wallet'].map(x=>`<div class="gi">${x}</div>`).join('')}</div>`+BOX('Profile/bank already set in wizard<br>→ no more Complete Profile gate');
+ const s2=BAR('Deposit')+SEG(['Bank','USDT'],0)+`<div class="amt">₫ 0<small>Enter amount</small></div>`+`<div class="chips"><span class="chip">100k</span><span class="chip">500k</span><span class="chip">1M</span><span class="chip">Custom</span></div>`+F('Channel ▾ QR')+BOX('USDT→live rate 100U≈₫2.4M')+CTA('Next');
+ const s3=BAR('Apply offer')+`<div class="stp">Shopee-style (optional)</div>`+OPT('First Deposit 100% (+₫1,000,000)',true)+OPT('Sports free bet ₫50')+OPT('Don\'t use')+CTA('Apply & check out');
+ const s4=BAR('Confirm')+`<div class="card"><div style="display:flex;justify-content:space-between"><span>Deposit</span><b>₫1,000,000</b></div><div style="display:flex;justify-content:space-between"><span>Bonus reward</span><b>+₫1,000,000</b></div><div style="border-top:1px solid #ddd;margin:5px 0"></div><div style="display:flex;justify-content:space-between;font-weight:700"><span>Total credited</span><span>₫2,000,000</span></div></div>`+BOX('Upload receipt (if needed) 📎')+CTA('Confirm deposit');
+ const s5=BAR('Processing status')+BOX('⏱ Pending → <b>Credited</b>')+PROG(60,'Created','Credited')+BOX('Transaction ID TXN…0619 · one-tap to AI support')+CTA('View history','gh');
+ return ANN('<b>Fixed:</b> current site forces <span class="strike">Complete Profile + no coupon</span> when picking payment method → profile moved earlier to wizard, add Shopee-style coupon select + bonus-reward summary (docx103/104).',true)+
+   `<div class="flow">${P(1,s1,'Banking')}${A()}${P(2,s2,'Amount/channel')}${A()}${P(3,s3,'Select coupon')}${A()}${P(4,s4,'Summary')}${A()}${P(5,s5,'Processing status')}</div>`;
+}
+function wd(){
+ const w=BAR('Withdrawal','←','History')+`<div class="card"><div style="display:flex;justify-content:space-between"><span>Withdrawable balance</span><b>₫800,000</b></div><div style="font-size:10px;color:#888">Total ₫1.25M · pending churn ₫450,000</div></div>`+`<div class="err">Churn not met, part temporarily locked</div>`+PROG(70,'churn','70%')+F('Withdrawal amount')+F('Payout method ▾ Bank*1234')+CTA('Confirm withdrawal');
+ const t=BAR('Transaction history','←')+SEG(['All','Deposit','Withdrawal'],0)+LI('Deposit +₫1,000,000','Completed ›','','06-19')+LI('Withdrawal -₫500,000','Processing ›','','06-18')+LI('Deposit +₫2,000,000','Failed ›','','06-17')+BOX('Per item→status timeline · pass to support');
+ return ANN('<b>docx35,46,48:</b> withdrawable balance/churn requirement (linked to wallet churn), processing status, transaction history; abnormal delays notify only selected segments.')+
+   `<div class="flow">${P(0,w,'Withdrawal (35)')}${PLUS()}${P(0,t,'Transaction history (46)')}</div>`;
+}
+
+/* ============ Messages / Support ============ */
+function msg(){
+ const inbox=BAR('Message Center','←','Mark all read')+SEG(['Inbox','System','Social'],0)+LI('🎁 Your exclusive offer is here',`${'<span class=tag>NEW</span>'} ›`,'','Just now')+LI('💰 Deposit credited','›','','10:20')+LI('🧾 Bet settlement notice','›','','Yesterday')+BOX('Drop the Sent/Draft email feel');
+ const notif=BAR('Notification layers')+BOX('Product page content (bottom)')+`<div class="li" style="background:#fff"><span class="g">🔔 Deposit credited</span><span class="tag">toast</span></div>`+`<div class="marq">⛔ System maintenance 02:00-04:00 (ticker)</div>`+BOX('popup can cover product page');
+ return ANN('<b>Current site:</b> Inbox built like a mailbox (Inbox/Sent/Draft, redundant). <b>docx32:</b> Inbox/System/Social + tagging; live layer toast (covers product page)/popup/ticker/push.')+
+   `<div class="flow">${P(0,inbox,'Message Center')}${PLUS()}${P(0,notif,'Notifications/Toast/Popup')}</div>`;
+}
+function chat(){
+ const ai=BAR('Live Chat','✕','🟢')+BUB('Hi, I\'m the V9 smart assistant~')+BUB('My withdrawal hasn\'t arrived',true)+BUB('Found TXN…0619 status: Processing (recent transactions auto-loaded)')+`<div class="row" style="margin-top:6px"><div class="f" style="flex:1;margin:0">Type a message…</div><div class="cta sm" style="margin:0">Send</div></div>`;
+ const human=BAR('Live Chat','✕','🟠 away')+BUB('[ Transfer to agent · built-in translation ]')+BUB('Xin chào! Live translation enabled')+`<div class="err">Agents offline→AI fills in, no interruption</div>`+BOX('📎 Upload receipt → auto-link transaction ID');
+ return ANN('<b>Current site:</b> third-party plugin, direct transfer to agent, no AI, <span class="strike">mixed languages (VN/EN)</span>. <b>docx33,46,74,108:</b> in-house + AI first line + transaction status + consistent translation + agent status.',true)+
+   `<div class="flow">${P(9,ai,'AI first line + transaction context')}${A()}${P(0,human,'To agent/translation/upload')}</div>`;
+}
+
+/* ============ Promo / Games ============ */
+function promo(){
+ const m=BAR('Promotions','←')+SEG(['All','Deposit','Free bet','Tasks'],0)+`<div class="card"><span class="tag k">Claimable</span><div style="font-weight:700;margin:5px 0">First Deposit 100% bonus</div><div style="font-size:10px;color:#888">churn x10</div>${CTA('Claim now','sm')}</div>`+`<div class="card"><span class="tag">Task</span><div style="font-weight:700;margin:5px 0">Daily login 3/5</div>${PROG(60,'','3/5')}</div>`+`<div class="card"><span class="tag">Lifetime reward</span><div style="font-size:10px;color:#888">Personalized by LTV/margin/preferences</div></div>`;
+ return ANN('<b>Current site:</b> static offer catalog, same for everyone. <b>docx36,47,116:</b> claimable/tasks/personalized (by LTV); claimable mid-flow.')+
+   `<div class="flow">${P(7,m,'Promotions')}</div>`;
+}
+function games(){
+ const hub=BAR('Gamification','←')+`<div class="gridP gi3">${[['Spin','🎡'],['Scratch','🎫'],['Lotto','🎱'],['Check-in','📅'],['Tasks','✅'],['Ranking','🏆']].map(x=>`<div class="gi">${x[1]}<br>${x[0]}</div>`).join('')}</div>`+BOX('Claimable mid-flow · task-driven');
+ const spin=BAR('Lucky Spin','✕')+BOX('🎡 Spin')+`<div class="stp">1 chance</div>`+CTA('Start draw');
+ const reels=BAR('Reels','✕')+BOX('📲 Short product videos<br>swipe up/down to shop')+`<div class="stp">Reels for Products (67)</div>`;
+ return ANN('<b>Current site:</b> gamification scattered in banners. <b>docx36,67,69–71:</b> unified gamification hub (spin/scratch/lotto/check-in/tasks) + product Reels.')+
+   `<div class="flow">${P(6,hub,'Gamification hub')}${PLUS()}${P(0,spin,'Spin (71)')}${PLUS()}${P(0,reels,'Reels (67)')}</div>`;
+}
+
+/* ============ Products ============ */
+function prod(){
+ const inner=BAR('Slots','←','🔍')+`<div class="chips"><span class="chip on">Top10</span><span class="chip">Providers</span><span class="chip">Type</span><span class="chip">Jackpot</span><span class="chip">New</span></div>`+`<div style="display:flex;justify-content:space-between;font-size:10px;color:#888;margin:3px 0"><span>Sort ▾</span><span>♡Favorites</span></div>`+`<div style="font-size:11px;font-weight:700;margin:5px 0 2px">Recommended (tagged)</div>`+`<div class="scrollrow">${'x'.repeat(6).split('').map(()=>'<div class="tile">RTP·♡</div>').join('')}</div>`+`<div style="font-size:11px;font-weight:700;margin:6px 0 2px">Top 10</div>`+`<div class="gridP">${'x'.repeat(8).split('').map(()=>'<div class="gi" style="height:42px">♡<br>RTP</div>').join('')}</div>`+`<div class="pop">Cross-product shortcuts: Sports｜Live｜Lottery (cross-sell)</div>`;
+ const stream=BAR('Match · Live','✕')+`<div class="box" style="height:78px">📺 Live (with host)<br><span style="font-size:9px">▢ PiP &nbsp; ⤢ Fullscreen</span></div>`+OPT('Share my bet slip',false,'sq')+OPT('Match prediction',false,'sq')+CTA('🎮 Quick trial (no sign-up)','gh');
+ const pip=BAR('Home / other markets','←')+`<div class="box" style="height:50px">Page content — still operable</div>`+`<div class="card" style="font-size:10px">Bet Slip · place bets while watching</div>`+`<div style="position:absolute;right:14px;bottom:14px;width:96px;height:58px;border:2px solid var(--ink);border-radius:7px;background:#fff;display:grid;place-items:center;font-size:9px;color:#888;text-align:center;box-shadow:0 5px 14px rgba(0,0,0,.2)">📺 PiP ✕<br>drag · snap</div>`;
+ return ANN('<b>Kept from current site:</b> native grid + filters + Sort + search + RTP + ♡. <b>docx adds:</b> Recommended (52), overlay shortcuts (54), live stream + interaction (38), trial (57), maintenance cross-sell (43).')+
+   `<div class="flow">${P(0,inner,'Product Page (native)',true)}${PLUS()}${P(0,stream,'Inline player → ▢ PiP')}${A()}${P(9,pip,'PiP persists across pages (watch & bet)')}</div>`+
+   ANN('<b>Live Stream + PiP:</b> inline player on the match page → shrink to a draggable <b>PiP</b> that keeps playing while you browse other markets / use the Bet Slip (watch &amp; bet). Defined as a global component — see Component Library → Live Stream Player + Z-index.');
+}
+
+/* ============ Programs ============ */
+function plans(){
+ const loy=BAR('Loyalty VIP','←')+`<div class="card"><b>VIP1 · Gold</b>${PROG(45,'To VIP2','45%')}</div>`+LI('Weekly rebate 0.5%','')+LI('Birthday gift','')+LI('Dedicated support','')+LI('Withdrawal priority','');
+ const raf=BAR('Refer a Friend','←')+`<div class="card"><div style="font-size:10px;color:#888">Referral code</div><div style="font-size:18px;font-weight:800;letter-spacing:2px">V9-AB12</div>${CTA('Copy/Share','sm')}</div>`+`<div class="card"><div style="display:flex;justify-content:space-between"><span>Referred</span><b>3 people</b></div><div style="display:flex;justify-content:space-between"><span>Reward</span><b>₫150,000</b></div></div>`+BOX('Content-heavy→Mobile framed in from Desktop (02)');
+ const aff=BAR('Affiliate','←')+`<div class="card"><div style="display:flex;justify-content:space-between"><span>This month\'s commission</span><b>₫2.3M</b></div><div style="font-size:10px;color:#888">Clicks 1204 · Sign-ups 56 · Active 31</div></div>`+LI('Promo materials','›')+LI('Downline report','›')+LI('Commission settlement','›');
+ const stmt=BAR('Statement','←','Filter')+SEG(['All','Bets','Bonus','Banking'],0)+LI('Bet Sports','-₫100,000','','06-19')+LI('Payout Sports','+₫210,000','','06-19')+LI('Bonus issued','+₫1,000,000','','06-18');
+ return ANN('<b>docx39–42,02:</b> Loyalty VIP, RAF (content-heavy, mobile framed in), Affiliate, Statement.')+
+   `<div class="flow">${P(0,loy,'Loyalty (40)')}${PLUS()}${P(0,raf,'RAF (41)')}${PLUS()}${P(0,aff,'Affiliate (42)')}${PLUS()}${P(0,stmt,'Statement (39)')}</div>`;
+}
+
+/* ============ Feedback / Detection ============ */
+function fb(){
+ const voice=BAR('Tell us your thoughts','✕')+`<div class="stp">What would you like to play?</div>`+BOX('🎙 Hold to record (transcribed on send)')+SEG(['Text','Voice'],1)+CTA('Send feedback');
+ const pop=BAR('','','')+`<div class="card" style="border:2px solid var(--solid)"><b>Quick survey (30 sec)</b><div style="font-size:10px;color:#888">Randomly selected members</div>${OPT('Very satisfied',true)}${OPT('Neutral')}</div>`;
+ const idle=BAR('Product page','←')+BOX('Product content')+`<div class="li" style="background:#fff"><span class="g">🤖 Need help?</span><span><span class="tag k">Self-serve</span> <span class="tag">Support</span></span></div>`+BOX('Idle N sec→proactive prompt');
+ return ANN('<b>Missing entirely on current site. docx44,45,68:</b> voice feedback transcribed to text, random survey/lucky popup, idle detection→prompt support/self-serve.')+
+   `<div class="flow">${P(0,voice,'Voice feedback (44)')}${PLUS()}${P(0,pop,'Random popup (45)')}${PLUS()}${P(0,idle,'Idle detection (68)')}</div>`;
+}
+
+/* ============ registry ============ */
+const pages={
+ prelogin:["Pre-login Home","Lucky theme+top menu+product shortcuts+live winners+sign-up CTA (M16/M0)",prelogin,[["1","Top-menu IA","Left→top menu · docx59"]]],
+ authflow:["Login / Auth / Recovery","Multiple methods+PIN/biometric+past-password recovery (M02)",authflow,[["6","Login","Password/PIN/biometric · docx16"]]],
+ signup:["Sign Up + OTP","Account/password→phone OTP; fail→WhatsApp (M01)",signup,[["1","Sign Up","Phone-first · docx76"],["2","OTP","Fail→WhatsApp · docx49"]]],
+ wiz:["New-customer Wizard","OTP→setup→profile moved earlier→welcome+offer (M03)",wiz,[["4","Profile moved earlier","Zero-friction deposit key · docx88"]]],
+ account:["Account Home","Balance+entry to each setting; username random ID editable (M04)",account,[["—","Account Home","docx21/24/97"]]],
+ profile:["Profile & Preferences","FaceID/theme/time zone/language/notifications/recovery/product prefs",profile,[["—","Profile prefs","docx24"]]],
+ statuskyc:["Account Status / KYC / Security","Status+KYC upload+device security (M04)",statuskyc,[["—","Status/KYC/Security","docx25-27"]]],
+ wal:["Wallet","Main+bonus separation+churn+pick wallet before betting (M05)",wal,[["—","Wallet","docx28-31"]]],
+ dep:["Deposit flow","Banking→amount→coupon→summary→status (M06)",dep,[["1","Banking","Existing on current site"],["3","Select coupon","docx103"],["4","Summary","docx104"]]],
+ wd:["Withdrawal / Transaction history","Withdrawable balance+churn+status (M07)",wd,[["—","Withdrawal/history","docx35/46"]]],
+ msg:["Message Center","Inbox/System/Social+live notification layer (M08)",msg,[["—","Messages","docx32"]]],
+ chat:["AI Live Chat","AI first line+transaction context+translation (M09)",chat,[["9","AI support","docx46/74/108"]]],
+ promo:["Promotions","Claimable/tasks/personalized (M10)",promo,[["7","Promo","docx47/116"]]],
+ games:["Gamification / Reels","Spin/scratch/lotto/check-in+Reels (M10)",games,[["6","Gamification","docx36/67/71"]]],
+ prod:["Product Page","Native grid+Recommended+overlay+live stream+trial (M11)",prod,[["—","Products","docx37/52/54/38/57"]]],
+ plans:["Loyalty / RAF / Affiliate / Statement","VIP/referral/affiliate/statement (M12)",plans,[["—","Programs","docx39-42"]]],
+ fb:["Feedback / Detection","Voice feedback+random popup+idle detection (M15)",fb,[["—","Feedback/Detection","docx44/45/68"]]],
+};
+const groups=[
+ ["Entry / Sign-up",["prelogin","authflow","signup","wiz"]],
+ ["Account",["account","profile","statuskyc"]],
+ ["Wallet / Banking",["wal","dep","wd"]],
+ ["Messages / Support",["msg","chat"]],
+ ["Promo / Games",["promo","games"]],
+ ["Products",["prod"]],
+ ["Programs",["plans"]],
+ ["Feedback / Detection",["fb"]],
+];
+const gsel=document.getElementById('gsel'),cv=document.getElementById('canvas'),pt=document.getElementById('pt'),pn=document.getElementById('pn'),lb=document.getElementById('legbox');
+function buildSel(active){
+ gsel.innerHTML=groups.map(g=>`<div class="grp">${g[0]}</div>`+g[1].map(id=>`<button data-p="${id}" class="${id===active?'on':''}">${pages[id][0]}</button>`).join('')).join('');
+ gsel.querySelectorAll('button').forEach(b=>b.onclick=()=>render(b.dataset.p));
+}
+function render(p){
+ const [title,note,fn,leg]=pages[p];
+ pt.textContent=title;pn.textContent=note;cv.innerHTML=fn();lb.innerHTML=LEG(leg);
+ buildSel(p);
+}
+render('prelogin');
+</script>
+</body>
+</html>

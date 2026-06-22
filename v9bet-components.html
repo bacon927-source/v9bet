@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>V9Bet · Component Library Wireframe (Component Contract)</title>
+<style>
+  :root{--ink:#2b2b2b;--line:#c9c9c9;--line2:#9a9a9a;--muted:#8a8a8a;--paper:#fff;--bg:#ececed;--fill:#f4f4f5;--solid:#3a3a3a;--strike:#b56}
+  *{box-sizing:border-box}
+  body{margin:0;font:13px/1.5 -apple-system,"Noto Sans TC",Arial,sans-serif;color:var(--ink);background:var(--bg)}
+  .app{display:grid;grid-template-columns:240px 1fr 320px;min-height:100vh}
+  aside{background:var(--paper);border-right:1px solid var(--line);padding:14px;overflow:auto;max-height:100vh}
+  main{padding:20px;overflow:auto}
+  .spec{background:var(--paper);border-left:1px solid var(--line);padding:16px;overflow:auto;max-height:100vh}
+  h1{font-size:15px;margin:0 0 4px}.sub{color:var(--muted);font-size:12px;margin:0 0 10px}
+  .grp{font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);font-weight:700;margin:12px 0 4px}
+  .nav{display:block;width:100%;text-align:left;border:1px solid transparent;background:none;border-radius:6px;padding:6px 8px;font-size:12.5px;cursor:pointer;color:#333}
+  .nav:hover{background:var(--fill)}.nav.on{background:#e3e3e6;border-color:var(--line2);font-weight:600}
+  .ctitle{font-size:16px;font-weight:700;margin:0 0 2px}
+  .cnote{font-size:12px;color:var(--muted);margin-bottom:14px}
+  /* stage */
+  .stage{position:relative;border:1px solid var(--line2);border-radius:10px;background:#fafafa;min-height:300px;padding:18px;overflow:hidden}
+  .vlabel{font-size:10.5px;color:var(--muted);margin:14px 0 5px;font-weight:600}
+  .vlabel:first-child{margin-top:0}
+  .backdrop{border:1px dashed var(--line2);border-radius:8px;background:#fff;padding:12px;color:#bbb}
+  .sk{height:12px;border-radius:5px;background:linear-gradient(90deg,#eee 25%,#e0e0e0 37%,#eee 63%);background-size:400% 100%;animation:sh 1.4s ease infinite;margin:7px 0}
+  @keyframes sh{0%{background-position:100% 50%}100%{background-position:0 50%}}
+  /* component visuals (grayscale) */
+  .toast{display:flex;align-items:center;gap:9px;background:#fff;border:1px solid var(--line2);border-left:4px solid var(--solid);border-radius:8px;padding:9px 12px;font-size:12px;box-shadow:0 4px 14px rgba(0,0,0,.12);margin:6px 0;max-width:340px}
+  .toast .ico{width:18px;text-align:center}.toast .x{margin-left:auto;color:#aaa}
+  .toast.err{border-left-color:var(--strike)}.toast.ok{border-left-color:#6a8}
+  .snack{display:flex;align-items:center;gap:10px;background:var(--solid);color:#fff;border-radius:8px;padding:10px 13px;font-size:12px;max-width:340px;margin:6px 0}
+  .snack b{margin-left:auto;text-decoration:underline;cursor:pointer}
+  .dim{position:relative;background:repeating-linear-gradient(45deg,#eee,#eee 8px,#e6e6e6 8px,#e6e6e6 16px);border-radius:8px;min-height:150px;display:grid;place-items:center}
+  .modal{background:#fff;border:2px solid var(--solid);border-radius:12px;padding:16px;max-width:280px;box-shadow:0 10px 30px rgba(0,0,0,.2);position:relative}
+  .modal .x{position:absolute;right:10px;top:8px;color:#aaa}
+  .banner{display:flex;align-items:center;gap:9px;border:1px solid var(--line2);background:var(--fill);border-radius:8px;padding:9px 12px;font-size:12px;margin:6px 0}
+  .banner .x{margin-left:auto;color:#aaa}
+  .marq{border:1px solid var(--line);border-radius:6px;background:var(--fill);padding:7px 0;overflow:hidden;white-space:nowrap;position:relative;margin:6px 0}
+  .marq span{display:inline-block;padding-left:100%;animation:mq 12s linear infinite;font-size:12px;color:#555}
+  @keyframes mq{0%{transform:translateX(0)}100%{transform:translateX(-100%)}}
+  .btnrow{display:flex;gap:8px;margin-top:12px}
+  .b{border:1px solid var(--line2);background:#fff;border-radius:7px;padding:7px 12px;font-size:12px;text-align:center;flex:1}
+  .b.k{background:var(--solid);color:#fff;border-color:var(--solid)}
+  .sheet{position:absolute;right:0;top:0;bottom:0;width:230px;background:#fff;border-left:2px solid var(--solid);box-shadow:-8px 0 24px rgba(0,0,0,.15);padding:14px}
+  .fab{width:44px;height:44px;border-radius:50%;border:1px solid var(--line2);background:#fff;display:grid;place-items:center;font-size:16px;box-shadow:0 4px 12px rgba(0,0,0,.18)}
+  .chatpanel{width:220px;border:1px solid var(--line2);border-radius:10px;background:#fff;box-shadow:0 8px 22px rgba(0,0,0,.15);overflow:hidden}
+  .chatpanel .h{background:var(--fill);padding:8px 10px;font-size:12px;font-weight:700;display:flex;justify-content:space-between}
+  .bub{margin:6px 8px;border:1px solid var(--line);background:var(--fill);border-radius:9px;padding:6px 9px;font-size:11px;max-width:80%}
+  .empty{text-align:center;color:#aaa;padding:24px}
+  .empty .e{font-size:30px}
+  .timeline{display:flex;align-items:center;gap:6px;font-size:11px;color:#666;margin:8px 0}
+  .timeline .n{width:18px;height:18px;border-radius:50%;border:1px solid var(--line2);display:grid;place-items:center;font-size:10px}
+  .timeline .n.on{background:var(--solid);color:#fff;border-color:var(--solid)}
+  .timeline .ln{flex:1;height:1px;background:var(--line2)}
+  .prog{height:9px;border-radius:5px;background:#e3e3e3;overflow:hidden;margin:6px 0;max-width:300px}.prog i{display:block;height:100%;background:var(--solid)}
+  .badge{display:inline-block;font-size:10px;border:1px solid var(--line2);border-radius:4px;padding:1px 7px;color:#666;margin:3px}
+  .badge.k{background:var(--solid);color:#fff;border-color:var(--solid)}
+  .badge.dot{position:relative}.badge.dot::after{content:"";position:absolute;top:-3px;right:-3px;width:7px;height:7px;border-radius:50%;background:var(--strike)}
+  .chip{display:inline-block;border:1px solid var(--line);border-radius:14px;padding:3px 11px;font-size:11px;color:#666;margin:3px}.chip.on{background:var(--solid);color:#fff;border-color:var(--solid)}
+  .seg{display:inline-flex;border:1px solid var(--line2);border-radius:8px;overflow:hidden;margin:4px 0}
+  .seg span{padding:7px 16px;font-size:12px;color:var(--muted);border-right:1px solid var(--line)}.seg span:last-child{border:0}.seg span.on{background:var(--solid);color:#fff}
+  .stepper{display:flex;align-items:center;gap:6px;margin:8px 0}
+  .stepper .s{width:22px;height:22px;border-radius:50%;border:1px solid var(--line2);display:grid;place-items:center;font-size:11px;color:#888}
+  .stepper .s.on{background:var(--solid);color:#fff;border-color:var(--solid)}.stepper .s.done{border-color:var(--solid)}
+  .stepper .ln{flex:1;height:1px;background:var(--line2);min-width:18px}
+  .count{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:8px;padding:7px 12px;font-size:12px;color:#666}
+  .sw{width:40px;height:22px;border-radius:12px;border:1px solid var(--line2);position:relative;display:inline-block;vertical-align:middle}
+  .sw i{position:absolute;top:2px;width:16px;height:16px;border-radius:50%;background:#fff;border:1px solid var(--line2)}
+  .sw.on{background:var(--solid)}.sw.on i{right:2px}.sw.off i{left:2px}
+  .ticker{border:1px solid var(--line);border-radius:8px;background:var(--fill);padding:9px 12px;font-size:12px;display:flex;justify-content:space-between;max-width:360px}
+  .ticker b{font-variant-numeric:tabular-nums}
+  /* z-order demo */
+  .zdemo{position:relative;height:300px;border:1px dashed var(--line2);border-radius:8px;background:#fff;overflow:hidden}
+  .zlayer{position:absolute;border-radius:6px;font-size:10.5px;padding:5px 8px;border:1px solid var(--line2);background:#fff;box-shadow:0 3px 10px rgba(0,0,0,.08)}
+  /* spec table */
+  .spec h2{font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin:0 0 8px}
+  .spec table{width:100%;border-collapse:collapse;font-size:12px}
+  .spec td{border-bottom:1px solid var(--line);padding:6px 4px;vertical-align:top}
+  .spec td.k{color:var(--muted);width:74px;white-space:nowrap}
+  .tmpl{font-size:10.5px;color:var(--muted);border-top:1px solid var(--line);margin-top:14px;padding-top:9px}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside>
+    <h1>V9Bet Component Library</h1>
+    <p class="sub">Component Contract · grayscale, no UI<br>Cross-page shared components, 9-column definition</p>
+    <div id="nav"></div>
+  </aside>
+  <main>
+    <div id="ct" class="ctitle"></div>
+    <div id="cn" class="cnote"></div>
+    <div id="stage" class="stage"></div>
+  </main>
+  <div class="spec" id="spec"></div>
+</div>
+
+<script>
+const VL=t=>`<div class="vlabel">${t}</div>`;
+const C={
+/* ---------- Notifications/Feedback ---------- */
+toast:{g:"Notifications/Feedback",name:"Toast transient toast",note:"Non-blocking notice for system/API events, auto-dismisses, can stack over the product page.",
+ render:()=>VL("variants:info / success / error")+
+  `<div class="toast"><span class="ico">🔔</span>Your deposit has been credited ₫1,000,000<span class="x">✕</span></div>`+
+  `<div class="toast ok"><span class="ico">✓</span>Bet placed<span class="x">✕</span></div>`+
+  `<div class="toast err"><span class="ico">!</span>Connection timeout, please retry<span class="x">✕</span></div>`+
+  VL("with action (max 1)")+
+  `<div class="toast"><span class="ico">⚽</span>Goal scored in your match<span style="margin-left:auto;text-decoration:underline">View</span></div>`+
+  VL("queue (show 1–2 at a time, rest queued)")+`<div class="backdrop" style="font-size:11px">Queue: toast1 → toast2 → … (don't pile them up at once)</div>`,
+ spec:{Purpose:"Briefly inform of system/action results",Trigger:"System / API callback (credit, goal, settlement)",Position:"Top or top-right",Duration:"Auto 3–5s · manual close",Blocking:"No (non-modal)",Layer:"z40",Variants:"info / success / error · optional 1 action",Source:"System / API",a11y:"role=status (aria-live polite)"}},
+
+snackbar:{g:"Notifications/Feedback",name:"Snackbar actionable",note:"Bottom notice after a user action, often with \"Undo\".",
+ render:()=>VL("bottom · with action")+`<div class="snack">Removed from favorites<b>Undo</b></div>`+`<div class="snack">Coupon applied<b>Change</b></div>`,
+ spec:{Purpose:"Action feedback + quick reverse",Trigger:"After a user action",Position:"Bottom center",Duration:"4s · with undo",Blocking:"No",Layer:"z40",Variants:"Default + 1 action",Source:"Frontend",a11y:"role=status"}},
+
+modal:{g:"Notifications/Feedback",name:"Modal Dialog",note:"Centered, dims and blocks the layer below, requires an explicit choice. One modal at a time; the rest queue.",
+ render:()=>{
+  const MD=(title,body,buttons,icon='')=>`<div class="dim" style="min-height:auto;padding:14px"><div class="modal" style="max-width:300px;text-align:left;padding:0"><div style="display:flex;align-items:center;gap:8px;padding:12px 14px 10px;border-bottom:1px solid #eee">${icon?`<span style="font-size:14px">${icon}</span>`:''}<b style="flex:1;font-size:13px">${title}</b><span style="color:#aaa">✕</span></div><div style="padding:11px 14px;font-size:11.5px;color:#777">${body}</div><div style="display:flex;gap:8px;justify-content:flex-end;padding:0 14px 13px">${buttons}</div></div></div>`;
+  const B=(t,k=false)=>`<span class="b ${k?'k':''}" style="flex:0 0 auto;min-width:78px">${t}</span>`;
+  return VL("Anatomy — fixed header (title + ✕), scrollable body, right-aligned footer (secondary → primary)")+
+   MD('Title',`Concise message or a short form. Body scrolls if long; header &amp; footer stay pinned.`,B('Secondary')+B('Primary',true))+
+   VL("Confirmation — irreversible / destructive (primary carries the consequence)")+
+   MD('Set account currency to VND?',`This is permanent and <b>cannot be changed</b> later. All balances and deposits will be settled in VND.`,B('Cancel')+B('Set currency',true),'⚠️')+
+   VL("Promotional — opt-in, dismissible")+
+   MD('Limited-time offer',`Claim your <b>100% first-deposit bonus</b> · churn x10. Ends in 23:59.`,B('Maybe later')+B('Claim now',true),'🎁')+
+   VL("Acknowledge — single action, informational")+
+   MD('Scheduled maintenance',`Wallet & payments pause 02:00–04:00 (GMT+8). In-play bets are unaffected.`,B('Got it',true),'🛠')+
+   `<div style="font-size:11px;color:#666;margin-top:10px">Dismiss via ✕ / Cancel / backdrop click / <kbd>Esc</kbd> — except a hard confirm, which requires an explicit button. Primary button sits right; destructive primary should read as the consequence ("Set currency", not "OK").</div>`;
+ },
+ spec:{Purpose:"Force a clear decision or critical acknowledgement before continuing",Trigger:"Irreversible confirm · opt-in promo · blocking system notice",Position:"Centered, ~480px max (desktop); full-screen sheet on mobile · dimmed scrim",Duration:"Until resolved — action, ✕, backdrop, or Esc (hard confirms: button only)",Blocking:"Yes — focus trap, page scroll locked",Layer:"z50 · mutually exclusive (one at a time, others queue)",Variants:"confirm (destructive) / promo / acknowledge / form",Source:"System (confirms) · CMS (promo/info)",a11y:"role=dialog · aria-modal=true · labelledby+describedby · trap & restore focus · Esc closes"}},
+
+banner:{g:"Notifications/Feedback",name:"Banner / Inline alert",note:"Persistent in-page banner that pushes content down rather than floating (maintenance, KYC reminder).",
+ render:()=>VL("warning / info")+
+  `<div class="banner">🛠 System maintenance 02:00–04:00<span class="x">✕</span></div>`+
+  `<div class="banner">🪪 Complete KYC to withdraw · <span style="text-decoration:underline">Verify now</span><span class="x">✕</span></div>`,
+ spec:{Purpose:"Persistent status reminder",Trigger:"Ongoing state (maintenance / KYC incomplete / unbound)",Position:"In-page top · pushes content",Duration:"Persistent dismissible (or always on)",Blocking:"No",Layer:"z10",Variants:"warning / info · may carry action",Source:"System / CMS",a11y:"role=region"}},
+
+marquee:{g:"Notifications/Feedback",name:"Marquee",note:"Looping scrolling announcement/promo text, low priority.",
+ render:()=>VL("looping scroll")+`<div class="marq"><span>🎁 100% first deposit this week · ⚽ World Cup rebate 0.8% · 🛠 Maintenance notice 02:00 · 🏆 Player ***8 won ₫12,000,000 …</span></div>`,
+ spec:{Purpose:"Low-priority broadcast message",Trigger:"Promo / announcement schedule",Position:"Top banner",Duration:"Looping",Blocking:"No",Layer:"z10",Variants:"Promo / announcement",Source:"CMS",a11y:"Pausable · not required reading"}},
+
+sysmsg:{g:"Notifications/Feedback",name:"System Message",note:"Maintenance/goal/settlement etc., goes to inbox + may also fire toast/push.",
+ render:()=>VL("same message, multiple channels")+
+  `<div class="toast"><span class="ico">🧾</span>Bet settled +₫210,000<span class="x">✕</span></div>`+
+  `<div class="banner">📥 Also written to Inbox (System message)</div>`+
+  `<div class="backdrop" style="font-size:11px">＋ Push (OS notification, per notification preferences)</div>`,
+ spec:{Purpose:"Multi-channel delivery of important system events",Trigger:"Maintenance / goal / settlement / delay",Position:"toast + inbox + push",Duration:"toast transient · inbox persistent",Blocking:"No",Layer:"z40 + inbox",Variants:"maintenance/goal/settlement/delay",Source:"System",a11y:"role=status + inbox list"}},
+
+/* ---------- Overlays ---------- */
+sheet:{g:"Overlays",name:"Bottom sheet / Slide-in panel",note:"Panel sliding in from an edge, holds flow forms (real shots: Banking deposit/withdraw, Wallet).",
+ render:()=>VL("slide in from right (Desktop) · pull up from bottom (Mobile)")+
+  `<div class="dim" style="min-height:260px"><div class="sheet"><div style="font-weight:700;font-size:12px;border-bottom:1px solid #eee;padding-bottom:6px">Banking</div><div class="seg" style="margin:8px 0"><span class="on">Deposit</span><span>Withdrawal</span></div><div class="backdrop" style="height:120px">Payment methods / form</div></div></div>`,
+ spec:{Purpose:"Carry multi-step forms/flows without leaving the page",Trigger:"Tap deposit/withdraw/wallet",Position:"Slide right (Desktop) / pull up (Mobile)",Duration:"Manual close · drag to close",Blocking:"Semi-blocking (dimmed background, tap to close)",Layer:"z20",Variants:"deposit / withdrawal / wallet",Source:"System / API",a11y:"role=dialog · closable"}},
+
+overlayx:{g:"Overlays",name:"Cross-product shortcut Overlay",note:"Surfaces shortcuts to other products on a product page for cross-traffic (SBK↔Live). docx54.",
+ render:()=>`<div class="dim" style="min-height:180px"><div class="modal" style="max-width:240px"><span class="x">✕</span><div style="font-weight:700;font-size:12px">Cross-product shortcuts</div><div style="display:flex;gap:6px;margin-top:8px">${['Sports','Live','Lottery'].map(x=>`<div class="b">${x}</div>`).join('')}</div></div></div>`,
+ spec:{Purpose:"Drive traffic between products",Trigger:"Enter product page / tap shortcut button",Position:"Overlays the product page (mind the layer order)",Duration:"Manual close",Blocking:"Semi-blocking",Layer:"z20",Variants:"Shortcuts matched to the current product",Source:"CMS",a11y:"role=dialog"}},
+
+streamoverlay:{g:"Overlays",name:"Live Stream Player (Inline / PiP / Fullscreen)",note:"Watch & bet. Starts inline on the match page, shrinks to a draggable PiP that keeps playing across pages. docx38/54/62.",
+ render:()=>VL("① Inline — on the match page")+
+  `<div class="dim" style="min-height:104px"><div style="position:absolute;left:14px;top:14px;right:14px;height:74px;border:2px solid var(--solid);border-radius:8px;background:#fff;display:grid;place-items:center;color:#888;font-size:11px">📺 Live (with host) &nbsp; ▢ PiP &nbsp; ⤢ Fullscreen</div></div>`+
+  VL("② PiP — floating mini-player, persists across pages (Home / other markets / bet slip)")+
+  `<div class="dim" style="min-height:150px"><div class="backdrop" style="position:absolute;left:14px;right:14px;top:14px;bottom:14px">Another page (Home / bet slip) — still fully operable</div><div style="position:absolute;right:24px;bottom:24px;width:120px;height:70px;border:2px solid var(--solid);border-radius:8px;background:#fff;display:grid;place-items:center;color:#888;font-size:10px;box-shadow:0 6px 18px rgba(0,0,0,.22);text-align:center">📺 PiP&nbsp;✕<br>drag · snap to corners</div></div>`+
+  VL("③ Fullscreen")+
+  `<div class="dim" style="min-height:84px"><div style="position:absolute;left:14px;right:14px;top:14px;bottom:14px;border:2px solid var(--solid);border-radius:8px;background:#fff;display:grid;place-items:center;color:#888;font-size:11px">📺 Fullscreen · controls + bet-slip overlay</div></div>`+
+  `<div style="font-size:11px;color:#666;margin-top:9px">Rules: <b>one PiP at a time</b> (new stream replaces/asks); PiP keeps playing during navigation; must avoid colliding with <b>Bet Slip</b> &amp; <b>Live Chat</b> button — define avoidance (e.g. PiP owns bottom-right, Chat shifts up).</div>`,
+ spec:{Purpose:"Watch & bet — keep the stream alive while browsing/betting other markets",Trigger:"Match-page player · Home Live section · 🔴LIVE on match cards",Position:"Inline → PiP (draggable, snaps to corners) → Fullscreen",Duration:"PiP persists across pages until closed",Blocking:"No (interaction passes through to page below)",Layer:"z25 — overlay band, below Modal(z50), coexists with Chat(z30)/Bet Slip",Variants:"inline / PiP / fullscreen · audio on-off · live-reconnect · single instance",Source:"Streaming API (WebRTC / HLS)",a11y:"Closable · does not steal focus · captions · Mobile: native PiP vs custom (define per OS)"}},
+
+chatwidget:{g:"Overlays",name:"Live Chat Widget",note:"Floating button + expandable panel, always present. docx33.",
+ render:()=>VL("collapsed (floating button) → expanded (panel)")+
+  `<div style="display:flex;gap:30px;align-items:flex-end"><div class="fab">💬</div>`+
+  `<div class="chatpanel"><div class="h">Live support <span>🟢 −</span></div><div class="bub">Hi, I'm the V9 smart assistant~</div><div class="bub" style="margin-left:auto;background:#e3e3e6">My withdrawal?</div><div style="border-top:1px solid #eee;padding:6px;font-size:10px;color:#aaa">Type a message…</div></div></div>`,
+ spec:{Purpose:"Reach support anytime (AI→human)",Trigger:"User taps floating button / idle prompt",Position:"Bottom-right floating button",Duration:"Persistent (minimizable)",Blocking:"No",Layer:"z30",Variants:"AI / human / away",Source:"In-house support system",a11y:"role=complementary"}},
+
+idle:{g:"Overlays",name:"Idle assist prompt",note:"Detects inactivity → non-blocking prompt for support/self-service. docx68.",
+ render:()=>`<div class="backdrop" style="height:90px;margin-bottom:10px">Product page content</div><div class="toast"><span class="ico">🤖</span>Need help?<span style="margin-left:auto"><span class="badge k">Self-service</span><span class="badge">Support</span></span></div>`,
+ spec:{Purpose:"Proactively help new members who get stuck",Trigger:"Idle N seconds (behavior detection)",Position:"Toast level (doesn't interrupt the game)",Duration:"Auto-dismiss / closable",Blocking:"No (modal strictly forbidden)",Layer:"z40",Variants:"Self-service / route to support",Source:"Behavior-detection engine",a11y:"role=status"}},
+
+randompopup:{g:"Overlays",name:"Random survey / lucky popup",note:"Modal triggered randomly or by segment. docx45.",
+ render:()=>`<div class="dim"><div class="modal"><span class="x">✕</span><div style="font-weight:700">Quick survey (30 sec)</div><div style="font-size:11px;color:#888;margin:4px 0">Randomly selected members</div><div class="b" style="margin:4px 0">Very satisfied</div><div class="b" style="margin:4px 0">Neutral</div></div></div>`,
+ spec:{Purpose:"Collect feedback / run lucky campaigns",Trigger:"Random / audience segment",Position:"Centered modal",Duration:"Requires close",Blocking:"Yes",Layer:"z50",Variants:"survey / lucky campaign",Source:"Campaign engine / CMS",a11y:"role=dialog"}},
+
+/* ---------- In-page states ---------- */
+skeleton:{g:"In-page states",name:"Loading Skeleton",note:"Skeleton placeholder while data loads (real shot: Slots).",
+ render:()=>VL("skeleton shimmer")+`<div class="backdrop"><div class="sk" style="width:50%"></div><div class="sk"></div><div class="sk" style="width:80%"></div><div style="display:flex;gap:8px;margin-top:8px">${'xxx'.split('').map(()=>'<div class="sk" style="width:60px;height:48px"></div>').join('')}</div></div>`,
+ spec:{Purpose:"Placeholder during load, reduces blank-screen anxiety",Trigger:"Data request in progress",Position:"Replaces that block",Duration:"Until data returns",Blocking:"No",Layer:"z0",Variants:"Card / list / grid",Source:"Frontend",a11y:"aria-busy=true"}},
+
+empty:{g:"In-page states",name:"Empty State",note:"Guidance when there's no data (real shots: No Data / no promotion).",
+ render:()=>`<div class="empty"><div class="e">📭</div><div style="margin:6px 0">No offer notifications yet</div><div class="b k" style="display:inline-block;max-width:140px">Browse offers</div></div>`,
+ spec:{Purpose:"Give an exit instead of a blank when there's no data",Trigger:"List/block returns 0 items",Position:"Centered within the block",Duration:"Persists until data exists",Blocking:"No",Layer:"z0",Variants:"First-time empty / no filter results / cleared",Source:"Frontend copy (CMS-controllable)",a11y:"role=status"}},
+
+errorstate:{g:"In-page states",name:"Error / Retry",note:"Load failure + retry.",
+ render:()=>`<div class="empty"><div class="e">⚠️</div><div style="margin:6px 0">Loading failed, please try again later</div><div class="b" style="display:inline-block;max-width:120px">Retry</div></div>`,
+ spec:{Purpose:"Offer retry/help on failure",Trigger:"API failure / timeout",Position:"Centered within the block",Duration:"Until retry succeeds",Blocking:"No",Layer:"z0",Variants:"Network / server / permission",Source:"Frontend",a11y:"role=alert"}},
+
+progress:{g:"In-page states",name:"Processing / Progress",note:"Processing-status timeline and progress (deposit/withdraw, churn, OTP).",
+ render:()=>VL("status timeline (deposit/withdraw)")+`<div class="timeline"><span class="n on">1</span><span style="color:#888">Created</span><span class="ln"></span><span class="n on">2</span><span style="color:#888">Pending confirmation</span><span class="ln"></span><span class="n">3</span><span style="color:#888">Credited</span></div>`+
+  VL("progress bar (churn / rollover)")+`<div class="prog"><i style="width:40%"></i></div><div style="font-size:11px;color:#888">churn x10 · 40%</div>`,
+ spec:{Purpose:"Make the wait transparent",Trigger:"Deposit/withdraw transaction / rollover / upload",Position:"Within the flow page",Duration:"Until the flow completes",Blocking:"No",Layer:"z0",Variants:"timeline / bar / spinner",Source:"API polling / push",a11y:"role=progressbar"}},
+
+/* ---------- Micro components ---------- */
+badge:{g:"Micro components",name:"Tag / Badge (new)",note:"Marker and red-dot indicator. docx tagging.",
+ render:()=>VL("tag / status")+`<span class="badge k">NEW</span><span class="badge">Claimable</span><span class="badge">VIP1</span><span class="badge" style="border-color:#b56;color:#b56">Required</span>`+
+  VL("red dot (unread)")+`<span class="badge dot">Inbox</span>`,
+ spec:{Purpose:"Mark status / new content / count",Trigger:"Data state",Position:"Attached to a component",Duration:"Follows the state",Blocking:"No",Layer:"Follows host",Variants:"Text tag / red dot / number",Source:"System / CMS",a11y:"aria-label explains the meaning"}},
+
+chips:{g:"Micro components",name:"Chips / Filters",note:"Product/offer filters (real shots: Providers/Top10…).",
+ render:()=>`<div>${['Top 10','Providers','Game Type','Jackpot','New'].map((x,i)=>`<span class="chip ${i===0?'on':''}">${x}</span>`).join('')}</div>`,
+ spec:{Purpose:"Quickly filter/switch conditions",Trigger:"User selection",Position:"Above the list",Duration:"Persistent",Blocking:"No",Layer:"z0",Variants:"Single-select / multi-select / clearable",Source:"API categories",a11y:"role=tab/checkbox"}},
+
+segmented:{g:"Micro components",name:"Segmented / Tabs",note:"Segmented switching (Deposit/Withdrawal, Bank/USDT).",
+ render:()=>VL("Segmented")+`<div class="seg"><span class="on">Deposit</span><span>Withdrawal</span></div>`+VL("Tabs")+`<div class="seg"><span class="on">Inbox</span><span>System</span><span>Community</span></div>`,
+ spec:{Purpose:"Mutually exclusive view switching",Trigger:"User selection",Position:"Top of the block",Duration:"Persistent",Blocking:"No",Layer:"z0",Variants:"2–4 segments",Source:"Frontend",a11y:"role=tablist"}},
+
+stepper:{g:"Micro components",name:"Step Indicator",note:"Multi-step flow progress (new-customer wizard).",
+ render:()=>`<div class="stepper"><span class="s done">✓</span><span class="ln"></span><span class="s on">2</span><span class="ln"></span><span class="s">3</span><span class="ln"></span><span class="s">4</span></div><div style="font-size:11px;color:#888">Step 2 / 4 · can't skip while required fields incomplete</div>`,
+ spec:{Purpose:"Show flow position and required-field gates",Trigger:"Entering a multi-step flow",Position:"Top of the flow",Duration:"Entire flow",Blocking:"No (but mandatory steps gate progress)",Layer:"z0",Variants:"Dots / numbered / progress bar",Source:"Frontend",a11y:"aria-current=step"}},
+
+countdown:{g:"Micro components",name:"Countdown",note:"OTP resend countdown / offer countdown.",
+ render:()=>`<div class="count">⏱ Resend verification code (<b>59s</b>)</div>`,
+ spec:{Purpose:"Throttle retries / create urgency",Trigger:"Send OTP / time-limited campaign",Position:"Next to the button",Duration:"Counts down to 0",Blocking:"No",Layer:"z0",Variants:"OTP / time-limited campaign",Source:"Frontend + server time",a11y:"aria-live polite"}},
+
+toggle:{g:"Micro components",name:"Toggle",note:"Preference/notification switch.",
+ render:()=>`<div style="display:flex;align-items:center;gap:10px;margin:6px 0"><span style="flex:0 0 120px">Deposit/withdrawal notifications</span><span class="sw on"><i></i></span></div><div style="display:flex;align-items:center;gap:10px"><span style="flex:0 0 120px">System/maintenance announcements</span><span class="sw off"><i></i></span></div>`,
+ spec:{Purpose:"Instantly toggle a boolean preference",Trigger:"User toggles",Position:"Settings row",Duration:"Persistent (saved immediately)",Blocking:"No",Layer:"z0",Variants:"on / off / disabled",Source:"API (preferences)",a11y:"role=switch"}},
+
+ticker:{g:"Micro components",name:"Live winners / jackpot Ticker",note:"Community buzz (new, echoes the live site's High Margin Winners).",
+ render:()=>`<div class="ticker"><span>🏆 Player ***8 just won</span><b>₫12,000,000</b></div><div class="ticker" style="margin-top:6px"><span>JACKPOT</span><b>₫ 8,420,331,090 ▲</b></div>`,
+ spec:{Purpose:"Convey activity and winning vibe (social proof)",Trigger:"Real-time data push",Position:"Top of home/product page",Duration:"Loops/updates",Blocking:"No",Layer:"z10",Variants:"Winner row / jackpot figure",Source:"Real-time API (WebSocket)",a11y:"aria-live off (decorative)"}},
+
+/* ---------- Layering ---------- */
+/* ===== Retention / Stickiness ===== */
+streak:{g:"Retention / Stickiness",name:"Daily Check-in Streak",note:"Daily login streak with escalating rewards — builds a habit; missing a day feels like a loss.",
+ render:()=>VL("7-day streak — escalating rewards, today highlighted")+
+  `<div class="card"><div style="display:flex;justify-content:space-between;margin-bottom:9px"><b>🔥 3-day streak</b><span style="font-size:10px;color:#888">Day 4 · today</span></div><div style="display:flex;gap:5px">`+
+  [['✓','₫10','d'],['✓','₫20','d'],['✓','₫30','d'],['4','₫50','t'],['5','×2',''],['6','×3',''],['7','🎁','']].map(x=>`<div style="flex:1;text-align:center"><div style="height:28px;border-radius:6px;display:grid;place-items:center;font-size:11px;border:1px solid ${x[2]?'#3a3a3a':'#c9c9c9'};${x[2]==='d'?'background:#3a3a3a;color:#fff':x[2]==='t'?'box-shadow:0 0 0 2px #ddd;font-weight:700':'color:#999'}">${x[0]}</div><div style="font-size:8px;color:#aaa;margin-top:3px">${x[1]}</div></div>`).join('')+
+  `</div><div class="b k" style="margin-top:11px">Check in · claim Day 4 (₫50)</div></div>`,
+ spec:{Purpose:"Drive daily return via streak + escalating reward",Trigger:"Home after login / daily reset",Position:"Home widget / rewards hub",Duration:"Persistent · resets daily, breaks if a day is missed",Blocking:"No",Layer:"z0 (in-page)",Variants:"can-check-in / checked / streak-broken / milestone",Source:"API (streak state + reward table, CMS-tunable)",a11y:"State conveyed by text + icon, not color alone"}},
+
+missions:{g:"Retention / Stickiness",name:"Mission / Quest Tracker",note:"Daily/weekly quests with progress toward rewards — goal-gradient pulls users to finish. docx36.",
+ render:()=>VL("daily / weekly quests with progress")+
+  ['Place 5 bets today|3|5|Free bet ₫50','Make a deposit|0|1|+20 spins','Try a new game|1|1|Claim'].map(m=>{const p=m.split('|'),a=+p[1],b=+p[2],pct=Math.round(a/b*100),done=a>=b;return `<div class="card"><div style="display:flex;justify-content:space-between;font-size:12px"><b>${p[0]}</b><span style="font-size:10px;color:#888">${p[3]}</span></div><div class="prog"><i style="width:${pct}%"></i></div><div class="pl"><span>${a}/${b}</span>${done?'<span class="b k" style="padding:1px 10px">Claim</span>':`<span>${pct}%</span>`}</div></div>`}).join(''),
+ spec:{Purpose:"Direct activity with clear, rewarded goals",Trigger:"Daily/weekly reset · progress events",Position:"Missions tab / home widget",Duration:"Per cycle (daily / weekly)",Blocking:"No",Layer:"z0",Variants:"in-progress / completable / claimed / locked",Source:"API (quest engine)",a11y:"role=list · progressbar per item"}},
+
+rewards:{g:"Retention / Stickiness",name:"Claimable Rewards Center",note:"Hub of claimable rewards with expiry countdowns — loss-aversion: claim before they expire. docx47/113–117.",
+ render:()=>VL("claimable rewards + expiry · header unread badge")+
+  `<div style="font-size:11px;color:#888;margin-bottom:6px">3 rewards to claim <span class="badge" style="border-color:#b56;color:#b56">2 expiring</span></div>`+
+  [['Free bet ₫50','Expires 02:14:30',1],['100% reload bonus','Expires in 2 days',0],['10 free spins','Expires in 5 days',0]].map(r=>`<div class="card" style="display:flex;align-items:center;gap:10px"><div style="flex:1"><b style="font-size:12px">${r[0]}</b><div style="font-size:10px;color:${r[2]?'#b56':'#888'}">${r[2]?'⏱ ':''}${r[1]}</div></div><span class="b k" style="padding:5px 12px">Claim</span></div>`).join(''),
+ spec:{Purpose:"Pull users back to claim before rewards expire",Trigger:"Reward granted · expiry approaching",Position:"Rewards center · header unread badge",Duration:"Until claimed or expired",Blocking:"No",Layer:"z0 + header badge",Variants:"claimable / expiring-soon / claimed / empty",Source:"API (promotions/eligible)",a11y:"Countdown aria-live polite; badge has aria-label"}},
+
+activity:{g:"Retention / Stickiness",name:"Live Activity Feed",note:"Live winners + 'now playing' + jackpot — social proof & FOMO that the site is alive. (Live-site has 'High Margin Winners'.)",
+ render:()=>VL("winners · now-playing · jackpot (realtime)")+
+  `<div class="ticker"><span>🏆 ***8 just won</span><b>₫12,000,000</b></div>`+
+  `<div class="ticker" style="margin-top:6px"><span>🔴 Now playing</span><b>1,204 online</b></div>`+
+  `<div class="ticker" style="margin-top:6px"><span>JACKPOT</span><b>₫ 8,420,331,090 ▲</b></div>`+
+  `<div style="font-size:10px;color:#aaa;margin-top:7px">Auto-scrolls · anonymized · pushed via WebSocket.</div>`,
+ spec:{Purpose:"Create social energy & FOMO (others winning now)",Trigger:"Realtime win / jackpot / online-count events",Position:"Home hero / product header band",Duration:"Continuous stream",Blocking:"No",Layer:"z10 (decorative band)",Variants:"winners feed / now-playing count / jackpot ticker",Source:"WebSocket (anonymized)",a11y:"aria-live off (decorative) · pausable"}},
+
+viptier:{g:"Retention / Stickiness",name:"VIP Tier Progress",note:"Current tier with progress + perks preview — aspiration: just a bit more to level up. docx40.",
+ render:()=>VL("tier progress + next-tier perks")+
+  `<div class="card"><div style="display:flex;justify-content:space-between"><b>VIP 1 · Gold</b><span style="font-size:10px;color:#888">VIP 2 next</span></div><div class="prog"><i style="width:80%"></i></div><div class="pl"><span>80%</span><span>₫500k more to VIP 2</span></div></div>`+
+  VL("unlocks at VIP 2")+`<div>${['0.8% rebate','Faster withdrawal','Birthday gift'].map(p=>`<span class="badge">${p}</span>`).join('')}</div>`,
+ spec:{Purpose:"Motivate continued play toward the next tier",Trigger:"Account/home view · turnover updates",Position:"Account home / loyalty widget",Duration:"Persistent",Blocking:"No",Layer:"z0",Variants:"progress / tier-up celebration / max tier",Source:"API (loyalty)",a11y:"progressbar + text label"}},
+
+streaksave:{g:"Retention / Stickiness",name:"Streak-save Nudge",note:"Reminder before a streak breaks — loss-aversion nudge late in the day (in-app + push).",
+ render:()=>VL("Toast / push · never a Modal")+
+  `<div class="toast"><span class="ico">🔥</span>Don't break your 6-day streak — check in before midnight<span style="margin-left:auto;text-decoration:underline">Check in</span></div>`+
+  `<div class="toast"><span class="ico">📲</span>Push: “Your streak ends in 2h — keep it alive 🔥”</div>`,
+ spec:{Purpose:"Recover an about-to-break streak",Trigger:"Streak active + not checked-in + day ending (or push)",Position:"Toast / push / home banner",Duration:"Until checked-in or day ends",Blocking:"No (Toast level — never interrupt with a Modal)",Layer:"z40 (toast) / push",Variants:"in-app toast / push notification",Source:"Engagement engine",a11y:"role=status"}},
+
+ltocount:{g:"Retention / Stickiness",name:"Limited-Time Offer Countdown",note:"Offer card with a live countdown — time scarcity drives immediate action.",
+ render:()=>VL("active countdown")+
+  `<div class="card"><div style="display:flex;justify-content:space-between;align-items:center"><b>⚡ Flash reload +50%</b><span class="badge" style="border-color:#b56;color:#b56">⏱ 00:23:59</span></div><div style="font-size:10px;color:#888;margin:4px 0">Top up now, get +50% instantly</div><div class="b k">Claim now</div></div>`+
+  VL("last hour (urgent)")+`<div class="card" style="border-color:#b56"><div style="display:flex;justify-content:space-between"><b style="color:#b56">⚡ Ends soon</b><span style="color:#b56;font-weight:700">00:04:12</span></div></div>`,
+ spec:{Purpose:"Convert now via time scarcity",Trigger:"Time-boxed promo active",Position:"Offer card / banner",Duration:"Until timer reaches 0",Blocking:"No",Layer:"z0 (card) / z10 (banner)",Variants:"hours / last-hour (urgent) / expired",Source:"CMS (promo schedule)",a11y:"countdown aria-live polite"}},
+
+leaderboard:{g:"Retention / Stickiness",name:"Leaderboard / Rank",note:"Weekly rank with the gap to the next place — competition and status.",
+ render:()=>VL("top 3 + your rank & gap")+
+  [['🥇','Player***1','₫4.2M'],['🥈','Player***7','₫3.8M'],['🥉','Player***3','₫3.1M']].map(r=>`<div class="card" style="display:flex;gap:10px;padding:8px 10px;font-size:12px"><span>${r[0]}</span><b style="flex:1">${r[1]}</b><span>${r[2]}</span></div>`).join('')+
+  `<div class="card" style="display:flex;gap:10px;padding:8px 10px;font-size:12px;border-color:#3a3a3a;border-width:2px"><span>#14</span><b style="flex:1">You</b><span>₫120k behind #13</span></div>`,
+ spec:{Purpose:"Drive competitive engagement & repeat play",Trigger:"Tournament / leaderboard period",Position:"Leaderboard page / home widget",Duration:"Per period (resets weekly)",Blocking:"No",Layer:"z0",Variants:"top-3 / your-rank / out-of-ranking",Source:"API (ranking)",a11y:"role=table · your row aria-current"}},
+
+zorder:{g:"Layering Z-index",name:"Z-index layering master table",note:"docx62 \"consider layer's sequence\" — fix the stacking order so it never gets messy.",
+ render:()=>`<div class="zdemo">
+   <div class="zlayer" style="left:14px;top:14px;right:14px;bottom:14px;background:#fafafa">z0 Content / product page</div>
+   <div class="zlayer" style="left:24px;top:24px;right:24px">z10 Banner / Marquee / Ticker (push, don't float)</div>
+   <div class="zlayer" style="right:24px;top:46px;bottom:54px;width:118px">z20 Slide-in panel / Bet Slip</div>
+   <div class="zlayer" style="right:30px;bottom:64px;width:96px;border-width:2px;border-color:#3a3a3a">z25 Live Stream PiP (persists across pages)</div>
+   <div class="zlayer" style="left:34px;bottom:60px">z30 Live Chat floating button</div>
+   <div class="zlayer" style="left:60px;top:78px">z40 Toast / Snackbar (queued)</div>
+   <div class="zlayer" style="left:90px;top:116px;border-width:2px;border-color:#3a3a3a">z50 Modal (mutually exclusive, one at a time)</div>
+   <div class="zlayer" style="left:40px;top:158px;background:#3a3a3a;color:#fff">z99 Forced maintenance / OS Push (covers all)</div>
+ </div>
+ <div style="font-size:11px;color:#666;margin-top:10px">Rules: Toasts go into a <b>queue</b>, no stacking; Modals are <b>mutually exclusive</b>; idle prompts use Toast level and <b>must not</b> use a Modal to interrupt the game; live stream / PiP sit below Modal. <b>PiP coexistence</b>: one PiP at a time, keeps playing across navigation, and must not overlap the Bet Slip or Live Chat button (PiP owns bottom-right; Chat shifts up or hides while PiP is docked there).</div>`,
+ spec:{Purpose:"Unify the stacking order of all overlays",Trigger:"—",Position:"Site-wide",Duration:"—",Blocking:"—",Layer:"z0→z99 (see diagram)",Variants:"—",Source:"Frontend spec",a11y:"Focus management: Modal traps focus, others don't steal it"}},
+};
+const order=["toast","snackbar","modal","banner","marquee","sysmsg","sheet","overlayx","streamoverlay","chatwidget","idle","randompopup","skeleton","empty","errorstate","progress","badge","chips","segmented","stepper","countdown","toggle","ticker","streak","missions","rewards","activity","viptier","streaksave","ltocount","leaderboard","zorder"];
+const navEl=document.getElementById('nav');
+function buildNav(active){
+ let html='',lastG='';
+ order.forEach(id=>{const c=C[id];if(c.g!==lastG){html+=`<div class="grp">${c.g}</div>`;lastG=c.g;}html+=`<button class="nav ${id===active?'on':''}" data-id="${id}">${c.name}</button>`;});
+ navEl.innerHTML=html;navEl.querySelectorAll('.nav').forEach(b=>b.onclick=()=>render(b.dataset.id));
+}
+function render(id){
+ const c=C[id];
+ document.getElementById('ct').textContent=c.name;
+ document.getElementById('cn').textContent=c.note;
+ document.getElementById('stage').innerHTML=c.render();
+ const s=c.spec;const keys=["Purpose","Trigger","Position","Duration","Blocking","Layer","Variants","Source","a11y"];
+ document.getElementById('spec').innerHTML='<h2>Component Contract (9 columns)</h2><table>'+keys.map(k=>`<tr><td class="k">${k}</td><td>${s[k]||s[k.toLowerCase()]||'—'}</td></tr>`).join('')+'</table><div class="tmpl">These 9 columns are the definition template handed to IT: fill them in for every component for consistent implementation.</div>';
+ buildNav(id);
+}
+render('toast');
+</script>
+</body>
+</html>

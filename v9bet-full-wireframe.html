@@ -1,0 +1,466 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>V9Bet · Full-Platform Wireframe (per full docx)</title>
+<style>
+  :root{--ink:#2b2b2b;--line:#c9c9c9;--line2:#9a9a9a;--muted:#8a8a8a;--paper:#fff;--bg:#ececed;--fill:#f3f3f4;--solid:#3a3a3a}
+  *{box-sizing:border-box}
+  body{margin:0;font:14px/1.5 -apple-system,"Noto Sans TC",Arial,sans-serif;color:var(--ink);background:var(--bg)}
+  .app{display:grid;grid-template-columns:280px 1fr 340px;min-height:100vh}
+  aside{background:var(--paper);border-right:1px solid var(--line);padding:14px;overflow:auto;max-height:100vh}
+  main{padding:22px;display:flex;flex-direction:column;align-items:center;gap:12px}
+  .spec{background:var(--paper);border-left:1px solid var(--line);padding:16px;overflow:auto;max-height:100vh}
+  h1{font-size:15px;margin:0 0 4px}
+  .sub{color:var(--muted);font-size:12px;margin:0 0 12px}
+  .nav{display:flex;gap:8px;align-items:center;border:1px solid transparent;border-radius:6px;padding:6px 8px;cursor:pointer;font-size:12.5px}
+  .nav:hover{background:var(--fill)}
+  .nav.active{background:#e3e3e6;border-color:var(--line2);font-weight:600}
+  .nav .num{width:18px;height:18px;flex:0 0 18px;border:1px solid var(--line2);border-radius:50%;display:grid;place-items:center;font-size:10px;color:var(--muted)}
+  .nav.active .num{background:var(--solid);color:#fff;border-color:var(--solid)}
+  .group-title{font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:13px 0 5px;font-weight:700}
+  .toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:center}
+  .btn{border:1px solid var(--line2);background:#fff;border-radius:6px;padding:6px 12px;font-size:12px;cursor:pointer}
+  .btn:hover{background:var(--fill)}
+  .state-tabs{display:flex;gap:4px;border:1px solid var(--line);border-radius:8px;padding:3px;background:#fff;flex-wrap:wrap;max-width:520px}
+  .state-tabs button{border:0;background:none;padding:5px 9px;border-radius:6px;font-size:11.5px;cursor:pointer;color:var(--muted)}
+  .state-tabs button.on{background:var(--solid);color:#fff}
+  .phone{width:378px;border:2px solid var(--ink);border-radius:26px;background:#fff;padding:8px;box-shadow:0 6px 24px rgba(0,0,0,.12)}
+  .notch{height:16px;display:flex;justify-content:center}
+  .notch::after{content:"";width:110px;height:14px;background:var(--ink);border-radius:0 0 10px 10px}
+  .screen{height:680px;overflow:auto;border:1px solid var(--line);border-radius:16px;padding:16px;background:#fff}
+  .screen::-webkit-scrollbar{width:5px}.screen::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px}
+  .bar{display:flex;align-items:center;justify-content:space-between;font-weight:700;font-size:15px;margin:0 0 12px;color:#222}
+  .bar .l,.bar .r{color:var(--muted);font-weight:400;font-size:18px;min-width:24px}
+  .bar .r{text-align:right}
+  .scr-step{text-align:center;color:var(--muted);font-size:12px;margin:-6px 0 12px}
+  .field{border:1px dashed var(--line2);border-radius:9px;padding:12px 13px;color:var(--muted);margin:9px 0;display:flex;justify-content:space-between;align-items:center;background:var(--fill);font-size:13px}
+  .field small{color:#b0b0b0}
+  .row{display:flex;gap:9px}.row>*{flex:1}
+  .opt{border:1px solid var(--line);border-radius:9px;padding:11px 13px;margin:7px 0;display:flex;align-items:center;gap:11px;font-size:13px}
+  .opt.sel{border-color:var(--solid);border-width:2px}
+  .dot{width:17px;height:17px;border:1px solid var(--line2);border-radius:50%;flex:0 0 17px}
+  .dot.on{border-color:var(--solid);border-width:5px}
+  .sq{width:17px;height:17px;border:1px solid var(--line2);border-radius:4px;flex:0 0 17px}
+  .sq.on{background:var(--solid)}
+  .ph{border:1px dashed var(--line2);border-radius:9px;display:grid;place-items:center;color:#b6b6b6;background:var(--fill);margin:9px 0;font-size:12px;text-align:center;padding:8px}
+  .cta{background:var(--solid);color:#fff;text-align:center;border-radius:22px;padding:13px;margin:14px 0 6px;font-weight:600;font-size:14px}
+  .cta.ghost{background:#fff;color:var(--muted);border:1px solid var(--line2)}
+  .cta.disabled{background:#cfcfcf;color:#fff}
+  .cta.sm{padding:9px;border-radius:8px;margin:8px 0}
+  .link{text-align:center;color:#666;font-size:12.5px;margin-top:7px}
+  .link b{color:var(--ink);text-decoration:underline}
+  .li{display:flex;align-items:center;justify-content:space-between;gap:10px;border:1px solid var(--line);border-radius:9px;padding:11px 13px;margin:7px 0;font-size:13px;background:#fff}
+  .li .ic{width:30px;height:30px;border:1px solid var(--line);border-radius:7px;flex:0 0 30px;display:grid;place-items:center;color:#aaa;font-size:13px;background:var(--fill)}
+  .li .g{flex:1}.li .g small{display:block;color:var(--muted);font-size:11px}
+  .li .rt{color:var(--muted);font-size:12px;text-align:right}
+  .card{border:1px solid var(--line);border-radius:11px;padding:13px;margin:9px 0;background:#fff}
+  .card.fill{background:var(--fill);border-style:dashed}
+  .ctitle{font-weight:700;font-size:13px;margin-bottom:6px}
+  .seg{display:flex;border:1px solid var(--line2);border-radius:9px;overflow:hidden;margin:9px 0}
+  .seg button{flex:1;border:0;background:#fff;padding:9px;font-size:12.5px;cursor:pointer;color:var(--muted);border-right:1px solid var(--line)}
+  .seg button:last-child{border-right:0}
+  .seg button.on{background:var(--solid);color:#fff}
+  .tag{display:inline-block;font-size:10px;border:1px solid var(--line2);border-radius:4px;padding:1px 6px;color:var(--muted);vertical-align:middle}
+  .tag.k{background:var(--solid);color:#fff;border-color:var(--solid)}
+  .tag.req{border-color:#b56;color:#b56}
+  .badge{display:inline-block;font-size:10px;border:1px solid var(--line2);border-radius:4px;padding:1px 6px;color:var(--muted);margin-left:6px;vertical-align:middle}
+  .badge.req{border-color:#b56;color:#b56}
+  .amt{text-align:center;font-size:30px;font-weight:800;letter-spacing:.5px;margin:6px 0;color:#222}
+  .amt small{display:block;font-size:12px;font-weight:400;color:var(--muted)}
+  .prog{height:9px;border-radius:6px;background:#e3e3e3;overflow:hidden;margin:6px 0}
+  .prog i{display:block;height:100%;background:var(--solid)}
+  .pl{font-size:11px;color:var(--muted);display:flex;justify-content:space-between;margin-top:3px}
+  .bubble{max-width:78%;border-radius:12px;padding:9px 12px;margin:6px 0;font-size:12.5px;border:1px solid var(--line);background:var(--fill)}
+  .bubble.me{margin-left:auto;background:#e3e3e6;border-color:var(--line2)}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:9px 0}
+  .gi{border:1px solid var(--line);border-radius:9px;padding:10px 4px;text-align:center;font-size:11px;color:#555;background:#fff}
+  .gi .gic{height:30px;display:grid;place-items:center;color:#aaa;font-size:18px}
+  .err{border:1px solid #c98;background:#fbf2ef;color:#a55;border-radius:8px;padding:9px 11px;font-size:12px;margin:8px 0}
+  .ok{border:1px solid #9bc;background:#eef5fb;color:#467;border-radius:8px;padding:9px 11px;font-size:12px;margin:8px 0}
+  .hint{font-size:11.5px;color:var(--muted);margin:6px 2px}
+  .tog{display:flex;align-items:center;gap:11px;border:1px solid var(--line);border-radius:9px;padding:10px 13px;margin:7px 0;font-size:13px}
+  .sw{width:38px;height:21px;border-radius:11px;border:1px solid var(--line2);position:relative;flex:0 0 38px}
+  .sw i{position:absolute;top:2px;width:15px;height:15px;border-radius:50%;background:#fff;border:1px solid var(--line2)}
+  .sw.on{background:var(--solid)}.sw.on i{right:2px;border-color:var(--solid)}.sw.off i{left:2px}
+  .dots{display:flex;gap:6px;justify-content:center;margin:12px 0}
+  .dots i{width:7px;height:7px;border-radius:50%;background:var(--line2)}.dots i.on{background:var(--solid);width:18px;border-radius:4px}
+  .notelist{font-size:12px}.notelist .nl{border-left:3px solid var(--line2);padding:4px 0 4px 10px;margin:7px 0;color:#444}
+  .notelist .nl b{color:#222}
+  /* overlay popup */
+  .pop{position:relative;border:2px solid var(--solid);border-radius:12px;padding:14px;margin:10px 0;background:#fff;box-shadow:0 6px 18px rgba(0,0,0,.12)}
+  .pop .x{position:absolute;right:10px;top:8px;color:var(--muted)}
+  .toast{border:1px solid var(--line2);border-radius:9px;padding:9px 12px;margin:8px 0;background:#fff;font-size:12px;display:flex;gap:8px;align-items:center}
+  .marquee{border:1px solid var(--line);border-radius:6px;padding:6px 10px;font-size:11.5px;color:#555;background:var(--fill);margin:8px 0;overflow:hidden;white-space:nowrap}
+  /* spec */
+  .spec h2{font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin:16px 0 6px}
+  .spec h2:first-child{margin-top:0}
+  .spec ul{margin:0;padding-left:15px}.spec li{margin:4px 0;font-size:12px}
+  .stlist{display:flex;flex-wrap:wrap;gap:5px}
+  .pill{font-size:10.5px;border:1px solid var(--line2);border-radius:11px;padding:2px 8px;background:var(--fill)}
+  .api{font-family:ui-monospace,Menlo,monospace;font-size:10.5px;background:var(--fill);border:1px solid var(--line);border-radius:6px;padding:8px;white-space:pre-wrap;color:#555}
+  .srcline{font-size:10.5px;color:#999}
+  .legend{font-size:10.5px;color:var(--muted);border-top:1px solid var(--line);margin-top:12px;padding-top:9px}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside>
+    <h1>V9Bet Full-Platform Wireframe</h1>
+    <p class="sub">Per full docx "New customers sign up flow" · all 117 items covered · grayscale low-fidelity</p>
+    <div id="nav"></div>
+    <div class="legend">
+      <span class="badge req">Required</span> mandatory · <span class="badge">app only</span> App only<br>
+      The spec panel on the right notes the matching docx line numbers (src).<br>
+      Pure rules/principles are on the final "Rules & Notes" page.
+    </div>
+  </aside>
+  <main>
+    <div class="toolbar">
+      <button class="btn" id="prev">←</button>
+      <div class="state-tabs" id="states"></div>
+      <button class="btn" id="next">→</button>
+    </div>
+    <div class="phone"><div class="notch"></div><div class="screen" id="screen"></div></div>
+    <div class="hint" id="bread"></div>
+  </main>
+  <div class="spec" id="spec"></div>
+</div>
+
+<script>
+/* ---------- primitives ---------- */
+const BAR=(t,l='←',r='')=>`<div class="bar"><span class="l">${l}</span><span>${t}</span><span class="r">${r}</span></div>`;
+const STEP=t=>`<div class="scr-step">${t}</div>`;
+const F=(l,s='')=>`<div class="field"><span>${l}</span>${s?`<small>${s}</small>`:''}</div>`;
+const CTA=(t,m='')=>`<div class="cta ${m}">${t}</div>`;
+const OPT=(t,sel=false,k='dot')=>`<div class="opt ${sel?'sel':''}"><span class="${k} ${sel?'on':''}"></span><span style="flex:1">${t}</span></div>`;
+const LI=(l,r='›',ic='',sub='')=>`<div class="li">${ic?`<span class="ic">${ic}</span>`:''}<span class="g">${l}${sub?`<small>${sub}</small>`:''}</span><span class="rt">${r}</span></div>`;
+const CARD=(h,t='',fill=false)=>`<div class="card ${fill?'fill':''}">${t?`<div class="ctitle">${t}</div>`:''}${h}</div>`;
+const SEG=(o,a)=>`<div class="seg">${o.map((x,i)=>`<button class="${i===a?'on':''}">${x}</button>`).join('')}</div>`;
+const PH=(t,h=90)=>`<div class="ph" style="height:${h}px">${t}</div>`;
+const PROG=(p,l='',r='')=>`<div class="prog"><i style="width:${p}%"></i></div><div class="pl"><span>${l}</span><span>${r}</span></div>`;
+const TOG=(l,on)=>`<div class="tog"><span style="flex:1">${l}</span><span class="sw ${on?'on':'off'}"><i></i></span></div>`;
+const TAG=(t,k='')=>`<span class="tag ${k}">${t}</span>`;
+const BADGE=(t,req=false)=>`<span class="badge ${req?'req':''}">${t}</span>`;
+const LINK=t=>`<div class="link">${t}</div>`;
+const AMT=(v,s='')=>`<div class="amt">${v}${s?`<small>${s}</small>`:''}</div>`;
+const GRID=items=>`<div class="grid3">${items.map(x=>`<div class="gi"><div class="gic">${x[1]}</div>${x[0]}</div>`).join('')}</div>`;
+const BUB=(t,me=false)=>`<div class="bubble ${me?'me':''}">${t}</div>`;
+const DOTS=(a,n=3)=>`<div class="dots">${Array.from({length:n}).map((_,i)=>`<i class="${i===a?'on':''}"></i>`).join('')}</div>`;
+
+/* ---------- screens ---------- */
+const S=[
+/* ===== 0 · Entry / Rules ===== */
+{g:"0 · Entry/Rules",t:"Home (before login)",src:"58,59,54,32,02",states:["Default"],
+ r:()=>BAR("V9BET","☰","Login/Sign Up")+
+   `<div class="marquee">🎏 Lucky-ornament greeting · Marquee: this week's promos / system notices scrolling text…</div>`+
+   PH("Hero Banner / Carousel",110)+
+   `<div class="ctitle">Product shortcuts (Desktop uses top menu)</div>`+
+   GRID([["Sports","⚽"],["Live","🃏"],["Slots","🎰"],["Lottery","🎟"],["Cards","♟"],["More","⋯"]])+
+   CARD(LI("Sign up now for a welcome gift","›","🎁"),"")+
+   LINK("Already a member? <b>Login</b>"),
+ spec:{goal:"Before-login home: lucky-ornament greeting, top menu (Desktop), product shortcuts and cross-product traffic.",states:["before-login","RWD: Desktop top menu / Mobile hamburger","content controlled by CMS"],notes:["docx58 lucky-ornament greeting; 59 Desktop uses top menu; 54 product shortcuts cross-link; 02 some mobile modules framed in from desktop.","32 promo marquee scrolling text."]}},
+
+{g:"0 · Entry/Rules",t:"Region/IP block",src:"09,12,18",states:["Geo block","Negative database"],
+ r:(s)=>BAR("","",'')+PH("🚫",80)+
+   `<div class="ctitle" style="text-align:center">${s===0?'Not available in your region':'This account/device is restricted'}</div>`+
+   STEP(s===0?'Access restricted per Allowed IP / Pre-login rules':'Matched Negative Database; sign-up and login blocked')+
+   CARD(`<div class="hint">Code: ${s===0?'GEO_BLOCKED':'NEG_DB_BLOCKED'}　Detected IP: xxx.xxx.xxx.xxx</div>`)+
+   CTA("Contact Live Chat",'ghost'),
+ spec:{goal:"Pre-checks: Allowed IP / Pre-login rules / Negative Database.",states:["geo blocked","negative DB block (sign-up/login)","VPN detection"],fields:["ip","geo","device_id","neg_db_hit"],notes:["docx09 Allowed IP; 12 Pre-login rules; 18 Negative Database controls whether sign-up/login is allowed."]}},
+
+{g:"0 · Entry/Rules",t:"Language/Currency/Timezone",src:"10,11,13",states:["Language","Timezone"],
+ r:(s)=>BAR("Region & display preferences")+
+   (s===0?STEP("Choose language (shared with CMS translations)")+OPT("Traditional Chinese",true)+OPT("English")+OPT("Tiếng Việt")+OPT("ไทย")
+         :STEP("Choose timezone")+OPT("GMT+8 Taipei/Singapore",true)+OPT("GMT+7 Bangkok/Jakarta")+OPT("Custom"))+
+   CARD(F("Currency display ▾ VND"),"Currency")+CTA("Apply"),
+ spec:{goal:"Pre-setup: language, timezone, currency display preferences.",states:["language","timezone","currency display"],fields:["language","timezone","currency"],notes:["docx10/11/13; language list shared with CMS translation module (60)."]}},
+
+/* ===== 1 · Sign Up / Login ===== */
+{g:"1 · Sign Up/Login",t:"Sign Up",src:"14,75-82",states:["Default","Submittable","Captcha (conditional)"],
+ r:(s)=>BAR("Sign Up","✕")+STEP("Sign up with phone number (default)")+
+   F("Country code ▾ Phone number","Required")+F("Referral code","Optional")+
+   `<div class="opt"><span class="sq ${s>0?'on':''}"></span><span style="flex:1">I am 21+ and agree to the <b style="text-decoration:underline">Terms</b> and <b style="text-decoration:underline">Privacy Policy</b></span></div>`+
+   (s===2?PH("hCaptcha (shown only when risk-triggered)",70):`<div class="hint">* Uses OTP verification; Captcha skipped by default.</div>`)+
+   CTA("Sign Up",s===0?'disabled':'')+LINK("Already have an account? <b>Login here</b>"),
+ spec:{goal:"Phone number is the default sign-up entry point.",states:["disabled","enabled after terms checked","Captcha conditional","loading","PHONE_EXISTS","INVALID_PHONE"],fields:["country_code","phone","referral_code?","accept_terms","captcha_token?"],api:"POST /register/start → { register_token, otp_sent }",notes:["docx76-82; 79 Captcha skippable thanks to OTP; 49 Google sign-up TBC."]}},
+
+{g:"1 · Sign Up/Login",t:"OTP verify",src:"81,49",states:["Waiting","Error","Fail→WhatsApp"],
+ r:(s)=>BAR("Verify phone")+STEP("Code sent to +xx ****1234")+
+   `<div style="display:flex;gap:7px;justify-content:center;margin:16px 0">${'_'.repeat(6).split('').map((_,i)=>`<span style="width:40px;height:50px;border:1px solid ${i===0?'#3a3a3a':'#9a9a9a'};border-width:${i===0?2:1}px;border-radius:8px;display:inline-grid;place-items:center;color:#aaa;font-size:18px">_</span>`).join('')}</div>`+
+   (s===1?`<div class="err">Wrong code (2 tries left)</div>`:'')+
+   (s===2?`<div class="err">Too many failures. Try WhatsApp?</div>`+CTA("Verify via WhatsApp",'ghost'):'')+
+   LINK(`Didn't get it? <b>${s===2?'Locked':'Resend 60s'}</b>`)+LINK("<b>Change phone number</b>")+CTA("Verify and continue"),
+ spec:{goal:"Verify phone ownership, then proceed to account setup.",states:["pending","verifying","wrong_code","expired","locked","WhatsApp fallback"],fields:["register_token","otp_code","channel"],api:"POST /register/verify-otp",notes:["docx49 WhatsApp fallback on OTP failure; 81 proceed only on success."]}},
+
+{g:"1 · Sign Up/Login",t:"Login",src:"16",states:["Password","PIN","Biometric"],
+ r:(s)=>BAR("Login","✕")+PH("V9 Logo",70)+
+   F("Account / Phone / Email")+
+   (s===0?F("Password","",):s===1?`<div style="display:flex;gap:7px;justify-content:center;margin:12px 0">${'____'.split('').map(()=>`<span style="width:42px;height:50px;border:1px solid #9a9a9a;border-radius:8px;display:inline-grid;place-items:center;color:#aaa">_</span>`).join('')}</div>`:PH("👤 Face ID / Fingerprint",90))+
+   CTA("Login")+LINK("<b>Forgot account / password?</b>")+LINK("No account? <b>Sign Up</b>"),
+ spec:{goal:"Multi-method login: password / PIN / biometric.",states:["password","pin","biometric","lockout","risk re-verification"],fields:["identifier","secret|pin","biometric"],api:"POST /auth/login",notes:["docx16; biometric maps to app setting 86."]}},
+
+{g:"1 · Sign Up/Login",t:"Verification method",src:"15",states:["Multiple methods"],
+ r:()=>BAR("Choose verification method")+STEP("You have multiple methods linked; choose where to receive the code")+
+   OPT("📱 V9 App push verification",true)+OPT("💬 Social messaging platform (first time only)")+OPT("📨 SMS")+OPT("✉️ Email")+CTA("Send code"),
+ spec:{goal:"When a member has multiple contact methods linked, they can choose the OTP delivery channel.",states:["V9 app push","social msg (first time)","SMS","Email"],notes:["docx15 Authentication: V9 app / social platform (first time, ref Amazon) / SMS / Email, member's choice."]}},
+
+{g:"1 · Sign Up/Login",t:"Forgot/recover account",src:"17",states:["Enter clues","Match old password"],
+ r:(s)=>BAR("Account recovery")+STEP("Recover your account by matching existing info")+
+   (s===0?F("Registered phone / Email")+F("Account recovery Email"):F("Any one of your previously used passwords")+`<div class="hint">System matches one historical password + basic profile.</div>`)+
+   CTA("Submit for matching")+LINK("Still can't recover? <b>Contact Live Chat</b>"),
+ spec:{goal:"Recover account by matching one historical password + basic profile / recovery Email.",states:["enter clues","match old password","success→reset","fail→Live Chat"],fields:["identifier","recovery_email","old_password_attempt"],notes:["docx17 can match basic profile / recovery Email using one of the account's last few passwords."]}},
+
+/* ===== 2 · New-customer Setup (onboarding 83-95) ===== */
+{g:"2 · New-customer Setup",t:"Setup overview",src:"66,83,84",states:["Just entered","Partly done"],
+ r:(s)=>BAR("Set up your account","")+STEP("Finish setup to get started (required items first)")+
+   [["Choose account currency","mandatory",s>0],["Face ID / biometric","mandatory · app only",s>0],["Notification permission","",false],["Profile + bank/USDT","",false],["Add Email (recovery)","Optional*",false],["Password / PIN","",false],["Theme / language","",false],["Interactive tutorial","",false],["Download V9 App","",false]]
+   .map((x,i)=>`<div class="li"><span class="ic">${x[2]?'✓':i+1}</span><span class="g">${x[0]}${x[1]?`<small>${x[1]}</small>`:''}</span><span class="rt">›</span></div>`).join('')+CTA("Start setup"),
+ spec:{goal:"After sign-up (FE UX), immediately guide through setup. Uses 'overview → step-by-step wizard'.",states:["initial","partial","cannot skip required","done→welcome page"],fields:["customer_id","setup_progress[]"],notes:["docx66 setup page on first login; 84 run account setup immediately."]}},
+
+{g:"2 · New-customer Setup",t:"Currency",src:"85",states:["Unselected","Selected"],
+ r:(s)=>BAR("Account currency"+BADGE("Required",true))+STEP("Cannot be changed once set")+OPT("🇻🇳 VND",s===1)+OPT("🇹🇭 THB")+OPT("💲 USDT")+CTA("Confirm",s===0?'disabled':''),
+ spec:{goal:"Set settlement currency (mandatory).",states:["disabled","selected","CURRENCY_LOCKED"],fields:["currency"],notes:["docx85 required."]}},
+
+{g:"2 · New-customer Setup",t:"Face ID",src:"86",states:["Prompt","Enabled"],
+ r:(s)=>BAR("Face ID / biometric"+BADGE("app only"))+PH("[ Face ID ]",130)+STEP("For quick login")+(s===1?OPT("Enabled",true):'')+CTA(s===1?"Continue":"Enable Face ID")+LINK("<b>Later</b>"),
+ spec:{goal:"App-side biometric (mandatory on app).",states:["prompt","permission denied","enabled","skipped on Web"],fields:["biometric_enabled","device_id"],notes:["docx86 required on App only."]}},
+
+{g:"2 · New-customer Setup",t:"Notifications",src:"87",states:["Prompt"],
+ r:()=>BAR("Notification settings")+STEP("Choose notification types")+TOG("Deposit/withdrawal status",true)+TOG("Bet settlement alerts",true)+TOG("Exclusive promotions",true)+TOG("System/maintenance",false)+CTA("Allow and continue")+LINK("<b>Later</b>"),
+ spec:{goal:"Push permission and preferences.",states:["prompt","deny→save in-app prefs","saved"],fields:["push_token?","prefs{}"],notes:["docx87; maps to 32 Messaging."]}},
+
+{g:"2 · New-customer Setup",t:"Profile+payout",src:"88",states:["Bank","USDT"],
+ r:(s)=>BAR("Profile + payout")+STEP("Used for withdrawals; can add later")+F("Name (matches payout account)")+`<div class="row">${F("Date of birth")}${F("Gender ▾")}</div>`+SEG(["Bank account","USDT"],s)+(s===0?F("Bank ▾")+F("Bank account number")+F("Account holder"):F("Chain ▾ TRC20/ERC20")+F("USDT address"))+CTA("Save")+LINK("<b>Later</b>"),
+ spec:{goal:"Profile + payout account (bank/USDT).",states:["bank","usdt","verifying","linked (may trigger KYC)"],fields:["full_name","dob","gender","payout{}"],notes:["docx88; blocks withdrawal/promo claim if missing; relates to KYC (26)."]}},
+
+{g:"2 · New-customer Setup",t:"Email",src:"89,98-100",states:["Phone verified (optional)","Email only (required)"],
+ r:(s)=>BAR("Add Email"+BADGE(s===1?"Required":"Optional*",s===1))+STEP("Secondary contact for account recovery")+F("Email")+(s===1?`<div class="hint">You signed up with Email; phone verification required before claiming promos/withdrawing.</div>`:`<div class="hint">* Phone verified, so Email can be added later.</div>`)+CTA("Send verification email")+(s===0?LINK("<b>Later</b>"):''),
+ spec:{goal:"Secondary Email for account recovery.",states:["optional (phone verified)","required (email only)","email sent","verified","link expired"],fields:["email","email_verified"],notes:["docx98-100 verification status conditions; 89 secondary."]}},
+
+{g:"2 · New-customer Setup",t:"Password/PIN",src:"90",states:["Password","PIN"],
+ r:(s)=>BAR("Login security")+SEG(["Password","Simple PIN"],s)+(s===0?F("Password","8+")+F("Re-enter"):`<div style="display:flex;gap:7px;justify-content:center;margin:10px 0">${'____'.split('').map(()=>`<span style="width:42px;height:48px;border:1px solid #9a9a9a;border-radius:8px;display:inline-grid;place-items:center;color:#aaa">_</span>`).join('')}</div>`+STEP("4-digit PIN"))+CTA("Set"),
+ spec:{goal:"Password or simple PIN.",states:["password","pin","too weak","mismatch"],fields:["auth_secret","auth_type"],notes:["docx90; coexists with Face ID."]}},
+
+{g:"2 · New-customer Setup",t:"Theme/language",src:"91,92",states:["Theme","Language"],
+ r:(s)=>BAR("Appearance")+(s===0?STEP("Theme")+OPT("🌙 Dark",true)+OPT("☀️ Light")+OPT("⚙️ Follow system"):STEP("Language")+OPT("Traditional Chinese",true)+OPT("English")+OPT("Tiếng Việt"))+CTA("Continue"),
+ spec:{goal:"Theme (dark/light/system) + language.",states:["theme","language"],fields:["theme","language"],notes:["docx91/92."]}},
+
+{g:"2 · New-customer Setup",t:"Interactive tutorial",src:"93",states:["Promotions","Inbox","Profile","Refer"],
+ r:(s)=>{const t=[["Exclusive promotions","View and claim your promotions"],["Inbox","In-app messages, announcements"],["Profile","Account/security/preferences"],["Refer a Friend","Invite friends, both get rewards"]][s];return BAR("Quick tour","✕")+PH(`[ Illustration: ${t[0]} ]`,200)+`<div style="text-align:center;font-weight:700">${t[0]}</div>`+STEP(t[1])+DOTS(s,4)+CTA(s===3?"Done":"Next")+LINK("<b>Skip</b>");},
+ spec:{goal:"Tutorial covers promotions/inbox/profile/RAF.",states:["4-step carousel","skippable","tutorial_seen"],fields:["tutorial_seen"],notes:["docx93; content managed in CMS."]}},
+
+{g:"2 · New-customer Setup",t:"Download App",src:"94",states:["Default"],
+ r:()=>BAR("Download V9 App","✕")+PH("[ QR Code ]",130)+STEP("Faster login on the App")+CTA("Download V9 App")+LINK("<b>Use web version</b>"),
+ spec:{goal:"Guide download of the native App.",states:["default","skipped in App"],notes:["docx94; 73 App top menu pinned (see design)."]}},
+
+{g:"2 · New-customer Setup",t:"Welcome+promos",src:"95,97",states:["Has promos","No promos"],
+ r:(s)=>BAR("🎉 Welcome","")+STEP("Account ready; new-member exclusive promos")+(s===0?CARD(TAG("New","k")+`<div style="font-weight:700;margin:6px 0 2px">100% first-deposit bonus</div><div class="hint">churn x10</div>`+CTA("Claim now",'sm'),'')+CARD(TAG("Task")+`<div style="font-weight:700;margin:6px 0">First deposit unlocks a free bet</div>`,''):`<div class="ok">No applicable promotions right now; watch your inbox.</div>`)+CTA("Go to Deposit")+CTA("Browse home",'ghost'),
+ spec:{goal:"Welcome and push applicable promos in real time → drive to deposit.",states:["has-promo list","empty","loading/error"],fields:["eligible_promotions[]"],api:"GET /promotions/eligible?segment=new_customer",notes:["docx95; 97 a random unique id is assigned as the default username (editable)."]}},
+
+/* ===== 3 · Account / Settings ===== */
+{g:"3 · Account",t:"Account home",src:"21,24",states:["Default"],
+ r:()=>BAR("My Account","←","⚙️")+CARD(`<div style="display:flex;justify-content:space-between"><div><div style="font-weight:700">Member #A1B2C3D4</div><small class="hint">VIP 1 · VND</small></div><span class="tag">Verified</span></div>`,'')+
+   AMT("₫ 1,250,000","Main wallet balance")+`<div class="row">${CTA("Deposit",'sm')}${CTA("Withdraw",'sm ghost')}</div>`+
+   LI("Profile & Preferences","›","👤")+LI("Account Security","›","🔒")+LI("KYC verification","Pending ›","🪪")+LI("Product preferences","›","🎯")+LI("Account Status","Active ›","🟢")+LI("Account Statement","›","📄")+LI("Live Chat","›","💬"),
+ spec:{goal:"Account overview: balance, shortcuts, entries to each setting.",states:["default","status badges"],notes:["docx21/24; includes Face ID/color/timezone/language/notifications/recovery setup/product preferences."]}},
+
+{g:"3 · Account",t:"Profile & Preferences",src:"24",states:["Default"],
+ r:()=>BAR("Profile & Preferences")+LI("Username","#A1B2C3D4 ›")+LI("Face ID","Enabled ›")+LI("Theme","Dark ›")+LI("Timezone","GMT+8 ›")+LI("Language","Trad. Chinese ›")+LI("Notifications","›")+LI("Account recovery Email","Add ›")+LI("Product preferences","›"),
+ spec:{goal:"Settings hub: Face ID/theme/timezone/language/notifications/recovery Email/product preferences.",states:["default"],fields:["username (editable)","theme","timezone","language","recovery_email","product_pref[]"],notes:["docx24; 97 username defaults to a random id, editable."]}},
+
+{g:"3 · Account",t:"Account Status",src:"25",states:["Active","Suspend","Blacklist"],
+ r:(s)=>{const m=[["🟢 Active","Account normal, fully usable"],["🟡 Suspended","Account suspended, some features limited"],["🔴 Blacklisted","Account blacklisted, please contact Live Chat"]][s];return BAR("Account Status")+CARD(`<div style="font-size:20px;font-weight:700">${m[0]}</div><div class="hint">${m[1]}</div>`,'')+(s>0?`<div class="err">Reason: risk control/compliance. Appeals allowed.</div>`+CTA("Contact Live Chat",'ghost'):'');},
+ spec:{goal:"Show account status and restriction explanation.",states:["active","suspend","blacklisted"],fields:["account_status","reason?"],notes:["docx25."]}},
+
+{g:"3 · Account",t:"KYC verification",src:"26",states:["Pending upload","Reviewing","Approved","Rejected"],
+ r:(s)=>{const st=[["Pending upload","Please upload ID document and selfie"],["Reviewing","Document under review, approx. 1-2 business days"],["Approved","Identity verified ✓"],["Rejected","Document unclear, please re-upload"]][s];return BAR("KYC identity verification")+CARD(`<div style="font-weight:700">${st[0]}</div><div class="hint">${st[1]}</div>`,'')+(s===0||s===3?PH("📷 ID front")+PH("📷 ID back")+PH("🤳 Selfie holding ID")+CTA("Upload and submit"):s===1?PROG(60,"Review progress"):'')+(s===3?`<div class="err">Rejection reason: blurry image</div>`:'');},
+ spec:{goal:"KYC document upload and review status; risk-triggered.",states:["pending_upload","reviewing","approved","rejected","risk_trigger"],fields:["doc_front","doc_back","selfie","kyc_status"],api:"POST /kyc/documents",notes:["docx26 risk triggers + doc upload."]}},
+
+{g:"3 · Account",t:"Account Security",src:"27",states:["Default"],
+ r:()=>BAR("Account Security")+`<div class="ctitle">Login devices</div>`+LI("iPhone 15 · This device","Current ›","📱")+LI("Chrome · Windows","2 days ago ›","💻")+`<div class="ctitle">Recent login history</div>`+CARD(`<div class="hint">2026-06-19 10:22 · IP 1.2.3.4 · Taipei<br>2026-06-18 21:10 · IP 5.6.7.8 · Singapore</div>`,'')+CTA("Sign out all other devices",'ghost'),
+ spec:{goal:"Device management, login history, IP, remote sign-out.",states:["device list","login logs","sign out all"],fields:["devices[]","login_logs[]","ip"],notes:["docx27."]}},
+
+/* ===== 4 · Wallet / Balance ===== */
+{g:"4 · Wallet",t:"Wallet overview",src:"28,31",states:["Default"],
+ r:()=>BAR("My Wallet","←","Statement")+CARD(AMT("₫ 1,250,000","Main Wallet · churn deposit x1")+CTA("Transfer/Withdraw",'sm ghost'),'',true)+
+   `<div class="ctitle">Bonus wallets (separate per product)</div>`+
+   CARD(`<div style="display:flex;justify-content:space-between"><b>Sports bonus</b><span>₫ 1,000,000</span></div>`+PROG(40,"churn x10","40% done")+`<div class="hint">Per-bet limit ₫10</div>`,'')+
+   CARD(`<div style="display:flex;justify-content:space-between"><b>Live bonus</b><span>₫ 500,000</span></div>`+PROG(0,"churn x10","0%"),'')+
+   `<div class="hint">Bonus transfers to main wallet once churn is met; if lost, that wallet's churn resets.</div>`,
+ spec:{goal:"Main wallet + separate per-product bonus wallets, showing churn progress and per-bet limit.",states:["main wallet","bonus wallets","churn progress","lost→reset","met→transfer to main"],fields:["main_balance","bonus_wallets[]{product,balance,churn_x,churn_done,per_bet_limit}"],notes:["docx28-31 bonus wallet mechanics, per stake, churn rules."]}},
+
+{g:"4 · Wallet",t:"Select wallet before betting",src:"29,30",states:["Select main","Select bonus"],
+ r:(s)=>BAR("Choose betting wallet","✕")+STEP("Choose a wallet before launching the game")+OPT("Main Wallet ₫1,250,000 (no per-bet limit)",s===0)+OPT("Sports bonus ₫1,000,000 (per-bet limit ₫10)",s===1)+(s===1?`<div class="err">Using bonus wallet: per-bet limit ₫10; winnings return to the bonus wallet until churn is met.</div>`:'')+CTA("Enter game with this wallet"),
+ spec:{goal:"Choose wallet before launching game; bonus wallet enforces a per-bet limit.",states:["main (unlimited)","bonus (per-bet limit)","switch confirm"],fields:["selected_wallet","per_bet_limit"],notes:["docx30 selecting bonus wallet applies per-bet limit, winnings return to bonus wallet; risk control manages margin."]}},
+
+/* ===== 5 · Deposit / Withdrawal ===== */
+{g:"5 · Deposit/Withdrawal",t:"Deposit",src:"34",states:["Enter amount","USDT convert","Upload proof","Processing"],
+ r:(s)=>BAR("Deposit","←","History")+SEG(["Bank","USDT","Quick"],s===1?1:0)+
+   (s===1?AMT("≈ ₫ 2,400,000","100 USDT · live conversion")+F("USDT amount"):AMT("₫ 0","Enter deposit amount")+GRID([["100k","＋"],["500k","＋"],["1M","＋"],["2M","＋"],["5M","＋"],["Custom","✎"]]))+
+   (s===2?PH("📎 Upload deposit proof",90)+`<div class="hint">Upload the receipt after transferring.</div>`:'')+
+   (s===3?`<div class="ok">Processing… expected within 3 minutes. Status: Pending → Credited</div>`+PROG(50):'')+
+   CTA(s===2?"Submit proof":s===3?"View processing status":"Proceed to payment"),
+ spec:{goal:"Deposit: amount/channel, USDT conversion, proof upload, processing status.",states:["amount","usdt_convert","proof_upload","processing","success","failed"],fields:["amount","channel","usdt_rate?","proof_image?","txn_id"],api:"POST /deposit · GET /deposit/{id}/status",notes:["docx34 includes USDT conversion/proof/status/lookup."]}},
+
+{g:"5 · Deposit/Withdrawal",t:"Deposit+coupon",src:"103,104,47",states:["Pick coupon","Summary"],
+ r:(s)=>BAR("Deposit · apply promo","←")+AMT("₫ 1,000,000","Deposit amount")+
+   (s===0?`<div class="ctitle">Available coupons (Shopee-style)</div>`+OPT("100% first deposit (+₫1,000,000)",true)+OPT("Sports free bet ₫50")+OPT("No promo"):
+     CARD(`<div style="display:flex;justify-content:space-between"><span>Deposit</span><b>₫1,000,000</b></div><div style="display:flex;justify-content:space-between"><span>Bonus reward</span><b>+₫1,000,000</b></div><hr><div style="display:flex;justify-content:space-between;font-weight:700"><span>Total credited</span><span>₫2,000,000</span></div>`,'Summary'))+
+   CTA(s===0?"Apply and review":"Confirm deposit"),
+ spec:{goal:"Pick a coupon during deposit and show a bonus-reward summary at the end (Shopee coupon concept).",states:["coupon list","selected","reward summary","conflict (not stackable)"],fields:["amount","coupon_id","reward_amount"],api:"GET /promotions/claimable?context=deposit",notes:["docx103/104 coupon + summary; 47 surface claimable promos within the flow."]}},
+
+{g:"5 · Deposit/Withdrawal",t:"Withdrawal",src:"35",states:["Withdrawable","Churn unmet","Processing"],
+ r:(s)=>BAR("Withdrawal","←","History")+CARD(`<div style="display:flex;justify-content:space-between"><span>Withdrawable balance</span><b>${s===1?'₫ 0':'₫ 800,000'}</b></div><div class="hint">Total balance ₫1,250,000 · churn pending ${s===1?'₫450,000':'₫0'}</div>`,'')+
+   (s===1?`<div class="err">Turnover requirement not yet met; part of the balance is temporarily not withdrawable.</div>`+PROG(70,"Churn progress","70%"):'')+
+   F("Withdrawal amount")+F("Payout method ▾ Bank *1234")+(s===2?`<div class="ok">Processing: Review → Payout → Completed</div>`+PROG(33):'')+CTA(s===1?"View churn requirement":"Confirm withdrawal"),
+ spec:{goal:"Withdrawal: withdrawable balance, churn requirement, processing status, lookup.",states:["withdrawable","turnover_unmet","processing","completed","rejected"],fields:["withdrawable","turnover_required","amount","payout_method","txn_id"],api:"POST /withdrawal · GET /withdrawal/{id}/status",notes:["docx35 turnover/withdrawable balance/status/lookup."]}},
+
+{g:"5 · Deposit/Withdrawal",t:"Transaction history",src:"34,35,46,48",states:["List","Item status","Delay notice"],
+ r:(s)=>BAR("Transaction history","←")+(s===2?`<div class="ok">📢 Due to a provider settlement delay, your bet settlement will be postponed. We apologize for any inconvenience.</div>`:'')+SEG(["All","Deposits","Withdrawals"],0)+
+   [["Deposit +₫1,000,000","Completed","06-19 10:20"],["Withdrawal -₫500,000","Processing","06-18 22:00"],["Deposit +₫2,000,000","Failed","06-17 09:10"]].map(x=>LI(x[0],`${x[1]} ›`,'',x[2])).join('')+(s===1?CARD(`<div class="hint">Transaction ID TXN20260619001<br>Status timeline: Created→Pending→Credited<br>One-tap to pass into Live Chat lookup</div>`,'Item detail'):''),
+ spec:{goal:"Transaction list / per-item status timeline / abnormal delay notice.",states:["list","detail timeline","delay announcement (selected segment)"],fields:["txn[]","status_timeline"],notes:["docx46 status transparency + AI Live Chat; 48 delay reason notified only to selected segment of customers who placed bets."]}},
+
+/* ===== 6 · Messages / Live Chat ===== */
+{g:"6 · Messages/Live Chat",t:"Inbox/Messages",src:"32",states:["Inbox","System/announcements"],
+ r:(s)=>BAR("Message Center","←","Mark all read")+SEG(["Inbox","System","Social"],s)+
+   (s===0?[["🎁 Exclusive promo arrived","NEW","Just now"],["💰 Deposit credited","","10:20"],["📨 Live Chat reply","","Yesterday"]]:[["🛠 System maintenance notice","","Today"],["⚽ Goal alert","","Yesterday"],["🧾 Bet settlement alert","","Yesterday"]]).map(x=>LI(x[0],`${x[1]?TAG(x[1],'k'):''} ›`,'',x[2])).join(''),
+ spec:{goal:"Message Center: inbox/system/social/tags.",states:["inbox","system","social","tagging (new)","read"],fields:["messages[]{type,tag,read}"],notes:["docx32 inbox/social/sms/notifications/tagging/maintenance/system messages/goal/settlement."]}},
+
+{g:"6 · Messages/Live Chat",t:"Notification/Toast/Popup",src:"32",states:["Toast","Popup overlay","Marquee/maintenance"],
+ r:(s)=>BAR("Notification layers demo")+PH("Product page content (base layer)",120)+(s===0?`<div class="toast">🔔 Your deposit of ₫1,000,000 was credited<span style="margin-left:auto" class="tag">toast</span></div>`:'')+(s===1?`<div class="pop"><span class="x">✕</span><div style="font-weight:700">Limited-time popup promo</div><div class="hint">Can overlay on top of the product page</div>${CTA("Claim now",'sm')}</div>`:'')+(s===2?`<div class="marquee">⛔ System maintenance: 02:00-04:00 service paused (marquee/maintenance banner)</div>`:''),
+ spec:{goal:"Notification layers: toast (can overlay product page)/popup/marquee/maintenance/push.",states:["toast","popup overlay","scrolling text","maintenance","push"],notes:["docx32; 62 mind the overlay z-order."]}},
+
+{g:"6 · Messages/Live Chat",t:"Live Chat",src:"33,105-112,46,74",states:["AI bot","Human (translate)","Upload/attach txn","Agent away"],
+ r:(s)=>BAR("Live Chat","✕",s===3?'🟠 away':'🟢')+
+   BUB("Hi, I'm the V9 smart assistant. How can I help?")+
+   (s===0?BUB("My withdrawal hasn't arrived",true)+BUB("Found transaction TXN…0619, status: Processing (recent transaction auto-attached)"):'')+
+   (s===1?BUB("[ Transferred to a human agent · built-in translation ]")+BUB("Xin chào! I've enabled live translation to assist you."):'')+
+   (s===2?BUB("Here's my receipt",true)+`<div class="toast">📎 deposit_proof.jpg uploaded</div>`+BUB("Got it, linked to your transaction ID to check for you."):'')+
+   (s===3?`<div class="err">Agent on break, back in about 5 minutes. AI is covering in the meantime.</div>`:'')+
+   `<div style="display:flex;gap:6px;margin-top:8px"><div class="field" style="flex:1;margin:0">Type a message…</div><div class="cta sm" style="margin:0;padding:9px 14px">Send</div></div>`,
+ spec:{goal:"In-house Live Chat: AI bot/human/translation/attach txn/upload/agent status.",states:["ai_bot","human","translation","upload","txn linked","agent away/break","job transfer"],fields:["chat_id","agent_status","linked_txn_id","attachments[]"],notes:["docx33,105-112 platform-wide friendly/translation/AI/transfer/away status/upload/transaction-ID integration; 74 suggest lookups from recent transactions."]}},
+
+/* ===== 7 · Promotions / Gamification ===== */
+{g:"7 · Promotions/Gamification",t:"Promotions list",src:"36,47,113-117",states:["Claimable","Task","Claimed"],
+ r:(s)=>BAR("Promotion Center","←")+SEG(["All","Deposit","Free bet","Task"],0)+
+   (s===2?CARD(TAG("Claimed")+`<div style="font-weight:700;margin:6px 0">100% first deposit</div>`,''):
+     CARD(TAG(s===1?"Task":"Claimable","k")+`<div style="font-weight:700;margin:6px 0">${s===1?'Daily login task 3/5':'100% first-deposit bonus'}</div>`+(s===1?PROG(60,"Progress","3/5"):`<div class="hint">churn x10 · Sports/Live</div>`)+CTA(s===1?"Complete it":"Claim now",'sm'),''))+
+   CARD(TAG("Lifetime rewards")+`<div class="hint">Issued occasionally based on lifetime contribution/margin/product preference: cash/free bets/free slots/physical gifts.</div>`,'')+LINK("<b>Promotion rules</b>"),
+ spec:{goal:"Promotions: claimable/task-based/lifetime rewards/occasional issuance.",states:["claimable","task","claimed","expired","ineligible"],fields:["promotions[]{type,progress,churn,terms}"],api:"GET /promotions",notes:["docx36/47/113-117 task-oriented/lifetime rewards/different forms by LTV; 117 rules."]}},
+
+{g:"7 · Promotions/Gamification",t:"Gamification hub",src:"36,67",states:["Hub","Reels"],
+ r:(s)=>BAR("Gamification","←")+(s===0?GRID([["Spin the Wheel","🎡"],["Scratch & Win","🎫"],["Lottery machine","🎱"],["Daily check-in","📅"],["Tasks","✅"],["Leaderboard","🏆"]])+CARD(`<div class="hint">Claim in-flow, task-oriented, instant rewards.</div>`,''):PH("📲 Product short-video Reels (swipe up/down)",260)+`<div class="hint">Reels for Products: short-video shoppable games.</div>`),
+ spec:{goal:"Gamification entry: spin/scratch/lottery/check-in/tasks + product Reels.",states:["hub","reels"],notes:["docx36 gamification; 67 Reels for Products."]}},
+
+{g:"7 · Promotions/Gamification",t:"Spin the Wheel",src:"71",states:["Spinnable","Result"],
+ r:(s)=>BAR("Spin the Wheel","✕")+PH("🎡 Wheel",200)+(s===1?`<div class="ok" style="text-align:center">🎉 Congrats! You won a ₫50 free bet!</div>`:STEP("You have 1 spin"))+CTA(s===1?"Claim and spin again":"Start spin"),
+ spec:{goal:"Spin the wheel prize draw.",states:["available","spinning","result","no_chance"],fields:["spin_chances","prize"],notes:["docx71."]}},
+
+{g:"7 · Promotions/Gamification",t:"Scratch & Win",src:"70",states:["Unscratched","Scratched"],
+ r:(s)=>BAR("Scratch & Win","✕")+PH(s===0?"🎫 Scratch the coating":"🎉 Won ₫20",200)+CTA(s===0?"Start scratching":"Claim"),
+ spec:{goal:"Scratch and win.",states:["unscratched","scratching","win/lose"],notes:["docx70."]}},
+
+{g:"7 · Promotions/Gamification",t:"Lottery machine",src:"69",states:["Pick numbers","Draw"],
+ r:(s)=>BAR("Lucky Lottery Machine","✕")+(s===0?STEP("Choose numbers or quick pick")+GRID([["1","①"],["2","②"],["3","③"],["4","④"],["5","⑤"],["Quick pick","🎲"]]):PH("🎱 Draw animation · winning numbers 07 12 23",160))+CTA(s===0?"Bet":"View result"),
+ spec:{goal:"Random number machine for lottery.",states:["pick","quick_pick","draw","result"],notes:["docx69."]}},
+
+/* ===== 8 · Products / Interaction ===== */
+{g:"8 · Products/Interaction",t:"Product home",src:"37,54,52",states:["Frame-in","Native","Overlay shortcuts"],
+ r:(s)=>BAR("Sports SBK","←","💰₫1.25M")+(s===2?`<div class="pop"><span class="x">✕</span><div style="font-weight:700">Cross-product shortcuts</div>`+GRID([["Live","🃏"],["Slots","🎰"],["Lottery","🎟"]])+`</div>`:'')+PH(s===0?"[ Frame-in: desktop embedded iframe ]":s===1?"[ Native event list ]":"Product content",s===1?260:200)+(s===1?LI("EPL Man City vs Arsenal","2.10 ›"):'')+`<div class="hint">37 frame-in/native/overlay; 54 products cross-link shortcuts (SBK↔Live).</div>`,
+ spec:{goal:"Three product presentation types: frame-in / native / overlay; cross-product shortcuts.",states:["frame_in","native","overlay shortcuts"],notes:["docx37/54; 02 content-heavy modules framed in from desktop on mobile; 62 z-order."]}},
+
+{g:"8 · Products/Interaction",t:"Live stream+interaction",src:"38,54",states:["Stream overlay","Bet share","Prediction"],
+ r:(s)=>BAR("Match Live Stream","✕")+PH("📺 Live Streaming (with host)",150)+(s===0?`<div class="toast">🔴 Live stream overlays the product page (mind the z-order)</div>`:'')+(s===1?CARD(`<div class="hint">Share my bet slip</div>`+CTA("Share to social",'sm'),''):'')+(s===2?OPT("Home wins",true)+OPT("Draw")+OPT("Away wins")+CTA("Submit prediction",'sm'):''),
+ spec:{goal:"Interaction: live stream (host) overlay, bet-slip sharing, match prediction.",states:["streaming overlay","bet share","prediction"],notes:["docx38 chat/bet share/prediction/live streaming; 54 overlay."]}},
+
+{g:"8 · Products/Interaction",t:"Trial+recommend",src:"57,52",states:["Simulated trial","Recommended"],
+ r:(s)=>BAR(s===0?"Quick trial":"Recommended","←")+(s===0?PH("🎮 Short simulated trial (no-signup demo plugin)",200)+CTA("Try it","sm")+CTA("Play for real",'sm ghost'):`<div class="ctitle">Recommended for you (by tags)</div>`+GRID([["Lucky Cat","🐱"],["Mahjong","🀄"],["Football","⚽"],["Roulette","🎯"],["Hot","🔥"],["New","🆕"]])+`<div class="hint">Recommended by play tags / others' preferences.</div>`),
+ spec:{goal:"Simulated trial plugin, game recommendations by tags.",states:["trial","suggested (tagging)"],fields:["game_tags[]","recommendations[]"],notes:["docx57 simulated trial; 52 tag-based recommendations; 51 quick-launch from play history."]}},
+
+{g:"8 · Products/Interaction",t:"Maintenance cross-sell",src:"43",states:["Provider maintenance"],
+ r:()=>BAR("Slots","←")+`<div class="err">This provider is under maintenance (02:00-04:00).</div>`+CARD(`<div class="ctitle">Why not try these?</div>`+GRID([["Live","🃏"],["Sports","⚽"],["Lottery","🎟"]]),'')+CTA("Go to Live Casino",'ghost'),
+ spec:{goal:"During provider maintenance, cross-sell other products via notice/placement.",states:["provider maintenance + cross-sell"],notes:["docx43."]}},
+
+/* ===== 9 · Statement / Plans ===== */
+{g:"9 · Statement/Plans",t:"Account Statement",src:"39",states:["Default"],
+ r:()=>BAR("Account Statement","←","Filter")+SEG(["All","Bets","Bonus","Deposit/WD"],0)+[["Bet Sports","-₫100,000","06-19"],["Payout Sports","+₫210,000","06-19"],["Bonus issued","+₫1,000,000","06-18"],["Deposit","+₫1,000,000","06-18"]].map(x=>`<div class="li"><span class="g">${x[0]}<small>${x[2]}</small></span><span class="rt">${x[1]}</span></div>`).join(''),
+ spec:{goal:"Account statement: bets/payouts/bonus/deposit-withdrawal.",states:["list","filter","export?"],fields:["statement[]"],notes:["docx39 Account Statement."]}},
+
+{g:"9 · Statement/Plans",t:"Loyalty program",src:"40",states:["Default"],
+ r:()=>BAR("Loyalty VIP","←")+CARD(`<div style="font-weight:700">VIP 1 · Gold</div>`+PROG(45,"To VIP2","45%")+`<div class="hint">Level up via accumulated valid bets.</div>`,'')+`<div class="ctitle">Tier benefits</div>`+LI("Weekly rebate 0.5%","")+LI("Birthday gift","")+LI("Dedicated support","")+LI("Priority withdrawal",""),
+ spec:{goal:"VIP/loyalty tiers, progress and perks.",states:["tier","progress","perks"],fields:["vip_tier","progress","perks[]"],notes:["docx40."]}},
+
+{g:"9 · Statement/Plans",t:"Refer a Friend (RAF)",src:"41,02",states:["Default"],
+ r:()=>BAR("Refer a Friend","←")+CARD(`<div class="hint">Your referral code</div><div style="font-size:22px;font-weight:800;letter-spacing:2px">V9-AB12</div>`+CTA("Copy/share link",'sm'),'')+CARD(`<div style="display:flex;justify-content:space-between"><span>Referred</span><b>3 people</b></div><div style="display:flex;justify-content:space-between"><span>Total rewards</span><b>₫150,000</b></div>`,'Stats')+`<div class="hint">Content-heavy; can be framed in from Desktop on Mobile.</div>`,
+ spec:{goal:"Referral code sharing, referral stats and rewards.",states:["code","share","stats"],fields:["referral_code","referred_count","reward"],notes:["docx41; 02 RAF is content-heavy, can be framed in on mobile."]}},
+
+{g:"9 · Statement/Plans",t:"Affiliate program",src:"42",states:["Default"],
+ r:()=>BAR("Affiliate","←")+CARD(`<div style="display:flex;justify-content:space-between"><span>This month's commission</span><b>₫2,300,000</b></div><div class="hint">Clicks 1,204 · Sign-ups 56 · Active 31</div>`,'Stats')+LI("Promo links/assets","›")+LI("Downline reports","›")+LI("Commission settlement","›"),
+ spec:{goal:"Affiliate: stats, assets, downline reports, commission.",states:["dashboard","materials","reports","payout"],notes:["docx42."]}},
+
+/* ===== 10 · Feedback / Detection ===== */
+{g:"10 · Feedback/Detection",t:"Feedback/voice",src:"44",states:["Text","Voice"],
+ r:(s)=>BAR("Tell us what you think","✕")+STEP("What would you like to play on the site?")+(s===0?F("Type your idea…")+`<div class="hint">You can also use voice.</div>`:PH("🎙 Hold to record (transcribed on submit)",120))+SEG(["Text","Voice"],s)+CTA("Submit feedback"),
+ spec:{goal:"Collect needs via voice (transcribed)/text feedback.",states:["text","voice→text","submitted"],fields:["feedback_text","voice_blob"],notes:["docx44 voice can be transcribed."]}},
+
+{g:"10 · Feedback/Detection",t:"Random popup",src:"45",states:["Survey","Lucky campaign"],
+ r:(s)=>BAR("","",'')+`<div class="pop"><span class="x">✕</span>`+(s===0?`<div style="font-weight:700">Quick survey (30 sec)</div><div class="hint">Randomly selected members</div>`+OPT("Very satisfied",true)+OPT("Neutral")+OPT("Needs improvement"):`<div style="font-weight:700">🎁 Lucky member campaign</div><div class="hint">Congrats, you were selected!</div>`+CTA("Join",'sm'))+`</div>`,
+ spec:{goal:"Pop up a survey or lucky campaign for random/selected members.",states:["survey","lucky campaign"],fields:["segment","campaign_id"],notes:["docx45."]}},
+
+{g:"10 · Feedback/Detection",t:"Idle detection help",src:"68",states:["Idle prompt"],
+ r:()=>BAR("Product page","←")+PH("Product content",150)+`<div class="toast">🤖 Need help?<span style="margin-left:auto"><span class="tag k">Self-serve</span> <span class="tag">Live Chat</span></span></div>`+`<div class="hint">Detects member inactivity for a while → proactively offers support/self-serve.</div>`,
+ spec:{goal:"Proactively offer Live Chat/self-serve when a new member is inactive.",states:["idle detected → prompt"],fields:["idle_seconds","prompt_type"],notes:["docx68 engagement detection."]}},
+
+/* ===== 11 · Rules & Notes ===== */
+{g:"11 · Rules & Notes",t:"Rules & Notes (non-screen)",src:"02,46,48,51-62,64,65,72,73,96-100,116",states:["Full rules"],
+ r:()=>BAR("Rules & Principles (for IT)")+`<div class="notelist">`+[
+   ["Platform architecture","The site brings together all modules (Payment/Product/Promo/LiveChat/RiskControl/Affiliate/Loyalty); desktop is the most complete, some mobile modules framed in from desktop (02)."],
+   ["Layout","Desktop center-aligned (53); Desktop uses top menu (59); App top menu pinned per design (73); mind overlay z-order (62)."],
+   ["Style","Bright base to suit the audience (56); lucky-ornament greeting (58)."],
+   ["Data/recommendations","Customer-journey drop-off/bounce analysis (51); behavior/preference tracking (55); tag-based game recommendations (52)."],
+   ["CMS","Flexible content management for maintenance/translation, slicing must align (60); cross-module flexibility for extensibility (61)."],
+   ["Transparency/communication","Transparent transaction status + AI Live Chat (46); explain abnormal flows, e.g. settlement delay notified only to the selected segment of customers who placed bets (48)."],
+   ["BE rules","BO assigns a random unique id as the default username (editable), mind API and provider handshake transmission (97); update verification status per sign-up contact method (98); Email-only sign-up → add phone verification before claiming promos/withdrawing (99); phone verified → Email optional (100)."],
+   ["Product UI","BTi native App UI (64); SBK native UI mobile/desktop not urgent (65); Mobile uses IM SBK, desktop not urgent (72)."],
+   ["Promotion principles","Set % rewards by lifetime revenue/margin/product preference, in forms: cash/deposit promo/free bet/free slots/physical gift (116)."]
+ ].map(x=>`<div class="nl"><b>${x[0]}</b><br>${x[1]}</div>`).join('')+`</div>`,
+ spec:{goal:"Consolidated 'non-screen' rules/principles from the docx, ensuring all 117 items are covered and can serve as IT constraints.",states:["reference only"],notes:["This page maps to docx lines: 02,46,48,51-62,64,65,72,73,96-100,116. All other lines map to earlier screens."]}},
+];
+
+/* ---------- runtime ---------- */
+let idx=0, st=0;
+const navEl=document.getElementById('nav');
+function buildNav(){
+  let html='',lastG='';
+  S.forEach((sc,i)=>{
+    if(sc.g!==lastG){html+=`<div class="group-title">${sc.g}</div>`;lastG=sc.g;}
+    html+=`<div class="nav ${i===idx?'active':''}" data-i="${i}"><span class="num">${i+1}</span>${sc.t}</div>`;
+  });
+  navEl.innerHTML=html;
+  navEl.querySelectorAll('.nav').forEach(n=>n.onclick=()=>{idx=+n.dataset.i;st=0;draw();});
+}
+function draw(){
+  const sc=S[idx];
+  document.getElementById('screen').innerHTML=sc.r(st);
+  const w=document.getElementById('states');
+  w.innerHTML=sc.states.map((s,i)=>`<button class="${i===st?'on':''}" data-s="${i}">${s}</button>`).join('');
+  w.querySelectorAll('button').forEach(b=>b.onclick=()=>{st=+b.dataset.s;draw();});
+  document.getElementById('bread').textContent=`Screen ${idx+1}/${S.length} · ${sc.t}`;
+  const sp=sc.spec;
+  document.getElementById('spec').innerHTML=
+    `<h2>Goal</h2><p style="font-size:12.5px;margin:0">${sp.goal}</p>`+
+    `<div class="srcline" style="margin-top:6px">docx src: ${sc.src}</div>`+
+    `<h2>States</h2><div class="stlist">${sp.states.map(x=>`<span class="pill">${x}</span>`).join('')}</div>`+
+    (sp.fields?`<h2>Fields</h2><div class="stlist">${sp.fields.map(x=>`<span class="pill">${x}</span>`).join('')}</div>`:'')+
+    (sp.api?`<h2>API / Data</h2><div class="api">${sp.api}</div>`:'')+
+    (sp.notes?`<h2>Dev notes</h2><ul>${sp.notes.map(x=>`<li>${x}</li>`).join('')}</ul>`:'');
+  buildNav();
+}
+document.getElementById('prev').onclick=()=>{if(idx>0){idx--;st=0;draw();}};
+document.getElementById('next').onclick=()=>{if(idx<S.length-1){idx++;st=0;draw();}};
+draw();
+</script>
+</body>
+</html>
