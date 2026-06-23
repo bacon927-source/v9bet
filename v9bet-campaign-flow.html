@@ -82,6 +82,7 @@
       <button data-v="flow" class="on">① Launch flow</button>
       <button data-v="reach">② How they're told</button>
       <button data-v="states">③ Campaign screen states</button>
+      <button data-v="multi">④ Two+ campaigns</button>
     </div>
     <div id="pt" class="pt"></div>
     <div id="pn" class="pn"></div>
@@ -144,6 +145,24 @@ states:["Campaign screen — states","One screen, five states. Dev needs all of 
  </div>
  <div class="ann"><b>States:</b> active / joined / completed / ended / ineligible. Plus loading & error. <b>Ended</b> cross-sells other live promotions (docx43 spirit). <b>Ineligible</b> = region/segment/KYC not met.</div>`,
  [["—","5 states","active / joined / completed / ended / ineligible"],["+","Countdown","Live timer on hero (urgency)"],["+","Cross-sell","Ended → other promotions"]]],
+
+multi:["Two or more campaigns live at once","Never stack two popups. Recommended: ONE combined \"What's New\" popup → campaigns list.",
+ ()=>{
+  const cRow=(ic,name,sub)=>`<div class="li"><span class="ic">${ic}</span><span class="g">${name}<small>${sub}</small></span><span>›</span></div>`;
+  const multipop=`<div class="dim"></div><div class="popup"><span class="x">✕</span><div class="img">[ 🎉 2 new campaigns ]</div><div class="c"><div class="t">🎉 2 new campaigns</div><div class="d">Both live now — pick one to join</div>${cRow('⚽','World Cup Missions','win ₫26B · 14d left')}${cRow('🎡','Lucky Spin Week','daily spins · 7d left')}<div class="btns" style="margin-top:8px"><div class="b">Later</div><div class="b k">See all</div></div></div></div>`;
+  const hub=BAR(`<span class="ic">←</span>`)+`<div class="body" style="overflow:auto"><div class="ttl" style="margin-bottom:6px">Live Campaigns</div>${[['⚽','World Cup Missions','win ₫26B','⏱ 14d'],['🎡','Lucky Spin Week','daily free spins','⏱ 7d']].map(c=>`<div class="mech" style="padding:10px"><div style="display:flex;justify-content:space-between"><b>${c[0]} ${c[1]}</b><span class="tag red">${c[3]}</span></div><div style="font-size:10px;color:#888;margin:3px 0 7px">${c[2]}</div><div class="cta" style="margin:0;padding:8px">Join</div></div>`).join('')}</div>`;
+  return `<div class="flow">
+    <div class="sys">📅 <b>2 campaigns go live</b><br>both eligible for this user</div>
+    ${A()}
+    ${PH(1, BAR()+`<div class="body">${multipop}</div>`, 'ONE combined popup (not two)')}
+    ${A()}
+    ${PH(2, hub, 'Campaigns list → Join each')}
+  </div>
+  <div class="ann"><b>Rule #1 — never two popups.</b> Modals are mutually exclusive (z50, one at a time). For 2+ eligible campaigns, show <b>one</b> \"What's New\" popup that lists them → \"See all\" opens the campaigns list; the rest of the channels (Marquee / Inbox / Promo list) carry them too.</div>
+  <div class="ann"><b>If you'd rather push one hero campaign</b> (pattern A): popup only the <b>highest-priority</b> one; surface the other via Marquee / Inbox / Promo list. Priority = BO weight &gt; segment fit &gt; expected value &gt; ending-soon.</div>
+  <div class="ann"><b>Caps &amp; queue:</b> max <b>1 popup / session</b>; don't re-show joined/dismissed; cooldown before the next; suppress for self-excluded (Responsible Gaming).</div>`;
+ },
+ [["1","One combined popup","\"2 new campaigns\" list — never two stacked modals"],["2","Campaigns list","See all → join each separately"],["A","Alt: priority single","Popup top-priority only; others via marquee/inbox/list"],["+","Caps","1 popup/session · skip joined/dismissed · cooldown · RG suppress"]]],
 };
 
 const cv=document.getElementById('canvas'),pt=document.getElementById('pt'),pn=document.getElementById('pn'),lg=document.getElementById('legend');
