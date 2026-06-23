@@ -281,6 +281,21 @@ leaderboard:{g:"Retention / Stickiness",name:"Leaderboard / Rank",note:"Weekly r
   `<div class="card" style="display:flex;gap:10px;padding:8px 10px;font-size:12px;border-color:#3a3a3a;border-width:2px"><span>#14</span><b style="flex:1">You</b><span>₫120k behind #13</span></div>`,
  spec:{Purpose:"Drive competitive engagement & repeat play",Trigger:"Tournament / leaderboard period",Position:"Leaderboard page / home widget",Duration:"Per period (resets weekly)",Blocking:"No",Layer:"z0",Variants:"top-3 / your-rank / out-of-ranking",Source:"API (ranking)",a11y:"role=table · your row aria-current"}},
 
+/* ===== Campaign presentation ===== */
+campaignpage:{g:"Campaign",name:"Campaign — Page method",note:"Full-page campaign opened from a popup / promo list / deep link. For rich, multi-step activities.",
+ render:()=>VL("full-page campaign (route)")+
+  `<div style="border:1px solid var(--line2);border-radius:11px;overflow:hidden;max-width:300px"><div style="height:74px;background:var(--fill);border-bottom:1px dashed var(--line2);display:grid;place-items:center;color:#aaa;font-size:11px;position:relative">[ Campaign hero ]<span class="badge req" style="position:absolute;right:8px;top:8px">⏱ 14d 06h</span></div><div style="padding:11px"><div style="font-weight:700;font-size:13px">World Cup Missions</div><div style="font-size:11px;color:var(--muted);margin:3px 0 6px">How it works · rewards · leaderboard · T&Cs</div><div class="checklist"><div class="ci"><span class="num">1</span><span class="g">Place 5 bets</span></div></div><div class="b k" style="display:block;text-align:center;margin-top:8px">Join the campaign</div></div></div>`+
+  VL("states")+`<div class="stlist">${['active','joined','completed','ended','ineligible','loading'].map(s=>`<span class="pill">${s}</span>`).join('')}</div>`,
+ spec:{Purpose:"Host rich / multi-step campaigns (missions, leaderboard, T&Cs)",Trigger:"From announcement popup / promo list / deep link / marquee",Position:"Full page (own route, e.g. /campaign/{id})",Duration:"Until campaign end (countdown shown)",Blocking:"No (it's a page)",Layer:"z0 (content / route)",Variants:"by type (missions/check-in/wheel/red-packet) × states (active/joined/completed/ended/ineligible)",Source:"Campaign API + CMS (banner/copy/mechanics)",a11y:"Page semantics · headings · countdown aria-live"}},
+
+campaignicon:{g:"Campaign",name:"Campaign — Icon method (floating 悬浮球)",note:"TikTok-style floating entry; tap = inline mini-action, no full page. For recurring single-action rewards.",
+ render:()=>VL("collapsed ball → expanded bubble → done")+
+  `<div style="display:flex;gap:26px;align-items:flex-end;flex-wrap:wrap"><div class="fab" style="position:relative">🎁<span style="position:absolute;top:-4px;right:-4px;min-width:15px;height:15px;border-radius:8px;background:#b56;color:#fff;font-size:8px;display:grid;place-items:center;padding:0 3px">1</span></div>`+
+  `<div style="width:170px;border:2px solid var(--solid);border-radius:13px;background:#fff;box-shadow:0 8px 20px rgba(0,0,0,.18);padding:10px"><div style="font-weight:700;font-size:12px">🎁 Daily check-in</div><div style="font-size:10px;color:var(--muted);margin:2px 0 7px">Day 4 · +₫50 today</div><div class="b k" style="text-align:center">Check in</div></div>`+
+  `<div class="fab" style="border-color:#9a9a9a;color:#aaa">✓</div></div>`+
+  `<div class="toast" style="margin-top:12px;max-width:240px"><span class="ico">✓</span>+₫50 added to wallet</div>`,
+ spec:{Purpose:"Lowest-friction recurring single-action reward without a page",Trigger:"Eligible recurring campaign while on home / product",Position:"Floating bottom-right (draggable, minimizable)",Duration:"Persistent while eligible (badge / countdown on the ball)",Blocking:"No (inline bubble, not a modal)",Layer:"z30 — with Live Chat FAB & PiP → must avoid collision (offset/stack)",Variants:"collapsed ball / expanded bubble / done · types: check-in / claim / spin / red packet",Source:"Campaign API",a11y:"role=button · aria-label · bubble dismissible · respects reduce-motion"}},
+
 zorder:{g:"Layering Z-index",name:"Z-index layering master table",note:"docx62 \"consider layer's sequence\" — fix the stacking order so it never gets messy.",
  render:()=>`<div class="zdemo">
    <div class="zlayer" style="left:14px;top:14px;right:14px;bottom:14px;background:#fafafa">z0 Content / product page</div>
@@ -295,7 +310,7 @@ zorder:{g:"Layering Z-index",name:"Z-index layering master table",note:"docx62 \
  <div style="font-size:11px;color:#666;margin-top:10px">Rules: Toasts go into a <b>queue</b>, no stacking; Modals are <b>mutually exclusive</b>; idle prompts use Toast level and <b>must not</b> use a Modal to interrupt the game; live stream / PiP sit below Modal. <b>PiP coexistence</b>: one PiP at a time, keeps playing across navigation, and must not overlap the Bet Slip or Live Chat button (PiP owns bottom-right; Chat shifts up or hides while PiP is docked there).</div>`,
  spec:{Purpose:"Unify the stacking order of all overlays",Trigger:"—",Position:"Site-wide",Duration:"—",Blocking:"—",Layer:"z0→z99 (see diagram)",Variants:"—",Source:"Frontend spec",a11y:"Focus management: Modal traps focus, others don't steal it"}},
 };
-const order=["toast","snackbar","modal","banner","marquee","sysmsg","sheet","overlayx","streamoverlay","chatwidget","idle","randompopup","skeleton","empty","errorstate","progress","badge","chips","segmented","stepper","countdown","toggle","ticker","streak","missions","rewards","activity","viptier","streaksave","ltocount","leaderboard","zorder"];
+const order=["toast","snackbar","modal","banner","marquee","sysmsg","sheet","overlayx","streamoverlay","chatwidget","idle","randompopup","skeleton","empty","errorstate","progress","badge","chips","segmented","stepper","countdown","toggle","ticker","streak","missions","rewards","activity","viptier","streaksave","ltocount","leaderboard","campaignpage","campaignicon","zorder"];
 const navEl=document.getElementById('nav');
 function buildNav(active){
  let html='',lastG='';
