@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>V9Bet · Campaign Launch Flow</title>
+<style>
+  :root{--ink:#2b2b2b;--line:#c9c9c9;--line2:#9a9a9a;--muted:#8a8a8a;--paper:#fff;--bg:#ececed;--fill:#f4f4f5;--solid:#3a3a3a;--strike:#b56}
+  *{box-sizing:border-box}
+  body{margin:0;font:13px/1.55 -apple-system,"Noto Sans TC",Arial,sans-serif;color:var(--ink);background:var(--bg)}
+  .app{display:grid;grid-template-columns:280px 1fr;min-height:100vh}
+  aside{background:var(--paper);border-right:1px solid var(--line);padding:16px;overflow:auto;max-height:100vh}
+  main{padding:20px;overflow:auto}
+  h1{font-size:15px;margin:0 0 4px}.sub{color:var(--muted);font-size:12px;margin:0 0 12px}
+  .sel{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+  .sel button{border:1px solid var(--line2);background:#fff;border-radius:8px;padding:8px 13px;font-size:12.5px;cursor:pointer;color:var(--muted)}
+  .sel button.on{background:var(--solid);color:#fff;font-weight:600;border-color:var(--solid)}
+  .pt{font-size:15px;font-weight:700;margin:2px 0}.pn{font-size:12px;color:var(--muted);margin-bottom:12px}
+  .flow{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-start}
+  .arrow{align-self:center;color:var(--line2);font-size:18px}
+  .sys{align-self:center;width:150px;border:1px dashed var(--line2);border-radius:10px;background:var(--fill);padding:12px;font-size:11px;color:#666;text-align:center}
+  /* phone */
+  .ph{width:236px;border:2px solid var(--ink);border-radius:18px;background:#fff;padding:6px;box-shadow:0 4px 16px rgba(0,0,0,.1);position:relative}
+  .ph .scr{height:430px;border:1px solid var(--line);border-radius:13px;overflow:hidden;position:relative;display:flex;flex-direction:column}
+  .cap{text-align:center;font-size:10px;color:var(--muted);margin-top:5px}
+  .stepnum{position:absolute;left:-8px;top:-8px;width:22px;height:22px;border-radius:50%;background:var(--solid);color:#fff;font-size:11px;display:grid;place-items:center;font-weight:700;z-index:5}
+  .bar{display:flex;align-items:center;gap:7px;padding:8px 10px;border-bottom:1px solid var(--line);font-size:12px}
+  .bar .logo{font-weight:800;flex:1}.bar .ic{width:18px;height:18px;border:1px solid var(--line2);border-radius:5px;display:grid;place-items:center;font-size:9px;color:#888}
+  .body{flex:1;overflow:hidden;padding:10px;position:relative}
+  /* dim + popup */
+  .dim{position:absolute;inset:0;background:repeating-linear-gradient(45deg,#f2f2f2,#f2f2f2 7px,#ececec 7px,#ececec 14px)}
+  .popup{position:absolute;left:14px;right:14px;top:60px;border:2px solid var(--solid);border-radius:14px;background:#fff;box-shadow:0 10px 26px rgba(0,0,0,.25);overflow:hidden;z-index:3}
+  .popup .x{position:absolute;right:8px;top:6px;color:#aaa;font-size:13px}
+  .popup .img{height:78px;border-bottom:1px dashed var(--line2);background:var(--fill);display:grid;place-items:center;color:#b0b0b0;font-size:10px}
+  .popup .c{padding:10px 12px 12px}
+  .popup .t{font-weight:700;font-size:13px}.popup .d{font-size:10.5px;color:#888;margin:3px 0 8px}
+  .btns{display:flex;gap:7px}
+  .b{flex:1;border:1px solid var(--line2);background:#fff;border-radius:8px;padding:7px;text-align:center;font-size:11px}.b.k{background:var(--solid);color:#fff;border-color:var(--solid)}
+  /* campaign screen */
+  .hero{height:90px;border:1px dashed var(--line2);border-radius:10px;background:var(--fill);display:grid;place-items:center;color:#aaa;font-size:11px;margin-bottom:8px;position:relative}
+  .count{position:absolute;right:6px;top:6px;background:#fff;border:1px solid var(--strike);color:var(--strike);border-radius:5px;font-size:9px;padding:1px 5px}
+  .ttl{font-weight:700;font-size:13px}
+  .muted{font-size:10.5px;color:#888;margin:2px 0 8px}
+  .mech{border:1px solid var(--line);border-radius:9px;padding:9px;font-size:10.5px;color:#555;margin:7px 0}
+  .mech b{color:#222}
+  .task{display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:9px;padding:8px 10px;margin:6px 0;font-size:11px}
+  .task .n{width:20px;height:20px;border:1px solid var(--line2);border-radius:50%;display:grid;place-items:center;font-size:10px;color:#888;flex:0 0 20px}
+  .task.done .n{background:var(--solid);color:#fff;border-color:var(--solid)}
+  .cta{background:var(--solid);color:#fff;text-align:center;border-radius:20px;padding:11px;margin:10px 0 4px;font-weight:600;font-size:12px}
+  .cta.gh{background:#fff;color:var(--muted);border:1px solid var(--line2)}
+  .cta.dis{background:#cfcfcf;color:#fff}
+  .prog{height:8px;border-radius:5px;background:#e3e3e3;overflow:hidden;margin:6px 0}.prog i{display:block;height:100%;background:var(--solid)}
+  .pl{font-size:10px;color:#888;display:flex;justify-content:space-between}
+  .toast{display:flex;gap:7px;align-items:center;border:1px solid var(--line2);border-left:4px solid var(--solid);background:#fff;border-radius:8px;padding:8px 10px;font-size:10.5px;margin:6px 0;box-shadow:0 3px 10px rgba(0,0,0,.1)}
+  .marq{border:1px solid var(--line);border-radius:6px;background:var(--fill);padding:5px 8px;font-size:10px;color:#666;white-space:nowrap;overflow:hidden;margin:6px 0}
+  .li{display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:9px;padding:9px 10px;margin:6px 0;font-size:11px}
+  .li .ic{width:22px;height:22px;border:1px solid var(--line2);border-radius:5px;display:grid;place-items:center;font-size:10px;color:#888;flex:0 0 22px}
+  .li .g{flex:1}.li .g small{display:block;color:#999;font-size:9px}
+  .center{display:grid;place-items:center;height:100%;text-align:center;color:#888;padding:14px}.center .e{font-size:32px}
+  .tag{display:inline-block;font-size:9px;border:1px solid var(--line2);border-radius:4px;padding:1px 6px;color:#888}
+  .tag.k{background:var(--solid);color:#fff;border-color:var(--solid)}
+  .tag.red{border-color:var(--strike);color:var(--strike)}
+  .ann{border-left:3px solid var(--solid);background:#fafafa;padding:8px 11px;margin:9px 0;font-size:11.5px;border-radius:0 6px 6px 0;max-width:840px}
+  .ann b{color:#222}
+  .leg{display:flex;gap:8px;margin:6px 0;font-size:11.5px}
+  .leg .n{width:18px;height:18px;flex:0 0 18px;border-radius:50%;background:var(--solid);color:#fff;font-size:9px;display:grid;place-items:center;font-weight:700}
+  .leg small{display:block;color:var(--muted);font-size:10.5px}
+  aside h2{font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin:13px 0 5px}
+  .legend2{font-size:10.5px;color:var(--muted);border-top:1px solid var(--line);margin-top:12px;padding-top:9px}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside>
+    <h1>Campaign Launch Flow</h1>
+    <p class="sub">How a customer learns about a new campaign → joins → claims.<br>Grayscale, no UI · docx 36/45/47</p>
+    <div id="legend"></div>
+    <div class="legend2">Reuses components: <b>Popup/Modal</b> (z50) · Marquee (z10) · Toast · Countdown · Step indicator · Claimable Rewards. See Component Library.</div>
+  </aside>
+  <main>
+    <div class="sel">
+      <button data-v="flow" class="on">① Launch flow</button>
+      <button data-v="reach">② How they're told</button>
+      <button data-v="states">③ Campaign screen states</button>
+    </div>
+    <div id="pt" class="pt"></div>
+    <div id="pn" class="pn"></div>
+    <div id="canvas"></div>
+  </main>
+</div>
+
+<script>
+const N=n=>`<span class="stepnum">${n}</span>`;
+const PH=(num,inner,cap='')=>`<div class="ph">${num?N(num):''}<div class="scr">${inner}</div>${cap?`<div class="cap">${cap}</div>`:''}</div>`;
+const A=()=>`<div class="arrow">→</div>`;
+const BAR=(r='')=>`<div class="bar"><span class="ic">☰</span><span class="logo">V9BET</span>${r}</div>`;
+
+/* campaign popup over home */
+const POPUP=()=>`<div class="dim"></div><div class="popup"><span class="x">✕</span><div class="img">[ Campaign banner image ]</div><div class="c"><div class="t">🎉 New: World Cup Missions</div><div class="d">Complete daily missions, win up to ₫26B. Live until Jul 20.</div><div class="btns"><div class="b">Later</div><div class="b k">Join now</div></div></div></div>`;
+
+/* campaign landing */
+const CAMPAIGN=(state='active')=>{
+  const hero=`<div class="hero">[ Campaign hero ]<span class="count">⏱ 14d 06h</span></div><div class="ttl">World Cup Missions</div><div class="muted">Daily missions · win up to ₫26B / 32M THB</div>`;
+  const mech=`<div class="mech"><b>How it works</b><br>1) Opt in  2) Complete daily missions  3) Climb the leaderboard, claim rewards.</div>`;
+  if(state==='active') return hero+mech+`<div class="li"><span class="ic">🎁</span><span class="g">Rewards<small>Free bets · vouchers · cash</small></span></div><div class="cta">Join the campaign</div><div style="text-align:center;font-size:9px;color:#aaa">Terms &amp; Conditions apply</div>`;
+  if(state==='joined') return hero+`<div class="toast" style="margin:8px 0">✓ You're in! Mission 1 unlocked.</div>${[['Place 5 bets',1],['Deposit once',0],['Win a parlay',0]].map((t,i)=>`<div class="task ${t[1]?'done':''}"><span class="n">${t[1]?'✓':i+1}</span><span style="flex:1">${t[0]}</span><span class="tag">${t[1]?'done':'todo'}</span></div>`).join('')}<div class="prog"><i style="width:33%"></i></div><div class="pl"><span>1 / 3 missions</span><span>33%</span></div>`;
+  if(state==='completed') return hero+`<div class="center"><div class="e">🏆</div><div style="font-weight:700;margin:6px 0">All missions complete!</div><div style="font-size:10.5px;color:#888">Reward ready to claim</div><div class="cta" style="max-width:160px">Claim ₫500,000</div></div>`;
+  if(state==='ended') return `<div class="hero" style="opacity:.5">[ Campaign hero ]</div><div class="ttl" style="color:#999">World Cup Missions</div><div class="center"><div class="e">🔒</div><div style="font-weight:700;margin:6px 0;color:#999">Campaign ended</div><div style="font-size:10.5px;color:#aaa">See other live promotions</div><div class="cta gh" style="max-width:160px">Browse promotions</div></div>`;
+  if(state==='ineligible') return hero+`<div class="center"><div class="e">🚫</div><div style="font-weight:700;margin:6px 0">Not available for your account</div><div style="font-size:10.5px;color:#888">Region / segment / KYC not met</div></div>`;
+};
+
+const V={
+flow:["Launch flow — live → popup → campaign → join → claim","Campaign goes live → customer is told (popup) → opens campaign screen → opts in → does missions → claims.",
+ ()=>`<div class="flow">
+   <div class="sys">📅 <b>Campaign goes live</b><br>scheduled time · targeted segment (BO / system)</div>
+   ${A()}
+   ${PH(1, BAR()+`<div class="body">${POPUP()}</div>`, 'Popup banner (on next visit)')}
+   ${A()}
+   ${PH(2, BAR(`<span class="ic">✕</span>`)+`<div class="body" style="overflow:auto">${CAMPAIGN('active')}</div>`, 'Campaign screen · Join')}
+   ${A()}
+   ${PH(3, BAR(`<span class="ic">←</span>`)+`<div class="body" style="overflow:auto">${CAMPAIGN('joined')}</div>`, 'Joined · missions in progress')}
+   ${A()}
+   ${PH(4, BAR(`<span class="ic">←</span>`)+`<div class="body" style="overflow:auto">${CAMPAIGN('completed')}</div>`, 'Claim → reward to wallet')}
+ </div>
+ <div class="ann"><b>Sequence (your ask):</b> on launch, the customer is first told via a <b>popup banner</b> (component: Popup/Modal, z50), then taps through to the <b>campaign screen</b>. Opt-in → mission progress → claim. Reward lands in wallet + a Toast confirms.</div>`,
+ [["1","Popup banner","Announce on next visit · frequency-capped (once per campaign, until dismissed/joined)"],["2","Campaign screen","Hero + how-it-works + reward + Join + countdown + T&Cs"],["3","Joined","Mission/step tracker, progress, share"],["4","Claim","Reward to wallet + Toast confirm"]]],
+
+reach:["How they're told — multi-channel","The popup is primary, but reach the customer wherever they are. All point to the same campaign screen.",
+ ()=>`<div class="flow">
+   ${PH(0, BAR()+`<div class="body">${POPUP()}</div>`, 'A · Popup (on site, primary)')}
+   ${PH(0, `<div class="center" style="display:block;padding-top:40px"><div class="toast" style="text-align:left">📲 <b>Push</b>: "New campaign — win ₫26B 🎉"</div><div class="toast" style="text-align:left">✉️ <b>Inbox</b>: New campaign details + CTA</div><div class="marq">📣 World Cup Missions live · Join now…</div><div class="li" style="margin-top:8px"><span class="ic">🎁</span><span class="g">Promotions list<small>always findable</small></span><span>›</span></div></div>`, 'B · Push / Inbox / Marquee / Promo list')}
+ </div>
+ <div class="ann"><b>Channel mix:</b> on-site → <b>Popup</b>; off-site → <b>Push</b>; always → <b>Inbox</b> (system message) + home <b>Marquee</b> + <b>Promotions list</b> card. Every entry opens the same campaign screen (deep link).</div>
+ <div class="ann"><b>Rules (important):</b> <b>frequency cap</b> the popup (once per campaign, not every page load); <b>target</b> by segment/region/eligibility; <b>suppress</b> for self-excluded users (Responsible Gaming). docx45 (random/selective member popup).</div>`,
+ [["A","Popup","Primary, on-site, frequency-capped"],["B","Push","Off-site re-engagement"],["C","Inbox","System message, persistent"],["D","Marquee","Home scrolling announcement"],["E","Promo list","Always findable card"]]],
+
+states:["Campaign screen — states","One screen, five states. Dev needs all of them.",
+ ()=>`<div class="flow">
+   ${PH(0, BAR(`<span class="ic">✕</span>`)+`<div class="body" style="overflow:auto">${CAMPAIGN('active')}</div>`, 'Active · can join')}
+   ${PH(0, BAR(`<span class="ic">←</span>`)+`<div class="body" style="overflow:auto">${CAMPAIGN('joined')}</div>`, 'Joined · in progress')}
+   ${PH(0, BAR(`<span class="ic">←</span>`)+`<div class="body" style="overflow:auto">${CAMPAIGN('completed')}</div>`, 'Completed · claim')}
+   ${PH(0, BAR(`<span class="ic">←</span>`)+`<div class="body" style="overflow:auto">${CAMPAIGN('ended')}</div>`, 'Ended · cross-sell')}
+   ${PH(0, BAR(`<span class="ic">←</span>`)+`<div class="body" style="overflow:auto">${CAMPAIGN('ineligible')}</div>`, 'Ineligible')}
+ </div>
+ <div class="ann"><b>States:</b> active / joined / completed / ended / ineligible. Plus loading & error. <b>Ended</b> cross-sells other live promotions (docx43 spirit). <b>Ineligible</b> = region/segment/KYC not met.</div>`,
+ [["—","5 states","active / joined / completed / ended / ineligible"],["+","Countdown","Live timer on hero (urgency)"],["+","Cross-sell","Ended → other promotions"]]],
+};
+
+const cv=document.getElementById('canvas'),pt=document.getElementById('pt'),pn=document.getElementById('pn'),lg=document.getElementById('legend');
+function render(v){
+ const [title,note,fn,leg]=V[v];
+ pt.textContent=title;pn.textContent=note;cv.innerHTML=fn();
+ lg.innerHTML='<h2>Highlights</h2>'+leg.map(x=>`<div class="leg"><span class="n">${x[0]}</span><div><b>${x[1]}</b><small>${x[2]}</small></div></div>`).join('');
+ document.querySelectorAll('.sel button').forEach(b=>b.classList.toggle('on',b.dataset.v===v));
+}
+document.querySelectorAll('.sel button').forEach(b=>b.onclick=()=>render(b.dataset.v));
+render('flow');
+</script>
+</body>
+</html>
