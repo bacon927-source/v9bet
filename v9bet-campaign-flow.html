@@ -83,6 +83,7 @@
       <button data-v="reach">② How they're told</button>
       <button data-v="states">③ Campaign screen states</button>
       <button data-v="multi">④ Two+ campaigns</button>
+      <button data-v="types">⑤ Campaign types</button>
     </div>
     <div id="pt" class="pt"></div>
     <div id="pn" class="pn"></div>
@@ -163,6 +164,18 @@ multi:["Two or more campaigns live at once","Never stack two popups. Recommended
   <div class="ann"><b>Caps &amp; queue:</b> max <b>1 popup / session</b>; don't re-show joined/dismissed; cooldown before the next; suppress for self-excluded (Responsible Gaming).</div>`;
  },
  [["1","One combined popup","\"2 new campaigns\" list — never two stacked modals"],["2","Campaigns list","See all → join each separately"],["A","Alt: priority single","Popup top-priority only; others via marquee/inbox/list"],["+","Caps","1 popup/session · skip joined/dismissed · cooldown · RG suppress"]]],
+
+types:["Campaign types — same wrapper, different screen","'Campaign' is a framework; the type is a pluggable template. Launch popup, reach, claim-to-wallet & analytics are SHARED — only the activity screen swaps.",
+ ()=>{
+  const wrap=(body,cap)=>PH(0, BAR(`<span class="ic">←</span>`)+`<div class="body" style="overflow:auto">${body}</div>`, cap);
+  const checkin=`<div class="ttl">Daily Check-in</div><div class="muted">7-day streak · escalating rewards</div><div style="display:flex;gap:4px;margin:9px 0">`+[['✓','₫10','d'],['✓','₫20','d'],['✓','₫30','d'],['4','₫50','t'],['5','×2',''],['6','×3',''],['7','🎁','']].map(x=>`<div style="flex:1;text-align:center"><div style="height:26px;border-radius:6px;display:grid;place-items:center;font-size:10px;border:1px solid ${x[2]?'#3a3a3a':'#c9c9c9'};${x[2]==='d'?'background:#3a3a3a;color:#fff':x[2]==='t'?'box-shadow:0 0 0 2px #ddd;font-weight:700':'color:#999'}">${x[0]}</div><div style="font-size:7px;color:#aaa;margin-top:2px">${x[1]}</div></div>`).join('')+`</div><div class="cta">Check in · Day 4 (₫50)</div><div style="text-align:center;font-size:9px;color:#aaa">Miss a day → streak resets</div>`;
+  const wheel=`<div class="ttl">Lucky Wheel</div><div class="muted">1 free spin today</div><div style="height:128px;width:128px;border:2px dashed var(--line2);border-radius:50%;margin:12px auto;display:grid;place-items:center;color:#aaa;font-size:11px">🎡<br>wheel</div><div class="cta">Spin</div><div style="text-align:center;font-size:9px;color:#aaa">Win free bets / cash / spins</div>`;
+  const packet=`<div class="ttl">Red Packet 🧧</div><div class="muted">Festive giveaway · random amount</div><div style="height:120px;border:2px dashed var(--strike);border-radius:14px;margin:12px 0;display:grid;place-items:center;color:#b56;font-size:13px">🧧<br>Tap to open</div><div class="cta">Open red packet</div><div class="toast" style="margin-top:8px">🎉 ₫88,888 → Claim to wallet</div>`;
+  return `<div class="flow">${wrap(checkin,'Daily Check-in')}${wrap(wheel,'Spin the Wheel')}${wrap(packet,'Red Packet 🧧')}</div>
+  <div class="ann"><b>Campaign = framework · type = template.</b> Missions / <b>Daily Check-in</b> / <b>Spin the Wheel</b> / <b>Red Packet 🧧</b> / Scratch / Lottery are <b>types</b>. The launch popup, multi-channel reach, claim-to-wallet, queue/caps and analytics are <b>the same</b>; only the activity screen body swaps. Reuses components: Daily Check-in Streak · Spin the Wheel · Scratch &amp; Win · Claimable Rewards.</div>
+  <div class="ann"><b>Red Packet 🧧</b> (lì xì / ang pao) fits the demographic: tap to open → random amount revealed → claim to wallet. Great for festivals &amp; deposit triggers. Each type also has its own states (e.g. check-in: can-check-in / checked / reset; wheel: spins-left / spinning / result / none).</div>`;
+ },
+ [["1","Daily Check-in","7-day streak, escalating, resets on miss"],["2","Spin the Wheel","free spin → prize"],["3","Red Packet 🧧","tap → random cash (lì xì / ang pao)"],["+","Shared wrapper","popup + reach + claim + caps + analytics same; only screen swaps"]]],
 };
 
 const cv=document.getElementById('canvas'),pt=document.getElementById('pt'),pn=document.getElementById('pn'),lg=document.getElementById('legend');
