@@ -84,6 +84,7 @@
       <button data-v="states">③ Campaign screen states</button>
       <button data-v="multi">④ Two+ campaigns</button>
       <button data-v="types">⑤ Campaign types</button>
+      <button data-v="lite">⑥ Button-only (TikTok-style)</button>
     </div>
     <div id="pt" class="pt"></div>
     <div id="pn" class="pn"></div>
@@ -176,6 +177,25 @@ types:["Campaign types — same wrapper, different screen","'Campaign' is a fram
   <div class="ann"><b>Red Packet 🧧</b> (lì xì / ang pao) fits the demographic: tap to open → random amount revealed → claim to wallet. Great for festivals &amp; deposit triggers. Each type also has its own states (e.g. check-in: can-check-in / checked / reset; wheel: spins-left / spinning / result / none).</div>`;
  },
  [["1","Daily Check-in","7-day streak, escalating, resets on miss"],["2","Spin the Wheel","free spin → prize"],["3","Red Packet 🧧","tap → random cash (lì xì / ang pao)"],["+","Shared wrapper","popup + reach + claim + caps + analytics same; only screen swaps"]]],
+
+lite:["Button-only — TikTok-style floating entry","Some campaigns need no full page: a floating button does the whole thing inline. Best for recurring, single-action rewards.",
+ ()=>{
+  const pageBg=`<div style="padding:10px"><div class="hero" style="height:70px">[ Home / product content ]</div><div class="mech">Content keeps scrolling underneath…</div><div class="mech">…the floating entry stays put.</div></div>`;
+  const ball=(state)=>`<div style="position:absolute;right:12px;bottom:14px;width:48px;height:48px;border-radius:50%;border:2px solid ${state==='done'?'#9a9a9a':'#3a3a3a'};background:#fff;display:grid;place-items:center;font-size:18px;box-shadow:0 6px 16px rgba(0,0,0,.22);color:${state==='done'?'#aaa':'#333'}">${state==='done'?'✓':'🎁'}${state!=='done'?`<span style="position:absolute;top:-3px;right:-3px;min-width:14px;height:14px;border-radius:8px;background:#b56;color:#fff;font-size:8px;display:grid;place-items:center;padding:0 3px">1</span>`:''}</div>`;
+  const bubble=`<div style="position:absolute;right:12px;bottom:70px;width:168px;border:2px solid var(--solid);border-radius:13px;background:#fff;box-shadow:0 10px 22px rgba(0,0,0,.22);padding:10px"><div style="font-weight:700;font-size:12px">🎁 Daily check-in</div><div style="font-size:10px;color:#888;margin:2px 0 7px">Day 4 · +₫50 today</div><div class="cta" style="margin:0;padding:8px">Check in</div></div>`;
+  const P=(inner,cap)=>PH(0, BAR()+`<div class="body">${pageBg}${inner}</div>`, cap);
+  return `<div class="flow">
+    ${P(ball('idle'),'1 · Floating entry (悬浮球)')}
+    ${A()}
+    ${P(ball('idle')+bubble,'2 · Tap → inline mini-action (no page)')}
+    ${A()}
+    ${P(ball('done')+`<div class="toast" style="position:absolute;left:12px;right:64px;bottom:18px;margin:0">✓ +₫50 added to wallet</div>`,'3 · Claimed inline · ball updates')}
+  </div>
+  <div class="ann"><b>The whole campaign lives in a button.</b> A floating entry (TikTok-style 悬浮球) sits on home/product; tap → a small inline bubble does the action (check-in / spin / open red packet / claim) → Toast confirms. <b>No full page</b>, lowest friction — ideal for daily/recurring single-action rewards.</div>
+  <div class="ann"><b>Behaviors:</b> draggable · minimizable · badge/countdown on the ball · optional auto-hide on scroll. <b>Layer z30</b> (with Live Chat FAB &amp; PiP) → must avoid colliding bottom-right (offset/stack). Still respects caps &amp; RG suppression; analytics events are the same.</div>
+  <div class="ann"><b>Button vs full page:</b> button = quick / recurring / single action (check-in, claim, one spin, red packet). Full page = missions, leaderboard, multi-step, T&Cs-heavy.</div>`;
+ },
+ [["1","Floating entry","TikTok-style 悬浮球 on home/product, badge/countdown"],["2","Inline mini-action","Tap → small bubble, one tap to claim — no page"],["3","Toast confirm","Reward inline, ball updates to done"],["+","When to use","Quick/recurring/single-action; full page for missions/leaderboard"]]],
 };
 
 const cv=document.getElementById('canvas'),pt=document.getElementById('pt'),pn=document.getElementById('pn'),lg=document.getElementById('legend');
