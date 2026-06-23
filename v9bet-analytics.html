@@ -124,7 +124,9 @@ funnels:["Funnels · where users drop","docx51: find the drop/bounce. Four funne
      <div><h3>2 · Deposit funnel</h3>${FN([['Open deposit',100],['Amount entered',81],['Method chosen',70],['Submitted',63],['Succeeded',58]])}<div class="src" style="margin-top:6px">↳ 44% applied a coupon (optional branch, not a funnel step)</div></div>
      <div><h3>3 · First-bet funnel</h3>${FN([['Home',100],['Product opened',64],['Match viewed',47],['Odds tapped',33],['Bet placed',21]])}</div>
    </div>
-   <h3>4 · KYC funnel</h3>${FN([['Prompted',100],['Upload started',58],['Submitted',46],['Approved',38]])}`],
+   <div class="twocol"><div><h3>4 · KYC funnel</h3>${FN([['Prompted',100],['Upload started',58],['Submitted',46],['Approved',38]])}</div>
+   <div><h3>5 · Campaign funnel</h3>${FN([['Popup shown',100],['Popup clicked',38],['Campaign viewed',34],['Joined',22],['Completed',12],['Reward claimed',11]])}</div></div>
+   <div class="note">Segment the campaign funnel by <b>method</b> (page vs floating icon) and <b>type</b> (missions / check-in / wheel / red packet) to see which format &amp; activity converts best — that answers "page vs icon" with data.</div>`],
 
 taxonomy:["Event Taxonomy","Naming: <code>object_action</code>, snake_case, past tense. One catalog, owned centrally.",()=>
   `<div class="note">Convention: <b>object_action</b> · snake_case · past tense (e.g. <code>deposit_succeeded</code>). Params in snake_case. Avoid free-form names — every event lives in this catalog.</div>
@@ -135,7 +137,8 @@ taxonomy:["Event Taxonomy","Naming: <code>object_action</code>, snake_case, past
      <div class="cat"><b>Betting</b><br>${EVS(['product_opened','match_viewed','odds_tapped','betslip_opened','bet_placed','bet_settled','rebet_tapped','stream_opened','stream_pip_opened','bet_shared'])}
        <br><br><b>Promo / Gamification</b><br>${EVS(['promo_viewed','promo_claimed','spin_played','scratch_played','lottery_entered','mission_completed','streak_checked_in','streak_broken','reward_claimed'])}
        <br><br><b>Engagement / Messaging</b><br>${EVS(['notification_received','push_optin','inbox_opened','livechat_opened','idle_prompt_shown','leaderboard_viewed','referral_shared'])}</div>
-   </div>`],
+   </div>
+   <div class="cat" style="margin-top:16px"><b>Campaign</b> <span class="src">props on every event: campaign_id · type[missions|checkin|wheel|redpacket] · method[page|icon] · source</span><br>${EVS(['campaign_popup_shown','campaign_popup_clicked','campaign_popup_dismissed','campaign_icon_shown','campaign_icon_tapped','campaign_viewed','campaign_joined','campaign_reward_claimed','campaign_ended'])}<div class="src" style="margin-top:5px">In-activity actions reuse existing events + a <code>campaign_id</code>: <code>spin_played</code> · <code>streak_checked_in</code> · <code>scratch_played</code> · <code>mission_completed</code>.</div></div>`],
 
 eventspec:["Event Spec template","How to define each event so IT implements it consistently — like the component contract.",()=>
   `<table><tr><th>Field</th><th>Meaning</th><th>Example</th></tr>
