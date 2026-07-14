@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>V9Bet · New Customer Sign Up — Wireframe</title>
+<title>V9Bet · Sign Up / Login — Wireframe</title>
 <style>
   :root{
     --ink:#2b2b2b; --line:#c9c9c9; --line2:#9a9a9a; --muted:#8a8a8a;
@@ -75,6 +75,13 @@
   .dots i.on{background:var(--solid);width:18px;border-radius:4px}
   .promo{border:1px dashed var(--line2);border-radius:12px;padding:14px;margin:10px 0;background:var(--fill)}
   .promo .tag{font-size:10px;border:1px solid var(--line2);border-radius:4px;padding:1px 6px;color:var(--muted)}
+  /* social login */
+  .or{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:11px;margin:14px 0 4px}
+  .or::before,.or::after{content:"";flex:1;height:1px;background:var(--line)}
+  .socbtn{display:flex;align-items:center;gap:10px;border:1px solid var(--line2);border-radius:10px;padding:11px 14px;margin:8px 0;font-size:13px;background:#fff;cursor:pointer}
+  .socbtn .ic{width:22px;height:22px;border:1px solid var(--line2);border-radius:50%;display:grid;place-items:center;font-size:11px;color:var(--muted);flex:0 0 22px}
+  .socbtn small{margin-left:auto;color:#b0b0b0;font-size:10px}
+  .socbtn .last{margin-left:auto;font-size:9px;border:1px solid var(--solid);border-radius:4px;padding:1px 5px;color:var(--solid)}
   /* spec panel */
   .spec h2{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:18px 0 6px}
   .spec h2:first-child{margin-top:0}
@@ -90,8 +97,8 @@
 <div class="app">
   <!-- LEFT: flow nav -->
   <aside>
-    <h1>New Customer Sign Up</h1>
-    <p class="sub">Low-fidelity wireframe · Mobile / App first<br>Source: New customers sign up flow (Jun 10)</p>
+    <h1>Sign Up / Login</h1>
+    <p class="sub">Low-fidelity wireframe · Mobile / App first<br>Source: New customers sign up flow (Jun 10)<br>+ 3rd-party login & verify methods (auth-flow-analysis, Jul 8)</p>
     <div id="nav"></div>
     <div class="legend">
       Grayscale wireframe only, no visual design.<br>
@@ -124,6 +131,7 @@
 const F = (label, sub='') => `<div class="field"><span>${label}</span>${sub?`<small>${sub}</small>`:''}</div>`;
 const CTA = (t, mod='') => `<div class="cta ${mod}">${t}</div>`;
 const OPT = (t, sel=false, kind='dot') => `<div class="opt ${sel?'sel':''}"><span class="${kind} ${sel?'on':''}"></span><span style="flex:1">${t}</span></div>`;
+const SOC = (ic, t, sub='', last=false) => `<div class="socbtn"><span class="ic">${ic}</span><span>${t}</span>${last?`<span class="last">Last used</span>`:sub?`<small>${sub}</small>`:''}</div>`;
 
 /* ---------- screen definitions ---------- */
 const screens = [
@@ -140,33 +148,78 @@ const screens = [
     ${s===2?`<div class="ph">Captcha (hCaptcha)<br><small>Shown only when risk control is triggered</small></div>`
             :`<div class="hint">＊ With phone OTP verification, Captcha is skipped by default and appears only on risk triggers.</div>`}
     ${CTA("Sign Up", s===0?'disabled':'')}
+    <div class="link"><b>Sign up with Email instead</b></div>
+    <div class="or">or continue with</div>
+    ${SOC("G","Continue with Google","main domain only")}
+    <div style="opacity:.45">${SOC("✈","Continue with Telegram","TH / intl only")}</div>
+    <div class="hint">＊ Buttons are market-aware: Telegram hidden in VN (blocked there since May 2025). Social routes via the stable auth domain; Google auto-hides when unavailable. Apple / Facebook not offered (anti-gambling policy).</div>
     <div class="link">Already have an account? <b>Login here</b></div>`,
   spec:{
-    goal:"Use phone number as the default sign-up entry to lower the barrier.",
-    states:["default (button disabled)","button enabled after Terms checked","Captcha shown conditionally (risk trigger)","submitting loading","phone already exists error","format error inline error"],
-    fields:["country_code","phone","referral_code?","accept_terms(bool)","captcha_token?"],
-    api:"POST /register/start\n→ { phone, country_code, referral_code?, accept_terms }\n← { register_token, otp_sent:true }\nerr: PHONE_EXISTS / INVALID_PHONE / RATE_LIMITED",
-    notes:["Terms not checked → Sign Up disabled.","Login here routes to the existing login flow.","Google sign-up: docx note pending confirmation, leave placeholder for now."]
+    goal:"Phone is the default sign-up entry (Email as alternative); Telegram / Google as secondary social entries.",
+    states:["default (button disabled)","button enabled after Terms checked","Captcha shown conditionally (risk trigger)","submitting loading","phone already exists error","format error inline error","Email sign-up variant (same form, email field)","social tap → Telegram/Google branch"],
+    fields:["country_code","phone | email","referral_code?","accept_terms(bool)","captcha_token?","method(phone|email|telegram|google)"],
+    api:"POST /register/start\n→ { phone, country_code, referral_code?, accept_terms }\n← { register_token, otp_sent:true }\nerr: PHONE_EXISTS / INVALID_PHONE / RATE_LIMITED\nGET auth.&lt;stable&gt;/oauth/{provider} → session_token (central auth domain)",
+    notes:["Terms not checked → Sign Up disabled.","Login here routes to the existing login flow.","Social is market-aware (2026-07-15 correction): VN shows Google One Tap only — Telegram is BLOCKED in VN since May 2025, so it is geo-gated to TH / intl markets. Apple / Facebook / LINE / VK / Zalo OAuth excluded (policy + mirror-domain + review-exposure).","All social buttons go through the central verification domain (auth.&lt;stable&gt;) so public mirror rotation never breaks OAuth.","Analytics: sign_up event must carry method param (phone_otp | email | telegram | google)."]
   }
 },
 {
   group:"A · Sign Up", id:"otp", title:"OTP Verification",
-  states:["Awaiting input","Verification error","OTP failed → WhatsApp"],
-  render:(s)=>`
+  states:["Awaiting input","Verification error","OTP failed → fallback","Change channel"],
+  render:(s)=>s===3?`
+    <div class="scr-title"><span class="x">←</span>Choose OTP Channel</div>
+    <div class="scr-step">Not receiving the code? Pick another channel</div>
+    ${OPT("💬 &nbsp; Zalo ZNS <small style='color:#b0b0b0'>default · best reach in VN</small>", true)}
+    ${OPT("📨 &nbsp; SMS", false)}
+    ${OPT("🟢 &nbsp; WhatsApp", false)}
+    <div style="opacity:.45">${OPT("✈ &nbsp; Telegram bot code <small style='color:#b0b0b0'>TH / intl only</small>", false)}</div>
+    ${OPT("📞 &nbsp; Voice call (reads the code)", false)}
+    ${CTA("Resend via selected channel")}`:`
     <div class="scr-title"><span class="x">←</span>Verify Phone</div>
-    <div class="scr-step">OTP sent to +xx ****1234</div>
+    <div class="scr-step">OTP sent via Zalo ZNS to +xx ****1234</div>
     <div class="otpcells"><span class="f">_</span><span>_</span><span>_</span><span>_</span><span>_</span><span>_</span></div>
     ${s===1?`<div class="err">Wrong code, please try again (2 attempts left)</div>`:''}
-    ${s===2?`<div class="err">Too many failed attempts. Receive OTP via WhatsApp instead?</div>${CTA("Verify via WhatsApp",'ghost')}`:''}
-    <div class="link">Didn't get it? <b>${s===2?'Resend locked':'Resend (60s)'}</b></div>
+    ${s===2?`<div class="err">Too many failed attempts. Try another channel?</div>${CTA("Verify via WhatsApp",'ghost')}${CTA("Voice call me the code",'ghost')}`:''}
+    <div class="link">Didn't get it? <b>${s===2?'Resend locked':'Resend (60s)'}</b> · <b>Change channel</b></div>
     <div class="link"><b>Change phone number</b></div>
     ${CTA("Verify and continue", s===0?'':'')}`,
   spec:{
-    goal:"Verify phone ownership; only then proceed to account setup.",
-    states:["pending (resend countdown)","verifying loading","wrong_code (attempts left)","expired (resend)","locked (too many failures)","fallback → WhatsApp verification"],
-    fields:["register_token","otp_code","channel(sms|whatsapp)"],
+    goal:"Verify phone ownership via multi-channel OTP (Zalo ZNS default in VN); only then proceed to account setup.",
+    states:["pending (resend countdown)","verifying loading","wrong_code (attempts left)","expired (resend)","locked (too many failures)","fallback → WhatsApp / voice","channel picker (Zalo ZNS / SMS / WhatsApp / Telegram / voice)"],
+    fields:["register_token","otp_code","channel(zalo_zns|sms|whatsapp|telegram|voice)"],
     api:"POST /register/verify-otp\n→ { register_token, otp_code }\n← { verified:true, customer_id }\nPOST /register/resend-otp { channel }\nerr: OTP_WRONG / OTP_EXPIRED / OTP_LOCKED",
-    notes:["docx: 'Consider OTP failure processes — use WhatsApp as alternative' → WhatsApp fallback appears after N failures.","On success, go straight into account setup (do not return to home)."]
+    notes:["Default channel = Zalo ZNS (cheaper + better delivery than SMS in VN; Zalo is a local service, unaffected by the Telegram block); SMS as fallback. THB market: consider LINE later.","docx: 'Consider OTP failure processes — use WhatsApp as alternative' → WhatsApp / voice fallback appears after N failures.","Telegram bot channel is geo-gated (TH / intl only) — Telegram blocked in VN since May 2025.","On success, go straight into account setup (do not return to home)."]
+  }
+},
+{
+  group:"A · Sign Up", id:"social", title:"Social Sign Up / Bind",
+  states:["Redirect (central auth)","Complete setup (new user)","Account exists → Bind"],
+  render:(s)=>s===0?`
+    <div class="scr-title"><span class="x">✕</span>Continue with Google</div>
+    <div class="ph" style="height:180px">[ Google One Tap / consent ]<br><small>Redirecting to auth.&lt;stable-domain&gt;…</small></div>
+    <div class="scr-step">Authorizing on the stable verification domain,<br>then returning to this site with a session token</div>
+    ${CTA("Cancel",'ghost')}`
+  :s===1?`
+    <div class="scr-title"><span class="x">←</span>Complete Setup</div>
+    <div class="scr-step">Signed in as g***@gmail.com — a few required items left</div>
+    ${F("Account currency ▾","auto: VND")}
+    ${F("Referral code","Optional")}
+    <div class="opt"><span class="sq on"></span>
+      <span style="flex:1">I am 21+ and agree to the <b style="text-decoration:underline">Terms of Service</b> and <b style="text-decoration:underline">Privacy Policy</b></span></div>
+    <div class="hint">＊ Social login skips the password only — currency / 21+ consent / referral stay (compliance + business).</div>
+    ${CTA("Create account")}`
+  :`
+    <div class="scr-title"><span class="x">←</span>Account Found</div>
+    <div class="err">This Google account / phone already matches an existing account <b>v9_user***</b>.</div>
+    <div class="scr-step">Bind it to that account to avoid duplicates</div>
+    ${CTA("Bind and login")}
+    ${CTA("Use a different account",'ghost')}
+    <div class="link"><b>Not you? Contact Live Chat</b></div>`,
+  spec:{
+    goal:"Social sign-up (Google in VN; Telegram geo-gated to TH / intl) via the central verification domain; bind flow prevents duplicate accounts.",
+    states:["redirect to auth.&lt;stable&gt;","provider consent (Google One Tap / Telegram widget)","new user → minimal complete-setup","existing match → bind & login","cancelled / provider error → back to sign-up"],
+    fields:["provider(google|telegram)","session_token","currency(auto-detected)","accept_terms(bool)","referral_code?"],
+    api:"GET auth.&lt;stable&gt;/oauth/{provider}\n← redirect back with session_token\nPOST /auth/social/exchange { session_token }\n← { customer_id, is_new, needs_bind }",
+    notes:["Central verification domain: OAuth redirect URI binds ONLY to auth.&lt;stable&gt;, so public mirror rotation never breaks login.","2026-07-15 correction: Telegram blocked in VN since May 2025 → this flow's Telegram variant only ships in TH / intl markets.","Bind flow also lives in Profile for existing username/password users.","Withdrawal / promo claim still requires phone OTP later — phone remains the KYC anchor.","Google One Tap auto-hides if the consent app is blocked (degrade design)."]
   }
 },
 {
@@ -289,7 +342,7 @@ const screens = [
     states:["optional (phone verified)","required (email-only sign-up path)","verification email sent","verified","verification link expired"],
     fields:["email","email_verified(bool)"],
     api:"POST /account/email + verification link callback",
-    notes:["docx BE rule: phone verified → Email optional; Email-only → must complete phone verification before claiming offers/withdrawing.","Maps to account recovery email."]
+    notes:["docx BE rule: phone verified → Email optional; Email-only → must complete phone verification before claiming offers/withdrawing.","Maps to account recovery email.","Rule ②: adding Email here is allowed without extra re-verify because the phone was JUST verified at sign-up. Later additions/changes go through 'Add / Change Phone·Email' (verify existing → verify new).","Once both are verified, any verification lets the member choose phone OR email (Rule ③)."]
   }
 },
 {
@@ -386,6 +439,94 @@ const screens = [
     notes:["docx: 'Welcome customer and inform of the immediate promotions applicable to him as new sign up'.","Offers determined by promo module + audience segmentation, CMS / API driven.","BE: a random unique id is already assigned as the default username (editable in profile)."]
   }
 },
+{
+  group:"D · Login & Verify", id:"login", title:"Login",
+  states:["Password","Phone OTP","Biometric / Passkey"],
+  render:(s)=>`
+    <div class="scr-title"><span class="x">✕</span>Login</div>
+    <div class="ph" style="height:64px">[ V9 Logo ]</div>
+    ${F("Phone / Email")}
+    ${s===0?F("Password")
+      :s===1?`<div class="hint">We'll send a one-time code via Zalo ZNS (SMS fallback) — no password needed.</div>`
+      :`<div class="ph" style="height:100px">👤 Face ID / Passkey (WebAuthn)</div>`}
+    <div class="opt"><span class="sq on"></span><span style="flex:1">Keep me logged in</span></div>
+    ${CTA(s===1?"Send code":"Login")}
+    <div class="link"><b>Forgot account / password?</b></div>
+    <div class="or">or continue with</div>
+    ${SOC("G","Continue with Google","",true)}
+    <div style="opacity:.45">${SOC("✈","Continue with Telegram","TH / intl only")}</div>
+    <div class="link">No account? <b>Sign Up</b></div>`,
+  spec:{
+    goal:"Multi-method login: password / phone-OTP one-tap / biometric-passkey, plus social (Google; Telegram geo-gated to TH / intl) with last-used hint.",
+    states:["password","phone OTP (no password)","biometric / passkey (WebAuthn)","social → Telegram/Google branch","lockout (too many failures)","risk trigger → step-up verification screen"],
+    fields:["identifier(account|phone)","method(password|phone_otp|passkey|telegram|google)","secret? / otp_code? / webauthn_assertion?","remember(bool)"],
+    api:"POST /auth/login { identifier, method, ... }\n← { session, requires_stepup? }\nerr: LOCKED / RISK_STEPUP / INVALID_CREDENTIALS",
+    notes:["Passkey (WebAuthn) targets high InAppWebView traffic — biggest returning-user win (P0 per auth analysis).","'Keep me logged in' made explicit (P1); high-frequency bettors feel session expiry the most.","'Last used' badge on the social button reduces trial-and-error (P2).","Analytics: login event carries method param, mirrors sign_up."]
+  }
+},
+{
+  group:"D · Login & Verify", id:"verify2", title:"Security Verification",
+  states:["Both verified → choose","Only one verified","Code entry"],
+  render:(s)=>s===2?`
+    <div class="scr-title"><span class="x">←</span>Enter Code</div>
+    <div class="scr-step">Code sent to 📱 +84 90****123 (via Zalo ZNS)</div>
+    <div class="otpcells"><span class="f">_</span><span>_</span><span>_</span><span>_</span><span>_</span><span>_</span></div>
+    <div class="link">Didn't get it? <b>Resend (60s)</b></div>
+    <div class="link"><b>Use my Email instead</b> <small>(only when both are verified)</small></div>`
+  :s===1?`
+    <div class="scr-title"><span class="x">←</span>Security Verification</div>
+    <div class="scr-step">Only one contact is verified — it will be used automatically</div>
+    ${OPT("📱 &nbsp; Phone +84 90****123 <small style='color:#b0b0b0'>verified</small>", true)}
+    <div class="opt" style="opacity:.45"><span class="dot"></span><span style="flex:1">✉️ &nbsp; Email — not verified yet<br><small style="color:#b0b0b0">Add it in Profile (you must verify phone first)</small></span></div>
+    ${CTA("Send code")}`
+  :`
+    <div class="scr-title"><span class="x">←</span>Security Verification</div>
+    <div class="scr-step">Both contacts verified — choose where to receive the code</div>
+    ${OPT("📱 &nbsp; Phone +84 90****123 <small style='color:#b0b0b0'>verified</small>", true)}
+    ${OPT("✉️ &nbsp; Email b***@gmail.com <small style='color:#b0b0b0'>verified</small>", false)}
+    <div class="hint">＊ Phone code is delivered via Zalo ZNS / SMS / WhatsApp / voice (channel picker on the code screen).</div>
+    ${CTA("Send code")}`,
+  spec:{
+    goal:"Verification anchors = Phone & Email. One verified → forced to it; both verified → member chooses either.",
+    states:["both verified → picker","only one verified → forced (no choice)","code sent / entry","wrong / expired / locked","all failed → Live Chat"],
+    fields:["anchor(phone|email)","delivery(zalo_zns|sms|whatsapp|voice|email)","stepup_token"],
+    api:"POST /auth/stepup/start { anchor, delivery }\nPOST /auth/stepup/verify { stepup_token, otp_code }\nerr: STEPUP_TIMEOUT / OTP_WRONG / OTP_LOCKED",
+    notes:["Rule ①: only one contact verified → every verification uses that one.","Rule ②: adding / changing the 2nd contact → must first pass verification on the 1st, then verify the new one (see 'Add / Change Phone·Email' screen).","Rule ③: both verified → member freely picks either.","Actions that REQUIRE verification: change password · forgot password (recovery) · add/change phone · add/change email · claim promotion · withdrawal.","App push / Passkey: future extensions — current scope is phone & email only."]
+  }
+},
+{
+  group:"D · Login & Verify", id:"contact-change", title:"Add / Change Phone·Email",
+  states:["Step 1 · Verify existing","Step 2 · Verify new","Done · both usable"],
+  render:(s)=>s===0?`
+    <div class="scr-title"><span class="x">←</span>Change Email</div>
+    <div class="scr-step">Step 1 of 2 · First verify a contact you already have</div>
+    ${OPT("📱 &nbsp; Code sent to Phone +84 90****123", true)}
+    <div class="otpcells"><span class="f">_</span><span>_</span><span>_</span><span>_</span><span>_</span><span>_</span></div>
+    <div class="hint">＊ Rule: to add or change a contact, you must first pass verification on one you already have.</div>
+    <div class="link">Didn't get it? <b>Resend (60s)</b></div>
+    ${CTA("Verify and continue")}`
+  :s===1?`
+    <div class="scr-title"><span class="x">←</span>Change Email</div>
+    <div class="scr-step">Step 2 of 2 · Now verify the NEW email</div>
+    ${F("New email address")}
+    ${CTA("Send code",'ghost')}
+    <div class="otpcells"><span class="f">_</span><span>_</span><span>_</span><span>_</span><span>_</span><span>_</span></div>
+    <div class="hint">＊ The new contact becomes usable for verification only after it passes its own code check. The old one stays valid until then.</div>
+    ${CTA("Verify and save")}`
+  :`
+    <div class="scr-title">✅ Contacts Updated</div>
+    <div class="scr-step">Both contacts verified — from now on, pick either one whenever verification is needed</div>
+    ${OPT("📱 &nbsp; Phone +84 90****123 <small style='color:#b0b0b0'>verified</small>", true)}
+    ${OPT("✉️ &nbsp; Email new***@gmail.com <small style='color:#b0b0b0'>verified · just added</small>", true)}
+    ${CTA("Done")}`,
+  spec:{
+    goal:"Add or change phone / Email with the two-step rule: verify what you have first, then verify the new one.",
+    states:["step 1 · verify existing contact (forced if only one)","step 2 · enter + verify new contact","done · both anchors usable","abandoned mid-way → nothing changes","new contact already used by another account → error"],
+    fields:["target(phone|email)","step1_token","new_contact","otp_code"],
+    api:"POST /account/contact/change/start { target }\n→ step-1 verify on existing anchor ← { step1_token }\nPOST /account/contact/change/commit\n→ { step1_token, new_contact, otp_code }\nerr: CONTACT_IN_USE / OTP_WRONG / STEP1_EXPIRED",
+    notes:["Same flow covers ADD (2nd contact missing) and CHANGE (replace existing).","During sign-up, adding Email right after phone-OTP is allowed because the phone was just verified (Rule ② already satisfied).","Forgot-password recovery uses these same two anchors — keeping both verified is the user's safety net.","Entry points: Profile → Contact details; also prompted when claiming a promotion / withdrawing without the needed verified contact."]
+  }
+},
 ];
 
 /* small components used inside screens */
@@ -425,6 +566,65 @@ function draw(){
 document.getElementById('prev').onclick=()=>{if(idx>0){idx--;st=0;draw();}};
 document.getElementById('next').onclick=()=>{if(idx<screens.length-1){idx++;st=0;draw();}};
 draw();
+</script>
+<script>
+/* ---------- ✏️ 文字編輯模式：右下角開關，點字直接改；存 localStorage，重整 / 切畫面不會消失 ---------- */
+(function(){
+const FILE=location.pathname.split('/').pop()||'page';
+const KEY='wfTextEdits:'+FILE;
+const DYN=['screen','spec','bread'];                                   // draw() 重繪的區塊
+const STATIC=[['aside h1','h1'],['aside .sub','sub'],['aside .legend','legend']]; // 靜態區塊
+const dynKey=id=>id==='screen'?`d|${idx}|${st}|screen`:`d|${idx}|${id}`;
+const nodes=el=>{const w=document.createTreeWalker(el,NodeFilter.SHOW_TEXT),a=[];let n;while(n=w.nextNode())a.push(n);return a};
+const load=()=>{try{const d=JSON.parse(localStorage.getItem(KEY)||'{}');return{edits:d.edits||{},orig:d.orig||{}}}catch(e){return{edits:{},orig:{}}}};
+const persist=d=>localStorage.setItem(KEY,JSON.stringify(d));
+const fresh={};                                                        // 每個 key 的原始文字（重繪後快照）
+function applyKey(el,k){const v=load().edits[k];if(!v)return;const ns=nodes(el);for(let i=0;i<Math.min(ns.length,v.length);i++)ns[i].nodeValue=v[i]}
+function snapApply(el,k){if(!(k in fresh))fresh[k]=nodes(el).map(n=>n.nodeValue);applyKey(el,k)}
+function record(el,k){
+  const d=load(),cur=nodes(el).map(n=>n.nodeValue),o=fresh[k]||d.orig[k];
+  if(o&&cur.length===o.length&&cur.every((t,i)=>t===o[i])){delete d.edits[k];delete d.orig[k]}
+  else{d.edits[k]=cur;if(o&&!d.orig[k])d.orig[k]=o}
+  persist(d);flash('已儲存 ✓')}
+const _draw=draw;
+draw=function(){_draw();DYN.forEach(id=>{const el=document.getElementById(id);if(el)snapApply(el,dynKey(id))})};
+STATIC.forEach(([sel,k])=>{const el=document.querySelector(sel);if(el){snapApply(el,'s|'+k);el.addEventListener('input',()=>record(el,'s|'+k))}});
+DYN.forEach(id=>{const el=document.getElementById(id);if(el)el.addEventListener('input',()=>record(el,dynKey(id)))});
+draw();                                                                // 載入時套用已存的修改
+/* --- 編輯開關 --- */
+let editing=false;
+const plainOK=(()=>{const t=document.createElement('div');try{t.contentEditable='plaintext-only'}catch(e){return false}return t.contentEditable==='plaintext-only'})();
+const editables=()=>DYN.map(id=>document.getElementById(id)).concat(STATIC.map(([sel])=>document.querySelector(sel))).filter(Boolean);
+function setEditing(on){editing=on;
+  editables().forEach(el=>{if(on){el.setAttribute('contenteditable',plainOK?'plaintext-only':'true');el.setAttribute('spellcheck','false')}else{el.removeAttribute('contenteditable')}});
+  document.body.toggleAttribute('data-editing',on);
+  const b=document.getElementById('eb-toggle');b.textContent=on?'✅ 完成':'✏️ 編輯文字';b.classList.toggle('on',on);
+  flash(on?'點畫面上的字直接修改（自動儲存）':'')}
+document.addEventListener('beforeinput',e=>{if(editing&&!plainOK&&(e.inputType==='insertParagraph'||e.inputType==='insertLineBreak'))e.preventDefault()},true);
+/* --- 工具列 --- */
+const css=document.createElement('style');css.textContent=`
+#editbar{position:fixed;right:14px;bottom:14px;z-index:9999;display:flex;gap:6px;align-items:center;background:#fff;border:1px solid #d0d3d8;border-radius:10px;padding:6px 8px;box-shadow:0 4px 18px rgba(0,0,0,.14);font:12px/1.4 -apple-system,"Noto Sans TC",Arial,sans-serif}
+#editbar button{font:inherit;border:1px solid #d0d3d8;background:#fff;border-radius:7px;padding:4px 9px;cursor:pointer;color:#333}
+#editbar button:hover{border-color:#19c37d;color:#0f8a5f}
+#editbar #eb-toggle.on{background:#19c37d;border-color:#19c37d;color:#fff}
+#eb-msg{color:#0f8a5f;font-size:11px;max-width:170px}
+body[data-editing] [contenteditable]{outline:1.5px dashed #19c37d;outline-offset:3px;border-radius:3px;cursor:text}
+body[data-editing] [contenteditable]:focus{outline-style:solid}`;
+document.head.appendChild(css);
+const bar=document.createElement('div');bar.id='editbar';
+bar.innerHTML=`<button id="eb-toggle" title="開啟後直接點畫面文字修改，自動儲存在此瀏覽器">✏️ 編輯文字</button><button id="eb-copy" title="複製修改清單（原文 → 新文），可貼給 Claude 寫回 HTML">📋 複製修改</button><button id="eb-reset" title="清除此頁所有文字修改並還原">↺ 還原</button><span id="eb-msg"></span>`;
+document.body.appendChild(bar);
+document.getElementById('eb-toggle').onclick=()=>setEditing(!editing);
+document.getElementById('eb-reset').onclick=()=>{if(confirm('還原此頁所有文字修改？')){localStorage.removeItem(KEY);location.reload()}};
+document.getElementById('eb-copy').onclick=()=>{
+  const d=load();let out=`【文字修改】${FILE}\n`,cnt=0;
+  Object.keys(d.edits).forEach(k=>{const o=d.orig[k]||fresh[k]||[];(d.edits[k]||[]).forEach((t,i)=>{if(o[i]!==t){cnt++;out+=`\n${cnt}. 原：${(o[i]??'(?)').trim()}\n   改：${t.trim()}\n`}})});
+  if(!cnt)out+='（目前沒有修改）';
+  const done=()=>flash('已複製 ✓');
+  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(out).then(done,()=>fallbackCopy(out,done));else fallbackCopy(out,done)};
+function fallbackCopy(t,cb){const ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();cb()}
+let flTimer;function flash(m){const el=document.getElementById('eb-msg');if(!el)return;el.textContent=m;clearTimeout(flTimer);if(m&&m.includes('✓'))flTimer=setTimeout(()=>{el.textContent=editing?'編輯模式':''},1500)}
+})();
 </script>
 </body>
 </html>

@@ -49,7 +49,7 @@
     <span class="s">Component contracts</span><span class="a">→</span>
     <span class="s">Foundations / Full site</span>
   </div>
-  <div class="meta"><span><b>docx</b> 117 items fully covered</span><span><b>50</b> screen wireframes</span><span><b>17</b> page compositions</span><span><b>24</b> components</span><span><b>13</b> foundation items</span><span>Mobile/App first · Desktop centered</span></div>
+  <div class="meta"><span><b>docx</b> 117 items fully covered</span><span><b>52</b> screen wireframes</span><span><b>17</b> page compositions</span><span><b>24</b> components</span><span><b>13</b> foundation items</span><span>Mobile/App first · Desktop centered</span></div>
 
   <h2>① Foundations / Full Site</h2>
   <div class="cards">
@@ -96,9 +96,9 @@
   <h2>④ Full Platform Per-Screen Wireframe</h2>
   <div class="cards">
     <a class="card full" href="v9bet-full-wireframe.html">
-      <div class="t">Full Platform Wireframe (50 screens)<span class="ar">→</span></div>
+      <div class="t">Full Platform Wireframe (52 screens)<span class="ar">→</span></div>
       <div class="d">Per-screen wireframes for all 117 docx items, each with IT spec (purpose/States/Fields/API/dev notes) + docx line numbers; pure rules collected under "Rules & Notes".</div>
-      <div class="tags"><span class="tag k">50 screens · 12 groups</span><span class="tag">Per-screen spec</span><span class="tag">docx line refs</span><span class="fname">v9bet-full-wireframe.html</span></div>
+      <div class="tags"><span class="tag k">52 screens · 12 groups</span><span class="tag">Per-screen spec</span><span class="tag">docx line refs</span><span class="fname">v9bet-full-wireframe.html</span></div>
     </a>
   </div>
 
@@ -106,8 +106,8 @@
   <div class="cards">
     <a class="card" href="signup-flow-wireframe.html">
       <div class="t">Wireframe (grayscale)<span class="ar">→</span></div>
-      <div class="d">13 screens + multiple states, IT spec on the right. For flow review.</div>
-      <div class="tags"><span class="tag">Low-fidelity</span><span class="fname">signup-flow-wireframe.html</span></div>
+      <div class="d">17 screens + multiple states, IT spec on the right. For flow review. Now incl. 3rd-party login (Google in VN; Telegram geo-gated to TH/intl — blocked in VN since May 2025), Login screen, multi-channel OTP (Zalo ZNS / SMS / WhatsApp / voice), and phone/email verification rules (one verified → forced; add 2nd → verify 1st first; both → choose) applied to password change, recovery, contact change, promo claim & withdrawal.</div>
+      <div class="tags"><span class="tag">Low-fidelity</span><span class="tag k">3rd-party login</span><span class="tag">Multi-channel verify</span><span class="fname">signup-flow-wireframe.html</span></div>
     </a>
     <a class="card" href="signup-flow-design.html">
       <div class="t">Design (V9 dark)<span class="ar">→</span></div>
@@ -135,5 +135,55 @@
     Suggested reading order: ① Foundations → ② Components → ③ Page Compositions → (for details) ④ Full Platform Per-Screen. Share this page's link directly when handing off to Dev.
   </div>
 </div>
+<script>
+/* ---------- ✏️ 文字編輯模式：右下角開關，點字直接改；存 localStorage，重整不會消失 ---------- */
+(function(){
+const FILE=location.pathname.split('/').pop()||'page';
+const KEY='wfTextEdits:'+FILE;
+const AREA=document.querySelector('.wrap');
+const nodes=el=>{const w=document.createTreeWalker(el,NodeFilter.SHOW_TEXT),a=[];let n;while(n=w.nextNode())a.push(n);return a};
+const load=()=>{try{const d=JSON.parse(localStorage.getItem(KEY)||'{}');return{edits:d.edits||{},orig:d.orig||{}}}catch(e){return{edits:{},orig:{}}}};
+const persist=d=>localStorage.setItem(KEY,JSON.stringify(d));
+const fresh={wrap:nodes(AREA).map(n=>n.nodeValue)};
+(function applySaved(){const v=load().edits.wrap;if(!v)return;const ns=nodes(AREA);for(let i=0;i<Math.min(ns.length,v.length);i++)ns[i].nodeValue=v[i]})();
+AREA.addEventListener('input',()=>{
+  const d=load(),cur=nodes(AREA).map(n=>n.nodeValue),o=fresh.wrap;
+  if(cur.length===o.length&&cur.every((t,i)=>t===o[i])){delete d.edits.wrap;delete d.orig.wrap}
+  else{d.edits.wrap=cur;if(!d.orig.wrap)d.orig.wrap=o}
+  persist(d);flash('已儲存 ✓')});
+/* --- 編輯開關 --- */
+let editing=false;
+const plainOK=(()=>{const t=document.createElement('div');try{t.contentEditable='plaintext-only'}catch(e){return false}return t.contentEditable==='plaintext-only'})();
+function setEditing(on){editing=on;
+  if(on){AREA.setAttribute('contenteditable',plainOK?'plaintext-only':'true');AREA.setAttribute('spellcheck','false')}else{AREA.removeAttribute('contenteditable')}
+  document.body.toggleAttribute('data-editing',on);
+  const b=document.getElementById('eb-toggle');b.textContent=on?'✅ 完成':'✏️ 編輯文字';b.classList.toggle('on',on);
+  flash(on?'點文字直接修改（編輯中卡片連結不會跳轉）':'')}
+document.addEventListener('click',e=>{if(editing&&e.target.closest('a')){e.preventDefault();e.stopPropagation()}},true);
+document.addEventListener('beforeinput',e=>{if(editing&&!plainOK&&(e.inputType==='insertParagraph'||e.inputType==='insertLineBreak'))e.preventDefault()},true);
+/* --- 工具列 --- */
+const css=document.createElement('style');css.textContent=`
+#editbar{position:fixed;right:14px;bottom:14px;z-index:9999;display:flex;gap:6px;align-items:center;background:#fff;border:1px solid #d0d3d8;border-radius:10px;padding:6px 8px;box-shadow:0 4px 18px rgba(0,0,0,.14);font:12px/1.4 -apple-system,"Noto Sans TC",Arial,sans-serif}
+#editbar button{font:inherit;border:1px solid #d0d3d8;background:#fff;border-radius:7px;padding:4px 9px;cursor:pointer;color:#333}
+#editbar button:hover{border-color:#19c37d;color:#0f8a5f}
+#editbar #eb-toggle.on{background:#19c37d;border-color:#19c37d;color:#fff}
+#eb-msg{color:#0f8a5f;font-size:11px;max-width:170px}
+body[data-editing] .wrap{outline:1.5px dashed #19c37d;outline-offset:6px;border-radius:3px;cursor:text}`;
+document.head.appendChild(css);
+const bar=document.createElement('div');bar.id='editbar';
+bar.innerHTML=`<button id="eb-toggle" title="開啟後直接點文字修改，自動儲存在此瀏覽器">✏️ 編輯文字</button><button id="eb-copy" title="複製修改清單（原文 → 新文），可貼給 Claude 寫回 HTML">📋 複製修改</button><button id="eb-reset" title="清除此頁所有文字修改並還原">↺ 還原</button><span id="eb-msg"></span>`;
+document.body.appendChild(bar);
+document.getElementById('eb-toggle').onclick=()=>setEditing(!editing);
+document.getElementById('eb-reset').onclick=()=>{if(confirm('還原此頁所有文字修改？')){localStorage.removeItem(KEY);location.reload()}};
+document.getElementById('eb-copy').onclick=()=>{
+  const d=load();let out=`【文字修改】${FILE}\n`,cnt=0;
+  const o=d.orig.wrap||fresh.wrap;(d.edits.wrap||[]).forEach((t,i)=>{if(o[i]!==t){cnt++;out+=`\n${cnt}. 原：${(o[i]??'(?)').trim()}\n   改：${t.trim()}\n`}});
+  if(!cnt)out+='（目前沒有修改）';
+  const done=()=>flash('已複製 ✓');
+  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(out).then(done,()=>fallbackCopy(out,done));else fallbackCopy(out,done)};
+function fallbackCopy(t,cb){const ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();cb()}
+let flTimer;function flash(m){const el=document.getElementById('eb-msg');if(!el)return;el.textContent=m;clearTimeout(flTimer);if(m&&m.includes('✓'))flTimer=setTimeout(()=>{el.textContent=editing?'編輯模式':''},1500)}
+})();
+</script>
 </body>
 </html>

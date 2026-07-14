@@ -183,34 +183,64 @@ const S=[
    F("Country code ▾ Phone number","Required")+F("Referral code","Optional")+
    `<div class="opt"><span class="sq ${s>0?'on':''}"></span><span style="flex:1">I am 21+ and agree to the <b style="text-decoration:underline">Terms</b> and <b style="text-decoration:underline">Privacy Policy</b></span></div>`+
    (s===2?PH("hCaptcha (shown only when risk-triggered)",70):`<div class="hint">* Uses OTP verification; Captcha skipped by default.</div>`)+
-   CTA("Sign Up",s===0?'disabled':'')+LINK("Already have an account? <b>Login here</b>"),
- spec:{goal:"Phone number is the default sign-up entry point.",states:["disabled","enabled after terms checked","Captcha conditional","loading","PHONE_EXISTS","INVALID_PHONE"],fields:["country_code","phone","referral_code?","accept_terms","captcha_token?"],api:"POST /register/start → { register_token, otp_sent }",notes:["docx76-82; 79 Captcha skippable thanks to OTP; 49 Google sign-up TBC."]}},
+   CTA("Sign Up",s===0?'disabled':'')+
+   `<div class="hint" style="text-align:center">— or continue with —</div>`+
+   OPT("G Continue with Google <small style='color:#b0b0b0'>main domain only</small>")+
+   `<div style="opacity:.45">${OPT("✈ Continue with Telegram <small style='color:#b0b0b0'>TH / intl only</small>")}</div>`+
+   `<div class="hint">* Market-aware: Telegram hidden in VN (blocked since May 2025). Social routes via stable auth domain; Apple/Facebook not offered (policy).</div>`+
+   LINK("Already have an account? <b>Login here</b>"),
+ spec:{goal:"Phone number is the default sign-up entry point; Google (VN) / Telegram (TH·intl, geo-gated) as secondary social entries.",states:["disabled","enabled after terms checked","Captcha conditional","loading","PHONE_EXISTS","INVALID_PHONE","social → Google/Telegram branch"],fields:["country_code","phone","referral_code?","accept_terms","captcha_token?","method(phone|telegram|google)"],api:"POST /register/start → { register_token, otp_sent }\nGET auth.&lt;stable&gt;/oauth/{provider} → session_token",notes:["docx76-82; 79 Captcha skippable thanks to OTP.","2026-07-15 correction: Telegram blocked in VN since May 2025 → VN shows Google One Tap only (auto-hide degrade); Telegram geo-gated to TH/intl. Apple/Facebook/LINE/VK/Zalo-OAuth excluded.","Central auth domain solves mirror rotation; sign_up event carries method param."]}},
 
-{g:"1 · Sign Up/Login",t:"OTP verify",src:"81,49",states:["Waiting","Error","Fail→WhatsApp"],
- r:(s)=>BAR("Verify phone")+STEP("Code sent to +xx ****1234")+
+{g:"1 · Sign Up/Login",t:"OTP verify",src:"81,49",states:["Waiting","Error","Fail→WhatsApp","Change channel"],
+ r:(s)=>s===3?BAR("Choose OTP channel")+STEP("Not receiving? Pick another channel")+
+   OPT("💬 Zalo ZNS <small style='color:#b0b0b0'>default · best reach VN</small>",true)+OPT("📨 SMS")+OPT("🟢 WhatsApp")+`<div style="opacity:.45">${OPT("✈ Telegram bot code <small style='color:#b0b0b0'>TH / intl only</small>")}</div>`+OPT("📞 Voice call (reads code)")+
+   CTA("Resend via selected channel")
+ :BAR("Verify phone")+STEP("Code sent via Zalo ZNS to +xx ****1234")+
    `<div style="display:flex;gap:7px;justify-content:center;margin:16px 0">${'_'.repeat(6).split('').map((_,i)=>`<span style="width:40px;height:50px;border:1px solid ${i===0?'#3a3a3a':'#9a9a9a'};border-width:${i===0?2:1}px;border-radius:8px;display:inline-grid;place-items:center;color:#aaa;font-size:18px">_</span>`).join('')}</div>`+
    (s===1?`<div class="err">Wrong code (2 tries left)</div>`:'')+
    (s===2?`<div class="err">Too many failures. Try WhatsApp?</div>`+CTA("Verify via WhatsApp",'ghost'):'')+
-   LINK(`Didn't get it? <b>${s===2?'Locked':'Resend 60s'}</b>`)+LINK("<b>Change phone number</b>")+CTA("Verify and continue"),
- spec:{goal:"Verify phone ownership, then proceed to account setup.",states:["pending","verifying","wrong_code","expired","locked","WhatsApp fallback"],fields:["register_token","otp_code","channel"],api:"POST /register/verify-otp",notes:["docx49 WhatsApp fallback on OTP failure; 81 proceed only on success."]}},
+   LINK(`Didn't get it? <b>${s===2?'Locked':'Resend 60s'}</b> · <b>Change channel</b>`)+LINK("<b>Change phone number</b>")+CTA("Verify and continue"),
+ spec:{goal:"Verify phone ownership via multi-channel OTP (Zalo ZNS default), then proceed to account setup.",states:["pending","verifying","wrong_code","expired","locked","WhatsApp/voice fallback","channel picker"],fields:["register_token","otp_code","channel(zalo_zns|sms|whatsapp|telegram|voice)"],api:"POST /register/verify-otp\nPOST /register/resend-otp { channel }",notes:["Zalo ZNS default in VN (cost/reach beats SMS); SMS fallback.","docx49 WhatsApp fallback on OTP failure; extended with Telegram bot + voice call; 81 proceed only on success."]}},
 
-{g:"1 · Sign Up/Login",t:"Login",src:"16",states:["Password","PIN","Biometric"],
+{g:"1 · Sign Up/Login",t:"Login",src:"16",states:["Password","PIN","Biometric/Passkey","Phone OTP"],
  r:(s)=>BAR("Login","✕")+PH("V9 Logo",70)+
    F("Account / Phone / Email")+
-   (s===0?F("Password","",):s===1?`<div style="display:flex;gap:7px;justify-content:center;margin:12px 0">${'____'.split('').map(()=>`<span style="width:42px;height:50px;border:1px solid #9a9a9a;border-radius:8px;display:inline-grid;place-items:center;color:#aaa">_</span>`).join('')}</div>`:PH("👤 Face ID / Fingerprint",90))+
-   CTA("Login")+LINK("<b>Forgot account / password?</b>")+LINK("No account? <b>Sign Up</b>"),
- spec:{goal:"Multi-method login: password / PIN / biometric.",states:["password","pin","biometric","lockout","risk re-verification"],fields:["identifier","secret|pin","biometric"],api:"POST /auth/login",notes:["docx16; biometric maps to app setting 86."]}},
+   (s===0?F("Password","",):s===1?`<div style="display:flex;gap:7px;justify-content:center;margin:12px 0">${'____'.split('').map(()=>`<span style="width:42px;height:50px;border:1px solid #9a9a9a;border-radius:8px;display:inline-grid;place-items:center;color:#aaa">_</span>`).join('')}</div>`:s===2?PH("👤 Face ID / Passkey (WebAuthn)",90):`<div class="hint">We'll send a one-time code via Zalo ZNS (SMS fallback) — no password needed.</div>`)+
+   OPT("Keep me logged in",true,'sq')+
+   CTA(s===3?"Send code":"Login")+LINK("<b>Forgot account / password?</b>")+
+   `<div class="hint" style="text-align:center">— or continue with —</div>`+
+   OPT("G Continue with Google <small style='color:#b0b0b0'>last used</small>")+
+   `<div style="opacity:.45">${OPT("✈ Continue with Telegram <small style='color:#b0b0b0'>TH / intl only</small>")}</div>`+
+   LINK("No account? <b>Sign Up</b>"),
+ spec:{goal:"Multi-method login: password / PIN / biometric-passkey / phone-OTP one-tap, plus social (Google; Telegram geo-gated to TH/intl) with last-used hint.",states:["password","pin","biometric/passkey (WebAuthn)","phone OTP","social branch","lockout","risk step-up → verification method screen"],fields:["identifier","method(password|pin|passkey|phone_otp|telegram|google)","secret|pin|otp|webauthn_assertion","remember(bool)"],api:"POST /auth/login { identifier, method, ... }\n← { session, requires_stepup? }",notes:["docx16; biometric maps to app setting 86; passkey targets InAppWebView traffic.","'Keep me logged in' explicit (P1); 'last used' badge reduces trial-error (P2).","login event carries method param, mirrors sign_up."]}},
 
-{g:"1 · Sign Up/Login",t:"Verification method",src:"15",states:["Multiple methods"],
- r:()=>BAR("Choose verification method")+STEP("You have multiple methods linked; choose where to receive the code")+
-   OPT("📱 V9 App push verification",true)+OPT("💬 Social messaging platform (first time only)")+OPT("📨 SMS")+OPT("✉️ Email")+CTA("Send code"),
- spec:{goal:"When a member has multiple contact methods linked, they can choose the OTP delivery channel.",states:["V9 app push","social msg (first time)","SMS","Email"],notes:["docx15 Authentication: V9 app / social platform (first time, ref Amazon) / SMS / Email, member's choice."]}},
+{g:"1 · Sign Up/Login",t:"Verification method",src:"15",states:["Both verified → choose","Only one verified","Code entry"],
+ r:(s)=>s===2?BAR("Enter code")+STEP("Code sent to 📱 +84 90****123 (via Zalo ZNS)")+
+   `<div style="display:flex;gap:7px;justify-content:center;margin:14px 0">${'______'.split('').map((_,i)=>`<span style="width:38px;height:48px;border:1px solid ${i===0?'#3a3a3a':'#9a9a9a'};border-width:${i===0?2:1}px;border-radius:8px;display:inline-grid;place-items:center;color:#aaa">_</span>`).join('')}</div>`+
+   LINK("Didn't get it? <b>Resend (60s)</b>")+LINK("<b>Use my Email instead</b> <small>(only when both verified)</small>")
+ :s===1?BAR("Security verification")+STEP("Only one contact is verified — it will be used automatically")+
+   OPT("📱 Phone +84 90****123 <small style='color:#b0b0b0'>verified</small>",true)+
+   `<div class="opt" style="opacity:.45"><span class="dot"></span><span style="flex:1">✉️ Email — not verified yet<br><small style="color:#b0b0b0">Add it in Profile (verify phone first)</small></span></div>`+CTA("Send code")
+ :BAR("Security verification")+STEP("Both contacts verified — choose where to receive the code")+
+   OPT("📱 Phone +84 90****123 <small style='color:#b0b0b0'>verified</small>",true)+OPT("✉️ Email b***@gmail.com <small style='color:#b0b0b0'>verified</small>")+
+   `<div class="hint">* Phone code delivered via Zalo ZNS / SMS / WhatsApp / voice.</div>`+CTA("Send code"),
+ spec:{goal:"Verification anchors = Phone & Email. One verified → forced; both verified → member chooses either.",states:["both verified → picker","only one → forced","code sent/entry","wrong/expired/locked","all failed → Live Chat"],fields:["anchor(phone|email)","delivery(zalo_zns|sms|whatsapp|voice|email)","stepup_token"],api:"POST /auth/stepup/start { anchor, delivery }\nPOST /auth/stepup/verify { stepup_token, otp_code }",notes:["Rule ①: only one verified → every verification uses it. Rule ②: add/change the 2nd → verify the 1st first (see Add/change contact screen). Rule ③: both verified → free choice.","Actions REQUIRING verification: change password · forgot password · add/change phone · add/change email · claim promotion · withdrawal.","docx15 app-push / social channels: future extensions — current scope phone & email only."]}},
 
-{g:"1 · Sign Up/Login",t:"Forgot/recover account",src:"17",states:["Enter clues","Match old password"],
- r:(s)=>BAR("Account recovery")+STEP("Recover your account by matching existing info")+
-   (s===0?F("Registered phone / Email")+F("Account recovery Email"):F("Any one of your previously used passwords")+`<div class="hint">System matches one historical password + basic profile.</div>`)+
-   CTA("Submit for matching")+LINK("Still can't recover? <b>Contact Live Chat</b>"),
- spec:{goal:"Recover account by matching one historical password + basic profile / recovery Email.",states:["enter clues","match old password","success→reset","fail→Live Chat"],fields:["identifier","recovery_email","old_password_attempt"],notes:["docx17 can match basic profile / recovery Email using one of the account's last few passwords."]}},
+{g:"1 · Sign Up/Login",t:"Social sign up / bind",src:"49",states:["Redirect (central auth)","Complete setup (new)","Account exists → Bind"],
+ r:(s)=>s===0?BAR("Continue with Google","✕")+PH("[ Google One Tap / consent ]<br><small>Redirecting to auth.&lt;stable-domain&gt;…</small>",170)+STEP("Authorizing on the stable verification domain, then returning with a session token")+CTA("Cancel",'ghost')
+ :s===1?BAR("Complete setup")+STEP("Signed in as g***@gmail.com — a few required items left")+F("Account currency ▾","auto: VND")+F("Referral code","Optional")+
+   `<div class="opt"><span class="sq on"></span><span style="flex:1">I am 21+ and agree to the <b style="text-decoration:underline">Terms</b> and <b style="text-decoration:underline">Privacy Policy</b></span></div>`+
+   `<div class="hint">* Social login skips the password only — compliance + business fields stay.</div>`+CTA("Create account")
+ :BAR("Account found")+`<div class="err">This Google account / phone already matches existing account <b>v9_user***</b>.</div>`+STEP("Bind it to that account to avoid duplicates")+CTA("Bind and login")+CTA("Use a different account",'ghost')+LINK("<b>Not you? Contact Live Chat</b>"),
+ spec:{goal:"Social auth (Google in VN; Telegram geo-gated to TH/intl) via central verification domain; bind flow prevents duplicate accounts.",states:["redirect to auth.&lt;stable&gt;","new user → minimal complete-setup","existing match → bind & login","cancelled / provider error → back"],fields:["provider(google|telegram)","session_token","currency(auto)","accept_terms","referral_code?"],api:"GET auth.&lt;stable&gt;/oauth/{provider} → session_token\nPOST /auth/social/exchange { session_token }\n← { customer_id, is_new, needs_bind }",notes:["OAuth redirect URI binds ONLY to auth.&lt;stable&gt; — mirror rotation never breaks login.","2026-07-15 correction: Telegram blocked in VN since May 2025 → Telegram variant ships only in TH/intl markets.","Bind entry also in Profile for existing username/password users.","Withdrawal / promo claim still requires phone OTP — phone stays the KYC anchor.","Google One Tap auto-hides if consent app blocked (degrade)."]}},
+
+{g:"1 · Sign Up/Login",t:"Forgot/recover account",src:"17",states:["Verified contact OTP","Enter clues","Match old password"],
+ r:(s)=>BAR("Account recovery")+STEP(s===0?"We'll send a code to your verified contact":"Recover your account by matching existing info")+
+   (s===0?F("Registered phone / Email")+`<div class="hint">If both are verified you may choose which one receives the code; with only one verified, that one is used.</div>`+CTA("Send code")
+   :s===1?F("Registered phone / Email")+F("Account recovery Email")+CTA("Submit for matching")
+   :F("Any one of your previously used passwords")+`<div class="hint">System matches one historical password + basic profile.</div>`+CTA("Submit for matching"))+
+   LINK("Still can't recover? <b>Contact Live Chat</b>"),
+ spec:{goal:"Primary recovery = OTP to a verified contact (phone/email, choose if both). Historical-password matching is the fallback when no contact is verified.",states:["verified contact OTP (primary)","enter clues (fallback)","match old password (fallback)","success→reset","fail→Live Chat"],fields:["identifier","anchor(phone|email)","recovery_email","old_password_attempt"],notes:["Forgot password REQUIRES verification (rule matrix).","docx17 historical-password matching kept for accounts with no verified contact.","This is why keeping both contacts verified matters — it's the user's safety net."]}},
 
 /* ===== 2 · New-customer Setup (onboarding 83-95) ===== */
 {g:"2 · New-customer Setup",t:"Setup overview",src:"66,83,84",states:["Just entered","Partly done"],
@@ -279,8 +309,22 @@ const S=[
  spec:{goal:"KYC document upload and review status; risk-triggered.",states:["pending_upload","reviewing","approved","rejected","risk_trigger"],fields:["doc_front","doc_back","selfie","kyc_status"],api:"POST /kyc/documents",notes:["docx26 risk triggers + doc upload."]}},
 
 {g:"3 · Account",t:"Account Security",src:"27",states:["Default"],
- r:()=>BAR("Account Security")+`<div class="ctitle">Login devices</div>`+LI("iPhone 15 · This device","Current ›","📱")+LI("Chrome · Windows","2 days ago ›","💻")+`<div class="ctitle">Recent login history</div>`+CARD(`<div class="hint">2026-06-19 10:22 · IP 1.2.3.4 · Taipei<br>2026-06-18 21:10 · IP 5.6.7.8 · Singapore</div>`,'')+CTA("Sign out all other devices",'ghost'),
- spec:{goal:"Device management, login history, IP, remote sign-out.",states:["device list","login logs","sign out all"],fields:["devices[]","login_logs[]","ip"],notes:["docx27."]}},
+ r:()=>BAR("Account Security")+`<div class="ctitle">Security actions <span class="tag">verification required</span></div>`+
+   LI("Change password","›","🔒")+LI("Phone +84 90****123 · verified","Change ›","📱")+LI("Email — not verified","Add ›","✉️")+
+   `<div class="ctitle">Login devices</div>`+LI("iPhone 15 · This device","Current ›","📱")+LI("Chrome · Windows","2 days ago ›","💻")+`<div class="ctitle">Recent login history</div>`+CARD(`<div class="hint">2026-06-19 10:22 · IP 1.2.3.4 · Taipei<br>2026-06-18 21:10 · IP 5.6.7.8 · Singapore</div>`,'')+CTA("Sign out all other devices",'ghost'),
+ spec:{goal:"Device management, login history, IP, remote sign-out; entry for verified-contact management and password change.",states:["device list","login logs","sign out all","→ security verification before any security action"],fields:["devices[]","login_logs[]","ip","contacts:{phone:{value,verified},email:{value,verified}}"],notes:["docx27.","Change password / add·change phone / add·change email all trigger the Security-verification screen first (Rule ①-③).","Add/change contact follows the two-step flow: verify existing → verify new."]}},
+
+{g:"3 · Account",t:"Add/change phone·Email",src:"27,98-100",states:["Step 1 · Verify existing","Step 2 · Verify new","Done · both usable"],
+ r:(s)=>s===0?BAR("Change Email")+STEP("Step 1 of 2 · First verify a contact you already have")+
+   OPT("📱 Code sent to Phone +84 90****123",true)+
+   `<div style="display:flex;gap:7px;justify-content:center;margin:14px 0">${'______'.split('').map((_,i)=>`<span style="width:38px;height:48px;border:1px solid ${i===0?'#3a3a3a':'#9a9a9a'};border-width:${i===0?2:1}px;border-radius:8px;display:inline-grid;place-items:center;color:#aaa">_</span>`).join('')}</div>`+
+   `<div class="hint">* Rule: to add or change a contact you must first pass verification on one you already have.</div>`+CTA("Verify and continue")
+ :s===1?BAR("Change Email")+STEP("Step 2 of 2 · Now verify the NEW email")+F("New email address")+CTA("Send code",'ghost')+
+   `<div style="display:flex;gap:7px;justify-content:center;margin:14px 0">${'______'.split('').map((_,i)=>`<span style="width:38px;height:48px;border:1px solid ${i===0?'#3a3a3a':'#9a9a9a'};border-width:${i===0?2:1}px;border-radius:8px;display:inline-grid;place-items:center;color:#aaa">_</span>`).join('')}</div>`+
+   `<div class="hint">* New contact becomes usable only after passing its own code; the old one stays valid until then.</div>`+CTA("Verify and save")
+ :BAR("Contacts updated")+STEP("Both contacts verified — pick either one for future verifications")+
+   OPT("📱 Phone +84 90****123 <small style='color:#b0b0b0'>verified</small>",true)+OPT("✉️ Email new***@gmail.com <small style='color:#b0b0b0'>verified · just added</small>",true)+CTA("Done"),
+ spec:{goal:"Add or change phone / Email with the two-step rule: verify what you have first, then verify the new one.",states:["step 1 verify existing (forced if only one)","step 2 enter + verify new","done · both anchors usable","abandoned → nothing changes","CONTACT_IN_USE error"],fields:["target(phone|email)","step1_token","new_contact","otp_code"],api:"POST /account/contact/change/start { target } → { step1_token }\nPOST /account/contact/change/commit { step1_token, new_contact, otp_code }\nerr: CONTACT_IN_USE / OTP_WRONG / STEP1_EXPIRED",notes:["Same flow covers ADD (2nd missing) and CHANGE (replace existing).","At sign-up, adding Email right after phone-OTP needs no extra re-verify (phone just verified).","Entry: Account Security; also prompted at promotion claim / withdrawal when the needed verified contact is missing."]}},
 
 /* ===== 4 · Wallet / Balance ===== */
 {g:"4 · Wallet",t:"Wallet overview",src:"28,31",states:["Default"],
@@ -315,7 +359,7 @@ const S=[
  r:(s)=>BAR("Withdrawal","←","History")+CARD(`<div style="display:flex;justify-content:space-between"><span>Withdrawable balance</span><b>${s===1?'₫ 0':'₫ 800,000'}</b></div><div class="hint">Total balance ₫1,250,000 · churn pending ${s===1?'₫450,000':'₫0'}</div>`,'')+
    (s===1?`<div class="err">Turnover requirement not yet met; part of the balance is temporarily not withdrawable.</div>`+PROG(70,"Churn progress","70%"):'')+
    F("Withdrawal amount")+F("Payout method ▾ Bank *1234")+(s===2?`<div class="ok">Processing: Review → Payout → Completed</div>`+PROG(33):'')+CTA(s===1?"View churn requirement":"Confirm withdrawal"),
- spec:{goal:"Withdrawal: withdrawable balance, churn requirement, processing status, lookup.",states:["withdrawable","turnover_unmet","processing","completed","rejected"],fields:["withdrawable","turnover_required","amount","payout_method","txn_id"],api:"POST /withdrawal · GET /withdrawal/{id}/status",notes:["docx35 turnover/withdrawable balance/status/lookup."]}},
+ spec:{goal:"Withdrawal: withdrawable balance, churn requirement, processing status, lookup. Requires security verification before confirm.",states:["withdrawable","turnover_unmet","security verification (phone/email, choose if both)","processing","completed","rejected"],fields:["withdrawable","turnover_required","amount","payout_method","txn_id","stepup_token"],api:"POST /withdrawal (requires stepup_token) · GET /withdrawal/{id}/status",notes:["docx35 turnover/withdrawable balance/status/lookup.","Confirm withdrawal → Security-verification screen (Rule ①-③); no verified contact → guided to add one first."]}},
 
 {g:"5 · Deposit/Withdrawal",t:"Transaction history",src:"34,35,46,48",states:["List","Item status","Delay notice"],
  r:(s)=>BAR("Transaction history","←")+(s===2?`<div class="ok">📢 Due to a provider settlement delay, your bet settlement will be postponed. We apologize for any inconvenience.</div>`:'')+SEG(["All","Deposits","Withdrawals"],0)+
@@ -348,7 +392,7 @@ const S=[
    (s===2?CARD(TAG("Claimed")+`<div style="font-weight:700;margin:6px 0">100% first deposit</div>`,''):
      CARD(TAG(s===1?"Task":"Claimable","k")+`<div style="font-weight:700;margin:6px 0">${s===1?'Daily login task 3/5':'100% first-deposit bonus'}</div>`+(s===1?PROG(60,"Progress","3/5"):`<div class="hint">churn x10 · Sports/Live</div>`)+CTA(s===1?"Complete it":"Claim now",'sm'),''))+
    CARD(TAG("Lifetime rewards")+`<div class="hint">Issued occasionally based on lifetime contribution/margin/product preference: cash/free bets/free slots/physical gifts.</div>`,'')+LINK("<b>Promotion rules</b>"),
- spec:{goal:"Promotions: claimable/task-based/lifetime rewards/occasional issuance.",states:["claimable","task","claimed","expired","ineligible"],fields:["promotions[]{type,progress,churn,terms}"],api:"GET /promotions",notes:["docx36/47/113-117 task-oriented/lifetime rewards/different forms by LTV; 117 rules."]}},
+ spec:{goal:"Promotions: claimable/task-based/lifetime rewards/occasional issuance. Claiming requires security verification.",states:["claimable","task","claimed","expired","ineligible","claim → security verification (phone/email)"],fields:["promotions[]{type,progress,churn,terms}","stepup_token"],api:"GET /promotions · POST /promotions/{id}/claim (requires stepup_token)",notes:["docx36/47/113-117 task-oriented/lifetime rewards/different forms by LTV; 117 rules.","Claim → Security-verification screen (Rule ①-③); no verified contact → guided to add one first."]}},
 
 {g:"7 · Promotions/Gamification",t:"Gamification hub",src:"36,67",states:["Hub","Reels"],
  r:(s)=>BAR("Gamification","←")+(s===0?GRID([["Spin the Wheel","🎡"],["Scratch & Win","🎫"],["Lottery machine","🎱"],["Daily check-in","📅"],["Tasks","✅"],["Leaderboard","🏆"]])+CARD(`<div class="hint">Claim in-flow, task-oriented, instant rewards.</div>`,''):PH("📲 Product short-video Reels (swipe up/down)",260)+`<div class="hint">Reels for Products: short-video shoppable games.</div>`),
@@ -461,6 +505,65 @@ function draw(){
 document.getElementById('prev').onclick=()=>{if(idx>0){idx--;st=0;draw();}};
 document.getElementById('next').onclick=()=>{if(idx<S.length-1){idx++;st=0;draw();}};
 draw();
+</script>
+<script>
+/* ---------- ✏️ 文字編輯模式：右下角開關，點字直接改；存 localStorage，重整 / 切畫面不會消失 ---------- */
+(function(){
+const FILE=location.pathname.split('/').pop()||'page';
+const KEY='wfTextEdits:'+FILE;
+const DYN=['screen','spec','bread'];                                   // draw() 重繪的區塊
+const STATIC=[['aside h1','h1'],['aside .sub','sub'],['aside .legend','legend']]; // 靜態區塊
+const dynKey=id=>id==='screen'?`d|${idx}|${st}|screen`:`d|${idx}|${id}`;
+const nodes=el=>{const w=document.createTreeWalker(el,NodeFilter.SHOW_TEXT),a=[];let n;while(n=w.nextNode())a.push(n);return a};
+const load=()=>{try{const d=JSON.parse(localStorage.getItem(KEY)||'{}');return{edits:d.edits||{},orig:d.orig||{}}}catch(e){return{edits:{},orig:{}}}};
+const persist=d=>localStorage.setItem(KEY,JSON.stringify(d));
+const fresh={};                                                        // 每個 key 的原始文字（重繪後快照）
+function applyKey(el,k){const v=load().edits[k];if(!v)return;const ns=nodes(el);for(let i=0;i<Math.min(ns.length,v.length);i++)ns[i].nodeValue=v[i]}
+function snapApply(el,k){if(!(k in fresh))fresh[k]=nodes(el).map(n=>n.nodeValue);applyKey(el,k)}
+function record(el,k){
+  const d=load(),cur=nodes(el).map(n=>n.nodeValue),o=fresh[k]||d.orig[k];
+  if(o&&cur.length===o.length&&cur.every((t,i)=>t===o[i])){delete d.edits[k];delete d.orig[k]}
+  else{d.edits[k]=cur;if(o&&!d.orig[k])d.orig[k]=o}
+  persist(d);flash('已儲存 ✓')}
+const _draw=draw;
+draw=function(){_draw();DYN.forEach(id=>{const el=document.getElementById(id);if(el)snapApply(el,dynKey(id))})};
+STATIC.forEach(([sel,k])=>{const el=document.querySelector(sel);if(el){snapApply(el,'s|'+k);el.addEventListener('input',()=>record(el,'s|'+k))}});
+DYN.forEach(id=>{const el=document.getElementById(id);if(el)el.addEventListener('input',()=>record(el,dynKey(id)))});
+draw();                                                                // 載入時套用已存的修改
+/* --- 編輯開關 --- */
+let editing=false;
+const plainOK=(()=>{const t=document.createElement('div');try{t.contentEditable='plaintext-only'}catch(e){return false}return t.contentEditable==='plaintext-only'})();
+const editables=()=>DYN.map(id=>document.getElementById(id)).concat(STATIC.map(([sel])=>document.querySelector(sel))).filter(Boolean);
+function setEditing(on){editing=on;
+  editables().forEach(el=>{if(on){el.setAttribute('contenteditable',plainOK?'plaintext-only':'true');el.setAttribute('spellcheck','false')}else{el.removeAttribute('contenteditable')}});
+  document.body.toggleAttribute('data-editing',on);
+  const b=document.getElementById('eb-toggle');b.textContent=on?'✅ 完成':'✏️ 編輯文字';b.classList.toggle('on',on);
+  flash(on?'點畫面上的字直接修改（自動儲存）':'')}
+document.addEventListener('beforeinput',e=>{if(editing&&!plainOK&&(e.inputType==='insertParagraph'||e.inputType==='insertLineBreak'))e.preventDefault()},true);
+/* --- 工具列 --- */
+const css=document.createElement('style');css.textContent=`
+#editbar{position:fixed;right:14px;bottom:14px;z-index:9999;display:flex;gap:6px;align-items:center;background:#fff;border:1px solid #d0d3d8;border-radius:10px;padding:6px 8px;box-shadow:0 4px 18px rgba(0,0,0,.14);font:12px/1.4 -apple-system,"Noto Sans TC",Arial,sans-serif}
+#editbar button{font:inherit;border:1px solid #d0d3d8;background:#fff;border-radius:7px;padding:4px 9px;cursor:pointer;color:#333}
+#editbar button:hover{border-color:#19c37d;color:#0f8a5f}
+#editbar #eb-toggle.on{background:#19c37d;border-color:#19c37d;color:#fff}
+#eb-msg{color:#0f8a5f;font-size:11px;max-width:170px}
+body[data-editing] [contenteditable]{outline:1.5px dashed #19c37d;outline-offset:3px;border-radius:3px;cursor:text}
+body[data-editing] [contenteditable]:focus{outline-style:solid}`;
+document.head.appendChild(css);
+const bar=document.createElement('div');bar.id='editbar';
+bar.innerHTML=`<button id="eb-toggle" title="開啟後直接點畫面文字修改，自動儲存在此瀏覽器">✏️ 編輯文字</button><button id="eb-copy" title="複製修改清單（原文 → 新文），可貼給 Claude 寫回 HTML">📋 複製修改</button><button id="eb-reset" title="清除此頁所有文字修改並還原">↺ 還原</button><span id="eb-msg"></span>`;
+document.body.appendChild(bar);
+document.getElementById('eb-toggle').onclick=()=>setEditing(!editing);
+document.getElementById('eb-reset').onclick=()=>{if(confirm('還原此頁所有文字修改？')){localStorage.removeItem(KEY);location.reload()}};
+document.getElementById('eb-copy').onclick=()=>{
+  const d=load();let out=`【文字修改】${FILE}\n`,cnt=0;
+  Object.keys(d.edits).forEach(k=>{const o=d.orig[k]||fresh[k]||[];(d.edits[k]||[]).forEach((t,i)=>{if(o[i]!==t){cnt++;out+=`\n${cnt}. 原：${(o[i]??'(?)').trim()}\n   改：${t.trim()}\n`}})});
+  if(!cnt)out+='（目前沒有修改）';
+  const done=()=>flash('已複製 ✓');
+  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(out).then(done,()=>fallbackCopy(out,done));else fallbackCopy(out,done)};
+function fallbackCopy(t,cb){const ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();cb()}
+let flTimer;function flash(m){const el=document.getElementById('eb-msg');if(!el)return;el.textContent=m;clearTimeout(flTimer);if(m&&m.includes('✓'))flTimer=setTimeout(()=>{el.textContent=editing?'編輯模式':''},1500)}
+})();
 </script>
 </body>
 </html>
