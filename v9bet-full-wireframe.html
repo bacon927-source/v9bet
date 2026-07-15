@@ -110,6 +110,16 @@
   .ccpop .cc{padding:11px 14px;font-size:13px;display:flex;align-items:center;gap:8px;color:#444}
   .ccpop .cc.on{background:var(--fill);font-weight:700}
   .ccpop .cc small{margin-left:auto;color:#b0b0b0}
+  .mtabs{display:flex;border:1px solid var(--line2);border-radius:10px;overflow:hidden;margin:10px 0;font-size:12px;text-align:center}
+  .mtabs span{flex:1;padding:8px 0;color:var(--muted);background:var(--fill)}
+  .mtabs span.on{background:#fff;color:#222;font-weight:700;box-shadow:inset 0 -2px 0 var(--solid)}
+  .socrow .sic{position:relative}
+  .socrow .lu{position:absolute;top:-9px;left:50%;transform:translateX(-50%);font-size:8px;border:1px solid var(--solid);color:var(--solid);background:#fff;border-radius:4px;padding:0 4px;white-space:nowrap}
+  .prog3{display:flex;gap:5px;margin:8px 0 2px}
+  .prog3 .p{flex:1;font-size:9px;text-align:center;padding:4px 0;border:1px solid var(--line2);border-radius:7px;color:var(--muted);background:var(--fill)}
+  .prog3 .p.on{background:var(--solid);border-color:var(--solid);color:#fff;font-weight:700}
+  .prog3 .p.done{border-color:var(--solid);color:var(--solid)}
+  .grp{font-size:10.5px;font-weight:700;color:#555;margin:10px 0 2px;display:flex;align-items:center;gap:6px}
 </style>
 </head>
 <body>
@@ -186,42 +196,45 @@ const S=[
  spec:{goal:"Pre-setup: language, timezone, currency display preferences.",states:["language","timezone","currency display"],fields:["language","timezone","currency"],notes:["docx10/11/13; language list shared with CMS translation module (60)."]}},
 
 /* ===== 1 · Sign Up / Login ===== */
-{g:"1 · Sign Up/Login",t:"Sign Up",src:"14,75-82",states:["Default","Phone detected → country code","Submittable","Captcha (conditional)"],
- r:(s)=>BAR("Sign Up","✕")+STEP("One field for both — email or phone number")+
-   (s===1?`<div class="field" style="border-style:solid"><span><b>+66 ▾</b> &nbsp; 0812345678</span><small>phone detected</small></div>
+{g:"1 · Sign Up/Login",t:"Sign Up",src:"14,75-82",states:["Default","Phone detected → country code","Submittable","Captcha (conditional)","Email tab"],
+ r:(s)=>BAR("Sign Up","✕")+STEP("Sign up with phone number or email")+
+   `<div class="mtabs"><span class="${s===4?'':'on'}">📱 Phone number</span><span class="${s===4?'on':''}">✉️ Email</span></div>`+
+   (s===4?F("Email address","Required")
+   :s===1?`<div class="field" style="border-style:solid"><span><b>+66 ▾</b> &nbsp; 0812345678</span><small>phone detected</small></div>
    <div class="ccpop"><div class="cc on">🇹🇭 Thailand<small>+66 ✓</small></div><div class="cc">🇻🇳 Vietnam<small>+84</small></div></div>`
-   :F("Email / Phone number","Required"))+
+   :F("Phone number","Required"))+
    F("Password","👁 &nbsp; Required")+
    `<div class="opt"><span class="sq ${(s===2||s===3)?'on':''}"></span><span style="flex:1">I am 21+ and agree to the <b style="text-decoration:underline">Terms</b> and <b style="text-decoration:underline">Privacy Policy</b></span></div>`+
-   (s===3?PH("hCaptcha (shown only when risk-triggered)",70):`<div class="hint">* ${s===1?'Digits → phone; country-code picker pops up (TH +66 / VN +84).':'Contains @ → email; digits → phone (OTP). Captcha skipped by default.'}</div>`)+
+   (s===3?PH("hCaptcha (shown only when risk-triggered)",70):`<div class="hint">* ${s===4?'Email sign-up verifies via a code sent to the inbox.':s===1?'Digits → country-code picker pops up (TH +66 / VN +84).':'Phone → OTP. Pasting an email auto-switches to the Email tab. Captcha skipped by default.'}</div>`)+
    CTA("Sign Up",(s===2||s===3)?'':'disabled')+
    `<div class="hint" style="text-align:center">— or continue with —</div>`+
    `<div class="socrow"><div class="sic"><span class="c">G</span><small>Google</small></div><div class="sic"><span class="c" style="font-size:10px">LINE</span><small>LINE</small></div><div class="sic"><span class="c">X</span><small>X</small></div></div>`+
    `<div class="hint">* 3rd-party = icon entries only (Google / LINE / X), market-aware, via the stable auth domain; Apple/Facebook not offered (policy).</div>`+
    LINK("Already have an account? <b>Login here</b>"),
- spec:{goal:"Single identifier field (email or phone — digits pop the TH/VN country-code picker) + password; 3rd-party sign-up via icon row Google / LINE / X.",states:["disabled","phone detected → country-code picker (TH/VN)","email detected (contains @)","enabled after terms checked","Captcha conditional","loading","PHONE_EXISTS / EMAIL_EXISTS","INVALID_PHONE / WEAK_PASSWORD","social icon → Google/LINE/X branch"],fields:["identifier(email|phone)","country_code?(TH/VN, phone only)","password","accept_terms","captcha_token?","method(phone|email|google|line|x)"],api:"POST /register/start\n→ { identifier, country_code?, password, accept_terms }\n← { register_token, otp_sent }\nGET auth.&lt;stable&gt;/oauth/{provider} → session_token",notes:["docx76-82; 79 Captcha skippable thanks to OTP (phone path).","Detection: contains @ → email; digits → phone → country-code picker (TH +66 / VN +84 only, default by locale/geo-IP).","Password is set at sign-up; referral code moved out of this screen.","3rd-party = icons only: Google / LINE / X (Telegram removed 2026-07-15; Apple/Facebook excluded). Market-aware visibility.","Central auth domain solves mirror rotation; sign_up event carries method param (phone_otp|email|google|line|x)."]}},
+ spec:{goal:"Sign-up = phone (default tab) or email (tab switch) + password; digits in the phone tab pop the TH/VN country-code picker; 3rd-party via icon row Google / LINE / X.",states:["phone tab · disabled","phone detected → country-code picker (TH/VN)","email tab (code to inbox)","enabled after terms checked","Captcha conditional","loading","PHONE_EXISTS / EMAIL_EXISTS","INVALID_PHONE / WEAK_PASSWORD","social icon → Google/LINE/X branch"],fields:["identifier(email|phone)","country_code?(TH/VN, phone only)","password","accept_terms","captcha_token?","method(phone|email|google|line|x)"],api:"POST /register/start\n→ { identifier, country_code?, password, accept_terms }\n← { register_token, otp_sent }\nGET auth.&lt;stable&gt;/oauth/{provider} → session_token",notes:["docx76-82; 79 Captcha skippable thanks to OTP (phone path).","Tabs: Phone (default) | Email; pasting an email in the phone tab auto-switches. Digits → country-code picker (TH +66 / VN +84 only, default by locale/geo-IP).","Password is set at sign-up. Language / currency / referral deferred — account already exists after this page; referral auto-captured from ?ref= link (7-day manual window in Promotions), currency forced at setup Step 1 / first deposit intent, language auto by locale.","3rd-party = icons only: Google / LINE / X (Telegram removed 2026-07-15; Apple/Facebook excluded). Market-aware visibility.","Central auth domain solves mirror rotation; sign_up event carries method param (phone_otp|email|google|line|x)."]}},
 
 {g:"1 · Sign Up/Login",t:"OTP verify",src:"81,49",states:["Waiting","Error","Fail→WhatsApp","Change channel"],
  r:(s)=>s===3?BAR("Choose OTP channel")+STEP("Not receiving? Pick another channel")+
-   OPT("💬 Zalo ZNS <small style='color:#b0b0b0'>default · best reach VN</small>",true)+OPT("📨 SMS")+OPT("🟢 WhatsApp")+`<div style="opacity:.45">${OPT("✈ Telegram bot code <small style='color:#b0b0b0'>TH / intl only</small>")}</div>`+OPT("📞 Voice call (reads code)")+
+   OPT("💬 Zalo ZNS <small style='color:#b0b0b0'>default · best reach VN</small>",true)+OPT("📨 SMS")+OPT("🟩 LINE <small style='color:#b0b0b0'>best reach TH</small>")+OPT("🟢 WhatsApp")+OPT("✉️ Email")+
    CTA("Resend via selected channel")
  :BAR("Verify phone")+STEP("Code sent via Zalo ZNS to +xx ****1234")+
    `<div style="display:flex;gap:7px;justify-content:center;margin:16px 0">${'_'.repeat(6).split('').map((_,i)=>`<span style="width:40px;height:50px;border:1px solid ${i===0?'#3a3a3a':'#9a9a9a'};border-width:${i===0?2:1}px;border-radius:8px;display:inline-grid;place-items:center;color:#aaa;font-size:18px">_</span>`).join('')}</div>`+
    (s===1?`<div class="err">Wrong code (2 tries left)</div>`:'')+
    (s===2?`<div class="err">Too many failures. Try WhatsApp?</div>`+CTA("Verify via WhatsApp",'ghost'):'')+
    LINK(`Didn't get it? <b>${s===2?'Locked':'Resend 60s'}</b> · <b>Change channel</b>`)+LINK("<b>Change phone number</b>")+CTA("Verify and continue"),
- spec:{goal:"Verify phone ownership via multi-channel OTP (Zalo ZNS default), then proceed to account setup.",states:["pending","verifying","wrong_code","expired","locked","WhatsApp/voice fallback","channel picker"],fields:["register_token","otp_code","channel(zalo_zns|sms|whatsapp|telegram|voice)"],api:"POST /register/verify-otp\nPOST /register/resend-otp { channel }",notes:["Zalo ZNS default in VN (cost/reach beats SMS); SMS fallback.","docx49 WhatsApp fallback on OTP failure; extended with Telegram bot + voice call; 81 proceed only on success."]}},
+ spec:{goal:"Verify phone ownership via multi-channel OTP (Zalo ZNS default), then proceed to account setup.",states:["pending","verifying","wrong_code","expired","locked","WhatsApp/Email fallback","channel picker (Zalo/SMS/LINE/WhatsApp/Email)"],fields:["register_token","otp_code","channel(zalo_zns|sms|line|whatsapp|email)"],api:"POST /register/verify-otp\nPOST /register/resend-otp { channel }",notes:["Channels = Zalo ZNS / SMS / LINE / WhatsApp / Email; default by market (Zalo VN · LINE TH), SMS universal fallback.","docx49 WhatsApp fallback on OTP failure; Email fallback added; Telegram bot & voice call removed; 81 proceed only on success."]}},
 
-{g:"1 · Sign Up/Login",t:"Login",src:"16",states:["Password","PIN","Biometric/Passkey","Phone OTP"],
+{g:"1 · Sign Up/Login",t:"Login",src:"16",states:["Password","PIN","Biometric/Passkey","One-time code"],
  r:(s)=>BAR("Login","✕")+PH("V9 Logo",70)+
+   `<div class="socrow" style="margin-top:14px"><div class="sic"><span class="lu">Last used</span><span class="c">G</span><small>Google</small></div><div class="sic"><span class="c" style="font-size:10px">LINE</span><small>LINE</small></div><div class="sic"><span class="c">X</span><small>X</small></div></div>`+
+   `<div class="hint" style="text-align:center">— or login with —</div>`+
+   `<div class="mtabs"><span class="${s===3?'on':''}">One-time code</span><span class="${s===3?'':'on'}">Password</span></div>`+
    F("Email / Phone number")+
-   (s===0?F("Password","",):s===1?`<div style="display:flex;gap:7px;justify-content:center;margin:12px 0">${'____'.split('').map(()=>`<span style="width:42px;height:50px;border:1px solid #9a9a9a;border-radius:8px;display:inline-grid;place-items:center;color:#aaa">_</span>`).join('')}</div>`:s===2?PH("👤 Face ID / Passkey (WebAuthn)",90):`<div class="hint">We'll send a one-time code via Zalo ZNS (SMS fallback) — no password needed.</div>`)+
+   (s===0?F("Password","👁"):s===1?`<div style="display:flex;gap:7px;justify-content:center;margin:12px 0">${'____'.split('').map(()=>`<span style="width:42px;height:50px;border:1px solid #9a9a9a;border-radius:8px;display:inline-grid;place-items:center;color:#aaa">_</span>`).join('')}</div>`:s===2?PH("👤 Face ID / Passkey (WebAuthn)",90):`<div class="hint">We'll send a one-time code via Zalo ZNS / SMS / LINE / WhatsApp / Email — no password needed.</div>`)+
    OPT("Keep me logged in",true,'sq')+
-   CTA(s===3?"Send code":"Login")+LINK("<b>Forgot account / password?</b>")+
-   `<div class="hint" style="text-align:center">— or continue with —</div>`+
-   `<div class="socrow"><div class="sic"><span class="c">G</span><small>Google · <b>last used</b></small></div><div class="sic"><span class="c" style="font-size:10px">LINE</span><small>LINE</small></div><div class="sic"><span class="c">X</span><small>X</small></div></div>`+
+   CTA(s===3?"Send code":"Login")+LINK("<b>Forgot password?</b>")+
    LINK("No account? <b>Sign Up</b>"),
- spec:{goal:"Multi-method login: password / PIN / biometric-passkey / phone-OTP one-tap, plus social icon row (Google / LINE / X) with last-used hint.",states:["password","pin","biometric/passkey (WebAuthn)","phone OTP","social branch","lockout","risk step-up → verification method screen"],fields:["identifier(email|phone, single field)","method(password|pin|passkey|phone_otp|google|line|x)","secret|pin|otp|webauthn_assertion","remember(bool)"],api:"POST /auth/login { identifier, method, ... }\n← { session, requires_stepup? }",notes:["docx16; biometric maps to app setting 86; passkey targets InAppWebView traffic.","'Keep me logged in' explicit (P1); 'last used' badge reduces trial-error (P2).","login event carries method param, mirrors sign_up."]}},
+ spec:{goal:"Login: social icon row (Google / LINE / X) on top with last-used badge; below it two tabs — one-time code (Zalo/SMS/LINE/WhatsApp/Email) / password — plus PIN & biometric-passkey.",states:["password tab","pin","biometric/passkey (WebAuthn)","one-time code tab","social branch","lockout","risk step-up → verification method screen"],fields:["identifier(email|phone, single field)","method(password|pin|passkey|one_time_code|google|line|x)","secret|pin|otp|webauthn_assertion","remember(bool)"],api:"POST /auth/login { identifier, method, ... }\n← { session, requires_stepup? }",notes:["docx16; biometric maps to app setting 86; passkey targets InAppWebView traffic.","'Keep me logged in' explicit (P1); 'last used' badge reduces trial-error (P2).","login event carries method param, mirrors sign_up."]}},
 
 {g:"1 · Sign Up/Login",t:"Verification method",src:"15",states:["Both verified → choose","Only one verified","Code entry"],
  r:(s)=>s===2?BAR("Enter code")+STEP("Code sent to 📱 +84 90****123 (via Zalo ZNS)")+
@@ -232,8 +245,8 @@ const S=[
    `<div class="opt" style="opacity:.45"><span class="dot"></span><span style="flex:1">✉️ Email — not verified yet<br><small style="color:#b0b0b0">Add it in Profile (verify phone first)</small></span></div>`+CTA("Send code")
  :BAR("Security verification")+STEP("Both contacts verified — choose where to receive the code")+
    OPT("📱 Phone +84 90****123 <small style='color:#b0b0b0'>verified</small>",true)+OPT("✉️ Email b***@gmail.com <small style='color:#b0b0b0'>verified</small>")+
-   `<div class="hint">* Phone code delivered via Zalo ZNS / SMS / WhatsApp / voice.</div>`+CTA("Send code"),
- spec:{goal:"Verification anchors = Phone & Email. One verified → forced; both verified → member chooses either.",states:["both verified → picker","only one → forced","code sent/entry","wrong/expired/locked","all failed → Live Chat"],fields:["anchor(phone|email)","delivery(zalo_zns|sms|whatsapp|voice|email)","stepup_token"],api:"POST /auth/stepup/start { anchor, delivery }\nPOST /auth/stepup/verify { stepup_token, otp_code }",notes:["Rule ①: only one verified → every verification uses it. Rule ②: add/change the 2nd → verify the 1st first (see Add/change contact screen). Rule ③: both verified → free choice.","Actions REQUIRING verification: change password · forgot password · add/change phone · add/change email · claim promotion · withdrawal.","docx15 app-push / social channels: future extensions — current scope phone & email only."]}},
+   `<div class="hint">* Phone code delivered via Zalo ZNS / SMS / LINE / WhatsApp; Email is its own anchor.</div>`+CTA("Send code"),
+ spec:{goal:"Verification anchors = Phone & Email. One verified → forced; both verified → member chooses either.",states:["both verified → picker","only one → forced","code sent/entry","wrong/expired/locked","all failed → Live Chat"],fields:["anchor(phone|email)","delivery(zalo_zns|sms|line|whatsapp|email)","stepup_token"],api:"POST /auth/stepup/start { anchor, delivery }\nPOST /auth/stepup/verify { stepup_token, otp_code }",notes:["Rule ①: only one verified → every verification uses it. Rule ②: add/change the 2nd → verify the 1st first (see Add/change contact screen). Rule ③: both verified → free choice.","Actions REQUIRING verification: change password · forgot password · add/change phone · add/change email · claim promotion · withdrawal.","docx15 app-push / social channels: future extensions — current scope phone & email only."]}},
 
 {g:"1 · Sign Up/Login",t:"Social sign up / bind",src:"49",states:["Complete setup (new)","Done → You're a customer","Account exists → Bind"],
  r:(s)=>s===0?BAR("Complete setup")+STEP("Signed in as g***@gmail.com — a few required items left")+F("Account currency ▾","auto: VND")+
@@ -252,15 +265,23 @@ const S=[
  spec:{goal:"Primary recovery = OTP to a verified contact (phone/email, choose if both). Historical-password matching is the fallback when no contact is verified.",states:["verified contact OTP (primary)","enter clues (fallback)","match old password (fallback)","success→reset","fail→Live Chat"],fields:["identifier","anchor(phone|email)","recovery_email","old_password_attempt"],notes:["Forgot password REQUIRES verification (rule matrix).","docx17 historical-password matching kept for accounts with no verified contact.","This is why keeping both contacts verified matters — it's the user's safety net."]}},
 
 /* ===== 2 · New-customer Setup (onboarding 83-95) ===== */
-{g:"2 · New-customer Setup",t:"Setup overview",src:"66,83,84",states:["Just entered","Partly done"],
- r:(s)=>BAR("Set up your account","")+STEP("Finish setup to get started (required items first)")+
-   [["Choose account currency","mandatory",s>0],["Face ID / biometric","mandatory · app only",s>0],["Notification permission","",false],["Profile + bank/USDT","",false],["Add Email (recovery)","Optional*",false],["Password / PIN","",false],["Theme / language","",false],["Interactive tutorial","",false],["Download V9 App","",false]]
-   .map((x,i)=>`<div class="li"><span class="ic">${x[2]?'✓':i+1}</span><span class="g">${x[0]}${x[1]?`<small>${x[1]}</small>`:''}</span><span class="rt">›</span></div>`).join('')+CTA("Start setup"),
- spec:{goal:"After sign-up (FE UX), immediately guide through setup. Uses 'overview → step-by-step wizard'.",states:["initial","partial","cannot skip required","done→welcome page"],fields:["customer_id","setup_progress[]"],notes:["docx66 setup page on first login; 84 run account setup immediately."]}},
+{g:"2 · New-customer Setup",t:"Setup overview",src:"66,83,84",states:["Step 1 · Required","Step 2 · Security","Step 3 · Preferences"],
+ r:(s)=>{const li=(x,i)=>`<div class="li"><span class="ic">${x[2]?'✓':i}</span><span class="g">${x[0]}${x[1]?`<small>${x[1]}</small>`:''}</span><span class="rt">›</span></div>`;
+  return BAR("Set up your account","")+STEP(`Step ${s+1} of 3 — required first, the rest can be skipped`)+
+   `<div class="prog3">${["1 · Required","2 · Security","3 · Preferences"].map((t,i)=>`<span class="p ${i<s?'done':i===s?'on':''}">${t}</span>`).join('')}</div>`+
+   `<div class="grp">Step 1 · Required ${BADGE("cannot skip",true)}</div>`+
+   [["Choose account currency","mandatory",s>0],["Profile + bank/USDT","mandatory",s>0]].map((x,i)=>li(x,i+1)).join('')+
+   `<div class="grp">Step 2 · Security ${BADGE("can skip")}</div>`+
+   [["Face ID / biometric / passkey","app only",s>1],["Add Email (recovery)","Optional*",s>1],["Password / PIN","set at sign-up · change here",s>1]].map((x,i)=>li(x,i+3)).join('')+
+   `<div class="grp">Step 3 · Preferences ${BADGE("can skip")}</div>`+
+   [["Notification permission","",false],["Theme / language","",false]].map((x,i)=>li(x,i+6)).join('')+
+   CTA(s===0?"Start setup":"Continue")+(s>0?LINK("<b>Skip this step</b>"):'')+
+   `<div class="hint">* Tutorial & app download follow on the next page after setup — no longer in this checklist.</div>`;},
+ spec:{goal:"After sign-up (FE UX): 3 grouped steps with a progress bar — Step 1 Required (currency, profile+bank/USDT) cannot be skipped; Step 2 Security & Step 3 Preferences can be skipped.",states:["step 1 · required (cannot skip)","step 2 · security (skippable)","step 3 · preferences (skippable)","done → tutorial & app download page"],fields:["customer_id","setup_progress[{key,step(1|2|3),done,required}]"],notes:["docx66 setup page on first login; 84 run account setup immediately.","Cannot pass: currency · profile+bank/USDT. Can pass: Face ID/passkey · recovery email · password/PIN · notifications · theme/language.","Tutorial & app download moved out of the checklist — shown on the next page after setup completes."]}},
 
 {g:"2 · New-customer Setup",t:"Currency",src:"85",states:["Unselected","Selected"],
- r:(s)=>BAR("Account currency"+BADGE("Required",true))+STEP("Cannot be changed once set")+OPT("🇻🇳 VND",s===1)+OPT("🇹🇭 THB")+OPT("💲 USDT")+CTA("Confirm",s===0?'disabled':''),
- spec:{goal:"Set settlement currency (mandatory).",states:["disabled","selected","CURRENCY_LOCKED"],fields:["currency"],notes:["docx85 required."]}},
+ r:(s)=>BAR("Account currency"+BADGE("Required",true))+STEP("Cannot be changed once set")+OPT("🇻🇳 VND <small style='color:#b0b0b0'>USDT supported</small>",s===1)+OPT("🇹🇭 THB <small style='color:#b0b0b0'>USDT supported</small>")+`<div class="hint">* USDT is not a separate currency — USDT deposit/withdrawal is wrapped inside both VND & THB (live conversion).</div>`+CTA("Confirm",s===0?'disabled':''),
+ spec:{goal:"Set settlement currency (mandatory): VND or THB — USDT is a payment rail inside both, not a currency option.",states:["disabled","selected","CURRENCY_LOCKED"],fields:["currency(vnd|thb)"],notes:["docx85 required.","USDT deposit/withdrawal wrapped in both currencies (live conversion) — no USDT-denominated account."]}},
 
 {g:"2 · New-customer Setup",t:"Face ID",src:"86",states:["Prompt","Enabled"],
  r:(s)=>BAR("Face ID / biometric"+BADGE("app only"))+PH("[ Face ID ]",130)+STEP("For quick login")+(s===1?OPT("Enabled",true):'')+CTA(s===1?"Continue":"Enable Face ID")+LINK("<b>Later</b>"),
@@ -288,11 +309,11 @@ const S=[
 
 {g:"2 · New-customer Setup",t:"Interactive tutorial",src:"93",states:["Promotions","Inbox","Profile","Refer"],
  r:(s)=>{const t=[["Exclusive promotions","View and claim your promotions"],["Inbox","In-app messages, announcements"],["Profile","Account/security/preferences"],["Refer a Friend","Invite friends, both get rewards"]][s];return BAR("Quick tour","✕")+PH(`[ Illustration: ${t[0]} ]`,200)+`<div style="text-align:center;font-weight:700">${t[0]}</div>`+STEP(t[1])+DOTS(s,4)+CTA(s===3?"Done":"Next")+LINK("<b>Skip</b>");},
- spec:{goal:"Tutorial covers promotions/inbox/profile/RAF.",states:["4-step carousel","skippable","tutorial_seen"],fields:["tutorial_seen"],notes:["docx93; content managed in CMS."]}},
+ spec:{goal:"Tutorial covers promotions/inbox/profile/RAF.",states:["4-step carousel","skippable","tutorial_seen"],fields:["tutorial_seen"],notes:["docx93; content managed in CMS.","Presented on the page AFTER the 3 setup steps complete (removed from the checklist), together with app download."]}},
 
 {g:"2 · New-customer Setup",t:"Download App",src:"94",states:["Default"],
  r:()=>BAR("Download V9 App","✕")+PH("[ QR Code ]",130)+STEP("Faster login on the App")+CTA("Download V9 App")+LINK("<b>Use web version</b>"),
- spec:{goal:"Guide download of the native App.",states:["default","skipped in App"],notes:["docx94; 73 App top menu pinned (see design)."]}},
+ spec:{goal:"Guide download of the native App.",states:["default","skipped in App"],notes:["docx94; 73 App top menu pinned (see design).","Presented on the page AFTER the 3 setup steps complete (removed from the checklist), together with the tutorial."]}},
 
 {g:"2 · New-customer Setup",t:"Welcome+promos",src:"95,97",states:["Has promos","No promos"],
  r:(s)=>BAR("🎉 Welcome","")+STEP("Account ready; new-member exclusive promos")+(s===0?CARD(TAG("New","k")+`<div style="font-weight:700;margin:6px 0 2px">100% first-deposit bonus</div><div class="hint">churn x10</div>`+CTA("Claim now",'sm'),'')+CARD(TAG("Task")+`<div style="font-weight:700;margin:6px 0">First deposit unlocks a free bet</div>`,''):`<div class="ok">No applicable promotions right now; watch your inbox.</div>`)+CTA("Go to Deposit")+CTA("Browse home",'ghost'),
