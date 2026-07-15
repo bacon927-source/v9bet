@@ -82,6 +82,14 @@
   .socbtn .ic{width:22px;height:22px;border:1px solid var(--line2);border-radius:50%;display:grid;place-items:center;font-size:11px;color:var(--muted);flex:0 0 22px}
   .socbtn small{margin-left:auto;color:#b0b0b0;font-size:10px}
   .socbtn .last{margin-left:auto;font-size:9px;border:1px solid var(--solid);border-radius:4px;padding:1px 5px;color:var(--solid)}
+  .ccpop{border:1px solid var(--line2);border-radius:10px;background:#fff;box-shadow:0 6px 18px rgba(0,0,0,.08);margin:-4px 0 10px;overflow:hidden}
+  .ccpop .cc{padding:11px 14px;font-size:13px;display:flex;align-items:center;gap:8px;color:#444}
+  .ccpop .cc.on{background:var(--fill);font-weight:700}
+  .ccpop .cc small{margin-left:auto;color:#b0b0b0}
+  .socrow{display:flex;justify-content:center;gap:26px;margin:12px 0 4px}
+  .socrow .sic{display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer}
+  .socrow .c{width:46px;height:46px;border:1px solid var(--line2);border-radius:50%;display:grid;place-items:center;font-size:14px;font-weight:700;color:var(--muted);background:#fff}
+  .socrow small{font-size:10px;color:var(--muted)}
   /* spec panel */
   .spec h2{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:18px 0 6px}
   .spec h2:first-child{margin-top:0}
@@ -137,29 +145,36 @@ const SOC = (ic, t, sub='', last=false) => `<div class="socbtn"><span class="ic"
 const screens = [
 {
   group:"A · Sign Up", id:"signup", title:"Sign Up",
-  states:["Default","Ready to submit","Captcha (conditional)"],
+  states:["Default","Phone detected → country code","Ready to submit","Captcha (conditional)"],
   render:(s)=>`
     <div class="scr-title"><span class="x">✕</span>Sign Up</div>
-    <div class="scr-step">Sign up with phone number (default method)</div>
-    ${F("Country code ▾ &nbsp; Phone number","Required")}
+    <div class="scr-step">One field for both — email or phone number</div>
+    ${s===1?`<div class="field" style="border-style:solid"><span><b>+66 ▾</b> &nbsp; 0812345678</span><small>phone detected</small></div>
+    <div class="ccpop">
+      <div class="cc on">🇹🇭 Thailand<small>+66 ✓</small></div>
+      <div class="cc">🇻🇳 Vietnam<small>+84</small></div>
+    </div>`
+    :F("Email / Phone number","Required")}
     ${F("Referral code","Optional")}
-    <div class="opt"><span class="sq ${s>0?'on':''}"></span>
-      <span style="flex:1">I am 21+ and agree to the <b style="text-decoration:underline">Terms of Service</b> and <b style="text-decoration:underline">Privacy Policy</b></span></div>
-    ${s===2?`<div class="ph">Captcha (hCaptcha)<br><small>Shown only when risk control is triggered</small></div>`
-            :`<div class="hint">＊ With phone OTP verification, Captcha is skipped by default and appears only on risk triggers.</div>`}
-    ${CTA("Sign Up", s===0?'disabled':'')}
-    <div class="link"><b>Sign up with Email instead</b></div>
+    <div class="opt"><span class="sq ${(s===2||s===3)?'on':''}"></span>
+      <span style="flex:1">I am 21+ and agree to the <b style="text-decoration:underline">Terms</b> and <b style="text-decoration:underline">Privacy Policy</b></span></div>
+    ${s===3?`<div class="ph">Captcha (hCaptcha)<br><small>Shown only when risk control is triggered</small></div>`
+            :`<div class="hint">＊ ${s===1?'Digits detected → treated as phone; country-code picker pops up (TH +66 / VN +84).':'Contains @ → email (verify code to inbox); digits → phone (OTP). Captcha skipped by default (risk triggers only).'}</div>`}
+    ${CTA("Sign Up", (s===2||s===3)?'':'disabled')}
     <div class="or">or continue with</div>
-    ${SOC("G","Continue with Google","main domain only")}
-    <div style="opacity:.45">${SOC("✈","Continue with Telegram","TH / intl only")}</div>
-    <div class="hint">＊ Buttons are market-aware: Telegram hidden in VN (blocked there since May 2025). Social routes via the stable auth domain; Google auto-hides when unavailable. Apple / Facebook not offered (anti-gambling policy).</div>
+    <div class="socrow">
+      <div class="sic"><span class="c">G</span><small>Google</small></div>
+      <div class="sic"><span class="c" style="font-size:10px">LINE</span><small>LINE</small></div>
+      <div class="sic"><span class="c">X</span><small>X</small></div>
+    </div>
+    <div class="hint">＊ 3rd-party sign-up = icon entries only (Google / LINE / X), routed via the stable auth domain; availability is market-aware. Apple / Facebook not offered (policy).</div>
     <div class="link">Already have an account? <b>Login here</b></div>`,
   spec:{
-    goal:"Phone is the default sign-up entry (Email as alternative); Telegram / Google as secondary social entries.",
-    states:["default (button disabled)","button enabled after Terms checked","Captcha shown conditionally (risk trigger)","submitting loading","phone already exists error","format error inline error","Email sign-up variant (same form, email field)","social tap → Telegram/Google branch"],
-    fields:["country_code","phone | email","referral_code?","accept_terms(bool)","captcha_token?","method(phone|email|telegram|google)"],
-    api:"POST /register/start\n→ { phone, country_code, referral_code?, accept_terms }\n← { register_token, otp_sent:true }\nerr: PHONE_EXISTS / INVALID_PHONE / RATE_LIMITED\nGET auth.&lt;stable&gt;/oauth/{provider} → session_token (central auth domain)",
-    notes:["Terms not checked → Sign Up disabled.","Login here routes to the existing login flow.","Social is market-aware (2026-07-15 correction): VN shows Google One Tap only — Telegram is BLOCKED in VN since May 2025, so it is geo-gated to TH / intl markets. Apple / Facebook / LINE / VK / Zalo OAuth excluded (policy + mirror-domain + review-exposure).","All social buttons go through the central verification domain (auth.&lt;stable&gt;) so public mirror rotation never breaks OAuth.","Analytics: sign_up event must carry method param (phone_otp | email | telegram | google)."]
+    goal:"Single identifier field accepts email OR phone; typing digits pops the country-code picker (TH +66 / VN +84). 3rd-party sign-up via icon row: Google / LINE / X.",
+    states:["default (button disabled)","phone detected → country-code picker (TH / VN)","email detected (contains @)","button enabled after Terms checked","Captcha shown conditionally (risk trigger)","submitting loading","phone / email already exists error","format error inline error","social icon tap → Google / LINE / X OAuth branch"],
+    fields:["identifier (email | phone, single field)","country_code? (phone only, TH/VN)","referral_code?","accept_terms(bool)","captcha_token?","method(phone|email|google|line|x)"],
+    api:"POST /register/start\n→ { identifier, country_code? (phone only), referral_code?, accept_terms }\n← { register_token, otp_sent:true }\nerr: PHONE_EXISTS / EMAIL_EXISTS / INVALID_PHONE / RATE_LIMITED\nGET auth.&lt;stable&gt;/oauth/{provider} → session_token (central auth domain)",
+    notes:["Detection rule: contains @ → email; digits only → phone → country-code picker appears (options limited to TH +66 / VN +84, default by site locale / geo-IP).","Terms not checked → Sign Up disabled.","Login here routes to the existing login flow (same single identifier field pattern).","3rd-party sign-up shows icons only (no full-width buttons): Google / LINE / X. Visibility is market-aware — hide an icon where the provider is blocked or irrelevant (e.g. LINE strongest in TH). Telegram entry removed from this screen. Apple / Facebook still excluded (policy).","All social icons go through the central verification domain (auth.&lt;stable&gt;) so public mirror rotation never breaks OAuth.","Analytics: sign_up event must carry method param (phone_otp | email | google | line | x)."]
   }
 },
 {
@@ -215,11 +230,11 @@ const screens = [
     ${CTA("Use a different account",'ghost')}
     <div class="link"><b>Not you? Contact Live Chat</b></div>`,
   spec:{
-    goal:"Social sign-up (Google in VN; Telegram geo-gated to TH / intl) via the central verification domain; bind flow prevents duplicate accounts.",
-    states:["redirect to auth.&lt;stable&gt;","provider consent (Google One Tap / Telegram widget)","new user → minimal complete-setup","existing match → bind & login","cancelled / provider error → back to sign-up"],
-    fields:["provider(google|telegram)","session_token","currency(auto-detected)","accept_terms(bool)","referral_code?"],
+    goal:"Social sign-up (Google / LINE / X icons) via the central verification domain; bind flow prevents duplicate accounts.",
+    states:["redirect to auth.&lt;stable&gt;","provider consent (Google One Tap / LINE / X consent)","new user → minimal complete-setup","existing match → bind & login","cancelled / provider error → back to sign-up"],
+    fields:["provider(google|line|x)","session_token","currency(auto-detected)","accept_terms(bool)","referral_code?"],
     api:"GET auth.&lt;stable&gt;/oauth/{provider}\n← redirect back with session_token\nPOST /auth/social/exchange { session_token }\n← { customer_id, is_new, needs_bind }",
-    notes:["Central verification domain: OAuth redirect URI binds ONLY to auth.&lt;stable&gt;, so public mirror rotation never breaks login.","2026-07-15 correction: Telegram blocked in VN since May 2025 → this flow's Telegram variant only ships in TH / intl markets.","Bind flow also lives in Profile for existing username/password users.","Withdrawal / promo claim still requires phone OTP later — phone remains the KYC anchor.","Google One Tap auto-hides if the consent app is blocked (degrade design)."]
+    notes:["Central verification domain: OAuth redirect URI binds ONLY to auth.&lt;stable&gt;, so public mirror rotation never breaks login.","Providers = Google / LINE / X (Telegram entry removed 2026-07-15; it stays available only as an OTP channel in TH / intl). Icon visibility is market-aware — hide a provider where blocked.","Bind flow also lives in Profile for existing username/password users.","Withdrawal / promo claim still requires phone OTP later — phone remains the KYC anchor.","Google One Tap auto-hides if the consent app is blocked (degrade design)."]
   }
 },
 {
@@ -445,7 +460,7 @@ const screens = [
   render:(s)=>`
     <div class="scr-title"><span class="x">✕</span>Login</div>
     <div class="ph" style="height:64px">[ V9 Logo ]</div>
-    ${F("Phone / Email")}
+    ${F("Email / Phone number")}
     ${s===0?F("Password")
       :s===1?`<div class="hint">We'll send a one-time code via Zalo ZNS (SMS fallback) — no password needed.</div>`
       :`<div class="ph" style="height:100px">👤 Face ID / Passkey (WebAuthn)</div>`}
@@ -453,13 +468,16 @@ const screens = [
     ${CTA(s===1?"Send code":"Login")}
     <div class="link"><b>Forgot account / password?</b></div>
     <div class="or">or continue with</div>
-    ${SOC("G","Continue with Google","",true)}
-    <div style="opacity:.45">${SOC("✈","Continue with Telegram","TH / intl only")}</div>
+    <div class="socrow">
+      <div class="sic"><span class="c">G</span><small>Google · <b>last used</b></small></div>
+      <div class="sic"><span class="c" style="font-size:10px">LINE</span><small>LINE</small></div>
+      <div class="sic"><span class="c">X</span><small>X</small></div>
+    </div>
     <div class="link">No account? <b>Sign Up</b></div>`,
   spec:{
-    goal:"Multi-method login: password / phone-OTP one-tap / biometric-passkey, plus social (Google; Telegram geo-gated to TH / intl) with last-used hint.",
-    states:["password","phone OTP (no password)","biometric / passkey (WebAuthn)","social → Telegram/Google branch","lockout (too many failures)","risk trigger → step-up verification screen"],
-    fields:["identifier(account|phone)","method(password|phone_otp|passkey|telegram|google)","secret? / otp_code? / webauthn_assertion?","remember(bool)"],
+    goal:"Multi-method login: password / phone-OTP one-tap / biometric-passkey, plus social icon row (Google / LINE / X) with last-used hint.",
+    states:["password","phone OTP (no password)","biometric / passkey (WebAuthn)","social icon tap → Google / LINE / X branch","lockout (too many failures)","risk trigger → step-up verification screen"],
+    fields:["identifier(email|phone, single field)","method(password|phone_otp|passkey|google|line|x)","secret? / otp_code? / webauthn_assertion?","remember(bool)"],
     api:"POST /auth/login { identifier, method, ... }\n← { session, requires_stepup? }\nerr: LOCKED / RISK_STEPUP / INVALID_CREDENTIALS",
     notes:["Passkey (WebAuthn) targets high InAppWebView traffic — biggest returning-user win (P0 per auth analysis).","'Keep me logged in' made explicit (P1); high-frequency bettors feel session expiry the most.","'Last used' badge on the social button reduces trial-and-error (P2).","Analytics: login event carries method param, mirrors sign_up."]
   }
