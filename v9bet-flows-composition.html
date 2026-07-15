@@ -119,14 +119,14 @@ function prelogin(){
    `<div class="flow">${P(1,m,'Pre-login Home (Mobile)')}</div>`;
 }
 function authflow(){
- const login=BAR('Login','✕')+BOX('V9 Logo')+F('Account / Phone / Email')+F('Password')+SEG(['Password','PIN','Biometric'],0)+CTA('Login')+`<div style="text-align:center;font-size:11px;color:#666"><b>Forgot account/password?</b></div>`;
+ const login=BAR('Login','✕')+BOX('V9 Logo')+F('Email / Phone number')+F('Password')+SEG(['Password','PIN','Biometric'],0)+CTA('Login')+`<div style="text-align:center;font-size:11px;color:#666"><b>Forgot account/password?</b></div>`;
  const method=BAR('Choose verification method')+`<div class="stp">Selectable when multiple are linked</div>`+OPT('📱 V9 App push',true)+OPT('💬 Social message (first time)')+OPT('📨 SMS')+OPT('✉️ Email')+CTA('Send code');
  const forgot=BAR('Account recovery')+`<div class="stp">Recover by matching existing info</div>`+F('Registered phone / recovery Email')+F('Any password you used before')+BOX('Match by one past password + basic info')+CTA('Submit for matching');
  return ANN('<b>Current site:</b> Account ID + password only. <b>docx15–17 changes:</b> multiple verification methods, PIN/biometric, recovery by matching past passwords.')+
    `<div class="flow">${P(6,login,'Login')}${PLUS()}${P(0,method,'Verification method (15)')}${PLUS()}${P(0,forgot,'Forgot/Recovery (17)')}</div>`;
 }
 function signup(){
- const su=BAR('Sign Up','✕')+`<div class="stp">Phone-number sign-up (default)</div>`+F('Country code ▾ Phone number','Required')+F('Referral code','Optional')+`<div class="opt"><span class="sq"></span><span style="flex:1">21+ & agree to terms</span></div>`+`<div style="font-size:10.5px;color:#999;margin:5px 2px">＊OTP verification, Captcha skipped by default</div>`+CTA('Sign Up','dis')+`<div style="text-align:center;font-size:11px;color:#666">Already have an account? <b>Login</b></div>`;
+ const su=BAR('Sign Up','✕')+`<div class="stp">One field — email or phone (digits→TH/VN country code)</div>`+F('Email / Phone number','Required')+F('Password','👁')+`<div class="opt"><span class="sq"></span><span style="flex:1">21+ & agree to terms</span></div>`+`<div style="font-size:10.5px;color:#999;margin:5px 2px">＊Phone→OTP · email→inbox code · social (G/LINE/X icons)→no OTP</div>`+CTA('Sign Up','dis')+`<div style="text-align:center;font-size:11px;color:#666">Already have an account? <b>Login</b></div>`;
  const otp=BAR('Verify phone')+`<div class="stp">Code sent +xx ****1234</div>`+`<div style="display:flex;gap:5px;justify-content:center;margin:12px 0">${'______'.split('').map((_,i)=>`<span style="width:30px;height:38px;border:${i===0?2:1}px solid ${i===0?'#3a3a3a':'#9a9a9a'};border-radius:6px;display:inline-grid;place-items:center;color:#aaa">_</span>`).join('')}</div>`+`<div class="err">Too many failures → switch to WhatsApp</div>`+CTA('Verify via WhatsApp','gh')+CTA('Verify and continue');
  return ANN('<b>Current site→change:</b> <span class="strike">Account ID + password + currency radio</span> → phone OTP as primary; currency moved down to new-customer wizard; OTP failure→WhatsApp (docx49).')+
    `<div class="flow">${P(1,su,'Sign Up')}${A()}${P(2,otp,'OTP (fail→WhatsApp)')}${A()}${BOX('Hand off to new-customer wizard')}</div>`;
@@ -246,7 +246,7 @@ function fb(){
 const pages={
  prelogin:["Pre-login Home","Lucky theme+top menu+product shortcuts+live winners+sign-up CTA (M16/M0)",prelogin,[["1","Top-menu IA","Left→top menu · docx59"]]],
  authflow:["Login / Auth / Recovery","Multiple methods+PIN/biometric+past-password recovery (M02)",authflow,[["6","Login","Password/PIN/biometric · docx16"]]],
- signup:["Sign Up + OTP","Account/password→phone OTP; fail→WhatsApp (M01)",signup,[["1","Sign Up","Phone-first · docx76"],["2","OTP","Fail→WhatsApp · docx49"]]],
+ signup:["Sign Up + OTP","Email/phone single field + password; phone→OTP, fail→WhatsApp (M01)",signup,[["1","Sign Up","Email/phone one field · docx76"],["2","OTP","Fail→WhatsApp · docx49"]]],
  wiz:["New-customer Wizard","OTP→setup→profile moved earlier→welcome+offer (M03)",wiz,[["4","Profile moved earlier","Zero-friction deposit key · docx88"]]],
  account:["Account Home","Balance+entry to each setting; username random ID editable (M04)",account,[["—","Account Home","docx21/24/97"]]],
  profile:["Profile & Preferences","FaceID/theme/time zone/language/notifications/recovery/product prefs",profile,[["—","Profile prefs","docx24"]]],

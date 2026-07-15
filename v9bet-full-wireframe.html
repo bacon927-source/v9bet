@@ -102,6 +102,14 @@
   .api{font-family:ui-monospace,Menlo,monospace;font-size:10.5px;background:var(--fill);border:1px solid var(--line);border-radius:6px;padding:8px;white-space:pre-wrap;color:#555}
   .srcline{font-size:10.5px;color:#999}
   .legend{font-size:10.5px;color:var(--muted);border-top:1px solid var(--line);margin-top:12px;padding-top:9px}
+  .socrow{display:flex;justify-content:center;gap:26px;margin:12px 0 4px}
+  .socrow .sic{display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer}
+  .socrow .c{width:46px;height:46px;border:1px solid var(--line2);border-radius:50%;display:grid;place-items:center;font-size:14px;font-weight:700;color:var(--muted);background:#fff}
+  .socrow small{font-size:10px;color:var(--muted)}
+  .ccpop{border:1px solid var(--line2);border-radius:10px;background:#fff;box-shadow:0 6px 18px rgba(0,0,0,.08);margin:-4px 0 10px;overflow:hidden}
+  .ccpop .cc{padding:11px 14px;font-size:13px;display:flex;align-items:center;gap:8px;color:#444}
+  .ccpop .cc.on{background:var(--fill);font-weight:700}
+  .ccpop .cc small{margin-left:auto;color:#b0b0b0}
 </style>
 </head>
 <body>
@@ -178,18 +186,20 @@ const S=[
  spec:{goal:"Pre-setup: language, timezone, currency display preferences.",states:["language","timezone","currency display"],fields:["language","timezone","currency"],notes:["docx10/11/13; language list shared with CMS translation module (60)."]}},
 
 /* ===== 1 · Sign Up / Login ===== */
-{g:"1 · Sign Up/Login",t:"Sign Up",src:"14,75-82",states:["Default","Submittable","Captcha (conditional)"],
- r:(s)=>BAR("Sign Up","✕")+STEP("Sign up with phone number (default)")+
-   F("Country code ▾ Phone number","Required")+F("Referral code","Optional")+
-   `<div class="opt"><span class="sq ${s>0?'on':''}"></span><span style="flex:1">I am 21+ and agree to the <b style="text-decoration:underline">Terms</b> and <b style="text-decoration:underline">Privacy Policy</b></span></div>`+
-   (s===2?PH("hCaptcha (shown only when risk-triggered)",70):`<div class="hint">* Uses OTP verification; Captcha skipped by default.</div>`)+
-   CTA("Sign Up",s===0?'disabled':'')+
+{g:"1 · Sign Up/Login",t:"Sign Up",src:"14,75-82",states:["Default","Phone detected → country code","Submittable","Captcha (conditional)"],
+ r:(s)=>BAR("Sign Up","✕")+STEP("One field for both — email or phone number")+
+   (s===1?`<div class="field" style="border-style:solid"><span><b>+66 ▾</b> &nbsp; 0812345678</span><small>phone detected</small></div>
+   <div class="ccpop"><div class="cc on">🇹🇭 Thailand<small>+66 ✓</small></div><div class="cc">🇻🇳 Vietnam<small>+84</small></div></div>`
+   :F("Email / Phone number","Required"))+
+   F("Password","👁 &nbsp; Required")+
+   `<div class="opt"><span class="sq ${(s===2||s===3)?'on':''}"></span><span style="flex:1">I am 21+ and agree to the <b style="text-decoration:underline">Terms</b> and <b style="text-decoration:underline">Privacy Policy</b></span></div>`+
+   (s===3?PH("hCaptcha (shown only when risk-triggered)",70):`<div class="hint">* ${s===1?'Digits → phone; country-code picker pops up (TH +66 / VN +84).':'Contains @ → email; digits → phone (OTP). Captcha skipped by default.'}</div>`)+
+   CTA("Sign Up",(s===2||s===3)?'':'disabled')+
    `<div class="hint" style="text-align:center">— or continue with —</div>`+
-   OPT("G Continue with Google <small style='color:#b0b0b0'>main domain only</small>")+
-   `<div style="opacity:.45">${OPT("✈ Continue with Telegram <small style='color:#b0b0b0'>TH / intl only</small>")}</div>`+
-   `<div class="hint">* Market-aware: Telegram hidden in VN (blocked since May 2025). Social routes via stable auth domain; Apple/Facebook not offered (policy).</div>`+
+   `<div class="socrow"><div class="sic"><span class="c">G</span><small>Google</small></div><div class="sic"><span class="c" style="font-size:10px">LINE</span><small>LINE</small></div><div class="sic"><span class="c">X</span><small>X</small></div></div>`+
+   `<div class="hint">* 3rd-party = icon entries only (Google / LINE / X), market-aware, via the stable auth domain; Apple/Facebook not offered (policy).</div>`+
    LINK("Already have an account? <b>Login here</b>"),
- spec:{goal:"Phone number is the default sign-up entry point; Google (VN) / Telegram (TH·intl, geo-gated) as secondary social entries.",states:["disabled","enabled after terms checked","Captcha conditional","loading","PHONE_EXISTS","INVALID_PHONE","social → Google/Telegram branch"],fields:["country_code","phone","referral_code?","accept_terms","captcha_token?","method(phone|telegram|google)"],api:"POST /register/start → { register_token, otp_sent }\nGET auth.&lt;stable&gt;/oauth/{provider} → session_token",notes:["docx76-82; 79 Captcha skippable thanks to OTP.","2026-07-15 correction: Telegram blocked in VN since May 2025 → VN shows Google One Tap only (auto-hide degrade); Telegram geo-gated to TH/intl. Apple/Facebook/LINE/VK/Zalo-OAuth excluded.","Central auth domain solves mirror rotation; sign_up event carries method param."]}},
+ spec:{goal:"Single identifier field (email or phone — digits pop the TH/VN country-code picker) + password; 3rd-party sign-up via icon row Google / LINE / X.",states:["disabled","phone detected → country-code picker (TH/VN)","email detected (contains @)","enabled after terms checked","Captcha conditional","loading","PHONE_EXISTS / EMAIL_EXISTS","INVALID_PHONE / WEAK_PASSWORD","social icon → Google/LINE/X branch"],fields:["identifier(email|phone)","country_code?(TH/VN, phone only)","password","accept_terms","captcha_token?","method(phone|email|google|line|x)"],api:"POST /register/start\n→ { identifier, country_code?, password, accept_terms }\n← { register_token, otp_sent }\nGET auth.&lt;stable&gt;/oauth/{provider} → session_token",notes:["docx76-82; 79 Captcha skippable thanks to OTP (phone path).","Detection: contains @ → email; digits → phone → country-code picker (TH +66 / VN +84 only, default by locale/geo-IP).","Password is set at sign-up; referral code moved out of this screen.","3rd-party = icons only: Google / LINE / X (Telegram removed 2026-07-15; Apple/Facebook excluded). Market-aware visibility.","Central auth domain solves mirror rotation; sign_up event carries method param (phone_otp|email|google|line|x)."]}},
 
 {g:"1 · Sign Up/Login",t:"OTP verify",src:"81,49",states:["Waiting","Error","Fail→WhatsApp","Change channel"],
  r:(s)=>s===3?BAR("Choose OTP channel")+STEP("Not receiving? Pick another channel")+
@@ -204,15 +214,14 @@ const S=[
 
 {g:"1 · Sign Up/Login",t:"Login",src:"16",states:["Password","PIN","Biometric/Passkey","Phone OTP"],
  r:(s)=>BAR("Login","✕")+PH("V9 Logo",70)+
-   F("Account / Phone / Email")+
+   F("Email / Phone number")+
    (s===0?F("Password","",):s===1?`<div style="display:flex;gap:7px;justify-content:center;margin:12px 0">${'____'.split('').map(()=>`<span style="width:42px;height:50px;border:1px solid #9a9a9a;border-radius:8px;display:inline-grid;place-items:center;color:#aaa">_</span>`).join('')}</div>`:s===2?PH("👤 Face ID / Passkey (WebAuthn)",90):`<div class="hint">We'll send a one-time code via Zalo ZNS (SMS fallback) — no password needed.</div>`)+
    OPT("Keep me logged in",true,'sq')+
    CTA(s===3?"Send code":"Login")+LINK("<b>Forgot account / password?</b>")+
    `<div class="hint" style="text-align:center">— or continue with —</div>`+
-   OPT("G Continue with Google <small style='color:#b0b0b0'>last used</small>")+
-   `<div style="opacity:.45">${OPT("✈ Continue with Telegram <small style='color:#b0b0b0'>TH / intl only</small>")}</div>`+
+   `<div class="socrow"><div class="sic"><span class="c">G</span><small>Google · <b>last used</b></small></div><div class="sic"><span class="c" style="font-size:10px">LINE</span><small>LINE</small></div><div class="sic"><span class="c">X</span><small>X</small></div></div>`+
    LINK("No account? <b>Sign Up</b>"),
- spec:{goal:"Multi-method login: password / PIN / biometric-passkey / phone-OTP one-tap, plus social (Google; Telegram geo-gated to TH/intl) with last-used hint.",states:["password","pin","biometric/passkey (WebAuthn)","phone OTP","social branch","lockout","risk step-up → verification method screen"],fields:["identifier","method(password|pin|passkey|phone_otp|telegram|google)","secret|pin|otp|webauthn_assertion","remember(bool)"],api:"POST /auth/login { identifier, method, ... }\n← { session, requires_stepup? }",notes:["docx16; biometric maps to app setting 86; passkey targets InAppWebView traffic.","'Keep me logged in' explicit (P1); 'last used' badge reduces trial-error (P2).","login event carries method param, mirrors sign_up."]}},
+ spec:{goal:"Multi-method login: password / PIN / biometric-passkey / phone-OTP one-tap, plus social icon row (Google / LINE / X) with last-used hint.",states:["password","pin","biometric/passkey (WebAuthn)","phone OTP","social branch","lockout","risk step-up → verification method screen"],fields:["identifier(email|phone, single field)","method(password|pin|passkey|phone_otp|google|line|x)","secret|pin|otp|webauthn_assertion","remember(bool)"],api:"POST /auth/login { identifier, method, ... }\n← { session, requires_stepup? }",notes:["docx16; biometric maps to app setting 86; passkey targets InAppWebView traffic.","'Keep me logged in' explicit (P1); 'last used' badge reduces trial-error (P2).","login event carries method param, mirrors sign_up."]}},
 
 {g:"1 · Sign Up/Login",t:"Verification method",src:"15",states:["Both verified → choose","Only one verified","Code entry"],
  r:(s)=>s===2?BAR("Enter code")+STEP("Code sent to 📱 +84 90****123 (via Zalo ZNS)")+
@@ -226,13 +235,13 @@ const S=[
    `<div class="hint">* Phone code delivered via Zalo ZNS / SMS / WhatsApp / voice.</div>`+CTA("Send code"),
  spec:{goal:"Verification anchors = Phone & Email. One verified → forced; both verified → member chooses either.",states:["both verified → picker","only one → forced","code sent/entry","wrong/expired/locked","all failed → Live Chat"],fields:["anchor(phone|email)","delivery(zalo_zns|sms|whatsapp|voice|email)","stepup_token"],api:"POST /auth/stepup/start { anchor, delivery }\nPOST /auth/stepup/verify { stepup_token, otp_code }",notes:["Rule ①: only one verified → every verification uses it. Rule ②: add/change the 2nd → verify the 1st first (see Add/change contact screen). Rule ③: both verified → free choice.","Actions REQUIRING verification: change password · forgot password · add/change phone · add/change email · claim promotion · withdrawal.","docx15 app-push / social channels: future extensions — current scope phone & email only."]}},
 
-{g:"1 · Sign Up/Login",t:"Social sign up / bind",src:"49",states:["Redirect (central auth)","Complete setup (new)","Account exists → Bind"],
- r:(s)=>s===0?BAR("Continue with Google","✕")+PH("[ Google One Tap / consent ]<br><small>Redirecting to auth.&lt;stable-domain&gt;…</small>",170)+STEP("Authorizing on the stable verification domain, then returning with a session token")+CTA("Cancel",'ghost')
- :s===1?BAR("Complete setup")+STEP("Signed in as g***@gmail.com — a few required items left")+F("Account currency ▾","auto: VND")+F("Referral code","Optional")+
+{g:"1 · Sign Up/Login",t:"Social sign up / bind",src:"49",states:["Complete setup (new)","Done → You're a customer","Account exists → Bind"],
+ r:(s)=>s===0?BAR("Complete setup")+STEP("Signed in as g***@gmail.com — a few required items left")+F("Account currency ▾","auto: VND")+
    `<div class="opt"><span class="sq on"></span><span style="flex:1">I am 21+ and agree to the <b style="text-decoration:underline">Terms</b> and <b style="text-decoration:underline">Privacy Policy</b></span></div>`+
-   `<div class="hint">* Social login skips the password only — compliance + business fields stay.</div>`+CTA("Create account")
+   `<div class="hint">* Social sign-up skips OTP and password — compliance fields stay. Next: straight to the welcome screen.</div>`+CTA("Create account")
+ :s===1?BAR("Welcome!")+PH("🎉<br><small>account created</small>",100)+STEP("<b>You're now a V9 customer</b> — signed up with Google, no OTP needed")+CTA("Start playing")+CTA("Set up account (currency, app…)",'ghost')
  :BAR("Account found")+`<div class="err">This Google account / phone already matches existing account <b>v9_user***</b>.</div>`+STEP("Bind it to that account to avoid duplicates")+CTA("Bind and login")+CTA("Use a different account",'ghost')+LINK("<b>Not you? Contact Live Chat</b>"),
- spec:{goal:"Social auth (Google in VN; Telegram geo-gated to TH/intl) via central verification domain; bind flow prevents duplicate accounts.",states:["redirect to auth.&lt;stable&gt;","new user → minimal complete-setup","existing match → bind & login","cancelled / provider error → back"],fields:["provider(google|telegram)","session_token","currency(auto)","accept_terms","referral_code?"],api:"GET auth.&lt;stable&gt;/oauth/{provider} → session_token\nPOST /auth/social/exchange { session_token }\n← { customer_id, is_new, needs_bind }",notes:["OAuth redirect URI binds ONLY to auth.&lt;stable&gt; — mirror rotation never breaks login.","2026-07-15 correction: Telegram blocked in VN since May 2025 → Telegram variant ships only in TH/intl markets.","Bind entry also in Profile for existing username/password users.","Withdrawal / promo claim still requires phone OTP — phone stays the KYC anchor.","Google One Tap auto-hides if consent app blocked (degrade)."]}},
+ spec:{goal:"Social sign-up (Google / LINE / X icons) — NO OTP: provider consent → minimal setup → immediate 'You're now a customer' welcome. Bind flow prevents duplicate accounts.",states:["provider consent (Google One Tap / LINE / X, no in-app redirect screen)","new user → minimal complete-setup","done → welcome, customer created (no OTP)","existing match → bind & login","cancelled / provider error → back"],fields:["provider(google|line|x)","session_token","currency(auto)","accept_terms"],api:"GET auth.&lt;stable&gt;/oauth/{provider} → session_token\nPOST /auth/social/exchange { session_token }\n← { customer_id, is_new, needs_bind }",notes:["No OTP anywhere in the social flow — the provider already verified the identity; after Create account the user lands directly on the welcome screen as a customer.","Phone OTP is deferred: only asked later at withdrawal / promo claim (phone stays the KYC anchor).","OAuth redirect URI binds ONLY to auth.&lt;stable&gt; — mirror rotation never breaks login.","Providers = Google / LINE / X (Telegram removed 2026-07-15; Apple/Facebook excluded). Market-aware icon visibility.","Bind entry also in Profile for existing username/password users.","Google One Tap auto-hides if consent app blocked (degrade)."]}},
 
 {g:"1 · Sign Up/Login",t:"Forgot/recover account",src:"17",states:["Verified contact OTP","Enter clues","Match old password"],
  r:(s)=>BAR("Account recovery")+STEP(s===0?"We'll send a code to your verified contact":"Recover your account by matching existing info")+

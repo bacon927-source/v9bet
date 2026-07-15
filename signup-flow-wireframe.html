@@ -207,14 +207,8 @@ const screens = [
 },
 {
   group:"A · Sign Up", id:"social", title:"Social Sign Up / Bind",
-  states:["Redirect (central auth)","Complete setup (new user)","Done → You're a customer","Account exists → Bind"],
+  states:["Complete setup (new user)","Done → You're a customer","Account exists → Bind"],
   render:(s)=>s===0?`
-    <div class="scr-title"><span class="x">✕</span>Continue with Google</div>
-    <div class="ph" style="height:180px">[ Google One Tap / consent ]<br><small>Redirecting to auth.&lt;stable-domain&gt;…</small></div>
-    <div class="scr-step">Authorizing on the stable verification domain,<br>then returning to this site with a session token</div>
-    <div class="hint">＊ No OTP in this flow — the provider already verified the user.</div>
-    ${CTA("Cancel",'ghost')}`
-  :s===1?`
     <div class="scr-title"><span class="x">←</span>Complete Setup</div>
     <div class="scr-step">Signed in as g***@gmail.com — a few required items left</div>
     ${F("Account currency ▾","auto: VND")}
@@ -222,7 +216,7 @@ const screens = [
       <span style="flex:1">I am 21+ and agree to the <b style="text-decoration:underline">Terms</b> and <b style="text-decoration:underline">Privacy Policy</b></span></div>
     <div class="hint">＊ Social sign-up skips OTP and password — currency / 21+ consent stay (compliance). Next: straight to the welcome screen.</div>
     ${CTA("Create account")}`
-  :s===2?`
+  :s===1?`
     <div class="scr-title">Welcome!</div>
     <div class="ph" style="height:110px">🎉<br><small>account created</small></div>
     <div class="scr-step" style="font-size:15px;color:#333"><b>You're now a V9 customer</b><br>Signed up with Google — no OTP needed.</div>
@@ -237,7 +231,7 @@ const screens = [
     <div class="link"><b>Not you? Contact Live Chat</b></div>`,
   spec:{
     goal:"Social sign-up (Google / LINE / X icons) via the central verification domain — NO OTP: provider consent → minimal setup → immediate 'You're now a customer' welcome. Bind flow prevents duplicate accounts.",
-    states:["redirect to auth.&lt;stable&gt;","provider consent (Google One Tap / LINE / X consent)","new user → minimal complete-setup","done → welcome, customer created (no OTP)","existing match → bind & login","cancelled / provider error → back to sign-up"],
+    states:["provider consent (Google One Tap / LINE / X, no in-app redirect screen)","new user → minimal complete-setup","done → welcome, customer created (no OTP)","existing match → bind & login","cancelled / provider error → back to sign-up"],
     fields:["provider(google|line|x)","session_token","currency(auto-detected)","accept_terms(bool)"],
     api:"GET auth.&lt;stable&gt;/oauth/{provider}\n← redirect back with session_token\nPOST /auth/social/exchange { session_token }\n← { customer_id, is_new, needs_bind }",
     notes:["No OTP anywhere in the social flow — the provider (Google / LINE / X) already verified the identity; after Create account the user lands directly on the welcome screen as a customer.","Phone OTP is deferred: only asked later at withdrawal / promo claim (phone remains the KYC anchor).","Central verification domain: OAuth redirect URI binds ONLY to auth.&lt;stable&gt;, so public mirror rotation never breaks login.","Providers = Google / LINE / X (Telegram entry removed 2026-07-15; it stays available only as an OTP channel in TH / intl). Icon visibility is market-aware — hide a provider where blocked.","Bind flow also lives in Profile for existing username/password users.","Google One Tap auto-hides if the consent app is blocked (degrade design)."]
