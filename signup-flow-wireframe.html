@@ -155,7 +155,7 @@ const screens = [
       <div class="cc">🇻🇳 Vietnam<small>+84</small></div>
     </div>`
     :F("Email / Phone number","Required")}
-    ${F("Referral code","Optional")}
+    ${F("Password","👁 &nbsp; Required")}
     <div class="opt"><span class="sq ${(s===2||s===3)?'on':''}"></span>
       <span style="flex:1">I am 21+ and agree to the <b style="text-decoration:underline">Terms</b> and <b style="text-decoration:underline">Privacy Policy</b></span></div>
     ${s===3?`<div class="ph">Captcha (hCaptcha)<br><small>Shown only when risk control is triggered</small></div>`
@@ -172,9 +172,9 @@ const screens = [
   spec:{
     goal:"Single identifier field accepts email OR phone; typing digits pops the country-code picker (TH +66 / VN +84). 3rd-party sign-up via icon row: Google / LINE / X.",
     states:["default (button disabled)","phone detected → country-code picker (TH / VN)","email detected (contains @)","button enabled after Terms checked","Captcha shown conditionally (risk trigger)","submitting loading","phone / email already exists error","format error inline error","social icon tap → Google / LINE / X OAuth branch"],
-    fields:["identifier (email | phone, single field)","country_code? (phone only, TH/VN)","referral_code?","accept_terms(bool)","captcha_token?","method(phone|email|google|line|x)"],
-    api:"POST /register/start\n→ { identifier, country_code? (phone only), referral_code?, accept_terms }\n← { register_token, otp_sent:true }\nerr: PHONE_EXISTS / EMAIL_EXISTS / INVALID_PHONE / RATE_LIMITED\nGET auth.&lt;stable&gt;/oauth/{provider} → session_token (central auth domain)",
-    notes:["Detection rule: contains @ → email; digits only → phone → country-code picker appears (options limited to TH +66 / VN +84, default by site locale / geo-IP).","Terms not checked → Sign Up disabled.","Login here routes to the existing login flow (same single identifier field pattern).","3rd-party sign-up shows icons only (no full-width buttons): Google / LINE / X. Visibility is market-aware — hide an icon where the provider is blocked or irrelevant (e.g. LINE strongest in TH). Telegram entry removed from this screen. Apple / Facebook still excluded (policy).","All social icons go through the central verification domain (auth.&lt;stable&gt;) so public mirror rotation never breaks OAuth.","Analytics: sign_up event must carry method param (phone_otp | email | google | line | x)."]
+    fields:["identifier (email | phone, single field)","country_code? (phone only, TH/VN)","password","accept_terms(bool)","captcha_token?","method(phone|email|google|line|x)"],
+    api:"POST /register/start\n→ { identifier, country_code? (phone only), password, accept_terms }\n← { register_token, otp_sent:true }\nerr: PHONE_EXISTS / EMAIL_EXISTS / INVALID_PHONE / WEAK_PASSWORD / RATE_LIMITED\nGET auth.&lt;stable&gt;/oauth/{provider} → session_token (central auth domain)",
+    notes:["Detection rule: contains @ → email; digits only → phone → country-code picker appears (options limited to TH +66 / VN +84, default by site locale / geo-IP).","Password is set at sign-up (👁 show/hide toggle); inline strength / rule hints on focus. Setup-checklist item 'Set password / PIN' then becomes change-password / PIN only.","Referral code moved out of this screen (can live in a later setup step or promo entry).","Terms not checked → Sign Up disabled.","Login here routes to the existing login flow (same single identifier field pattern).","3rd-party sign-up shows icons only (no full-width buttons): Google / LINE / X. Visibility is market-aware — hide an icon where the provider is blocked or irrelevant (e.g. LINE strongest in TH). Telegram entry removed from this screen. Apple / Facebook still excluded (policy).","All social icons go through the central verification domain (auth.&lt;stable&gt;) so public mirror rotation never breaks OAuth.","Analytics: sign_up event must carry method param (phone_otp | email | google | line | x)."]
   }
 },
 {
@@ -207,21 +207,27 @@ const screens = [
 },
 {
   group:"A · Sign Up", id:"social", title:"Social Sign Up / Bind",
-  states:["Redirect (central auth)","Complete setup (new user)","Account exists → Bind"],
+  states:["Redirect (central auth)","Complete setup (new user)","Done → You're a customer","Account exists → Bind"],
   render:(s)=>s===0?`
     <div class="scr-title"><span class="x">✕</span>Continue with Google</div>
     <div class="ph" style="height:180px">[ Google One Tap / consent ]<br><small>Redirecting to auth.&lt;stable-domain&gt;…</small></div>
     <div class="scr-step">Authorizing on the stable verification domain,<br>then returning to this site with a session token</div>
+    <div class="hint">＊ No OTP in this flow — the provider already verified the user.</div>
     ${CTA("Cancel",'ghost')}`
   :s===1?`
     <div class="scr-title"><span class="x">←</span>Complete Setup</div>
     <div class="scr-step">Signed in as g***@gmail.com — a few required items left</div>
     ${F("Account currency ▾","auto: VND")}
-    ${F("Referral code","Optional")}
     <div class="opt"><span class="sq on"></span>
-      <span style="flex:1">I am 21+ and agree to the <b style="text-decoration:underline">Terms of Service</b> and <b style="text-decoration:underline">Privacy Policy</b></span></div>
-    <div class="hint">＊ Social login skips the password only — currency / 21+ consent / referral stay (compliance + business).</div>
+      <span style="flex:1">I am 21+ and agree to the <b style="text-decoration:underline">Terms</b> and <b style="text-decoration:underline">Privacy Policy</b></span></div>
+    <div class="hint">＊ Social sign-up skips OTP and password — currency / 21+ consent stay (compliance). Next: straight to the welcome screen.</div>
     ${CTA("Create account")}`
+  :s===2?`
+    <div class="scr-title">Welcome!</div>
+    <div class="ph" style="height:110px">🎉<br><small>account created</small></div>
+    <div class="scr-step" style="font-size:15px;color:#333"><b>You're now a V9 customer</b><br>Signed up with Google — no OTP needed.</div>
+    ${CTA("Start playing")}
+    ${CTA("Set up account (currency, app…)",'ghost')}`
   :`
     <div class="scr-title"><span class="x">←</span>Account Found</div>
     <div class="err">This Google account / phone already matches an existing account <b>v9_user***</b>.</div>
@@ -230,11 +236,11 @@ const screens = [
     ${CTA("Use a different account",'ghost')}
     <div class="link"><b>Not you? Contact Live Chat</b></div>`,
   spec:{
-    goal:"Social sign-up (Google / LINE / X icons) via the central verification domain; bind flow prevents duplicate accounts.",
-    states:["redirect to auth.&lt;stable&gt;","provider consent (Google One Tap / LINE / X consent)","new user → minimal complete-setup","existing match → bind & login","cancelled / provider error → back to sign-up"],
-    fields:["provider(google|line|x)","session_token","currency(auto-detected)","accept_terms(bool)","referral_code?"],
+    goal:"Social sign-up (Google / LINE / X icons) via the central verification domain — NO OTP: provider consent → minimal setup → immediate 'You're now a customer' welcome. Bind flow prevents duplicate accounts.",
+    states:["redirect to auth.&lt;stable&gt;","provider consent (Google One Tap / LINE / X consent)","new user → minimal complete-setup","done → welcome, customer created (no OTP)","existing match → bind & login","cancelled / provider error → back to sign-up"],
+    fields:["provider(google|line|x)","session_token","currency(auto-detected)","accept_terms(bool)"],
     api:"GET auth.&lt;stable&gt;/oauth/{provider}\n← redirect back with session_token\nPOST /auth/social/exchange { session_token }\n← { customer_id, is_new, needs_bind }",
-    notes:["Central verification domain: OAuth redirect URI binds ONLY to auth.&lt;stable&gt;, so public mirror rotation never breaks login.","Providers = Google / LINE / X (Telegram entry removed 2026-07-15; it stays available only as an OTP channel in TH / intl). Icon visibility is market-aware — hide a provider where blocked.","Bind flow also lives in Profile for existing username/password users.","Withdrawal / promo claim still requires phone OTP later — phone remains the KYC anchor.","Google One Tap auto-hides if the consent app is blocked (degrade design)."]
+    notes:["No OTP anywhere in the social flow — the provider (Google / LINE / X) already verified the identity; after Create account the user lands directly on the welcome screen as a customer.","Phone OTP is deferred: only asked later at withdrawal / promo claim (phone remains the KYC anchor).","Central verification domain: OAuth redirect URI binds ONLY to auth.&lt;stable&gt;, so public mirror rotation never breaks login.","Providers = Google / LINE / X (Telegram entry removed 2026-07-15; it stays available only as an OTP channel in TH / intl). Icon visibility is market-aware — hide a provider where blocked.","Bind flow also lives in Profile for existing username/password users.","Google One Tap auto-hides if the consent app is blocked (degrade design)."]
   }
 },
 {
