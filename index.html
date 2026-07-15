@@ -102,12 +102,27 @@
     </a>
   </div>
 
-  <h2>⑤ Sign-up Flow</h2>
+  <h2>⑤ Sign-up & Verification Flows</h2>
   <div class="cards">
-    <a class="card full" href="signup-flow-wireframe.html">
-      <div class="t">Wireframe (grayscale)<span class="ar">→</span></div>
-      <div class="d">17 screens + multiple states, IT spec on the right. For flow review. Latest structure: single email/phone field (digits → TH/VN country-code picker) + password at sign-up; 3rd-party = Google / LINE / X icons, social flow skips OTP and ends at a "You're now a customer" welcome; Login screen, multi-channel OTP (Zalo ZNS / SMS / WhatsApp / voice), and phone/email verification rules applied to password change, recovery, contact change, promo claim & withdrawal.</div>
-      <div class="tags"><span class="tag">Low-fidelity</span><span class="tag k">3rd-party login</span><span class="tag">Multi-channel verify</span><span class="fname">signup-flow-wireframe.html</span></div>
+    <a class="card" href="signup-flow-wireframe.html">
+      <div class="t">Sign-up Wireframe (grayscale)<span class="ar">→</span></div>
+      <div class="d">16 screens + multiple states, IT spec on the right. Latest structure: Phone (default) | Email tabs + password (digits → TH/VN country-code picker); 3rd-party = Google / LINE / X icons, social flow skips OTP and ends at a "You're now a customer" welcome; Login with social-on-top + One-time code | Password tabs; 3-step setup with progress bar.</div>
+      <div class="tags"><span class="tag">Low-fidelity</span><span class="tag k">3rd-party login</span><span class="tag">3-step setup</span><span class="fname">signup-flow-wireframe.html</span></div>
+    </a>
+    <a class="card" href="login-flow-wireframe.html">
+      <div class="t">Login Flow (grayscale)<span class="ar">→</span></div>
+      <div class="d">5 screens: Login home (social icons on top w/ last-used badge, One-time code | Password tabs) → one-time code login (verified contact + channel) → biometric/passkey (WebAuthn + fallback) → forgot password (Unified OTP flow) → lockout & risk step-up + session rules.</div>
+      <div class="tags"><span class="tag">Low-fidelity</span><span class="tag k">Passwordless</span><span class="tag">Passkey</span><span class="fname">login-flow-wireframe.html</span></div>
+    </a>
+    <a class="card full" href="verification-flow-wireframe.html">
+      <div class="t">Verification Flow (grayscale) — per Unified OTP docx<span class="ar">→</span></div>
+      <div class="d">8 screens per "Unified OTP Authentication Flow Enhancement": rules & method matrix (none / email-only / phone-only / both) → choose OTP method (choose / forced / none→depends-on-action) → delivery channel (Zalo ZNS / SMS / LINE / WhatsApp · email inbox) → code entry (wrong / expired / limits) → result & trust period → add/change contact (first-time, add-another, same-type change rule) → forgot password (no account-existence disclosure) → step-up sheet entry points incl. promo-claim inline verification.</div>
+      <div class="tags"><span class="tag">Low-fidelity</span><span class="tag k">Unified OTP (docx)</span><span class="tag">Same-type rule</span><span class="tag">Trust period</span><span class="fname">verification-flow-wireframe.html</span></div>
+    </a>
+    <a class="card full" href="meeting-notes-signup-ux.html">
+      <div class="t">📝 Sign-up UX 決議記錄 (Jul 15–16)<span class="ar">→</span></div>
+      <div class="d">Decision log: phone/email tabs + password, deferred language/currency/referral (+mitigations), G/LINE/X social no-OTP welcome, OTP channels (Zalo/SMS/LINE/WhatsApp/Email), login re-layout, VND/THB with USDT wrapped, 3-step setup, tutorial & app download post-setup, file cleanup, open items.</div>
+      <div class="tags"><span class="tag k">Meeting notes</span><span class="tag">Decision log</span><span class="fname">meeting-notes-signup-ux.html</span></div>
     </a>
   </div>
 

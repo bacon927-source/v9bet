@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>V9Bet · Sign-up UX 決議記錄（2026-07-15 / 16）</title>
+<style>
+  :root{--ink:#1c2128;--line:#d8dade;--muted:#6b7280;--paper:#fff;--bg:#f3f4f6;--grn:#19c37d;--soft:#eef7f2;--warn:#b56}
+  *{box-sizing:border-box}
+  body{margin:0;font:14px/1.7 -apple-system,"Noto Sans TC",Arial,sans-serif;color:var(--ink);background:var(--bg)}
+  .wrap{max-width:860px;margin:0 auto;padding:34px 22px 60px}
+  .kick{color:var(--grn);font-weight:700;font-size:12px;letter-spacing:.12em;text-transform:uppercase}
+  h1{font-size:24px;margin:6px 0 4px}
+  .meta{color:var(--muted);font-size:12.5px;margin-bottom:22px}
+  h2{font-size:13px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin:28px 0 10px;border-bottom:1px solid var(--line);padding-bottom:6px}
+  .card{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin:0 0 12px}
+  .card h3{font-size:15px;margin:0 0 6px}
+  .card h3 .n{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--grn);color:#fff;font-size:12px;margin-right:8px;vertical-align:-4px}
+  .card p{margin:6px 0;color:#333}
+  .why{color:var(--muted);font-size:12.5px}
+  .files{font-family:ui-monospace,Menlo,monospace;font-size:11px;color:#8a94a0;margin-top:8px}
+  ul{margin:6px 0;padding-left:20px}
+  li{margin:3px 0}
+  .tag{display:inline-block;font-size:10.5px;border:1px solid var(--line);border-radius:11px;padding:1px 9px;color:#555;background:#fafafa;margin-right:5px}
+  .tag.k{background:var(--soft);border-color:#cfe9dd;color:#127a52}
+  .tag.w{border-color:#e5c4c4;color:var(--warn);background:#fbf2ef}
+  .note{color:var(--muted);font-size:12px;margin-top:26px;border-top:1px solid var(--line);padding-top:14px}
+  table{border-collapse:collapse;width:100%;font-size:13px;background:#fff}
+  th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+  th{background:var(--soft);font-size:12px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="kick">V9Bet · Live Site Optimization</div>
+  <h1>Sign-up UX 決議記錄</h1>
+  <div class="meta">日期：2026-07-15（07-16 補充 Verification Flow）· 形式：線上逐項確認（截圖標註 → 修改 → 驗證）· 產出以 <b>signup-flow-wireframe.html</b> 為單一事實來源，其他頁面同步</div>
+
+  <h2>一、註冊（Sign Up）</h2>
+  <div class="card">
+    <h3><span class="n">1</span>註冊方式 = 電話（預設分頁）／Email（分頁切換）＋密碼</h3>
+    <ul>
+      <li>表單只有三件事：<b>📱 Phone number｜✉️ Email 分頁</b> → 帳號欄位 → <b>Password</b>（👁 顯示切換）→ 21+/Terms 勾選。</li>
+      <li>電話分頁輸入數字 → 彈出國碼選擇，<b>只有 🇹🇭 泰國 +66 / 🇻🇳 越南 +84</b>（依語系/geo-IP 預設）。在電話分頁貼上 email 會自動切到 Email 分頁。</li>
+      <li><b>推薦碼移出註冊頁</b>（原欄位由密碼取代）。</li>
+    </ul>
+    <p class="why">歷程：原本國碼+電話+推薦碼 → 改單一欄位自動判斷 → 最終定案加回明確的雙分頁（單一欄位邏輯保留在偵測行為）。</p>
+  </div>
+  <div class="card">
+    <h3><span class="n">2</span>語言／幣別／推薦碼延後 — 不影響「成為客人」</h3>
+    <p>帳號在第一頁＋OTP（或社群授權）完成當下即建立；第一頁越短完成率越高。三項延後各有配套：</p>
+    <table>
+      <tr><th>延後項目</th><th>風險</th><th>配套（已寫入 spec）</th></tr>
+      <tr><td>推薦碼</td><td>歸因掉失</td><td>邀請連結 <code>?ref=</code> 自動帶碼；7 天內可在優惠頁補填</td></tr>
+      <tr><td>幣別</td><td>不選不能入金</td><td>Setup Step 1 必填＋<b>入金當下</b>強制補選（擋入金、不擋註冊）</td></tr>
+      <tr><td>語言</td><td>看不懂介面</td><td>語系/geo-IP 自動預設＋頁首常駐切換器</td></tr>
+    </table>
+    <p class="why">要盯的指標：「完成第一頁 → 完成 Setup Step 1」轉換率。</p>
+  </div>
+  <div class="card">
+    <h3><span class="n">3</span>第三方註冊 = Google / LINE / X 圓形 icon 列</h3>
+    <ul>
+      <li>只放 <b>icon</b>（不做整條按鈕）；Telegram 入口移除（僅保留 TH/intl 的 OTP 頻道用途）；Apple / Facebook 不提供（政策）。icon 顯示依市場自動隱藏。</li>
+      <li><b>社群註冊全程免 OTP</b>——provider 已驗證身份；流程：授權（無站內 redirect 畫面）→ 最小化 Complete Setup（幣別+21+，無推薦碼）→ 直接顯示 <b>「You're now a V9 customer」🎉 歡迎頁</b>。</li>
+      <li>手機 OTP 延後到提款／領優惠時才要求（電話仍是 KYC anchor）。</li>
+    </ul>
+  </div>
+
+  <h2>二、驗證（OTP / Verification）</h2>
+  <div class="card">
+    <h3><span class="n">4</span>OTP 頻道 = Zalo ZNS / SMS / LINE / WhatsApp / Email</h3>
+    <ul>
+      <li>預設依市場：<b>VN = Zalo ZNS</b>、<b>TH = LINE</b>；SMS 為通用備援；失敗 fallback = WhatsApp / Email。</li>
+      <li>移除：Telegram bot code、語音報碼（Voice call）。</li>
+    </ul>
+    <p class="files">channel(zalo_zns|sms|line|whatsapp|email) — 註冊 OTP 與 step-up 驗證共用同一組清單</p>
+  </div>
+  <div class="card">
+    <h3><span class="n">5</span>獨立 Verification Flow 頁面（07-16 新增，依 Unified OTP docx 對齊）</h3>
+    <p>規格來源：<b>《Unified OTP Authentication Flow Enhancement》docx</b>。核心：系統分開維護 Email / 電話的驗證狀態（Verified / Not Verified），四種狀態決定 OTP 方式——無驗證→依動作而定、僅 Email→Email OTP、僅電話→Phone OTP、雙驗證→會員自選。</p>
+    <ul>
+      <li>適用 7 種動作：首次綁定、加另一種聯絡方式、改密碼、換綁 Email/電話、提款、領優惠、忘記密碼。</li>
+      <li><b>同類型規則</b>：改 Email 第一步 OTP 只能發到舊 Email（電話 OTP 不能代替）；改電話同理。新聯絡方式兩段 OTP 都通過才生效。</li>
+      <li>無驗證聯絡方式：改密碼／提款 = <b>不允許</b>；領優惠／首次綁定 = 現場輸入並驗證新聯絡方式後繼續。</li>
+      <li>忘記密碼：不得在驗證成功前洩漏帳號是否存在；用於復原的聯絡方式不自動變 Verified（待業務確認）。</li>
+      <li>OTP 通則：有效 5–10 分鐘；系統需定義過期/錯誤上限/重發間隔/重發上限/失敗後動作/重用政策/<b>信任期</b>；OTP 綁定 會員+聯絡方式+動作+session；稽核日誌不存明碼。</li>
+    </ul>
+    <p class="files">verification-flow-wireframe.html · 8 個畫面 · 含編輯模式 · 頻道層（Zalo/SMS/LINE/WhatsApp）是 Phone OTP 底下的遞送細節</p>
+  </div>
+  <div class="card">
+    <h3><span class="n">5b</span>獨立 Login Flow 頁面（07-16 新增）</h3>
+    <p>登入也拆成獨立 flow，與 sign-up 同格式：Login 主畫面（社群置頂＋Last used、One-time code｜Password 分頁）→ 一次性驗證碼登入（驗證過的聯絡方式＋頻道）→ 生物辨識/Passkey（WebAuthn＋降級）→ 忘記密碼（走 Unified OTP 流程）→ 鎖定與風險 step-up＋session 規則。</p>
+    <p class="files">login-flow-wireframe.html · 5 個畫面 · 含編輯模式</p>
+  </div>
+
+  <h2>三、登入（Login）</h2>
+  <div class="card">
+    <h3><span class="n">6</span>Login 版面重排</h3>
+    <ul>
+      <li><b>社群 icon 列移到最上方</b>（Logo 下），G icon 上方掛 <b>「Last used（上次登入）」</b>小標。</li>
+      <li>之後才是「— or login with —」→ <b>One-time code｜Password 分頁</b> → Email/Phone 欄位。</li>
+      <li>「Forgot account / password?」改為只剩 <b>Forgot password?</b>。</li>
+    </ul>
+  </div>
+
+  <h2>四、幣別與 Setup</h2>
+  <div class="card">
+    <h3><span class="n">7</span>帳戶幣別只有 VND / THB —— USDT 不是獨立幣別</h3>
+    <p>USDT 是<b>包在 VND / THB 帳戶內的充提通道</b>（即時匯率換算）；幣別選擇畫面移除 USDT 選項、兩幣別標註「USDT supported」。入金/出金的 Bank/USDT 切換照舊。</p>
+  </div>
+  <div class="card">
+    <h3><span class="n">8</span>Setup 設定頁 = 三步驟＋頂部進度條</h3>
+    <table>
+      <tr><th>步驟</th><th>內容</th><th>可否跳過</th></tr>
+      <tr><td><b>Step 1 · Required</b></td><td>帳戶幣別、Profile + bank/USDT</td><td><span class="tag w">不可 pass</span></td></tr>
+      <tr><td><b>Step 2 · Security</b></td><td>Face ID / biometric / passkey、備援 Email、密碼/PIN（註冊已設，此處為修改）</td><td><span class="tag k">可 pass</span></td></tr>
+      <tr><td><b>Step 3 · Preferences</b></td><td>通知權限、主題/語言</td><td><span class="tag k">可 pass</span></td></tr>
+    </table>
+    <p><b>教學（Interactive tutorial）與 App 下載移出清單</b> —— Setup 完成後在下一頁（Tutorial &amp; App 單一頁）一起呈現，之後才是 Welcome + Offers。</p>
+  </div>
+
+  <h2>五、檔案與工具</h2>
+  <div class="card">
+    <h3><span class="n">9</span>檔案整理</h3>
+    <ul>
+      <li>刪除 <code>signup-flow-design.html</code>、<code>signup-flow-tailwind.html</code>（6/21 舊結構重複稿；git 歷史可還原）。</li>
+      <li>同步規則：sign-up UX 改動以 <code>signup-flow-wireframe.html</code> 為準，同步 <code>v9bet-full-wireframe.html</code>、<code>v9bet-flows-composition.html</code>、<code>index.html</code>。</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h3><span class="n">10</span>頁面編輯模式（改字工具）</h3>
+    <p>index 與兩個 wireframe 右下角有「✏️ 編輯文字」：點字直接改、自動存瀏覽器（localStorage）、「📋 複製修改」可把原文→新文清單貼給 Claude 寫回 HTML、「↺ 還原」清除。修改只存在本機瀏覽器，檔案本身不變。</p>
+  </div>
+
+  <h2>交接指南（給接手的人）</h2>
+  <div class="card">
+    <ul>
+      <li><b>單一事實來源</b>：sign-up UX 以 <code>signup-flow-wireframe.html</code> 為準；驗證規則以 <code>verification-flow-wireframe.html</code>（對齊 Unified OTP docx）為準；登入以 <code>login-flow-wireframe.html</code> 為準。</li>
+      <li><b>同步規則</b>：改 sign-up/login/OTP 相關內容時，同步 <code>v9bet-full-wireframe.html</code>（對應畫面）、<code>v9bet-flows-composition.html</code>（迷你卡）、<code>index.html</code>（卡片描述）——每頁都是獨立 HTML，沒有共用資料來源，漏改就會不一致。</li>
+      <li><b>入口</b>：一切從 <code>index.html</code> 進；第 ⑤ 區是 Sign-up / Login / Verification 三條 flow＋本記錄。</li>
+      <li><b>改文案</b>：各 wireframe 右下角「✏️ 編輯文字」可直接點字修改（存本機瀏覽器）；「📋 複製修改」把清單交給工程/Claude 寫回 HTML 才算數。</li>
+      <li><b>規格文件</b>：<code>~/Downloads/Unified OTP Authentication Flow Enhancement.docx</code>（建議移入 repo 的 docs/）；更早的來源是「New customers sign up flow」docx（117 項）與 auth-flow-analysis。</li>
+      <li><b>歷史</b>：git log 有完整演進脈絡；本頁結尾列出關鍵 commit。</li>
+    </ul>
+  </div>
+
+  <h2>待辦 / 未決事項</h2>
+  <div class="card">
+    <ul>
+      <li>視覺稿（V9 dark theme）需依新結構重做（舊稿已刪）。</li>
+      <li>推薦碼 <code>?ref=</code> 自動歸因需後端支援＋7 天補填窗口確認。</li>
+      <li>LINE / X OAuth 各市場可用性確認（icon 市場化隱藏規則）。</li>
+      <li><code>docs/</code> 資料夾尚未納入版控；Unified OTP docx 建議一併移入。</li>
+      <li>Unified OTP docx 待業務確認：OTP <b>信任期</b>要不要開、多長；領優惠是否每次都要 OTP；忘記密碼用的聯絡方式要不要順便變 Verified；改密碼是否同時要求輸入舊密碼。</li>
+    </ul>
+  </div>
+
+  <div class="note">本記錄由對話決議整理（2026-07-15 ~ 07-16）。對應 commit：edit-mode（c80cf21）→ 單一欄位+國碼（4430b3a）→ 密碼/社群免OTP（2395992）→ 全站同步（126d5d0）→ icon 列（d58631a）→ 刪舊稿（1f30022）→ 本輪 UX（1e3a669）。</div>
+</div>
+</body>
+</html>

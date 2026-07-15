@@ -1,0 +1,492 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>V9Bet · Verification Flow — Wireframe</title>
+<style>
+  :root{
+    --ink:#2b2b2b; --line:#c9c9c9; --line2:#9a9a9a; --muted:#8a8a8a;
+    --paper:#ffffff; --bg:#ececed; --fill:#f3f3f4; --solid:#3a3a3a;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font:14px/1.5 -apple-system,"Noto Sans TC",Arial,sans-serif;color:var(--ink);background:var(--bg)}
+  /* ---- layout ---- */
+  .app{display:grid;grid-template-columns:260px 1fr 340px;min-height:100vh}
+  aside{background:var(--paper);border-right:1px solid var(--line);padding:16px;overflow:auto}
+  main{padding:24px;display:flex;flex-direction:column;align-items:center;gap:14px}
+  .spec{background:var(--paper);border-left:1px solid var(--line);padding:16px;overflow:auto}
+  h1{font-size:15px;margin:0 0 4px}
+  .sub{color:var(--muted);font-size:12px;margin:0 0 14px}
+  .navlist{display:flex;flex-direction:column;gap:2px}
+  .nav{display:flex;gap:8px;align-items:center;border:1px solid transparent;border-radius:6px;padding:7px 8px;cursor:pointer;font-size:13px}
+  .nav:hover{background:var(--fill)}
+  .nav.active{background:#e3e3e6;border-color:var(--line2);font-weight:600}
+  .nav .num{width:20px;height:20px;flex:0 0 20px;border:1px solid var(--line2);border-radius:50%;display:grid;place-items:center;font-size:11px;color:var(--muted)}
+  .nav.active .num{background:var(--solid);color:#fff;border-color:var(--solid)}
+  .group-title{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:14px 0 6px}
+  /* ---- phone ---- */
+  .stage{display:flex;flex-direction:column;align-items:center;gap:10px}
+  .toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:center}
+  .btn{border:1px solid var(--line2);background:#fff;border-radius:6px;padding:6px 12px;font-size:12px;cursor:pointer}
+  .btn:hover{background:var(--fill)}
+  .state-tabs{display:flex;gap:4px;border:1px solid var(--line);border-radius:8px;padding:3px;background:#fff}
+  .state-tabs button{border:0;background:none;padding:5px 10px;border-radius:6px;font-size:12px;cursor:pointer;color:var(--muted)}
+  .state-tabs button.on{background:var(--solid);color:#fff}
+  .phone{width:380px;border:2px solid var(--ink);border-radius:28px;background:var(--paper);padding:10px;box-shadow:0 6px 24px rgba(0,0,0,.12)}
+  .notch{height:20px;display:flex;justify-content:center}
+  .notch::after{content:"";width:120px;height:18px;background:var(--ink);border-radius:0 0 12px 12px}
+  .screen{height:680px;overflow:auto;border:1px solid var(--line);border-radius:18px;padding:18px;background:#fff}
+  .screen::-webkit-scrollbar{width:6px}.screen::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px}
+  .scr-title{text-align:center;font-weight:700;font-size:16px;margin:2px 0 4px;position:relative}
+  .scr-title .x{position:absolute;left:0;top:0;color:var(--muted);font-weight:400}
+  .scr-step{text-align:center;color:var(--muted);font-size:12px;margin-bottom:14px}
+  /* wireframe primitives */
+  .field{border:1px dashed var(--line2);border-radius:10px;padding:13px 14px;color:var(--muted);margin:10px 0;display:flex;justify-content:space-between;align-items:center;background:var(--fill)}
+  .field small{color:#b0b0b0}
+  .row{display:flex;gap:10px}
+  .row>*{flex:1}
+  .opt{border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin:8px 0;display:flex;align-items:center;gap:12px}
+  .opt.sel{border-color:var(--solid);border-width:2px}
+  .dot{width:18px;height:18px;border:1px solid var(--line2);border-radius:50%;flex:0 0 18px}
+  .dot.on{border-color:var(--solid);border-width:5px}
+  .sq{width:18px;height:18px;border:1px solid var(--line2);border-radius:4px;flex:0 0 18px}
+  .sq.on{background:var(--solid)}
+  .ph{height:90px;border:1px dashed var(--line2);border-radius:10px;display:grid;place-items:center;color:#b6b6b6;background:var(--fill);margin:10px 0}
+  .cta{background:var(--solid);color:#fff;text-align:center;border-radius:24px;padding:14px;margin:16px 0 8px;font-weight:600}
+  .cta.ghost{background:#fff;color:var(--muted);border:1px solid var(--line2)}
+  .cta.disabled{background:#cfcfcf;color:#fff}
+  .link{text-align:center;color:#666;font-size:13px;margin-top:8px}
+  .link b{color:var(--ink);text-decoration:underline}
+  .hint{font-size:12px;color:var(--muted);margin:6px 2px}
+  .badge{display:inline-block;font-size:10px;border:1px solid var(--line2);border-radius:4px;padding:1px 6px;color:var(--muted);vertical-align:middle;margin-left:6px}
+  .badge.req{border-color:#b56;color:#b56}
+  .otpcells{display:flex;gap:8px;justify-content:center;margin:18px 0}
+  .otpcells span{width:42px;height:52px;border:1px solid var(--line2);border-radius:8px;display:grid;place-items:center;font-size:20px;color:var(--muted)}
+  .otpcells span.f{border-color:var(--solid);border-width:2px}
+  .err{border:1px solid #c98;background:#fbf2ef;color:#a55;border-radius:8px;padding:10px 12px;font-size:12px;margin:8px 0}
+  .checklist .ci{display:flex;align-items:center;gap:12px;border:1px solid var(--line);border-radius:10px;padding:12px;margin:8px 0}
+  .checklist .ci .num{width:22px;height:22px;border:1px solid var(--line2);border-radius:50%;display:grid;place-items:center;font-size:11px;color:var(--muted);flex:0 0 22px}
+  .checklist .ci.done .num{background:var(--solid);color:#fff;border-color:var(--solid)}
+  .checklist .ci .g{flex:1}
+  .checklist .ci .g small{color:var(--muted);font-size:11px;display:block}
+  .dots{display:flex;gap:6px;justify-content:center;margin:14px 0}
+  .dots i{width:7px;height:7px;border-radius:50%;background:var(--line2)}
+  .dots i.on{background:var(--solid);width:18px;border-radius:4px}
+  .promo{border:1px dashed var(--line2);border-radius:12px;padding:14px;margin:10px 0;background:var(--fill)}
+  .promo .tag{font-size:10px;border:1px solid var(--line2);border-radius:4px;padding:1px 6px;color:var(--muted)}
+  /* social login */
+  .or{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:11px;margin:14px 0 4px}
+  .or::before,.or::after{content:"";flex:1;height:1px;background:var(--line)}
+  .socbtn{display:flex;align-items:center;gap:10px;border:1px solid var(--line2);border-radius:10px;padding:11px 14px;margin:8px 0;font-size:13px;background:#fff;cursor:pointer}
+  .socbtn .ic{width:22px;height:22px;border:1px solid var(--line2);border-radius:50%;display:grid;place-items:center;font-size:11px;color:var(--muted);flex:0 0 22px}
+  .socbtn small{margin-left:auto;color:#b0b0b0;font-size:10px}
+  .socbtn .last{margin-left:auto;font-size:9px;border:1px solid var(--solid);border-radius:4px;padding:1px 5px;color:var(--solid)}
+  .ccpop{border:1px solid var(--line2);border-radius:10px;background:#fff;box-shadow:0 6px 18px rgba(0,0,0,.08);margin:-4px 0 10px;overflow:hidden}
+  .ccpop .cc{padding:11px 14px;font-size:13px;display:flex;align-items:center;gap:8px;color:#444}
+  .ccpop .cc.on{background:var(--fill);font-weight:700}
+  .ccpop .cc small{margin-left:auto;color:#b0b0b0}
+  .mtabs{display:flex;border:1px solid var(--line2);border-radius:10px;overflow:hidden;margin:10px 0;font-size:13px;text-align:center}
+  .mtabs span{flex:1;padding:9px 0;color:var(--muted);background:var(--fill)}
+  .mtabs span.on{background:#fff;color:#222;font-weight:700;box-shadow:inset 0 -2px 0 var(--solid)}
+  .socrow .sic{position:relative}
+  .socrow .lu{position:absolute;top:-9px;left:50%;transform:translateX(-50%);font-size:8px;border:1px solid var(--solid);color:var(--solid);background:#fff;border-radius:4px;padding:0 4px;white-space:nowrap}
+  .prog3{display:flex;gap:5px;margin:10px 0 2px}
+  .prog3 .p{flex:1;font-size:9.5px;text-align:center;padding:5px 0;border:1px solid var(--line2);border-radius:7px;color:var(--muted);background:var(--fill)}
+  .prog3 .p.on{background:var(--solid);border-color:var(--solid);color:#fff;font-weight:700}
+  .prog3 .p.done{border-color:var(--solid);color:var(--solid)}
+  .grp{font-size:11px;font-weight:700;color:#555;margin:12px 0 2px;display:flex;align-items:center;gap:6px}
+  .socrow{display:flex;justify-content:center;gap:26px;margin:12px 0 4px}
+  .socrow .sic{display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer}
+  .socrow .c{width:46px;height:46px;border:1px solid var(--line2);border-radius:50%;display:grid;place-items:center;font-size:14px;font-weight:700;color:var(--muted);background:#fff}
+  .socrow small{font-size:10px;color:var(--muted)}
+  /* spec panel */
+  .spec h2{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:18px 0 6px}
+  .spec h2:first-child{margin-top:0}
+  .spec ul{margin:0;padding-left:16px}
+  .spec li{margin:4px 0;font-size:12.5px}
+  .stlist{display:flex;flex-wrap:wrap;gap:6px}
+  .pill{font-size:11px;border:1px solid var(--line2);border-radius:12px;padding:2px 9px;background:var(--fill)}
+  .api{font-family:ui-monospace,Menlo,monospace;font-size:11px;background:var(--fill);border:1px solid var(--line);border-radius:6px;padding:8px;white-space:pre-wrap;color:#555}
+  .legend{font-size:11px;color:var(--muted);border-top:1px solid var(--line);margin-top:14px;padding-top:10px}
+</style>
+</head>
+<body>
+<div class="app">
+  <!-- LEFT: flow nav -->
+  <aside>
+    <h1>Verification Flow</h1>
+    <p class="sub">Low-fidelity wireframe · Mobile / App first<br>Source: Unified OTP Authentication Flow Enhancement (docx, Jul 16)<br>Verified-contact status drives every OTP flow</p>
+    <div id="nav"></div>
+    <div class="legend">
+      Grayscale wireframe only, no visual design.<br>
+      <span class="badge req">Required</span> = mandatory ·
+      <span class="badge">app only</span> = App only<br>
+      Right panel: spec / states / API fields for Dev.
+    </div>
+  </aside>
+
+  <!-- CENTER: phone -->
+  <main>
+    <div class="toolbar">
+      <button class="btn" id="prev">← Previous</button>
+      <div class="state-tabs" id="states"></div>
+      <button class="btn" id="next">Next →</button>
+    </div>
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="screen" id="screen"></div>
+    </div>
+    <div class="hint" id="bread"></div>
+  </main>
+
+  <!-- RIGHT: spec -->
+  <div class="spec" id="spec"></div>
+</div>
+
+<script>
+/* ---------- wireframe component helpers ---------- */
+const F = (label, sub='') => `<div class="field"><span>${label}</span>${sub?`<small>${sub}</small>`:''}</div>`;
+const CTA = (t, mod='') => `<div class="cta ${mod}">${t}</div>`;
+const OPT = (t, sel=false, kind='dot') => `<div class="opt ${sel?'sel':''}"><span class="${kind} ${sel?'on':''}"></span><span style="flex:1">${t}</span></div>`;
+const SOC = (ic, t, sub='', last=false) => `<div class="socbtn"><span class="ic">${ic}</span><span>${t}</span>${last?`<span class="last">Last used</span>`:sub?`<small>${sub}</small>`:''}</div>`;
+
+/* ---------- screen definitions ---------- */
+const screens = [
+{
+  group:"A · Rules", id:"matrix", title:"Unified OTP Rules",
+  states:["Overview"],
+  render:()=>`
+    <div class="scr-title">Unified OTP Rules</div>
+    <div class="scr-step">Source: Unified OTP Authentication Flow Enhancement (docx)</div>
+    <div class="grp">Actions that require OTP</div>
+    <div class="checklist">
+      ${ci(1,"Add email / phone (first time)","",false)}
+      ${ci(2,"Add another contact type","verify existing first",false)}
+      ${ci(3,"Change password","",false)}
+      ${ci(4,"Change email / phone","same-type rule",false)}
+      ${ci(5,"Withdrawal","",false)}
+      ${ci(6,"Claim promotion","",false)}
+      ${ci(7,"Forgot password","",false)}
+    </div>
+    <div class="grp">OTP method by verified-contact status</div>
+    <div class="opt"><span style="flex:1">No contact verified</span><small style="color:#b0b0b0">depends on action</small></div>
+    <div class="opt"><span style="flex:1">Email verified only</span><small style="color:#b0b0b0">Email OTP</small></div>
+    <div class="opt"><span style="flex:1">Phone verified only</span><small style="color:#b0b0b0">Phone OTP</small></div>
+    <div class="opt"><span style="flex:1">Both verified</span><small style="color:#b0b0b0">member selects</small></div>
+    <div class="hint">＊ "No contact verified": change password / withdrawal = NOT allowed; promotion claim / first-time add = enter & verify a new contact inline.</div>`,
+  spec:{
+    goal:"Common OTP verification flow for account security & sensitive actions. Verified-contact status (per anchor: Verified / Not Verified) decides the OTP method.",
+    states:["reference only"],
+    fields:["email_status(verified|not)","phone_status(verified|not)","action(add_first|add_another|change_password|change_contact|withdrawal|promo_claim|forgot_password)"],
+    api:"Rule matrix enforced server-side on every protected action.",
+    notes:["OTP valid period: 5–10 minutes (recommended). System must define: expiry · max failed attempts · resend waiting time · max resends · action after too many failures · reuse policy · trust period.","An OTP is valid only for the related member + contact + action + verification session. A previously verified contact does NOT count as a pass for the current action — a new OTP is required unless within an approved trust period.","Audit log: request time, channel, result, action, failed count, contact-change result, member ID, device/session — never store the OTP value in plain text."]
+  }
+},
+{
+  group:"B · Verify", id:"anchor", title:"Choose OTP Method",
+  states:["Both verified → choose","Only one → forced","None → depends on action"],
+  render:(s)=>s===0?`
+    <div class="scr-title"><span class="x">✕</span>Security Verification</div>
+    <div class="scr-step">Both contacts verified — select Email OTP or Phone OTP</div>
+    ${OPT("📱 &nbsp; Phone OTP &nbsp;+66 90****123 <small style='color:#b0b0b0'>verified</small>", true)}
+    ${OPT("✉️ &nbsp; Email OTP &nbsp;b***@gmail.com <small style='color:#b0b0b0'>verified</small>", false)}
+    <div class="hint">＊ Exception — changing a contact follows the same-type rule: change email → first OTP goes ONLY to the existing email (no picker).</div>
+    ${CTA("Send OTP")}`
+  :s===1?`
+    <div class="scr-title"><span class="x">✕</span>Security Verification</div>
+    <div class="scr-step">One contact verified — it is used automatically</div>
+    ${OPT("📱 &nbsp; Phone OTP &nbsp;+66 90****123 <small style='color:#b0b0b0'>verified</small>", true)}
+    <div class="opt" style="opacity:.45"><span class="dot"></span><span style="flex:1">✉️ Email — not verified<br><small style="color:#b0b0b0">Add it via 'Add another contact' (verify phone first)</small></span></div>
+    ${CTA("Send OTP")}`
+  :`
+    <div class="scr-title"><span class="x">✕</span>No Verified Contact</div>
+    <div class="err">Change password / Withdrawal — not allowed until a contact is verified.</div>
+    <div class="scr-step">Promotion claim / first-time add — verify a new contact now to continue</div>
+    ${F("Email / Phone number","Required")}
+    ${CTA("Send OTP")}
+    <div class="hint">＊ Saved as Verified only after the OTP passes; the original action then continues.</div>`,
+  spec:{
+    goal:"OTP method selection per the docx status table: both → member selects; one → forced; none → depends on the action (block, or inline-verify a new contact).",
+    states:["both verified → picker","one verified → forced","none + blocked action (password / withdrawal) → NOT_ALLOWED","none + promo claim / first-time → enter & verify new contact inline","cancelled → back to the action"],
+    fields:["action","anchor(phone|email)","new_contact?","stepup_token"],
+    api:"POST /auth/otp/start { action, anchor | new_contact }\\n← { stepup_token, channel_options[] }\\nerr: NO_VERIFIED_CONTACT (blocked actions) / CONTACT_IN_USE / INVALID_FORMAT",
+    notes:["Same-type rule overrides the picker when changing a contact: change email → existing email only; change phone → existing phone only.","Inline first-time verification (promo claim) validates format + availability before sending the OTP.","stepup_token is action-scoped, expires with the OTP session."]
+  }
+},
+{
+  group:"B · Verify", id:"channel", title:"Delivery Channel",
+  states:["Phone OTP → channel picker","Email OTP → inbox"],
+  render:(s)=>s===0?`
+    <div class="scr-title"><span class="x">←</span>Choose Delivery Channel</div>
+    <div class="scr-step">Phone OTP to +66 90****123 — pick how it arrives</div>
+    ${OPT("💬 &nbsp; Zalo ZNS <small style='color:#b0b0b0'>default · best reach in VN</small>", true)}
+    ${OPT("📨 &nbsp; SMS", false)}
+    ${OPT("🟩 &nbsp; LINE <small style='color:#b0b0b0'>best reach in TH</small>", false)}
+    ${OPT("🟢 &nbsp; WhatsApp", false)}
+    ${CTA("Send via selected channel")}
+    <div class="hint">＊ Channel is a delivery detail under Phone OTP — the docx rules care only about Email OTP vs Phone OTP.</div>`
+  :`
+    <div class="scr-title"><span class="x">←</span>Email OTP</div>
+    <div class="scr-step">A 6-digit code goes to b***@gmail.com — no picker needed</div>
+    <div class="ph" style="height:110px">[ ✉️ inbox illustration ]</div>
+    ${CTA("Send code")}
+    <div class="hint">＊ Code valid 5–10 minutes. Check spam if it doesn't arrive.</div>`,
+  spec:{
+    goal:"Delivery layer: Phone OTP fans out to market-aware channels (Zalo ZNS / SMS / LINE / WhatsApp); Email OTP goes straight to the inbox.",
+    states:["phone channel picker","email (no picker)","sending loading","delivery failed → try another channel"],
+    fields:["stepup_token","channel(zalo_zns|sms|line|whatsapp|email)"],
+    api:"POST /auth/otp/send { stepup_token, channel }\\n← { sent:true, resend_after:60 }\\nerr: OTP_DELIVERY_FAILED / RATE_LIMITED",
+    notes:["Same channel set as sign-up OTP — keep the lists in sync.","Defaults by market: Zalo ZNS in VN · LINE in TH · SMS universal fallback.","Docx error case 'OTP delivery fails' surfaces here with a channel-switch suggestion."]
+  }
+},
+{
+  group:"B · Verify", id:"code", title:"Enter Code",
+  states:["Awaiting input","Wrong code","Expired","Locked / resend limit"],
+  render:(s)=>`
+    <div class="scr-title"><span class="x">←</span>Enter Code</div>
+    <div class="scr-step">Code sent via Zalo ZNS to +66 ****1234 · valid 10 min</div>
+    <div class="otpcells"><span class="f">_</span><span>_</span><span>_</span><span>_</span><span>_</span><span>_</span></div>
+    ${s===1?`<div class="err">OTP is incorrect (2 attempts left)</div>`:''}
+    ${s===2?`<div class="err">OTP has expired. Resend a new one to continue.</div>`:''}
+    ${s===3?`<div class="err">Maximum attempts / resend limit reached.</div>${CTA("Try another channel",'ghost')}${CTA("Contact Live Chat",'ghost')}`:''}
+    <div class="link">Didn't get it? <b>${s===3?'Resend locked':'Resend (60s)'}</b> · <b>Change channel</b></div>
+    ${CTA("Verify", s===3?'disabled':'')}`,
+  spec:{
+    goal:"Code entry with the docx error set: incorrect / expired / resend limit / max attempts — each with a clear message.",
+    states:["awaiting (resend countdown)","verifying loading","OTP incorrect (attempts left)","OTP expired → resend","resend limit reached","max attempts → locked, action stops"],
+    fields:["stepup_token","otp_code"],
+    api:"POST /auth/otp/verify { stepup_token, otp_code }\\n← { verified:true, action_token, trusted_until? }\\nerr: OTP_WRONG / OTP_EXPIRED / OTP_LOCKED / RESEND_LIMIT",
+    notes:["System-defined params: expiry (5–10 min) · max failed attempts · resend wait · max resends · post-failure action.","When verification fails or expires, the related action STOPS (docx).","Every attempt lands in the audit log; the OTP value itself is never logged in plain text."]
+  }
+},
+{
+  group:"B · Verify", id:"result", title:"Result",
+  states:["Success","Failed → action stopped"],
+  render:(s)=>s===0?`
+    <div class="scr-title">Verified ✓</div>
+    <div class="ph" style="height:110px">✓<br><small>verification passed</small></div>
+    <div class="scr-step">Continuing to your original action…</div>
+    ${CTA("Continue")}
+    <div class="hint">＊ If a trust period is enabled, further OTPs may be skipped for a short window (policy-defined).</div>`
+  :`
+    <div class="scr-title">Verification Failed</div>
+    <div class="err">OTP verification failed or expired — the action cannot continue.</div>
+    ${CTA("Contact Live Chat")}
+    ${CTA("Try again later",'ghost')}`,
+  spec:{
+    goal:"Terminal states: success resumes the protected action (optionally opening a trust period); failure stops the action.",
+    states:["success → resume with action_token","trusted_until set (optional trust period)","failed / expired → action stopped","handoff → Live Chat"],
+    fields:["action_token","trusted_until?"],
+    api:"Resume the original action with { action_token }; single-use, bound to member + action + session.",
+    notes:["Docx: whether a successful OTP can be trusted for a short period is a system-level setting — surface it here.","An OTP pass never carries over to a DIFFERENT action unless within the approved trust period.","Live Chat handoff carries the failure context (channels tried, attempts)."]
+  }
+},
+{
+  group:"C · Contacts", id:"contact", title:"Add / Change Contact",
+  states:["First time (none verified)","Add another · step 1","Change email · same-type","Step 2 · verify new","Done"],
+  render:(s)=>s===0?`
+    <div class="scr-title"><span class="x">←</span>Add Contact</div>
+    <div class="scr-step">No verified contact yet — verify this one directly</div>
+    ${F("Email / Phone number","Required")}
+    ${CTA("Send OTP")}
+    <div class="hint">＊ Format + availability validated first; saved as Verified only after the OTP passes.</div>`
+  :s===1?`
+    <div class="scr-title"><span class="x">←</span>Add Another Contact</div>
+    <div class="scr-step">Step 1 — verify an existing verified contact first</div>
+    ${OPT("📱 &nbsp; Phone +66 90****123 <small style='color:#b0b0b0'>verified</small>", true)}
+    <div class="hint">＊ If both are already verified, choose either for step 1.</div>
+    ${CTA("Send OTP to existing contact")}`
+  :s===2?`
+    <div class="scr-title"><span class="x">←</span>Change Email</div>
+    <div class="scr-step">Same-type rule — step 1 goes ONLY to the existing email</div>
+    ${OPT("✉️ &nbsp; Email b***@gmail.com <small style='color:#b0b0b0'>current · verified</small>", true)}
+    <div class="opt" style="opacity:.45"><span class="dot"></span><span style="flex:1">📱 Phone OTP<br><small style="color:#b0b0b0">Not allowed here — cannot replace the old-email OTP</small></span></div>
+    ${CTA("Send OTP to current email")}
+    <div class="hint">＊ If the existing contact can't receive OTP → normal change flow is blocked → Live Chat / manual review.</div>`
+  :s===3?`
+    <div class="scr-title"><span class="x">←</span>Verify New Contact</div>
+    <div class="scr-step">Step 1 passed ✓ — enter and verify the new contact</div>
+    ${F("New email / phone","Required")}
+    <div class="otpcells"><span class="f">_</span><span>_</span><span>_</span><span>_</span><span>_</span><span>_</span></div>
+    ${CTA("Verify new contact")}
+    <div class="hint">＊ A separate OTP — the old contact is NOT replaced until this one passes.</div>`
+  :`
+    <div class="scr-title">Contact Updated</div>
+    ${OPT("✉️ &nbsp; Email new***@gmail.com <small style='color:#b0b0b0'>verified · just changed</small>", true)}
+    ${OPT("📱 &nbsp; Phone +66 90****123 <small style='color:#b0b0b0'>verified</small>", false)}
+    ${CTA("Done")}
+    <div class="hint">＊ The replaced contact is marked per business rule; abandoning mid-way changes nothing.</div>`,
+  spec:{
+    goal:"docx flows — first-time add (verify new directly), add-another (verify existing first), change (same-type rule: old email OTP for email change, old phone OTP for phone change), then a separate OTP for the new contact.",
+    states:["first time · none verified → verify new directly","add another · step 1 on existing (choose if both)","change · step 1 same-type ONLY","step 2 · validate + OTP on new contact","done · new contact Verified","abandoned → nothing changes","new contact already used → CONTACT_IN_USE"],
+    fields:["target(phone|email)","mode(add_first|add_another|change)","step1_token","new_contact","otp_code"],
+    api:"POST /account/contact/start { target, mode }\\n→ step-1 OTP (existing, same-type on change) ← { step1_token }\\nPOST /account/contact/commit { step1_token, new_contact, otp_code }\\nerr: CONTACT_IN_USE / INVALID_FORMAT / OTP_WRONG / STEP1_EXPIRED / NOT_ALLOWED",
+    notes:["Acceptance criteria: change email → first OTP ONLY to existing email (phone OTP cannot substitute); change phone → mirror rule.","New contact is saved / replaces the old one ONLY after both steps pass.","If the existing contact cannot receive OTP, the normal change flow must not continue (docx) → manual path."]
+  }
+},
+{
+  group:"D · Recovery", id:"forgot", title:"Forgot Password",
+  states:["Enter contact","Enter code","Reset password","Done"],
+  render:(s)=>s===0?`
+    <div class="scr-title"><span class="x">✕</span>Forgot Password</div>
+    <div class="scr-step">Enter the email or phone registered to your account</div>
+    ${F("Registered email / phone","Required")}
+    ${CTA("Send OTP")}
+    <div class="hint">＊ For security we don't reveal whether an account exists — the code is sent only if the contact matches.</div>`
+  :s===1?`
+    <div class="scr-title"><span class="x">←</span>Enter Code</div>
+    <div class="scr-step">If the contact matches an account, a code is on its way</div>
+    <div class="otpcells"><span class="f">_</span><span>_</span><span>_</span><span>_</span><span>_</span><span>_</span></div>
+    <div class="link">Didn't get it? <b>Resend (60s)</b></div>
+    ${CTA("Verify")}`
+  :s===2?`
+    <div class="scr-title"><span class="x">←</span>Reset Password</div>
+    <div class="scr-step">Verification passed — set a new password</div>
+    ${F("New password","👁 &nbsp; Required")}
+    ${F("Confirm new password","Required")}
+    ${CTA("Reset password")}
+    <div class="hint">＊ Validated against the current password policy.</div>`
+  :`
+    <div class="scr-title">Password Reset ✓</div>
+    <div class="ph" style="height:100px">✓<br><small>reset successful</small></div>
+    ${CTA("Login now")}
+    <div class="hint">＊ The contact used here does NOT automatically become Verified (unless business confirms otherwise).</div>`,
+  spec:{
+    goal:"docx Forgot Password: enter registered contact → validate against the account → OTP → reset password → confirm.",
+    states:["enter contact","contact mismatch (silent — same UI as sent)","code entry","reset form (policy validation)","done → login"],
+    fields:["identifier(email|phone)","otp_code","new_password"],
+    api:"POST /auth/forgot/start { identifier }  (always returns 200)\\nPOST /auth/forgot/verify { otp_code }\\nPOST /auth/forgot/reset { new_password }\\nerr: OTP_WRONG / OTP_EXPIRED / WEAK_PASSWORD",
+    notes:["Never confirm account existence before successful validation (docx) — mismatch shows the same 'code sent' UI.","Recovery contact does not auto-flip to Verified — pending business confirmation.","Whether the current password is also required on change-password (logged-in) is a separate policy decision."]
+  }
+},
+{
+  group:"E · Entry Points", id:"entries", title:"Entry Points (step-up sheet)",
+  states:["Withdrawal","Promo claim","Promo claim · none verified","Change password"],
+  render:(s)=>{
+    const t=[["Withdrawal","[ Withdrawal form — amount · bank/USDT ]"],["Claim Promotion","[ Promotion detail — 100% first deposit bonus ]"],["Claim Promotion","[ Promotion detail — 100% first deposit bonus ]"],["Change Password","[ New password form ]"]][s];
+    return `
+    <div class="scr-title"><span class="x">←</span>${t[0]}</div>
+    <div class="ph" style="height:100px">${t[1]}</div>
+    <div style="border:2px solid var(--solid);border-radius:14px;padding:12px 14px;margin-top:16px;background:#fff">
+      <b style="font-size:14px">🔒 OTP verification required</b>
+      ${s===2?`
+      <div class="hint" style="margin:6px 0">No verified contact — verify one now to continue the claim</div>
+      ${F("Email / Phone number","Required")}
+      ${CTA("Send OTP")}`
+      :`
+      <div class="hint" style="margin:6px 0">This action requires a one-time code (rule matrix)</div>
+      ${OPT("📱 &nbsp; Phone OTP +66 ****1234 <small style='color:#b0b0b0'>verified</small>", true)}
+      ${CTA("Send OTP")}`}
+      <div class="link"><b>Cancel</b></div>
+    </div>`;
+  },
+  spec:{
+    goal:"How protected actions summon the flow: a shared step-up sheet overlays the action, runs method → code, then resumes. Promo claim with no verified contact verifies a NEW contact inline.",
+    states:["sheet over withdrawal (no contact → NOT allowed)","sheet over promo claim (verified contact)","promo claim · none verified → inline new-contact verify","sheet over change password (no contact → NOT allowed)","verified → action resumes","dismissed → action cancelled"],
+    fields:["action","stepup_token → action_token"],
+    api:"Each protected endpoint returns 403 OTP_REQUIRED → FE opens this sheet, then retries with action_token.",
+    notes:["One shared sheet component — do not rebuild per feature.","Whether EVERY promo claim needs OTP, or the trust period applies, is an open business question (docx).","Analytics: otp_shown / otp_passed / otp_failed events carry the action param."]
+  }
+},
+];
+
+/* small components used inside screens */
+function ci(n,label,tag,done){return `<div class="ci ${done?'done':''}"><span class="num">${done?'✓':n}</span><span class="g">${label}${tag?`<small>${tag}</small>`:''}</span><span style="color:#bbb">›</span></div>`}
+function tog(label,on){return `<div class="opt"><span style="flex:1">${label}</span><span style="width:40px;height:22px;border-radius:12px;border:1px solid var(--line2);background:${on?'var(--solid)':'#fff'};position:relative"><span style="position:absolute;top:2px;${on?'right:2px':'left:2px'};width:16px;height:16px;border-radius:50%;background:#fff;border:1px solid var(--line2)"></span></span></div>`}
+
+/* ---------- runtime ---------- */
+let idx=0, st=0;
+const navEl=document.getElementById('nav');
+function buildNav(){
+  let html='', lastG='';
+  screens.forEach((sc,i)=>{
+    if(sc.group!==lastG){html+=`<div class="group-title">${sc.group}</div>`;lastG=sc.group;}
+    html+=`<div class="nav ${i===idx?'active':''}" data-i="${i}"><span class="num">${i+1}</span>${sc.title}</div>`;
+  });
+  navEl.innerHTML=html;
+  navEl.querySelectorAll('.nav').forEach(n=>n.onclick=()=>{idx=+n.dataset.i;st=0;draw();});
+}
+function draw(){
+  const sc=screens[idx];
+  document.getElementById('screen').innerHTML=sc.render(st);
+  // states
+  const stWrap=document.getElementById('states');
+  stWrap.innerHTML=sc.states.map((s,i)=>`<button class="${i===st?'on':''}" data-s="${i}">${s}</button>`).join('');
+  stWrap.querySelectorAll('button').forEach(b=>b.onclick=()=>{st=+b.dataset.s;draw();});
+  document.getElementById('bread').textContent=`Screen ${idx+1} / ${screens.length} · ${sc.title}${sc.step?' · '+sc.step:''}`;
+  // spec
+  const sp=sc.spec;
+  document.getElementById('spec').innerHTML=`
+    <h2>Screen Goal</h2><p style="font-size:13px;margin:0">${sp.goal}</p>
+    <h2>States</h2><div class="stlist">${sp.states.map(x=>`<span class="pill">${x}</span>`).join('')}</div>
+    <h2>Fields</h2><div class="stlist">${sp.fields.map(x=>`<span class="pill">${x}</span>`).join('')}</div>
+    <h2>API / Data</h2><div class="api">${sp.api}</div>
+    <h2>Dev Notes</h2><ul>${sp.notes.map(x=>`<li>${x}</li>`).join('')}</ul>`;
+  buildNav();
+}
+document.getElementById('prev').onclick=()=>{if(idx>0){idx--;st=0;draw();}};
+document.getElementById('next').onclick=()=>{if(idx<screens.length-1){idx++;st=0;draw();}};
+draw();
+</script>
+<script>
+/* ---------- ✏️ 文字編輯模式：右下角開關，點字直接改；存 localStorage，重整 / 切畫面不會消失 ---------- */
+(function(){
+const FILE=location.pathname.split('/').pop()||'page';
+const KEY='wfTextEdits:'+FILE;
+const DYN=['screen','spec','bread'];                                   // draw() 重繪的區塊
+const STATIC=[['aside h1','h1'],['aside .sub','sub'],['aside .legend','legend']]; // 靜態區塊
+const dynKey=id=>id==='screen'?`d|${idx}|${st}|screen`:`d|${idx}|${id}`;
+const nodes=el=>{const w=document.createTreeWalker(el,NodeFilter.SHOW_TEXT),a=[];let n;while(n=w.nextNode())a.push(n);return a};
+const load=()=>{try{const d=JSON.parse(localStorage.getItem(KEY)||'{}');return{edits:d.edits||{},orig:d.orig||{}}}catch(e){return{edits:{},orig:{}}}};
+const persist=d=>localStorage.setItem(KEY,JSON.stringify(d));
+const fresh={};                                                        // 每個 key 的原始文字（重繪後快照）
+function applyKey(el,k){const v=load().edits[k];if(!v)return;const ns=nodes(el);for(let i=0;i<Math.min(ns.length,v.length);i++)ns[i].nodeValue=v[i]}
+function snapApply(el,k){if(!(k in fresh))fresh[k]=nodes(el).map(n=>n.nodeValue);applyKey(el,k)}
+function record(el,k){
+  const d=load(),cur=nodes(el).map(n=>n.nodeValue),o=fresh[k]||d.orig[k];
+  if(o&&cur.length===o.length&&cur.every((t,i)=>t===o[i])){delete d.edits[k];delete d.orig[k]}
+  else{d.edits[k]=cur;if(o&&!d.orig[k])d.orig[k]=o}
+  persist(d);flash('已儲存 ✓')}
+const _draw=draw;
+draw=function(){_draw();DYN.forEach(id=>{const el=document.getElementById(id);if(el)snapApply(el,dynKey(id))})};
+STATIC.forEach(([sel,k])=>{const el=document.querySelector(sel);if(el){snapApply(el,'s|'+k);el.addEventListener('input',()=>record(el,'s|'+k))}});
+DYN.forEach(id=>{const el=document.getElementById(id);if(el)el.addEventListener('input',()=>record(el,dynKey(id)))});
+draw();                                                                // 載入時套用已存的修改
+/* --- 編輯開關 --- */
+let editing=false;
+const plainOK=(()=>{const t=document.createElement('div');try{t.contentEditable='plaintext-only'}catch(e){return false}return t.contentEditable==='plaintext-only'})();
+const editables=()=>DYN.map(id=>document.getElementById(id)).concat(STATIC.map(([sel])=>document.querySelector(sel))).filter(Boolean);
+function setEditing(on){editing=on;
+  editables().forEach(el=>{if(on){el.setAttribute('contenteditable',plainOK?'plaintext-only':'true');el.setAttribute('spellcheck','false')}else{el.removeAttribute('contenteditable')}});
+  document.body.toggleAttribute('data-editing',on);
+  const b=document.getElementById('eb-toggle');b.textContent=on?'✅ 完成':'✏️ 編輯文字';b.classList.toggle('on',on);
+  flash(on?'點畫面上的字直接修改（自動儲存）':'')}
+document.addEventListener('beforeinput',e=>{if(editing&&!plainOK&&(e.inputType==='insertParagraph'||e.inputType==='insertLineBreak'))e.preventDefault()},true);
+/* --- 工具列 --- */
+const css=document.createElement('style');css.textContent=`
+#editbar{position:fixed;right:14px;bottom:14px;z-index:9999;display:flex;gap:6px;align-items:center;background:#fff;border:1px solid #d0d3d8;border-radius:10px;padding:6px 8px;box-shadow:0 4px 18px rgba(0,0,0,.14);font:12px/1.4 -apple-system,"Noto Sans TC",Arial,sans-serif}
+#editbar button{font:inherit;border:1px solid #d0d3d8;background:#fff;border-radius:7px;padding:4px 9px;cursor:pointer;color:#333}
+#editbar button:hover{border-color:#19c37d;color:#0f8a5f}
+#editbar #eb-toggle.on{background:#19c37d;border-color:#19c37d;color:#fff}
+#eb-msg{color:#0f8a5f;font-size:11px;max-width:170px}
+body[data-editing] [contenteditable]{outline:1.5px dashed #19c37d;outline-offset:3px;border-radius:3px;cursor:text}
+body[data-editing] [contenteditable]:focus{outline-style:solid}`;
+document.head.appendChild(css);
+const bar=document.createElement('div');bar.id='editbar';
+bar.innerHTML=`<button id="eb-toggle" title="開啟後直接點畫面文字修改，自動儲存在此瀏覽器">✏️ 編輯文字</button><button id="eb-copy" title="複製修改清單（原文 → 新文），可貼給 Claude 寫回 HTML">📋 複製修改</button><button id="eb-reset" title="清除此頁所有文字修改並還原">↺ 還原</button><span id="eb-msg"></span>`;
+document.body.appendChild(bar);
+document.getElementById('eb-toggle').onclick=()=>setEditing(!editing);
+document.getElementById('eb-reset').onclick=()=>{if(confirm('還原此頁所有文字修改？')){localStorage.removeItem(KEY);location.reload()}};
+document.getElementById('eb-copy').onclick=()=>{
+  const d=load();let out=`【文字修改】${FILE}\n`,cnt=0;
+  Object.keys(d.edits).forEach(k=>{const o=d.orig[k]||fresh[k]||[];(d.edits[k]||[]).forEach((t,i)=>{if(o[i]!==t){cnt++;out+=`\n${cnt}. 原：${(o[i]??'(?)').trim()}\n   改：${t.trim()}\n`}})});
+  if(!cnt)out+='（目前沒有修改）';
+  const done=()=>flash('已複製 ✓');
+  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(out).then(done,()=>fallbackCopy(out,done));else fallbackCopy(out,done)};
+function fallbackCopy(t,cb){const ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();cb()}
+let flTimer;function flash(m){const el=document.getElementById('eb-msg');if(!el)return;el.textContent=m;clearTimeout(flTimer);if(m&&m.includes('✓'))flTimer=setTimeout(()=>{el.textContent=editing?'編輯模式':''},1500)}
+})();
+</script>
+</body>
+</html>
