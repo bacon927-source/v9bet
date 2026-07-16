@@ -191,30 +191,30 @@ const screens = [
 },
 {
   group:"A · Sign Up", id:"otp", title:"OTP Verification",
-  states:["Awaiting input","Verification error","OTP failed → fallback","Change channel"],
-  render:(s)=>s===3?`
-    <div class="scr-title"><span class="x">←</span>Choose OTP Channel</div>
-    <div class="scr-step">Not receiving the code? Pick another channel</div>
-    ${OPT("💬 &nbsp; Zalo ZNS <small style='color:#b0b0b0'>default · best reach in VN</small>", true)}
-    ${OPT("📨 &nbsp; SMS", false)}
-    ${OPT("🟩 &nbsp; LINE <small style='color:#b0b0b0'>best reach in TH</small>", false)}
-    ${OPT("🟢 &nbsp; WhatsApp", false)}
-    ${OPT("✉️ &nbsp; Email", false)}
-    ${CTA("Resend via selected channel")}`:`
-    <div class="scr-title"><span class="x">←</span>Verify Phone</div>
-    <div class="scr-step">OTP sent via Zalo ZNS to +xx ****1234</div>
-    <div class="otpcells"><span class="f">_</span><span>_</span><span>_</span><span>_</span><span>_</span><span>_</span></div>
-    ${s===1?`<div class="err">Wrong code, please try again (2 attempts left)</div>`:''}
-    ${s===2?`<div class="err">Too many failed attempts. Try another channel?</div>${CTA("Verify via WhatsApp",'ghost')}${CTA("Send the code to my Email",'ghost')}`:''}
-    <div class="link">Didn't get it? <b>${s===2?'Resend locked':'Resend (60s)'}</b> · <b>Change channel</b></div>
+  states:["In progress (00:32)","Done → Verify","Resend available","Invalid OTP","Resend over 3rd → 03:00"],
+  render:(s)=>{
+    const cell=(t,mod)=>`<span style="${mod==='g'?'border-color:#3a3a3a;border-width:2px;':mod==='r'?'border-color:#b56;border-width:2px;color:#b56;':''}">${t}</span>`;
+    const cells= s===0?[1,2,3,4,5].map(n=>cell(n,'g')).join('')+cell('_','')
+      : s===1?[1,2,3,4,5,6].map(n=>cell(n,'g')).join('')
+      : s===3?[1,2,3,4,5,4].map(n=>cell(n,'r')).join('')
+      : ['_','_','_','_','_','_'].map(n=>cell(n,'')).join('');
+    return `
+    <div class="scr-title"><span class="x">✕</span>Verify Phone Number</div>
+    <div class="scr-step">We sent code verification to<br><b>091***233</b></div>
+    <div class="otpcells">${cells}</div>
+    ${s===3?`<div class="err">Invalid OTP entered</div>`:''}
+    ${s===2?`<div class="link"><b>Resend OTP</b></div>`
+      :`<div class="link">Resent code in <b>${s===3?'00:11':s===4?'03:00':'00:32'}</b></div>`}
+    ${CTA("Verify", s===1?'':'disabled')}
     <div class="link"><b>Change phone number</b></div>
-    ${CTA("Verify and continue", s===0?'':'')}`,
+    <div class="hint" style="text-align:center">— iOS keyboard suggests the code (From Messages) —</div>`;
+  },
   spec:{
-    goal:"Verify phone ownership via multi-channel OTP (Zalo ZNS default in VN); only then proceed to account setup.",
-    states:["pending (resend countdown)","verifying loading","wrong_code (attempts left)","expired (resend)","locked (too many failures)","fallback → WhatsApp / Email","channel picker (Zalo ZNS / SMS / LINE / WhatsApp / Email)"],
-    fields:["register_token","otp_code","channel(zalo_zns|sms|line|whatsapp|email)"],
-    api:"POST /register/verify-otp\n→ { register_token, otp_code }\n← { verified:true, customer_id }\nPOST /register/resend-otp { channel }\nerr: OTP_WRONG / OTP_EXPIRED / OTP_LOCKED",
-    notes:["Channels = Zalo ZNS / SMS / LINE / WhatsApp / Email. Default by market: Zalo ZNS in VN (cheaper + better delivery than SMS), LINE in TH; SMS as universal fallback.","docx: 'Consider OTP failure processes — use WhatsApp as alternative' → WhatsApp / Email fallback appears after N failures.","Email channel works even when the account was created with a phone number (if an email is on file); Telegram / voice call removed from the picker.","On success, go straight into account setup (do not return to home)."]
+    goal:"Verify phone ownership with the shared 6-digit OTP component (same states/params as the Verification Flow); only then proceed to account setup. Email sign-up = same component, code to inbox.",
+    states:["in progress · countdown 00:32 · Verify disabled","all 6 digits → Verify active","countdown done → Resend OTP link","invalid OTP → red cells + red Verify (countdown keeps running)","resend used 3× → cooldown escalates to 03:00","verified → account setup"],
+    fields:["register_token","otp_code(6)","mode(sms|email)"],
+    api:"POST /register/verify-otp\n→ { register_token, otp_code }\n← { verified:true, customer_id }\nPOST /register/resend-otp\nerr: OTP_WRONG / OTP_EXPIRED / RESEND_LIMIT",
+    notes:["Shared OTP component (design Jul 16): 6 digits · resend 32s · Invalid OTP entered state · 3rd resend → 03:00 cooldown · masked contact · iOS SMS autofill.","Delivery this release = SMS (phone) / inbox code (email). Zalo ZNS / LINE / WhatsApp delivery + channel picker = phase 2 (docx49 WhatsApp fallback deferred with it).","On success, go straight into account setup (do not return to home)."]
   }
 },
 {

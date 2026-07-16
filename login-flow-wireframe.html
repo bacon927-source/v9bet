@@ -178,7 +178,7 @@ const screens = [
     goal:"Login home: social icon row on top (last-used badge), then One-time code | Password tabs; biometric/passkey for returning devices.",
     states:["password tab","one-time code tab (no password)","biometric / passkey (WebAuthn)","social icon tap → Google / LINE / X branch","lockout → Security screen","risk trigger → step-up verification"],
     fields:["identifier(email|phone, single field)","method(password|one_time_code|passkey|google|line|x)","secret? / otp_code? / webauthn_assertion?","remember(bool)"],
-    api:"POST /auth/login { identifier, method, ... }\\n← { session, requires_stepup? }\\nerr: LOCKED / RISK_STEPUP / INVALID_CREDENTIALS",
+    api:"POST /auth/login { identifier, method, ... }\n← { session, requires_stepup? }\nerr: LOCKED / RISK_STEPUP / INVALID_CREDENTIALS",
     notes:["Social row promoted to the top; 'Last used' badge above the provider icon reduces trial-and-error.","'Forgot account' removed — the link is password recovery only (see Recovery).","'Keep me logged in' explicit — high-frequency bettors feel session expiry the most.","Analytics: login event carries the method param, mirrors sign_up."]
   }
 },
@@ -203,7 +203,7 @@ const screens = [
     goal:"Passwordless login: code to a verified contact (member selects when both verified), then straight into the session.",
     states:["choose contact (rule: one verified → forced)","code entry (resend countdown)","wrong code (attempts left)","locked → password / Live Chat fallback"],
     fields:["identifier","anchor(phone|email)","channel","otp_code"],
-    api:"POST /auth/login/otc/send { identifier, anchor, channel }\\nPOST /auth/login/otc/verify { otp_code } ← { session }\\nerr: OTP_WRONG / OTP_EXPIRED / OTP_LOCKED",
+    api:"POST /auth/login/otc/send { identifier, anchor, channel }\nPOST /auth/login/otc/verify { otp_code } ← { session }\nerr: OTP_WRONG / OTP_EXPIRED / OTP_LOCKED",
     notes:["Same anchor + channel rules as the Verification Flow (Unified OTP docx) — keep in sync.","Fallback after lock: password tab or Live Chat.","Highest-value for users who forget passwords — expected to cut recovery tickets."]
   }
 },
@@ -230,37 +230,44 @@ const screens = [
     goal:"Returning-device login via WebAuthn passkey / biometrics; graceful fallback to password or one-time code.",
     states:["prompt","verifying","success → session","cancelled / unsupported → fallback","passkey revoked → re-enroll in setup"],
     fields:["webauthn_assertion","device_id"],
-    api:"POST /auth/login/webauthn { assertion } ← { session }\\nerr: PASSKEY_INVALID / NOT_ENROLLED",
+    api:"POST /auth/login/webauthn { assertion } ← { session }\nerr: PASSKEY_INVALID / NOT_ENROLLED",
     notes:["Targets high InAppWebView traffic — biggest returning-user win (P0 per auth analysis).","Enrolment happens in Setup Step 2 (Face ID / biometric / passkey).","Availability degrades silently — button hidden when the platform can't do WebAuthn."]
   }
 },
 {
   group:"B · Recovery", id:"forgot", title:"Forgot Password",
-  states:["Enter contact","Enter code","Reset password"],
+  states:["Select mode","Enter contact","Enter code","Reset password"],
   render:(s)=>s===0?`
-    <div class="scr-title"><span class="x">✕</span>Forgot Password</div>
-    <div class="scr-step">Enter the email or phone registered to your account</div>
-    ${F("Registered email / phone","Required")}
-    ${CTA("Send OTP")}
-    <div class="hint">＊ We never reveal whether an account exists — the code is sent only if the contact matches (Unified OTP docx).</div>`
+    <div class="scr-title"><span class="x">✕</span>Select Verification Mode</div>
+    <div class="scr-step">Please choose how you would like to receive your one-time password (OTP)</div>
+    ${OPT("✉️ &nbsp; Send via Email", false)}
+    ${OPT("📱 &nbsp; Send via SMS", true)}
+    ${CTA("Request OTP")}
+    <div class="hint">＊ Works for Active or Dormant accounts.</div>`
   :s===1?`
+    <div class="scr-title"><span class="x">✕</span>Verify Phone Number</div>
+    <div class="scr-step">Enter the contact registered to your account</div>
+    ${F("+84 ▾ &nbsp; Phone number","Required")}
+    ${CTA("Get OTP",'disabled')}
+    <div class="hint">＊ We never reveal whether an account exists — the code is sent only if the contact matches (Unified OTP docx).</div>`
+  :s===2?`
     <div class="scr-title"><span class="x">←</span>Enter Code</div>
-    <div class="scr-step">If the contact matches an account, a code is on its way</div>
+    <div class="scr-step">We sent code verification to <b>091***233</b></div>
     <div class="otpcells"><span class="f">_</span><span>_</span><span>_</span><span>_</span><span>_</span><span>_</span></div>
-    <div class="link">Didn't get it? <b>Resend (60s)</b></div>
-    ${CTA("Verify")}`
+    <div class="link">Resent code in <b>00:32</b></div>
+    ${CTA("Verify",'disabled')}`
   :`
-    <div class="scr-title"><span class="x">←</span>Reset Password</div>
-    <div class="scr-step">Verification passed — set a new password</div>
-    ${F("New password","👁 &nbsp; Required")}
-    ${F("Confirm new password","Required")}
-    ${CTA("Reset password and login")}`,
+    <div class="scr-title"><span class="x">←</span>Create New Password</div>
+    <div class="scr-step">Account ID: AHHHHHH</div>
+    ${F("New password","👁 &nbsp; ●●○ Medium")}
+    ${F("Confirm new password","👁")}
+    ${CTA("Done")}`,
   spec:{
-    goal:"Password recovery via the Unified OTP flow: registered contact → OTP → reset → back to login.",
-    states:["enter contact","mismatch (silent — same UI)","code entry","reset form","done → logged in"],
-    fields:["identifier(email|phone)","otp_code","new_password"],
-    api:"POST /auth/forgot/start { identifier } (always 200)\\nPOST /auth/forgot/verify { otp_code }\\nPOST /auth/forgot/reset { new_password }",
-    notes:["Full rules live in the Verification Flow page (Forgot Password screen) — single source, don't fork.","Recovery contact does not auto-become Verified (business TBD).","After reset, log the member in directly — don't bounce back to the form."]
+    goal:"Password recovery per the OTP design: select mode (Email / SMS) → registered contact → shared OTP component → reset (Account ID revealed only after OTP passes) with strength meter.",
+    states:["select mode","enter contact (mismatch = silent, same UI)","code entry (32s resend, 3rd resend → 03:00)","reset form + strength meter","done → logged in"],
+    fields:["mode(email|sms)","identifier","otp_code","new_password"],
+    api:"POST /auth/forgot/start { mode, identifier } (always 200)\nPOST /auth/forgot/verify { otp_code } ← { account_id }\nPOST /auth/forgot/reset { new_password }",
+    notes:["Full rules live in the Verification Flow page (Forgot Password screen) — single source, don't fork.","Account ID shown only AFTER OTP success (design).","Recovery contact does not auto-become Verified (business TBD).","After reset, log the member in directly — don't bounce back to the form."]
   }
 },
 {
@@ -290,7 +297,7 @@ const screens = [
     goal:"Login-side security: attempt lockout with self-unlock, risk-triggered new-device step-up, and session policy.",
     states:["locked (cooldown timer)","self-unlock via OTP","new device / risk → step-up OTP","session policy reference"],
     fields:["lock_until","risk_flags[]","device_id","session_ttl"],
-    api:"err: LOCKED { retry_after } / RISK_STEPUP → open step-up sheet\\nPOST /auth/stepup/* (see Verification Flow)",
+    api:"err: LOCKED { retry_after } / RISK_STEPUP → open step-up sheet\nPOST /auth/stepup/* (see Verification Flow)",
     notes:["Lockout: N failed attempts → cooldown; self-unlock via OTP beats waiting (fewer Live Chat tickets).","Step-up reuses the Verification Flow sheet — one component.","Session: 'Keep me logged in' is explicit; sensitive actions re-verify regardless (docx rule matrix)."]
   }
 },

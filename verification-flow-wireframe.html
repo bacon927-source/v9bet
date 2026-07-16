@@ -116,7 +116,7 @@
   <!-- LEFT: flow nav -->
   <aside>
     <h1>Verification Flow</h1>
-    <p class="sub">Low-fidelity wireframe · Mobile / App first<br>Source: Unified OTP Authentication Flow Enhancement (docx, Jul 16)<br>Verified-contact status drives every OTP flow</p>
+    <p class="sub">Low-fidelity wireframe · Mobile / App first<br>Source: Unified OTP docx (Jul 16) + OTP design mockups (Jul 16)<br>OTP modes: Email / SMS · component shared by all entry points</p>
     <div id="nav"></div>
     <div class="legend">
       Grayscale wireframe only, no visual design.<br>
@@ -158,235 +158,253 @@ const screens = [
   states:["Overview"],
   render:()=>`
     <div class="scr-title">Unified OTP Rules</div>
-    <div class="scr-step">Source: Unified OTP Authentication Flow Enhancement (docx)</div>
-    <div class="grp">Actions that require OTP</div>
+    <div class="scr-step">Source: Unified OTP docx + design mockups (Jul 16)</div>
+    <div class="grp">Entry points that require OTP</div>
     <div class="checklist">
-      ${ci(1,"Add email / phone (first time)","",false)}
-      ${ci(2,"Add another contact type","verify existing first",false)}
-      ${ci(3,"Change password","",false)}
-      ${ci(4,"Change email / phone","same-type rule",false)}
-      ${ci(5,"Withdrawal","",false)}
-      ${ci(6,"Claim promotion","",false)}
-      ${ci(7,"Forgot password","",false)}
+      ${ci(1,"First-time add phone / email","from Profile",false)}
+      ${ci(2,"Add secondary contact","verify existing first",false)}
+      ${ci(3,"Change phone / email","verify current first · same type",false)}
+      ${ci(4,"Change password","2FA · no old password",false)}
+      ${ci(5,"Withdrawal","first-time payout account (incl. USDT)",false)}
+      ${ci(6,"Claim promotion","after Personal Details",false)}
+      ${ci(7,"Forgot password","Active or Dormant account",false)}
     </div>
-    <div class="grp">OTP method by verified-contact status</div>
-    <div class="opt"><span style="flex:1">No contact verified</span><small style="color:#b0b0b0">depends on action</small></div>
-    <div class="opt"><span style="flex:1">Email verified only</span><small style="color:#b0b0b0">Email OTP</small></div>
-    <div class="opt"><span style="flex:1">Phone verified only</span><small style="color:#b0b0b0">Phone OTP</small></div>
-    <div class="opt"><span style="flex:1">Both verified</span><small style="color:#b0b0b0">member selects</small></div>
-    <div class="hint">＊ "No contact verified": change password / withdrawal = NOT allowed; promotion claim / first-time add = enter & verify a new contact inline.</div>`,
+    <div class="grp">OTP mode by verified-contact status</div>
+    <div class="opt"><span style="flex:1">Both verified</span><small style="color:#b0b0b0">member selects (Email / SMS)</small></div>
+    <div class="opt"><span style="flex:1">Only one verified</span><small style="color:#b0b0b0">auto — no picker</small></div>
+    <div class="opt"><span style="flex:1">None verified</span><small style="color:#b0b0b0">verify a new contact → serves as OTP</small></div>
+    <div class="hint">＊ Design decision (Jul 16): with NO verified contact, every entry point lets the member verify a new phone / email inline and that verification counts as the OTP — supersedes the docx "not allowed" for change password / withdrawal.</div>`,
   spec:{
-    goal:"Common OTP verification flow for account security & sensitive actions. Verified-contact status (per anchor: Verified / Not Verified) decides the OTP method.",
+    goal:"One shared OTP component (Email / SMS) plugged into every sensitive action; verified-contact status decides the mode.",
     states:["reference only"],
-    fields:["email_status(verified|not)","phone_status(verified|not)","action(add_first|add_another|change_password|change_contact|withdrawal|promo_claim|forgot_password)"],
+    fields:["email_status(verified|not)","phone_status(verified|not)","action(add_first|add_secondary|change_contact|change_password|withdrawal|promo_claim|forgot_password)"],
     api:"Rule matrix enforced server-side on every protected action.",
-    notes:["OTP valid period: 5–10 minutes (recommended). System must define: expiry · max failed attempts · resend waiting time · max resends · action after too many failures · reuse policy · trust period.","An OTP is valid only for the related member + contact + action + verification session. A previously verified contact does NOT count as a pass for the current action — a new OTP is required unless within an approved trust period.","Audit log: request time, channel, result, action, failed count, contact-change result, member ID, device/session — never store the OTP value in plain text."]
+    notes:["OTP modes this release = Email / SMS only (Select Verification Mode). Zalo ZNS / LINE / WhatsApp delivery = phase 2.","Docx said change password / withdrawal are NOT allowed with no verified contact — the Jul 16 design supersedes this: inline first-time verification serves as the OTP everywhere.","Component params (design): 6-digit code · resend countdown 32s · after 3rd resend the cooldown escalates to 03:00 · 'Invalid OTP entered' error state · masked contacts (091***233 / ta***@gmail.com) · iOS SMS autofill.","Audit log per docx: request time, channel, result, action, attempts, member ID — never the OTP value in plain text."]
   }
 },
 {
-  group:"B · Verify", id:"anchor", title:"Choose OTP Method",
-  states:["Both verified → choose","Only one → forced","None → depends on action"],
+  group:"B · OTP Component", id:"mode", title:"Select Verification Mode",
+  states:["Both verified → choose","Only one → auto","None → choose & enter new"],
   render:(s)=>s===0?`
-    <div class="scr-title"><span class="x">✕</span>Security Verification</div>
-    <div class="scr-step">Both contacts verified — select Email OTP or Phone OTP</div>
-    ${OPT("📱 &nbsp; Phone OTP &nbsp;+66 90****123 <small style='color:#b0b0b0'>verified</small>", true)}
-    ${OPT("✉️ &nbsp; Email OTP &nbsp;b***@gmail.com <small style='color:#b0b0b0'>verified</small>", false)}
-    <div class="hint">＊ Exception — changing a contact follows the same-type rule: change email → first OTP goes ONLY to the existing email (no picker).</div>
-    ${CTA("Send OTP")}`
+    <div class="scr-title"><span class="x">✕</span>Select Verification Mode</div>
+    <div class="scr-step">Please choose how you would like to receive your one-time password (OTP)</div>
+    ${OPT("✉️ &nbsp; Send via email to c***@gmail.com", false)}
+    ${OPT("📱 &nbsp; Send via SMS to 091***233", true)}
+    ${CTA("Request OTP")}`
   :s===1?`
     <div class="scr-title"><span class="x">✕</span>Security Verification</div>
-    <div class="scr-step">One contact verified — it is used automatically</div>
-    ${OPT("📱 &nbsp; Phone OTP &nbsp;+66 90****123 <small style='color:#b0b0b0'>verified</small>", true)}
-    <div class="opt" style="opacity:.45"><span class="dot"></span><span style="flex:1">✉️ Email — not verified<br><small style="color:#b0b0b0">Add it via 'Add another contact' (verify phone first)</small></span></div>
-    ${CTA("Send OTP")}`
+    <div class="scr-step">Only one contact verified — no picker, the code goes there automatically</div>
+    ${OPT("📱 &nbsp; SMS to 091***233 <small style='color:#b0b0b0'>verified</small>", true)}
+    ${CTA("Request OTP")}
+    <div class="hint">＊ Mirrors the design: "either one verified" goes straight into the OTP screens.</div>`
   :`
-    <div class="scr-title"><span class="x">✕</span>No Verified Contact</div>
-    <div class="err">Change password / Withdrawal — not allowed until a contact is verified.</div>
-    <div class="scr-step">Promotion claim / first-time add — verify a new contact now to continue</div>
-    ${F("Email / Phone number","Required")}
-    ${CTA("Send OTP")}
-    <div class="hint">＊ Saved as Verified only after the OTP passes; the original action then continues.</div>`,
+    <div class="scr-title"><span class="x">✕</span>Select Verification Mode</div>
+    <div class="scr-step">No verified contact — choose one, enter it, and that verification serves as the OTP</div>
+    ${OPT("✉️ &nbsp; Send via Email", false)}
+    ${OPT("📱 &nbsp; Send via SMS", true)}
+    ${CTA("Request OTP")}
+    <div class="hint">＊ Next: enter the new phone / email (see First-time Verify). After the OTP passes, the contact is saved as Verified and the original action continues.</div>`,
   spec:{
-    goal:"OTP method selection per the docx status table: both → member selects; one → forced; none → depends on the action (block, or inline-verify a new contact).",
-    states:["both verified → picker","one verified → forced","none + blocked action (password / withdrawal) → NOT_ALLOWED","none + promo claim / first-time → enter & verify new contact inline","cancelled → back to the action"],
-    fields:["action","anchor(phone|email)","new_contact?","stepup_token"],
-    api:"POST /auth/otp/start { action, anchor | new_contact }\\n← { stepup_token, channel_options[] }\\nerr: NO_VERIFIED_CONTACT (blocked actions) / CONTACT_IN_USE / INVALID_FORMAT",
-    notes:["Same-type rule overrides the picker when changing a contact: change email → existing email only; change phone → existing phone only.","Inline first-time verification (promo claim) validates format + availability before sending the OTP.","stepup_token is action-scoped, expires with the OTP session."]
+    goal:"Mode selection per verified-contact status: both → radio picker (Email / SMS, masked values); one → auto, no picker; none → pick a type, then enter and verify a new contact inline.",
+    states:["both verified → radio picker + Request OTP","one verified → auto (straight to OTP)","none verified → picker without values → First-time Verify","cancelled → back to the action"],
+    fields:["action","mode(email|sms)","stepup_token"],
+    api:"POST /auth/otp/start { action, mode }\n← { stepup_token, masked_contact }\nerr: RATE_LIMITED",
+    notes:["Exception — changing a contact skips this picker: the first OTP goes to the CURRENT contact of the type being changed (same-type rule).","Masked display everywhere: 091***233 / c***@gmail.com.","Green primary button per design (Request OTP)."]
   }
 },
 {
-  group:"B · Verify", id:"channel", title:"Delivery Channel",
-  states:["Phone OTP → channel picker","Email OTP → inbox"],
+  group:"B · OTP Component", id:"firsttime", title:"First-time Verify (enter new)",
+  states:["Verify Phone Number","Verify Email"],
   render:(s)=>s===0?`
-    <div class="scr-title"><span class="x">←</span>Choose Delivery Channel</div>
-    <div class="scr-step">Phone OTP to +66 90****123 — pick how it arrives</div>
-    ${OPT("💬 &nbsp; Zalo ZNS <small style='color:#b0b0b0'>default · best reach in VN</small>", true)}
-    ${OPT("📨 &nbsp; SMS", false)}
-    ${OPT("🟩 &nbsp; LINE <small style='color:#b0b0b0'>best reach in TH</small>", false)}
-    ${OPT("🟢 &nbsp; WhatsApp", false)}
-    ${CTA("Send via selected channel")}
-    <div class="hint">＊ Channel is a delivery detail under Phone OTP — the docx rules care only about Email OTP vs Phone OTP.</div>`
+    <div class="scr-title"><span class="x">✕</span>Verify Phone Number</div>
+    ${F("+84 ▾ &nbsp; Phone number","Required")}
+    ${CTA("Get OTP",'disabled')}
+    <div class="hint">＊ Get OTP enables once the number is valid. This screen is also the Profile first-time input — after saving, the phone number has no self-serve edit (change flow / Customer Service only).</div>`
   :`
-    <div class="scr-title"><span class="x">←</span>Email OTP</div>
-    <div class="scr-step">A 6-digit code goes to b***@gmail.com — no picker needed</div>
-    <div class="ph" style="height:110px">[ ✉️ inbox illustration ]</div>
-    ${CTA("Send code")}
-    <div class="hint">＊ Code valid 5–10 minutes. Check spam if it doesn't arrive.</div>`,
+    <div class="scr-title"><span class="x">✕</span>Verify Email</div>
+    ${F("Email","Required")}
+    <div class="hint">Verified Email may be used as Account ID.</div>
+    ${CTA("Get OTP")}`,
   spec:{
-    goal:"Delivery layer: Phone OTP fans out to market-aware channels (Zalo ZNS / SMS / LINE / WhatsApp); Email OTP goes straight to the inbox.",
-    states:["phone channel picker","email (no picker)","sending loading","delivery failed → try another channel"],
-    fields:["stepup_token","channel(zalo_zns|sms|line|whatsapp|email)"],
-    api:"POST /auth/otp/send { stepup_token, channel }\\n← { sent:true, resend_after:60 }\\nerr: OTP_DELIVERY_FAILED / RATE_LIMITED",
-    notes:["Same channel set as sign-up OTP — keep the lists in sync.","Defaults by market: Zalo ZNS in VN · LINE in TH · SMS universal fallback.","Docx error case 'OTP delivery fails' surfaces here with a channel-switch suggestion."]
+    goal:"Enter-and-verify a new contact: used by Profile first-time add AND by any entry point when nothing is verified yet (the verification serves as the OTP).",
+    states:["phone input (+84, Get OTP disabled until valid)","email input","format invalid inline error","contact already used error","→ OTP code screens"],
+    fields:["contact_type(phone|email)","new_contact","country_code(+84|+66)"],
+    api:"POST /auth/otp/first-time { contact_type, new_contact }\n← { stepup_token, otp_sent:true }\nerr: INVALID_FORMAT / CONTACT_IN_USE",
+    notes:["Design shows +84 (VN); country picker limited to TH +66 / VN +84 per sign-up decision.","Verified email can double as Account ID (design note).","On success the contact is saved as Verified and the original flow resumes."]
   }
 },
 {
-  group:"B · Verify", id:"code", title:"Enter Code",
-  states:["Awaiting input","Wrong code","Expired","Locked / resend limit"],
-  render:(s)=>`
-    <div class="scr-title"><span class="x">←</span>Enter Code</div>
-    <div class="scr-step">Code sent via Zalo ZNS to +66 ****1234 · valid 10 min</div>
-    <div class="otpcells"><span class="f">_</span><span>_</span><span>_</span><span>_</span><span>_</span><span>_</span></div>
-    ${s===1?`<div class="err">OTP is incorrect (2 attempts left)</div>`:''}
-    ${s===2?`<div class="err">OTP has expired. Resend a new one to continue.</div>`:''}
-    ${s===3?`<div class="err">Maximum attempts / resend limit reached.</div>${CTA("Try another channel",'ghost')}${CTA("Contact Live Chat",'ghost')}`:''}
-    <div class="link">Didn't get it? <b>${s===3?'Resend locked':'Resend (60s)'}</b> · <b>Change channel</b></div>
-    ${CTA("Verify", s===3?'disabled':'')}`,
+  group:"B · OTP Component", id:"code", title:"OTP Code States",
+  states:["In progress (00:32)","Done → Verify","Resend available","Invalid OTP","Resend over 3rd → 03:00"],
+  render:(s)=>{
+    const cell=(t,mod)=>`<span style="${mod==='g'?'border-color:#3a3a3a;border-width:2px;':mod==='r'?'border-color:#b56;border-width:2px;color:#b56;':''}">${t}</span>`;
+    const cells= s===0?[1,2,3,4,5].map(n=>cell(n,'g')).join('')+cell('_','')
+      : s===1?[1,2,3,4,5,6].map(n=>cell(n,'g')).join('')
+      : s===3?[1,2,3,4,5,4].map(n=>cell(n,'r')).join('')
+      : ['_','_','_','_','_','_'].map(n=>cell(n,'')).join('');
+    return `
+    <div class="scr-title"><span class="x">✕</span>Enter Code</div>
+    <div class="scr-step">We sent code verification to<br><b>091***233</b></div>
+    <div class="otpcells">${cells}</div>
+    ${s===3?`<div class="err">Invalid OTP entered</div>`:''}
+    ${s===2?`<div class="link"><b>Resend OTP</b></div>`
+      :`<div class="link">Resent code in <b>${s===3?'00:11':s===4?'03:00':'00:32'}</b></div>`}
+    ${CTA("Verify", s===1?'':'disabled')}
+    <div class="hint" style="text-align:center">— iOS keyboard suggests the code (From Messages) —</div>`;
+  },
   spec:{
-    goal:"Code entry with the docx error set: incorrect / expired / resend limit / max attempts — each with a clear message.",
-    states:["awaiting (resend countdown)","verifying loading","OTP incorrect (attempts left)","OTP expired → resend","resend limit reached","max attempts → locked, action stops"],
-    fields:["stepup_token","otp_code"],
-    api:"POST /auth/otp/verify { stepup_token, otp_code }\\n← { verified:true, action_token, trusted_until? }\\nerr: OTP_WRONG / OTP_EXPIRED / OTP_LOCKED / RESEND_LIMIT",
-    notes:["System-defined params: expiry (5–10 min) · max failed attempts · resend wait · max resends · post-failure action.","When verification fails or expires, the related action STOPS (docx).","Every attempt lands in the audit log; the OTP value itself is never logged in plain text."]
+    goal:"The shared 6-digit code component with the design's exact states: countdown, filled, resend, invalid, escalated cooldown.",
+    states:["in progress · countdown 00:32 · Verify disabled","all 6 digits → Verify active","countdown done → Resend OTP link","invalid OTP → red cells + red Verify + countdown keeps running","resend used 3× → cooldown escalates to 03:00, Verify locked"],
+    fields:["stepup_token","otp_code(6)"],
+    api:"POST /auth/otp/verify { stepup_token, otp_code }\n← { verified:true, action_token }\nerr: OTP_WRONG / OTP_EXPIRED / RESEND_LIMIT",
+    notes:["Params from design: 6 digits · resend countdown 32s · error state shows remaining countdown (e.g. 00:11) · 3rd resend → 03:00 cooldown.","Contact always masked; SMS autofill supported (iOS From Messages bar).","Failure / expiry stops the parent action (docx)."]
   }
 },
 {
-  group:"B · Verify", id:"result", title:"Result",
-  states:["Success","Failed → action stopped"],
+  group:"B · OTP Component", id:"result", title:"Result",
+  states:["Success","Failed / locked"],
   render:(s)=>s===0?`
     <div class="scr-title">Verified ✓</div>
     <div class="ph" style="height:110px">✓<br><small>verification passed</small></div>
     <div class="scr-step">Continuing to your original action…</div>
     ${CTA("Continue")}
-    <div class="hint">＊ If a trust period is enabled, further OTPs may be skipped for a short window (policy-defined).</div>`
+    <div class="hint">＊ First-time contact is now saved as Verified. Trust period (docx) — pending business decision.</div>`
   :`
     <div class="scr-title">Verification Failed</div>
-    <div class="err">OTP verification failed or expired — the action cannot continue.</div>
+    <div class="err">OTP failed, expired, or the resend limit was reached — the action cannot continue.</div>
     ${CTA("Contact Live Chat")}
     ${CTA("Try again later",'ghost')}`,
   spec:{
-    goal:"Terminal states: success resumes the protected action (optionally opening a trust period); failure stops the action.",
-    states:["success → resume with action_token","trusted_until set (optional trust period)","failed / expired → action stopped","handoff → Live Chat"],
-    fields:["action_token","trusted_until?"],
+    goal:"Terminal states: success resumes the entry-point action; failure stops it with a Live Chat path.",
+    states:["success → resume with action_token","failed / locked → action stopped","handoff → Live Chat"],
+    fields:["action_token"],
     api:"Resume the original action with { action_token }; single-use, bound to member + action + session.",
-    notes:["Docx: whether a successful OTP can be trusted for a short period is a system-level setting — surface it here.","An OTP pass never carries over to a DIFFERENT action unless within the approved trust period.","Live Chat handoff carries the failure context (channels tried, attempts)."]
+    notes:["After change password the session is invalidated — member must re-login (design note).","An OTP pass never carries to a different action unless a trust period is approved (docx TBD)."]
   }
 },
 {
   group:"C · Contacts", id:"contact", title:"Add / Change Contact",
-  states:["First time (none verified)","Add another · step 1","Change email · same-type","Step 2 · verify new","Done"],
+  states:["First time (Profile)","Add secondary · step 1","Change · verify current","Change · current unverified","Fill in new","Done"],
   render:(s)=>s===0?`
-    <div class="scr-title"><span class="x">←</span>Add Contact</div>
-    <div class="scr-step">No verified contact yet — verify this one directly</div>
-    ${F("Email / Phone number","Required")}
-    ${CTA("Send OTP")}
-    <div class="hint">＊ Format + availability validated first; saved as Verified only after the OTP passes.</div>`
+    <div class="scr-title"><span class="x">✕</span>Verify Phone Number</div>
+    <div class="scr-step">Home › Profile › Setting › Phone Number</div>
+    ${F("+84 ▾ &nbsp; Phone number","Required")}
+    ${CTA("Get OTP",'disabled')}
+    <div class="hint">＊ First-time input from Profile. Phone edit function removed — once verified, changes go through the Change flow only.</div>`
   :s===1?`
-    <div class="scr-title"><span class="x">←</span>Add Another Contact</div>
-    <div class="scr-step">Step 1 — verify an existing verified contact first</div>
-    ${OPT("📱 &nbsp; Phone +66 90****123 <small style='color:#b0b0b0'>verified</small>", true)}
-    <div class="hint">＊ If both are already verified, choose either for step 1.</div>
-    ${CTA("Send OTP to existing contact")}`
+    <div class="scr-title"><span class="x">✕</span>Add Secondary Contact</div>
+    <div class="scr-step">One contact already verified — verify it first (OTP), then add the new one</div>
+    ${OPT("📱 &nbsp; SMS to 091***233 <small style='color:#b0b0b0'>verified</small>", true)}
+    ${CTA("Request OTP")}
+    <div class="hint">＊ After this OTP: enter the new email / phone → separate OTP → saved as Verified. "Add Email as your second login method."</div>`
   :s===2?`
-    <div class="scr-title"><span class="x">←</span>Change Email</div>
-    <div class="scr-step">Same-type rule — step 1 goes ONLY to the existing email</div>
-    ${OPT("✉️ &nbsp; Email b***@gmail.com <small style='color:#b0b0b0'>current · verified</small>", true)}
-    <div class="opt" style="opacity:.45"><span class="dot"></span><span style="flex:1">📱 Phone OTP<br><small style="color:#b0b0b0">Not allowed here — cannot replace the old-email OTP</small></span></div>
-    ${CTA("Send OTP to current email")}
-    <div class="hint">＊ If the existing contact can't receive OTP → normal change flow is blocked → Live Chat / manual review.</div>`
+    <div class="scr-title"><span class="x">✕</span>Change Phone Number</div>
+    <div class="scr-step">Verify your current number first to change to a new one</div>
+    ${F("+84 &nbsp; 99112334567 &nbsp; ✓","current")}
+    ${CTA("Get OTP")}
+    <div class="hint">＊ Same-type rule: the OTP goes to the contact type being changed. If you no longer have access to your current number, please contact Customer Service.</div>`
   :s===3?`
-    <div class="scr-title"><span class="x">←</span>Verify New Contact</div>
-    <div class="scr-step">Step 1 passed ✓ — enter and verify the new contact</div>
-    ${F("New email / phone","Required")}
-    <div class="otpcells"><span class="f">_</span><span>_</span><span>_</span><span>_</span><span>_</span><span>_</span></div>
-    ${CTA("Verify new contact")}
-    <div class="hint">＊ A separate OTP — the old contact is NOT replaced until this one passes.</div>`
+    <div class="scr-title"><span class="x">✕</span>Change Phone Number</div>
+    <div class="scr-step">Current number was never verified</div>
+    ${F("+84 &nbsp; 99112334567","Unverified")}
+    ${CTA("Edit")}
+    ${CTA("Get OTP",'ghost')}
+    <div class="hint">＊ An unverified number can still be edited directly — verification starts fresh on the new value.</div>`
+  :s===4?`
+    <div class="scr-title"><span class="x">✕</span>New Phone Number</div>
+    <div class="scr-step">Current contact verified ✓ — fill in the new one</div>
+    ${F("+84 ▾ &nbsp; Phone number","Required")}
+    ${CTA("Save",'disabled')}
+    <div class="hint">＊ Save → separate OTP on the new number. The old contact stays active until the new OTP passes.</div>`
   :`
     <div class="scr-title">Contact Updated</div>
-    ${OPT("✉️ &nbsp; Email new***@gmail.com <small style='color:#b0b0b0'>verified · just changed</small>", true)}
-    ${OPT("📱 &nbsp; Phone +66 90****123 <small style='color:#b0b0b0'>verified</small>", false)}
+    ${OPT("📱 &nbsp; Phone +84 99****888 <small style='color:#b0b0b0'>verified · just changed</small>", true)}
+    ${OPT("✉️ &nbsp; Email ba*****on@gmail.com <small style='color:#b0b0b0'>verified</small>", false)}
     ${CTA("Done")}
-    <div class="hint">＊ The replaced contact is marked per business rule; abandoning mid-way changes nothing.</div>`,
+    <div class="hint">＊ Abandoning mid-way changes nothing.</div>`,
   spec:{
-    goal:"docx flows — first-time add (verify new directly), add-another (verify existing first), change (same-type rule: old email OTP for email change, old phone OTP for phone change), then a separate OTP for the new contact.",
-    states:["first time · none verified → verify new directly","add another · step 1 on existing (choose if both)","change · step 1 same-type ONLY","step 2 · validate + OTP on new contact","done · new contact Verified","abandoned → nothing changes","new contact already used → CONTACT_IN_USE"],
-    fields:["target(phone|email)","mode(add_first|add_another|change)","step1_token","new_contact","otp_code"],
-    api:"POST /account/contact/start { target, mode }\\n→ step-1 OTP (existing, same-type on change) ← { step1_token }\\nPOST /account/contact/commit { step1_token, new_contact, otp_code }\\nerr: CONTACT_IN_USE / INVALID_FORMAT / OTP_WRONG / STEP1_EXPIRED / NOT_ALLOWED",
-    notes:["Acceptance criteria: change email → first OTP ONLY to existing email (phone OTP cannot substitute); change phone → mirror rule.","New contact is saved / replaces the old one ONLY after both steps pass.","If the existing contact cannot receive OTP, the normal change flow must not continue (docx) → manual path."]
+    goal:"Design flows: Profile first-time input (no edit after), add-secondary (existing OTP → new OTP), change (verify current same-type → fill new → new OTP; CS fallback when the current contact is unreachable).",
+    states:["first time · enter + OTP (from Profile)","add secondary · step 1 OTP on existing","change · current verified → same-type OTP","change · current unverified → Edit or Get OTP","fill new → Save → OTP on new","done","new contact already used → CONTACT_IN_USE"],
+    fields:["target(phone|email)","mode(add_first|add_secondary|change)","step1_token","new_contact","otp_code"],
+    api:"POST /account/contact/start { target, mode }\n→ step-1 OTP (current, same-type on change) ← { step1_token }\nPOST /account/contact/commit { step1_token, new_contact, otp_code }\nerr: CONTACT_IN_USE / INVALID_FORMAT / OTP_WRONG / STEP1_EXPIRED",
+    notes:["Same-type rule (docx acceptance criteria): change email → old-email OTP only; change phone → old-phone OTP only.","No access to the current contact → Customer Service (design copy).","Profile Security section copy: 'Verify both your phone number and email address to protect against unnecessary access and easy account recovery.'"]
   }
 },
 {
   group:"D · Recovery", id:"forgot", title:"Forgot Password",
-  states:["Enter contact","Enter code","Reset password","Done"],
+  states:["Select mode","Enter contact","Reset (after OTP)","Create new password"],
   render:(s)=>s===0?`
-    <div class="scr-title"><span class="x">✕</span>Forgot Password</div>
-    <div class="scr-step">Enter the email or phone registered to your account</div>
-    ${F("Registered email / phone","Required")}
-    ${CTA("Send OTP")}
-    <div class="hint">＊ For security we don't reveal whether an account exists — the code is sent only if the contact matches.</div>`
+    <div class="scr-title"><span class="x">✕</span>Select Verification Mode</div>
+    <div class="scr-step">Please choose how you would like to receive your one-time password (OTP)</div>
+    ${OPT("✉️ &nbsp; Send via Email", false)}
+    ${OPT("📱 &nbsp; Send via SMS", true)}
+    ${CTA("Request OTP")}
+    <div class="hint">＊ Works for Active or Dormant accounts.</div>`
   :s===1?`
-    <div class="scr-title"><span class="x">←</span>Enter Code</div>
-    <div class="scr-step">If the contact matches an account, a code is on its way</div>
-    <div class="otpcells"><span class="f">_</span><span>_</span><span>_</span><span>_</span><span>_</span><span>_</span></div>
-    <div class="link">Didn't get it? <b>Resend (60s)</b></div>
-    ${CTA("Verify")}`
+    <div class="scr-title"><span class="x">✕</span>Verify Phone Number</div>
+    <div class="scr-step">Enter the contact registered to your account</div>
+    ${F("+84 ▾ &nbsp; Phone number","Required")}
+    ${CTA("Get OTP",'disabled')}
+    <div class="hint">＊ We never reveal whether an account exists — the code is sent only if the contact matches.</div>`
   :s===2?`
-    <div class="scr-title"><span class="x">←</span>Reset Password</div>
-    <div class="scr-step">Verification passed — set a new password</div>
-    ${F("New password","👁 &nbsp; Required")}
-    ${F("Confirm new password","Required")}
-    ${CTA("Reset password")}
-    <div class="hint">＊ Validated against the current password policy.</div>`
+    <div class="scr-title"><span class="x">✕</span>Reset Password</div>
+    <div class="scr-step">Account ID: AHHHHHH</div>
+    ${F("New password","👁")}
+    ${F("Confirm new password","👁")}
+    ${CTA("Done",'disabled')}`
   :`
-    <div class="scr-title">Password Reset ✓</div>
-    <div class="ph" style="height:100px">✓<br><small>reset successful</small></div>
-    ${CTA("Login now")}
-    <div class="hint">＊ The contact used here does NOT automatically become Verified (unless business confirms otherwise).</div>`,
+    <div class="scr-title"><span class="x">✕</span>Create New Password</div>
+    <div class="scr-step">Account ID: AHHHHHH</div>
+    ${F("••••••••••","●●○ Medium")}
+    ${F("••••••••••","●●○ Medium")}
+    ${CTA("Done")}`,
   spec:{
-    goal:"docx Forgot Password: enter registered contact → validate against the account → OTP → reset password → confirm.",
-    states:["enter contact","contact mismatch (silent — same UI as sent)","code entry","reset form (policy validation)","done → login"],
-    fields:["identifier(email|phone)","otp_code","new_password"],
-    api:"POST /auth/forgot/start { identifier }  (always returns 200)\\nPOST /auth/forgot/verify { otp_code }\\nPOST /auth/forgot/reset { new_password }\\nerr: OTP_WRONG / OTP_EXPIRED / WEAK_PASSWORD",
-    notes:["Never confirm account existence before successful validation (docx) — mismatch shows the same 'code sent' UI.","Recovery contact does not auto-flip to Verified — pending business confirmation.","Whether the current password is also required on change-password (logged-in) is a separate policy decision."]
+    goal:"Design flow: select mode (Email / SMS) → enter the registered contact → OTP → reset password (Account ID revealed only after the OTP passes) with a strength meter.",
+    states:["select mode","enter contact (mismatch = silent, same UI)","OTP component (shared)","reset form · Done disabled","filled + strength (Medium) → Done","done → login"],
+    fields:["mode(email|sms)","identifier","otp_code","new_password"],
+    api:"POST /auth/forgot/start { mode, identifier } (always 200)\nPOST /auth/forgot/verify { otp_code } ← { account_id }\nPOST /auth/forgot/reset { new_password }\nerr: OTP_WRONG / OTP_EXPIRED / WEAK_PASSWORD",
+    notes:["Account ID is shown ONLY after OTP success — no existence disclosure before (docx).","Password strength meter on the create screen (design).","Recovery contact does not auto-become Verified (business TBD)."]
   }
 },
 {
-  group:"E · Entry Points", id:"entries", title:"Entry Points (step-up sheet)",
-  states:["Withdrawal","Promo claim","Promo claim · none verified","Change password"],
-  render:(s)=>{
-    const t=[["Withdrawal","[ Withdrawal form — amount · bank/USDT ]"],["Claim Promotion","[ Promotion detail — 100% first deposit bonus ]"],["Claim Promotion","[ Promotion detail — 100% first deposit bonus ]"],["Change Password","[ New password form ]"]][s];
-    return `
-    <div class="scr-title"><span class="x">←</span>${t[0]}</div>
-    <div class="ph" style="height:100px">${t[1]}</div>
-    <div style="border:2px solid var(--solid);border-radius:14px;padding:12px 14px;margin-top:16px;background:#fff">
-      <b style="font-size:14px">🔒 OTP verification required</b>
-      ${s===2?`
-      <div class="hint" style="margin:6px 0">No verified contact — verify one now to continue the claim</div>
-      ${F("Email / Phone number","Required")}
-      ${CTA("Send OTP")}`
-      :`
-      <div class="hint" style="margin:6px 0">This action requires a one-time code (rule matrix)</div>
-      ${OPT("📱 &nbsp; Phone OTP +66 ****1234 <small style='color:#b0b0b0'>verified</small>", true)}
-      ${CTA("Send OTP")}`}
-      <div class="link"><b>Cancel</b></div>
-    </div>`;
-  },
+  group:"E · Entry Points", id:"entries", title:"Entry Points",
+  states:["Change password (2FA)","Withdrawal · new bank account","Withdrawal · new USDT address","Claim promotion"],
+  render:(s)=>s===0?`
+    <div class="scr-title"><span class="x">←</span>Change Password</div>
+    <div class="scr-step">Home › Profile › Setting › Change Password · after OTP (2FA)</div>
+    ${F("New password","👁")}
+    ${F("Confirm new password","👁")}
+    <div class="hint">Re-login will be required after changing the password.</div>
+    ${CTA("Save",'disabled')}
+    <div class="hint">＊ Old password field REMOVED — the OTP is the authentication.</div>`
+  :s===1?`
+    <div class="scr-title"><span class="x">←</span>Withdrawal</div>
+    <div class="ph" style="height:96px">[ Bank Account Details — Add New Account ⊕<br>ACB · Vietcombank · Techcombank ]</div>
+    ${F("Amount (VND)","50,000–300,000")}
+    ${CTA("Submit")}
+    <div class="hint">＊ OTP triggers when the payout account was NEVER used before. Verified contact → OTP (or choose); none verified → verify a new contact inline (serves as OTP).</div>`
+  :s===2?`
+    <div class="scr-title"><span class="x">←</span>Withdrawal · USDT</div>
+    <div class="ph" style="height:96px">[ USDT Address — Add New Address ⊕<br>Bacon1234 · 0x******89a0 · TRC20/ERC20 ]</div>
+    ${F("Amount (USDT)","10,000–100,000")}
+    ${CTA("Submit")}
+    <div class="hint">＊ Same rule for USDT: first-time address → OTP before the withdrawal continues.</div>`
+  :`
+    <div class="scr-title"><span class="x">←</span>Claim Promotion</div>
+    <div class="ph" style="height:80px">[ 1st Deposit Casino · 100% Bonus — Claim Now ]</div>
+    <div style="border:2px solid var(--solid);border-radius:14px;padding:12px 14px;margin-top:12px;background:#fff">
+      <b style="font-size:14px">Personal Details</b>
+      ${F("Full Name (Ms. ▾)","matches bank account")}
+      ${F("Date of Birth","📅")}
+      ${CTA("Submit",'disabled')}
+    </div>
+    <div class="hint">＊ Claim = complete Personal Details (name must match the Bank Account Name) → OTP → claim continues.</div>`,
   spec:{
-    goal:"How protected actions summon the flow: a shared step-up sheet overlays the action, runs method → code, then resumes. Promo claim with no verified contact verifies a NEW contact inline.",
-    states:["sheet over withdrawal (no contact → NOT allowed)","sheet over promo claim (verified contact)","promo claim · none verified → inline new-contact verify","sheet over change password (no contact → NOT allowed)","verified → action resumes","dismissed → action cancelled"],
+    goal:"Where the OTP component plugs in: change password (2FA, no old password, forced re-login), first-time payout account withdrawals (bank & USDT), promotion claims (after Personal Details).",
+    states:["change password · after OTP → new+confirm only","withdrawal · new bank account → OTP before continue","withdrawal · new USDT address → OTP before continue","promo claim · Personal Details → OTP → claim","none verified at any entry → inline first-time verify (serves as OTP)"],
     fields:["action","stepup_token → action_token"],
-    api:"Each protected endpoint returns 403 OTP_REQUIRED → FE opens this sheet, then retries with action_token.",
-    notes:["One shared sheet component — do not rebuild per feature.","Whether EVERY promo claim needs OTP, or the trust period applies, is an open business question (docx).","Analytics: otp_shown / otp_passed / otp_failed events carry the action param."]
+    api:"Each protected endpoint returns 403 OTP_REQUIRED → FE opens the shared OTP component, then retries with action_token.",
+    notes:["Change password: old-password field removed; session invalidated after change → re-login (design).","Withdrawal OTP scope: only when the payout account / USDT address was never used before.","Promo claim: Full Name must match the Bank Account Name exactly (design copy); DOB required.","One shared component across all entry points — do not rebuild per feature."]
   }
 },
 ];

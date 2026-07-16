@@ -92,6 +92,21 @@
     <p>登入也拆成獨立 flow，與 sign-up 同格式：Login 主畫面（社群置頂＋Last used、One-time code｜Password 分頁）→ 一次性驗證碼登入（驗證過的聯絡方式＋頻道）→ 生物辨識/Passkey（WebAuthn＋降級）→ 忘記密碼（走 Unified OTP 流程）→ 鎖定與風險 step-up＋session 規則。</p>
     <p class="files">login-flow-wireframe.html · 5 個畫面 · 含編輯模式</p>
   </div>
+  <div class="card">
+    <h3><span class="n">5c</span>OTP 設計稿對齊（07-16，dark theme mockups）</h3>
+    <p>收到完整 OTP 元件視覺稿＋六個接入點，verification flow 已照此重寫。重點決議：</p>
+    <ul>
+      <li><b>OTP 模式只有 Email / SMS</b>（Select Verification Mode 單選）；Zalo ZNS / LINE / WhatsApp 遞送列為 phase 2。</li>
+      <li><b>元件參數</b>：6 位數碼、重發倒數 32 秒、錯誤顯示「Invalid OTP entered」（紅框紅鈕、倒數續跑）、第 3 次重發後冷卻升級 03:00、聯絡方式一律遮罩、支援 iOS 簡訊自動帶碼。</li>
+      <li><b>無驗證聯絡方式 → 不再擋任何動作</b>：所有入口（含改密碼、提款）都改為「現場輸入並驗證新聯絡方式，該驗證即當作 OTP」——覆蓋 docx 的 Not allowed。</li>
+      <li><b>改密碼 = 2FA</b>：移除舊密碼欄位，OTP 即身份驗證；改完強制重新登入。</li>
+      <li><b>提款 OTP 觸發條件</b>：收款帳戶（銀行帳號或 USDT 地址）<b>首次使用</b>時才要求 OTP。</li>
+      <li><b>領優惠</b>：先補 Personal Details（Full Name 需與銀行帳戶名完全一致＋生日）→ OTP → 繼續領取。</li>
+      <li><b>忘記密碼</b>：選模式（Email/SMS）→ 輸入註冊聯絡方式 → OTP 通過後才顯示 Account ID → 設新密碼（含強度計）；適用 Active / Dormant 帳號。</li>
+      <li><b>Profile 聯絡方式</b>：首次輸入後電話移除自行編輯（未驗證狀態仍可 Edit）；換綁需先驗當前同類型聯絡方式，收不到碼 → 找客服；「Verified Email may be used as Account ID」。</li>
+    </ul>
+    <p class="files">verification-flow-wireframe.html 重寫為 8 畫面（規則 → Select Mode → First-time Verify → OTP 狀態 → 結果 → 換綁 → 忘記密碼 → 接入點）；login-flow 忘記密碼同步</p>
+  </div>
 
   <h2>三、登入（Login）</h2>
   <div class="card">
