@@ -159,8 +159,8 @@ const screens = [
   render:(s)=>`
     <div class="scr-title"><span class="x">✕</span>Sign Up</div>
     <div class="scr-step">Sign up with phone number or email</div>
-    ${F("Account ID","Required")}
     <div class="mtabs"><span class="${s===4?'':'on'}">📱 Phone number</span><span class="${s===4?'on':''}">✉️ Email</span></div>
+    ${F("Account ID","Required")}
     ${s===4?F("Email address","Required")
     :s===1?`<div class="field" style="border-style:solid"><span><b>+66 ▾</b> &nbsp; 0812345678</span><small>phone detected</small></div>
     <div class="ccpop">

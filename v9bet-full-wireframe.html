@@ -198,8 +198,8 @@ const S=[
 /* ===== 1 · Sign Up / Login ===== */
 {g:"1 · Sign Up/Login",t:"Sign Up",src:"14,75-82",states:["Default","Phone detected → country code","Submittable","Captcha (conditional)","Email tab"],
  r:(s)=>BAR("Sign Up","✕")+STEP("Sign up with phone number or email")+
-   F("Account ID","Required")+
    `<div class="mtabs"><span class="${s===4?'':'on'}">📱 Phone number</span><span class="${s===4?'on':''}">✉️ Email</span></div>`+
+   F("Account ID","Required")+
    (s===4?F("Email address","Required")
    :s===1?`<div class="field" style="border-style:solid"><span><b>+66 ▾</b> &nbsp; 0812345678</span><small>phone detected</small></div>
    <div class="ccpop"><div class="cc on">🇹🇭 Thailand<small>+66 ✓</small></div><div class="cc">🇻🇳 Vietnam<small>+84</small></div></div>`
