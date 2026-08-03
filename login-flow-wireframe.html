@@ -166,7 +166,7 @@ const screens = [
     </div>
     <div class="or">or login with</div>
     <div class="mtabs"><span class="${s===1?'on':''}">One-time code</span><span class="${s===1?'':'on'}">Password</span></div>
-    ${F("Email / Phone number")}
+    ${F("Account ID / Email / Phone")}
     ${s===0?F("Password","👁")
       :s===1?`<div class="hint">We'll send a one-time code via Zalo ZNS / SMS / LINE / WhatsApp / Email — no password needed.</div>`
       :`<div class="ph" style="height:100px">👤 Face ID / Passkey (WebAuthn)</div>`}
@@ -177,7 +177,7 @@ const screens = [
   spec:{
     goal:"Login home: social icon row on top (last-used badge), then One-time code | Password tabs; biometric/passkey for returning devices.",
     states:["password tab","one-time code tab (no password)","biometric / passkey (WebAuthn)","social icon tap → Google / LINE / X branch","lockout → Security screen","risk trigger → step-up verification"],
-    fields:["identifier(email|phone, single field)","method(password|one_time_code|passkey|google|line|x)","secret? / otp_code? / webauthn_assertion?","remember(bool)"],
+    fields:["identifier(account_id|email|phone, single field)","method(password|one_time_code|passkey|google|line|x)","secret? / otp_code? / webauthn_assertion?","remember(bool)"],
     api:"POST /auth/login { identifier, method, ... }\n← { session, requires_stepup? }\nerr: LOCKED / RISK_STEPUP / INVALID_CREDENTIALS",
     notes:["Social row promoted to the top; 'Last used' badge above the provider icon reduces trial-and-error.","'Forgot account' removed — the link is password recovery only (see Recovery).","'Keep me logged in' explicit — high-frequency bettors feel session expiry the most.","Analytics: login event carries the method param, mirrors sign_up."]
   }

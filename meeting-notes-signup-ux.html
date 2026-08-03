@@ -43,6 +43,7 @@
       <li>表單只有三件事：<b>📱 Phone number｜✉️ Email 分頁</b> → 帳號欄位 → <b>Password</b>（👁 顯示切換）→ 21+/Terms 勾選。</li>
       <li>電話分頁輸入數字 → 彈出國碼選擇，<b>只有 🇹🇭 泰國 +66 / 🇻🇳 越南 +84</b>（依語系/geo-IP 預設）。在電話分頁貼上 email 會自動切到 Email 分頁。</li>
       <li><b>推薦碼移出註冊頁</b>（原欄位由密碼取代）。</li>
+      <li><b>Account ID 放回註冊表單</b>（07-16）：獨立的登入帳號名，註冊時設定（檢查重複，err ACCOUNT_ID_TAKEN）；忘記密碼 OTP 通過後會顯示；已驗證的 Email 也可當 Account ID 用。登入欄位同時接受 <b>Account ID / Email / 電話</b>。</li>
     </ul>
     <p class="why">歷程：原本國碼+電話+推薦碼 → 改單一欄位自動判斷 → 最終定案加回明確的雙分頁（單一欄位邏輯保留在偵測行為）。</p>
   </div>
