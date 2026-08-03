@@ -496,32 +496,31 @@ const screens = [
 },
 {
   group:"D · Login & Verify", id:"verify2", title:"Security Verification",
-  states:["Both verified → choose","Only one verified","Code entry"],
+  states:["Both verified → choose","Only one → auto","Code entry (shared OTP)"],
   render:(s)=>s===2?`
-    <div class="scr-title"><span class="x">←</span>Enter Code</div>
-    <div class="scr-step">Code sent to 📱 +84 90****123 (via Zalo ZNS)</div>
+    <div class="scr-title"><span class="x">✕</span>Enter Code</div>
+    <div class="scr-step">We sent code verification to<br><b>091***233</b></div>
     <div class="otpcells"><span class="f">_</span><span>_</span><span>_</span><span>_</span><span>_</span><span>_</span></div>
-    <div class="link">Didn't get it? <b>Resend (60s)</b></div>
-    <div class="link"><b>Use my Email instead</b> <small>(only when both are verified)</small></div>`
+    <div class="link">Resent code in <b>00:32</b></div>
+    ${CTA("Verify",'disabled')}
+    <div class="hint" style="text-align:center">— shared OTP component: 32s resend · Invalid OTP · 3rd resend → 03:00 —</div>`
   :s===1?`
-    <div class="scr-title"><span class="x">←</span>Security Verification</div>
-    <div class="scr-step">Only one contact is verified — it will be used automatically</div>
-    ${OPT("📱 &nbsp; Phone +84 90****123 <small style='color:#b0b0b0'>verified</small>", true)}
-    <div class="opt" style="opacity:.45"><span class="dot"></span><span style="flex:1">✉️ &nbsp; Email — not verified yet<br><small style="color:#b0b0b0">Add it in Profile (you must verify phone first)</small></span></div>
-    ${CTA("Send code")}`
+    <div class="scr-title"><span class="x">✕</span>Security Verification</div>
+    <div class="scr-step">Only one contact verified — no picker, the code goes there automatically</div>
+    ${OPT("📱 &nbsp; SMS to 091***233 <small style='color:#b0b0b0'>verified</small>", true)}
+    ${CTA("Request OTP")}`
   :`
-    <div class="scr-title"><span class="x">←</span>Security Verification</div>
-    <div class="scr-step">Both contacts verified — choose where to receive the code</div>
-    ${OPT("📱 &nbsp; Phone +84 90****123 <small style='color:#b0b0b0'>verified</small>", true)}
-    ${OPT("✉️ &nbsp; Email b***@gmail.com <small style='color:#b0b0b0'>verified</small>", false)}
-    <div class="hint">＊ Phone code is delivered via Zalo ZNS / SMS / LINE / WhatsApp (channel picker on the code screen); Email is its own anchor.</div>
-    ${CTA("Send code")}`,
+    <div class="scr-title"><span class="x">✕</span>Select Verification Mode</div>
+    <div class="scr-step">Please choose how you would like to receive your one-time password (OTP)</div>
+    ${OPT("✉️ &nbsp; Send via email to c***@gmail.com", false)}
+    ${OPT("📱 &nbsp; Send via SMS to 091***233", true)}
+    ${CTA("Request OTP")}`,
   spec:{
-    goal:"Verification anchors = Phone & Email. One verified → forced to it; both verified → member chooses either.",
-    states:["both verified → picker","only one verified → forced (no choice)","code sent / entry","wrong / expired / locked","all failed → Live Chat"],
-    fields:["anchor(phone|email)","delivery(zalo_zns|sms|line|whatsapp|email)","stepup_token"],
-    api:"POST /auth/stepup/start { anchor, delivery }\nPOST /auth/stepup/verify { stepup_token, otp_code }\nerr: STEPUP_TIMEOUT / OTP_WRONG / OTP_LOCKED",
-    notes:["Rule ①: only one contact verified → every verification uses that one.","Rule ②: adding / changing the 2nd contact → must first pass verification on the 1st, then verify the new one (see 'Add / Change Phone·Email' screen).","Rule ③: both verified → member freely picks either.","Actions that REQUIRE verification: change password · forgot password (recovery) · add/change phone · add/change email · claim promotion · withdrawal.","App push / Passkey: future extensions — current scope is phone & email only."]
+    goal:"Shared step-up verification (Unified OTP): both verified → select Email/SMS; one → auto; none → verify a new contact inline (serves as OTP). Full flow: verification-flow-wireframe.html.",
+    states:["both verified → radio picker + Request OTP","only one → auto, no picker","none verified → inline first-time verify (serves as OTP)","code entry (shared component states)","failed / locked → action stopped, Live Chat"],
+    fields:["mode(email|sms)","stepup_token","otp_code(6)"],
+    api:"POST /auth/otp/start { action, mode }\nPOST /auth/otp/verify { stepup_token, otp_code } ← { action_token }\nerr: OTP_WRONG / OTP_EXPIRED / RESEND_LIMIT",
+    notes:["How Login (14) connects here: ONLY on exceptions — POST /auth/login returns RISK_STEPUP (new device / abnormal geo) or LOCKED (self-unlock) → this screen → pass → session continues. Normal password / one-time-code / passkey / social logins never see it.","Main use is AFTER login: shared sheet for sensitive actions — change password (2FA) · add/change contact (screen 16 step 1) · first-time payout account withdrawal (incl. USDT) · promo claim (after Personal Details). Each returns 403 OTP_REQUIRED → opens this sheet → retries with action_token.","Note: the Login 'One-time code' tab is a LOGIN METHOD (passwordless), not this security step-up.","Same-type rule when changing a contact: OTP goes to the current contact of that type (no picker).","OTP modes this release = Email / SMS; Zalo ZNS / LINE / WhatsApp delivery = phase 2."]
   }
 },
 {
