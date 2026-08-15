@@ -135,7 +135,35 @@
     <p><b>教學（Interactive tutorial）與 App 下載移出清單</b> —— Setup 完成後在下一頁（Tutorial &amp; App 單一頁）一起呈現，之後才是 Welcome + Offers。</p>
   </div>
 
-  <h2>五、檔案與工具</h2>
+  <h2>五、History（客人做過什麼的紀錄）— 07-16</h2>
+  <div class="card">
+    <h3><span class="n">H</span>要存的 8 類紀錄（使用者提 4 類，補齊為 8 類）</h3>
+    <table>
+      <tr><th>#</th><th>類別</th><th>存什麼</th><th>為什麼</th></tr>
+      <tr><td>1</td><td><b>登入 / 裝置</b></td><td>時間、裝置+OS、瀏覽器/App、IP+地區（客人看遮罩）、登入方式、成功/失敗/鎖定、登出、session 到期</td><td>客人自查安全、客服處理盜用、風控 step-up 依據</td></tr>
+      <tr><td>2</td><td><b>存提款</b></td><td>類型、金額、幣別、USDT 匯率、通道、收款帳戶（遮罩）、狀態流轉+時間戳、交易編號、失敗/拒絕原因、優惠券關聯、餘額前後</td><td>最常查；客服對帳；拒絕要說原因</td></tr>
+      <tr><td>3</td><td><b>遊戲 &amp; 輸贏</b></td><td>投注編號、產品/供應商、賽事或遊戲、下注、賠率、結果、派彩、餘額前後、優惠券使用、流水貢獻；P&amp;L 摘要</td><td>對帳、爭議申訴；Responsible Gaming 資料來源</td></tr>
+      <tr><td>4</td><td><b>系統回饋（獎勵）</b></td><td>優惠 ID、類型（首存/任務/簽到/轉盤/紅包/推薦/lifetime）、金額或形式、領取時間、流水要求與進度、過期/沒收原因</td><td>「我的紅利去哪了」客服前三大問題</td></tr>
+      <tr><td>5</td><td><b>帳戶安全變更</b> ⭐</td><td>改密碼、綁/換電話 Email（新舊遮罩）、Passkey 啟用/撤銷、社群綁定、幣別鎖定、每次 OTP（動作+頻道+結果，<b>不存碼</b>）</td><td>Unified OTP docx 明文要求稽核；客人能看到「有人改了我的資料」</td></tr>
+      <tr><td>6</td><td><b>推薦紀錄</b></td><td>邀請的人（遮罩）、註冊/首存時間、產生的獎勵、狀態與缺什麼</td><td>?ref= 自動歸因的閉環</td></tr>
+      <tr><td>7</td><td><b>KYC / 資料變更</b></td><td>身份文件送審/結果與原因、姓名生日、銀行帳戶/USDT 地址新增刪除</td><td>提款被擋時最需要看</td></tr>
+      <tr><td>8</td><td><b>Responsible Gaming</b> ⭐</td><td>自設限額（存款/損失/時間）與變更、冷卻/自我排除、系統提醒</td><td>合規（foundations 已列法規項）；VN/TH 遲早要</td></tr>
+      <tr><td>—</td><td>通知/訊息</td><td>不重複存，連到 Message Center</td><td></td></tr>
+    </table>
+    <ul>
+      <li><b>兩層可見性</b>：客人看到的（本 flow）vs 後台稽核（原始 IP、OTP 內部細節、詐欺旗標）分開。</li>
+      <li><b>保留期限（提案，待各市場法務確認）</b>：金流／投注 5–7 年；登入裝置 90 天；通知 30 天。</li>
+      <li><b>匯出</b>：投注與交易至少要能匯 CSV／PDF 對帳單。</li>
+      <li><b>入口</b>：Profile → History；Wallet「View all」、Promotions「My rewards」、Settings「Login activity」深連結進來。</li>
+    </ul>
+    <p class="files">history-flow-wireframe.html · 10 個畫面（Home + 8 類 + 保留/可見性矩陣）· index 第 ⑥ 區</p>
+  </div>
+  <div class="card">
+    <h3><span class="n">→</span>後續順序</h3>
+    <p>產品頁、產品細項頁、首頁 —— <b>最後處理</b>（使用者指示 07-16）。</p>
+  </div>
+
+  <h2>六、檔案與工具</h2>
   <div class="card">
     <h3><span class="n">9</span>檔案整理</h3>
     <ul>

@@ -1,0 +1,594 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>V9Bet · History Flow — Wireframe</title>
+<style>
+  :root{
+    --ink:#2b2b2b; --line:#c9c9c9; --line2:#9a9a9a; --muted:#8a8a8a;
+    --paper:#ffffff; --bg:#ececed; --fill:#f3f3f4; --solid:#3a3a3a;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font:14px/1.5 -apple-system,"Noto Sans TC",Arial,sans-serif;color:var(--ink);background:var(--bg)}
+  /* ---- layout ---- */
+  .app{display:grid;grid-template-columns:260px 1fr 340px;min-height:100vh}
+  aside{background:var(--paper);border-right:1px solid var(--line);padding:16px;overflow:auto}
+  main{padding:24px;display:flex;flex-direction:column;align-items:center;gap:14px}
+  .spec{background:var(--paper);border-left:1px solid var(--line);padding:16px;overflow:auto}
+  h1{font-size:15px;margin:0 0 4px}
+  .sub{color:var(--muted);font-size:12px;margin:0 0 14px}
+  .navlist{display:flex;flex-direction:column;gap:2px}
+  .nav{display:flex;gap:8px;align-items:center;border:1px solid transparent;border-radius:6px;padding:7px 8px;cursor:pointer;font-size:13px}
+  .nav:hover{background:var(--fill)}
+  .nav.active{background:#e3e3e6;border-color:var(--line2);font-weight:600}
+  .nav .num{width:20px;height:20px;flex:0 0 20px;border:1px solid var(--line2);border-radius:50%;display:grid;place-items:center;font-size:11px;color:var(--muted)}
+  .nav.active .num{background:var(--solid);color:#fff;border-color:var(--solid)}
+  .group-title{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:14px 0 6px}
+  /* ---- phone ---- */
+  .stage{display:flex;flex-direction:column;align-items:center;gap:10px}
+  .toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:center}
+  .btn{border:1px solid var(--line2);background:#fff;border-radius:6px;padding:6px 12px;font-size:12px;cursor:pointer}
+  .btn:hover{background:var(--fill)}
+  .state-tabs{display:flex;gap:4px;border:1px solid var(--line);border-radius:8px;padding:3px;background:#fff}
+  .state-tabs button{border:0;background:none;padding:5px 10px;border-radius:6px;font-size:12px;cursor:pointer;color:var(--muted)}
+  .state-tabs button.on{background:var(--solid);color:#fff}
+  .phone{width:380px;border:2px solid var(--ink);border-radius:28px;background:var(--paper);padding:10px;box-shadow:0 6px 24px rgba(0,0,0,.12)}
+  .notch{height:20px;display:flex;justify-content:center}
+  .notch::after{content:"";width:120px;height:18px;background:var(--ink);border-radius:0 0 12px 12px}
+  .screen{height:680px;overflow:auto;border:1px solid var(--line);border-radius:18px;padding:18px;background:#fff}
+  .screen::-webkit-scrollbar{width:6px}.screen::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px}
+  .scr-title{text-align:center;font-weight:700;font-size:16px;margin:2px 0 4px;position:relative}
+  .scr-title .x{position:absolute;left:0;top:0;color:var(--muted);font-weight:400}
+  .scr-step{text-align:center;color:var(--muted);font-size:12px;margin-bottom:14px}
+  /* wireframe primitives */
+  .field{border:1px dashed var(--line2);border-radius:10px;padding:13px 14px;color:var(--muted);margin:10px 0;display:flex;justify-content:space-between;align-items:center;background:var(--fill)}
+  .field small{color:#b0b0b0}
+  .row{display:flex;gap:10px}
+  .row>*{flex:1}
+  .opt{border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin:8px 0;display:flex;align-items:center;gap:12px}
+  .opt.sel{border-color:var(--solid);border-width:2px}
+  .dot{width:18px;height:18px;border:1px solid var(--line2);border-radius:50%;flex:0 0 18px}
+  .dot.on{border-color:var(--solid);border-width:5px}
+  .sq{width:18px;height:18px;border:1px solid var(--line2);border-radius:4px;flex:0 0 18px}
+  .sq.on{background:var(--solid)}
+  .ph{height:90px;border:1px dashed var(--line2);border-radius:10px;display:grid;place-items:center;color:#b6b6b6;background:var(--fill);margin:10px 0}
+  .cta{background:var(--solid);color:#fff;text-align:center;border-radius:24px;padding:14px;margin:16px 0 8px;font-weight:600}
+  .cta.ghost{background:#fff;color:var(--muted);border:1px solid var(--line2)}
+  .cta.disabled{background:#cfcfcf;color:#fff}
+  .link{text-align:center;color:#666;font-size:13px;margin-top:8px}
+  .link b{color:var(--ink);text-decoration:underline}
+  .hint{font-size:12px;color:var(--muted);margin:6px 2px}
+  .badge{display:inline-block;font-size:10px;border:1px solid var(--line2);border-radius:4px;padding:1px 6px;color:var(--muted);vertical-align:middle;margin-left:6px}
+  .badge.req{border-color:#b56;color:#b56}
+  .otpcells{display:flex;gap:8px;justify-content:center;margin:18px 0}
+  .otpcells span{width:42px;height:52px;border:1px solid var(--line2);border-radius:8px;display:grid;place-items:center;font-size:20px;color:var(--muted)}
+  .otpcells span.f{border-color:var(--solid);border-width:2px}
+  .err{border:1px solid #c98;background:#fbf2ef;color:#a55;border-radius:8px;padding:10px 12px;font-size:12px;margin:8px 0}
+  .checklist .ci{display:flex;align-items:center;gap:12px;border:1px solid var(--line);border-radius:10px;padding:12px;margin:8px 0}
+  .checklist .ci .num{width:22px;height:22px;border:1px solid var(--line2);border-radius:50%;display:grid;place-items:center;font-size:11px;color:var(--muted);flex:0 0 22px}
+  .checklist .ci.done .num{background:var(--solid);color:#fff;border-color:var(--solid)}
+  .checklist .ci .g{flex:1}
+  .checklist .ci .g small{color:var(--muted);font-size:11px;display:block}
+  .dots{display:flex;gap:6px;justify-content:center;margin:14px 0}
+  .dots i{width:7px;height:7px;border-radius:50%;background:var(--line2)}
+  .dots i.on{background:var(--solid);width:18px;border-radius:4px}
+  .promo{border:1px dashed var(--line2);border-radius:12px;padding:14px;margin:10px 0;background:var(--fill)}
+  .promo .tag{font-size:10px;border:1px solid var(--line2);border-radius:4px;padding:1px 6px;color:var(--muted)}
+  /* social login */
+  .or{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:11px;margin:14px 0 4px}
+  .or::before,.or::after{content:"";flex:1;height:1px;background:var(--line)}
+  .socbtn{display:flex;align-items:center;gap:10px;border:1px solid var(--line2);border-radius:10px;padding:11px 14px;margin:8px 0;font-size:13px;background:#fff;cursor:pointer}
+  .socbtn .ic{width:22px;height:22px;border:1px solid var(--line2);border-radius:50%;display:grid;place-items:center;font-size:11px;color:var(--muted);flex:0 0 22px}
+  .socbtn small{margin-left:auto;color:#b0b0b0;font-size:10px}
+  .socbtn .last{margin-left:auto;font-size:9px;border:1px solid var(--solid);border-radius:4px;padding:1px 5px;color:var(--solid)}
+  .ccpop{border:1px solid var(--line2);border-radius:10px;background:#fff;box-shadow:0 6px 18px rgba(0,0,0,.08);margin:-4px 0 10px;overflow:hidden}
+  .ccpop .cc{padding:11px 14px;font-size:13px;display:flex;align-items:center;gap:8px;color:#444}
+  .ccpop .cc.on{background:var(--fill);font-weight:700}
+  .ccpop .cc small{margin-left:auto;color:#b0b0b0}
+  .mtabs{display:flex;border:1px solid var(--line2);border-radius:10px;overflow:hidden;margin:10px 0;font-size:13px;text-align:center}
+  .mtabs span{flex:1;padding:9px 0;color:var(--muted);background:var(--fill)}
+  .mtabs span.on{background:#fff;color:#222;font-weight:700;box-shadow:inset 0 -2px 0 var(--solid)}
+  .socrow .sic{position:relative}
+  .socrow .lu{position:absolute;top:-9px;left:50%;transform:translateX(-50%);font-size:8px;border:1px solid var(--solid);color:var(--solid);background:#fff;border-radius:4px;padding:0 4px;white-space:nowrap}
+  .prog3{display:flex;gap:5px;margin:10px 0 2px}
+  .prog3 .p{flex:1;font-size:9.5px;text-align:center;padding:5px 0;border:1px solid var(--line2);border-radius:7px;color:var(--muted);background:var(--fill)}
+  .prog3 .p.on{background:var(--solid);border-color:var(--solid);color:#fff;font-weight:700}
+  .prog3 .p.done{border-color:var(--solid);color:var(--solid)}
+  .grp{font-size:11px;font-weight:700;color:#555;margin:12px 0 2px;display:flex;align-items:center;gap:6px}
+  .chips{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+  .chip{font-size:11px;border:1px solid var(--line2);border-radius:14px;padding:3px 10px;color:#666;background:#fff}
+  .chip.on{background:var(--solid);color:#fff;border-color:var(--solid)}
+  .hrow{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin:7px 0;font-size:12.5px}
+  .hrow .ic{width:30px;height:30px;border:1px solid var(--line2);border-radius:8px;display:grid;place-items:center;font-size:14px;flex:0 0 30px;background:var(--fill)}
+  .hrow .b{flex:1}
+  .hrow .b small{display:block;color:var(--muted);font-size:11px;margin-top:2px}
+  .hrow .r{text-align:right;font-size:12px;white-space:nowrap}
+  .hrow .r small{display:block;color:var(--muted);font-size:10.5px}
+  .st{display:inline-block;font-size:9.5px;border:1px solid var(--line2);border-radius:4px;padding:0 5px;color:var(--muted);vertical-align:middle}
+  .st.ok{border-color:#2a7;color:#2a7}.st.bad{border-color:#b56;color:#b56}.st.wait{border-color:#c93;color:#c93}
+  .kv{display:flex;justify-content:space-between;font-size:12.5px;padding:7px 0;border-bottom:1px dashed var(--line)}
+  .kv span:first-child{color:var(--muted)}
+  .daysep{font-size:10.5px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin:12px 0 2px}
+  .socrow{display:flex;justify-content:center;gap:26px;margin:12px 0 4px}
+  .socrow .sic{display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer}
+  .socrow .c{width:46px;height:46px;border:1px solid var(--line2);border-radius:50%;display:grid;place-items:center;font-size:14px;font-weight:700;color:var(--muted);background:#fff}
+  .socrow small{font-size:10px;color:var(--muted)}
+  /* spec panel */
+  .spec h2{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:18px 0 6px}
+  .spec h2:first-child{margin-top:0}
+  .spec ul{margin:0;padding-left:16px}
+  .spec li{margin:4px 0;font-size:12.5px}
+  .stlist{display:flex;flex-wrap:wrap;gap:6px}
+  .pill{font-size:11px;border:1px solid var(--line2);border-radius:12px;padding:2px 9px;background:var(--fill)}
+  .api{font-family:ui-monospace,Menlo,monospace;font-size:11px;background:var(--fill);border:1px solid var(--line);border-radius:6px;padding:8px;white-space:pre-wrap;color:#555}
+  .legend{font-size:11px;color:var(--muted);border-top:1px solid var(--line);margin-top:14px;padding-top:10px}
+</style>
+</head>
+<body>
+<div class="app">
+  <!-- LEFT: flow nav -->
+  <aside>
+    <h1>History Flow</h1>
+    <p class="sub">Low-fidelity wireframe · Mobile / App first<br>What the member did — 8 record categories<br>Decided Jul 16 (see meeting notes)</p>
+    <div id="nav"></div>
+    <div class="legend">
+      Grayscale wireframe only, no visual design.<br>
+      <span class="badge req">Required</span> = mandatory ·
+      <span class="badge">app only</span> = App only<br>
+      Right panel: spec / states / API fields for Dev.
+    </div>
+  </aside>
+
+  <!-- CENTER: phone -->
+  <main>
+    <div class="toolbar">
+      <button class="btn" id="prev">← Previous</button>
+      <div class="state-tabs" id="states"></div>
+      <button class="btn" id="next">Next →</button>
+    </div>
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="screen" id="screen"></div>
+    </div>
+    <div class="hint" id="bread"></div>
+  </main>
+
+  <!-- RIGHT: spec -->
+  <div class="spec" id="spec"></div>
+</div>
+
+<script>
+/* ---------- wireframe component helpers ---------- */
+const F = (label, sub='') => `<div class="field"><span>${label}</span>${sub?`<small>${sub}</small>`:''}</div>`;
+const CTA = (t, mod='') => `<div class="cta ${mod}">${t}</div>`;
+const OPT = (t, sel=false, kind='dot') => `<div class="opt ${sel?'sel':''}"><span class="${kind} ${sel?'on':''}"></span><span style="flex:1">${t}</span></div>`;
+const SOC = (ic, t, sub='', last=false) => `<div class="socbtn"><span class="ic">${ic}</span><span>${t}</span>${last?`<span class="last">Last used</span>`:sub?`<small>${sub}</small>`:''}</div>`;
+
+/* ---------- screen definitions ---------- */
+const screens = [
+{
+  group:"A · Overview", id:"home", title:"History Home",
+  states:["Default","Empty (new member)","Filter open"],
+  render:(s)=>s===1?`
+    <div class="scr-title"><span class="x">←</span>History</div>
+    <div class="scr-step">Everything you do on V9 is recorded here</div>
+    <div class="ph" style="height:150px">🗂️<br><small>Nothing yet — your first deposit, bet or reward will show up here</small></div>
+    ${CTA("Make your first deposit")}
+    <div class="hint">＊ New members see the empty state with a CTA into the highest-value next action.</div>`
+  :`
+    <div class="scr-title"><span class="x">←</span>History</div>
+    <div class="scr-step">Home › Profile › History</div>
+    ${F("🔍 Search txn ID / bet ID / promo","")}
+    <div class="chips"><span class="chip on">All</span><span class="chip">Login</span><span class="chip">Money</span><span class="chip">Bets</span><span class="chip">Rewards</span><span class="chip">Security</span><span class="chip">Referral</span><span class="chip">KYC</span><span class="chip">RG</span></div>
+    ${s===2?`<div class="ccpop" style="margin:0 0 10px"><div class="cc on">📅 Last 7 days<small>✓</small></div><div class="cc">Last 30 days</div><div class="cc">Last 90 days</div><div class="cc">Custom range</div></div>`:''}
+    <div class="daysep">Today · Jul 16</div>
+    <div class="hrow"><span class="ic">💰</span><span class="b">Deposit · Bank transfer<small>ACB ****1234 · TXN 8F3K…</small></span><span class="r">+₫500,000<small><span class="st ok">Completed</span> 14:20</small></span></div>
+    <div class="hrow"><span class="ic">🎁</span><span class="b">100% First Deposit Bonus<small>Casino · churn x10 · 0/₫5,000,000</small></span><span class="r">+₫500,000<small><span class="st wait">Active</span> 14:21</small></span></div>
+    <div class="hrow"><span class="ic">🎲</span><span class="b">Sports · MU vs LIV · Over 2.5<small>Bet #B91K… · @1.90</small></span><span class="r">−₫100,000<small><span class="st wait">Open</span> 15:02</span></div>
+    <div class="daysep">Yesterday · Jul 15</div>
+    <div class="hrow"><span class="ic">🔐</span><span class="b">Password changed<small>OTP via SMS ✓ · re-login required</small></span><span class="r"><small><span class="st ok">Done</span> 21:10</small></span></div>
+    <div class="hrow"><span class="ic">📱</span><span class="b">Login · iPhone 15 · Safari<small>Ho Chi Minh City · Password</small></span><span class="r"><small><span class="st ok">Success</span> 20:58</small></span></div>
+    <div class="link"><b>Load more</b> · <b>Export CSV</b></div>`,
+  spec:{
+    goal:"One timeline for everything the member did or that happened to their account; category chips + date range + search; grouped by day, newest first.",
+    states:["default (all categories, last 7 days)","empty (new member) → CTA to first deposit","filter panel open (date range)","category chip selected → filtered list","search by txn / bet / promo ID","load more (infinite scroll, 20 per page)"],
+    fields:["category(all|login|money|bets|rewards|security|referral|kyc|rg)","date_range(7d|30d|90d|custom)","query","cursor"],
+    api:"GET /history?category=&from=&to=&q=&cursor=\n← { items:[{id,type,ts,title,subtitle,amount?,status,detail_ref}], next_cursor }\nGET /history/export?…  → CSV (async, link via inbox)",
+    notes:["Entry: Profile → History (also deep-linked from Wallet 'View all', Promotions 'My rewards', Settings 'Login activity').","Member-visible vs back-office: this page shows the member-facing subset; audit-grade detail (IP, failed attempts, OTP internals) is back-office only.","Retention: money & bets 5–7 yrs (regulatory); login/device 90 days; notifications 30 days (Message Center, not duplicated here).","Amounts always in account currency (VND / THB); USDT rows show both (100 USDT ≈ ₫2.4M).","Analytics: history_view carries category + range."]
+  }
+},
+{
+  group:"B · Categories", id:"login", title:"1 · Login & Devices",
+  states:["List","Detail","Suspicious"],
+  render:(s)=>s===1?`
+    <div class="scr-title"><span class="x">←</span>Login Detail</div>
+    <div class="kv"><span>Time</span><span>Jul 15 · 20:58:14</span></div>
+    <div class="kv"><span>Result</span><span><span class="st ok">Success</span></span></div>
+    <div class="kv"><span>Method</span><span>Password</span></div>
+    <div class="kv"><span>Device</span><span>iPhone 15 · iOS 18.5</span></div>
+    <div class="kv"><span>App / browser</span><span>Safari 18</span></div>
+    <div class="kv"><span>Location</span><span>Ho Chi Minh City, VN</span></div>
+    <div class="kv"><span>IP</span><span>113.***.***.42</span></div>
+    <div class="kv"><span>Session</span><span>Keep me logged in · expires Aug 14</span></div>
+    ${CTA("Not you? Secure my account",'ghost')}`
+  :s===2?`
+    <div class="scr-title"><span class="x">←</span>Login & Devices</div>
+    <div class="err">⚠ Login from a new device in Bangkok, TH · Jul 16 03:12 — was this you?</div>
+    ${CTA("Yes, it was me",'ghost')}
+    ${CTA("No — log out all devices & change password")}
+    <div class="hint">＊ Suspicious-login banner pins to the top until acknowledged; the 'No' path runs the shared OTP + change-password flow.</div>`
+  :`
+    <div class="scr-title"><span class="x">←</span>Login & Devices</div>
+    <div class="scr-step">Where and how you signed in</div>
+    <div class="grp">Active sessions</div>
+    <div class="hrow"><span class="ic">📱</span><span class="b">iPhone 15 · V9 App<small>This device · Ho Chi Minh City</small></span><span class="r"><small><span class="st ok">Active</span></small></span></div>
+    <div class="hrow"><span class="ic">💻</span><span class="b">Windows · Chrome<small>Hanoi · last active 2 days ago</small></span><span class="r"><small><b>Log out</b></small></span></div>
+    <div class="grp">Recent activity</div>
+    <div class="hrow"><span class="ic">✓</span><span class="b">Login · Password<small>iPhone 15 · Safari · HCMC</small></span><span class="r"><small>Jul 15 20:58</small></span></div>
+    <div class="hrow"><span class="ic">✓</span><span class="b">Login · Google<small>Windows · Chrome · Hanoi</small></span><span class="r"><small>Jul 13 09:12</small></span></div>
+    <div class="hrow"><span class="ic">✕</span><span class="b">Failed login · wrong password ×3<small>Android · Chrome · Bangkok</small></span><span class="r"><small><span class="st bad">Locked 15m</span> Jul 12</small></span></div>
+    <div class="hrow"><span class="ic">↩</span><span class="b">Logout<small>iPhone 15 · V9 App</small></span><span class="r"><small>Jul 11 23:40</small></span></div>
+    <div class="link"><b>Log out of all other devices</b></div>`,
+  spec:{
+    goal:"Login / logout / failed attempts / lockouts / active sessions per device — the member's own security dashboard.",
+    states:["list (active sessions + recent activity)","detail (one event)","suspicious login banner → acknowledge / secure account","log out one device / all others"],
+    fields:["ts","result(success|failed|locked)","method(password|one_time_code|passkey|google|line|x)","device{model,os,app|browser}","geo{city,country}","ip(masked)","session{remember,expires_at}"],
+    api:"GET /history/logins · GET /sessions · DELETE /sessions/{id} · DELETE /sessions?all_others=1\nPOST /security/report-suspicious { event_id }",
+    notes:["Feeds risk step-up: new device / new geo → RISK_STEPUP on next login (see Login Flow).","IP shown masked to the member; full IP back-office only.","Retention 90 days member-visible; longer in audit store per policy.","'Not you?' runs shared OTP → change password → invalidate all sessions."]
+  }
+},
+{
+  group:"B · Categories", id:"money", title:"2 · Deposits & Withdrawals",
+  states:["List","Deposit detail","Withdrawal · processing","Withdrawal · rejected"],
+  render:(s)=>s===1?`
+    <div class="scr-title"><span class="x">←</span>Deposit Detail</div>
+    <div class="kv"><span>Amount</span><span><b>+₫500,000</b></span></div>
+    <div class="kv"><span>Method</span><span>Bank transfer · ACB ****1234</span></div>
+    <div class="kv"><span>Status</span><span><span class="st ok">Completed</span></span></div>
+    <div class="kv"><span>Requested</span><span>Jul 16 · 14:18</span></div>
+    <div class="kv"><span>Credited</span><span>Jul 16 · 14:20</span></div>
+    <div class="kv"><span>Transaction ID</span><span>8F3K-22A9-VN <b>⧉</b></span></div>
+    <div class="kv"><span>Coupon applied</span><span>100% First Deposit Bonus</span></div>
+    <div class="kv"><span>Balance after</span><span>₫1,000,000</span></div>
+    ${CTA("Report a problem",'ghost')}`
+  :s===2?`
+    <div class="scr-title"><span class="x">←</span>Withdrawal Detail</div>
+    <div class="kv"><span>Amount</span><span><b>−₫800,000</b></span></div>
+    <div class="kv"><span>To</span><span>Vietcombank ****3213</span></div>
+    <div class="kv"><span>Status</span><span><span class="st wait">Processing</span></span></div>
+    <div class="prog3" style="margin:12px 0"><span class="p done">Requested 09:02</span><span class="p on">Review</span><span class="p">Paid out</span></div>
+    <div class="kv"><span>OTP verified</span><span>SMS ✓ · first-time account</span></div>
+    <div class="kv">ETA</span><span>within 30 min</span></div>
+    <div class="hint">＊ Delay notice appears here if review exceeds SLA (links to Live Chat).</div>`
+  :s===3?`
+    <div class="scr-title"><span class="x">←</span>Withdrawal Detail</div>
+    <div class="err">Rejected — turnover requirement not met (₫3,200,000 remaining)</div>
+    <div class="kv"><span>Amount</span><span>−₫800,000 <span class="st bad">Refunded to balance</span></span></div>
+    <div class="kv"><span>Reason</span><span>Churn ×10 on active bonus</span></div>
+    ${CTA("View churn progress")}
+    ${CTA("Try again",'ghost')}`
+  :`
+    <div class="scr-title"><span class="x">←</span>Deposits & Withdrawals</div>
+    <div class="chips"><span class="chip on">All</span><span class="chip">Deposits</span><span class="chip">Withdrawals</span><span class="chip">USDT</span></div>
+    <div class="hrow"><span class="ic">💰</span><span class="b">Deposit · Bank transfer<small>ACB ****1234 · 8F3K…</small></span><span class="r">+₫500,000<small><span class="st ok">Completed</span> Jul 16</small></span></div>
+    <div class="hrow"><span class="ic">🏧</span><span class="b">Withdrawal · Vietcombank<small>****3213 · W7Q2…</small></span><span class="r">−₫800,000<small><span class="st wait">Processing</span> Jul 16</small></span></div>
+    <div class="hrow"><span class="ic">₮</span><span class="b">Deposit · USDT TRC20<small>100 USDT @ 24,000 · 0x…89a0</small></span><span class="r">+₫2,400,000<small><span class="st ok">Completed</span> Jul 14</small></span></div>
+    <div class="hrow"><span class="ic">🏧</span><span class="b">Withdrawal · Vietcombank<small>Churn unmet</small></span><span class="r">−₫800,000<small><span class="st bad">Rejected</span> Jul 12</small></span></div>
+    <div class="link"><b>Export CSV</b> · <b>Statement (PDF)</b></div>`,
+  spec:{
+    goal:"Every deposit and withdrawal with full status trail, IDs, payout account (masked), USDT rate, coupon linkage, and balance-after.",
+    states:["list (filter deposits / withdrawals / USDT)","deposit detail","withdrawal processing (Requested → Review → Paid out) + delay notice","withdrawal rejected (reason + next action)","export CSV / PDF statement"],
+    fields:["type(deposit|withdrawal)","amount","currency","usdt_amount?","rate?","channel(bank|usdt|qr|ewallet)","account_masked","status(requested|review|completed|rejected|failed)","status_history[{status,ts}]","txn_id","coupon_id?","balance_after","otp_verified?","reject_reason?"],
+    api:"GET /history/transactions?type=&from=&to=\nGET /transactions/{id}\nGET /transactions/export?format=csv|pdf",
+    notes:["The single most-visited history page — surface it also from Wallet 'View all'.","Rejected withdrawals must say WHY and link to the fix (churn progress / KYC / payout account).","USDT rows keep both amounts + rate for disputes.","Retention 5–7 years (regulatory); export is the customer's own copy for tax / disputes."]
+  }
+},
+{
+  group:"B · Categories", id:"bets", title:"3 · Bets & Results",
+  states:["List","Bet detail (settled)","Open bets","P&L summary"],
+  render:(s)=>s===1?`
+    <div class="scr-title"><span class="x">←</span>Bet Detail</div>
+    <div class="kv"><span>Bet ID</span><span>B91K-77D2 <b>⧉</b></span></div>
+    <div class="kv"><span>Product</span><span>Sports · BTi</span></div>
+    <div class="kv"><span>Event</span><span>MU vs LIV · Over 2.5 goals</span></div>
+    <div class="kv"><span>Placed</span><span>Jul 15 · 19:30</span></div>
+    <div class="kv"><span>Stake</span><span>₫100,000 @ 1.90</span></div>
+    <div class="kv"><span>Result</span><span><span class="st ok">Won</span> · payout ₫190,000</span></div>
+    <div class="kv"><span>Settled</span><span>Jul 15 · 21:55</span></div>
+    <div class="kv"><span>Balance before / after</span><span>₫900,000 → ₫990,000</span></div>
+    <div class="kv"><span>Turnover credited</span><span>₫100,000 to bonus churn</span></div>
+    ${CTA("Dispute this bet",'ghost')}`
+  :s===2?`
+    <div class="scr-title"><span class="x">←</span>Open Bets</div>
+    <div class="scr-step">Not settled yet</div>
+    <div class="hrow"><span class="ic">⚽</span><span class="b">MU vs LIV · Over 2.5<small>Kick-off 20:00 · @1.90</small></span><span class="r">₫100,000<small><span class="st wait">Live</span></small></span></div>
+    <div class="hrow"><span class="ic">🎰</span><span class="b">Sweet Bonanza · free spins<small>7 / 10 spins used</small></span><span class="r">—<small><span class="st wait">In play</span></small></span></div>
+    <div class="hint">＊ Cash-out (if offered) lives on the bet slip, not here.</div>`
+  :s===3?`
+    <div class="scr-title"><span class="x">←</span>My P&amp;L</div>
+    <div class="chips"><span class="chip">7d</span><span class="chip on">30d</span><span class="chip">90d</span><span class="chip">All</span></div>
+    <div class="ph" style="height:110px">[ Net result chart — last 30 days ]</div>
+    <div class="kv"><span>Total staked</span><span>₫12,400,000</span></div>
+    <div class="kv"><span>Total returned</span><span>₫11,150,000</span></div>
+    <div class="kv"><span>Net</span><span style="color:#b56"><b>−₫1,250,000</b></span></div>
+    <div class="kv"><span>Bets · win rate</span><span>84 · 46%</span></div>
+    <div class="hint">＊ Also feeds Responsible Gaming: loss-limit warnings reference this number.</div>`
+  :`
+    <div class="scr-title"><span class="x">←</span>Bets &amp; Results</div>
+    <div class="chips"><span class="chip on">All</span><span class="chip">Sports</span><span class="chip">Live Casino</span><span class="chip">Slots</span><span class="chip">Lottery</span><span class="chip">Open</span></div>
+    <div class="hrow"><span class="ic">⚽</span><span class="b">MU vs LIV · Over 2.5<small>Sports · B91K… · @1.90</small></span><span class="r" style="color:#2a7">+₫90,000<small><span class="st ok">Won</span> Jul 15</small></span></div>
+    <div class="hrow"><span class="ic">🃏</span><span class="b">Baccarat · Table 3 · Player<small>Live · L2M9…</small></span><span class="r" style="color:#b56">−₫200,000<small><span class="st bad">Lost</span> Jul 15</small></span></div>
+    <div class="hrow"><span class="ic">🎰</span><span class="b">Sweet Bonanza<small>Slots · 40 spins</small></span><span class="r" style="color:#2a7">+₫35,000<small><span class="st ok">Net</span> Jul 14</small></span></div>
+    <div class="hrow"><span class="ic">🎟️</span><span class="b">Lottery · Vietlott 6/45<small>Draw #1201</small></span><span class="r">−₫20,000<small><span class="st bad">No win</span> Jul 14</small></span></div>
+    <div class="link"><b>P&amp;L summary</b> · <b>Export</b></div>`,
+  spec:{
+    goal:"Every wager and its outcome across products, with the numbers needed for disputes and self-awareness (stake, odds, payout, balance before/after, turnover credited).",
+    states:["list (filter by product / open)","bet detail (settled)","open bets","P&L summary (7/30/90/all)","dispute → Live Chat with bet context"],
+    fields:["bet_id","product(sports|live|slots|lottery|cards)","provider","event|game","placed_at","stake","odds?","result(won|lost|void|open|cashout)","payout","settled_at","balance_before","balance_after","coupon_used?","turnover_credited"],
+    api:"GET /history/bets?product=&status=&from=&to=\nGET /bets/{id}\nGET /history/pnl?range=",
+    notes:["Slots / live may aggregate per session (spins, hands) with drill-down; sports / lottery are per ticket.","P&L is the data source for Responsible Gaming loss-limit checks (category 8).","Provider IDs kept for reconciliation; member sees V9 bet ID.","Retention 5–7 years."]
+  }
+},
+{
+  group:"B · Categories", id:"rewards", title:"4 · Rewards & Promotions",
+  states:["List","Active bonus detail","Expired / forfeited"],
+  render:(s)=>s===1?`
+    <div class="scr-title"><span class="x">←</span>100% First Deposit Bonus</div>
+    <div class="kv"><span>Type</span><span>Deposit match · Casino</span></div>
+    <div class="kv"><span>Granted</span><span>Jul 16 · 14:21 · ₫500,000</span></div>
+    <div class="kv"><span>Status</span><span><span class="st wait">Active</span></span></div>
+    <div class="grp">Turnover · churn ×10</div>
+    <div class="prog3"><span class="p on">₫1,250,000 / ₫5,000,000</span></div>
+    <div class="kv"><span>Expires</span><span>Jul 30 · 23:59 (14 days left)</span></div>
+    <div class="kv"><span>Eligible games</span><span>Slots · Live (excl. Baccarat)</span></div>
+    <div class="kv"><span>OTP at claim</span><span>SMS ✓</span></div>
+    ${CTA("Play eligible games")}
+    <div class="link"><b>Bonus terms</b></div>`
+  :s===2?`
+    <div class="scr-title"><span class="x">←</span>Rewards</div>
+    <div class="hrow"><span class="ic">🎁</span><span class="b">Weekend Reload 50%<small>Expired unclaimed</small></span><span class="r"><small><span class="st bad">Expired</span> Jul 8</small></span></div>
+    <div class="hrow"><span class="ic">🎁</span><span class="b">Free bet ₫50,000<small>Forfeited — withdrawal before churn met</small></span><span class="r">−₫50,000<small><span class="st bad">Forfeited</span> Jul 3</small></span></div>
+    <div class="hint">＊ Forfeit / expiry rows say WHY — this is the #1 'where did my bonus go' ticket.</div>`
+  :`
+    <div class="scr-title"><span class="x">←</span>Rewards &amp; Promotions</div>
+    <div class="chips"><span class="chip on">All</span><span class="chip">Active</span><span class="chip">Completed</span><span class="chip">Expired</span></div>
+    <div class="hrow"><span class="ic">🎁</span><span class="b">100% First Deposit Bonus<small>churn 25% · 14 days left</small></span><span class="r">+₫500,000<small><span class="st wait">Active</span> Jul 16</small></span></div>
+    <div class="hrow"><span class="ic">🎡</span><span class="b">Lucky Wheel · daily spin<small>Won 20 free spins</small></span><span class="r"><small><span class="st ok">Credited</span> Jul 15</small></span></div>
+    <div class="hrow"><span class="ic">📅</span><span class="b">Daily check-in · day 5/7<small>Streak reward at day 7</small></span><span class="r">+₫10,000<small><span class="st ok">Credited</span> Jul 15</small></span></div>
+    <div class="hrow"><span class="ic">🧧</span><span class="b">Red packet · Mid-year<small>Campaign popup</small></span><span class="r">+₫28,000<small><span class="st ok">Credited</span> Jul 10</small></span></div>
+    <div class="hrow"><span class="ic">🤝</span><span class="b">Referral reward · friend's 1st deposit<small>See Referrals</small></span><span class="r">+₫150,000<small><span class="st ok">Credited</span> Jul 9</small></span></div>
+    <div class="hrow"><span class="ic">🏆</span><span class="b">Lifetime reward · VIP gift<small>Physical gift · shipped</small></span><span class="r"><small><span class="st ok">Delivered</span> Jun 30</small></span></div>`,
+  spec:{
+    goal:"Everything the system gave back: bonuses, missions, check-in, wheel, red packets, referral rewards, lifetime gifts — with turnover progress and expiry so nothing 'disappears'.",
+    states:["list (active / completed / expired)","active bonus detail (churn progress, expiry, eligible games)","expired / forfeited with reason","completed → released to balance"],
+    fields:["promo_id","type(deposit_match|free_bet|free_spins|mission|checkin|wheel|red_packet|referral|lifetime|cash)","amount|form","granted_at","status(active|completed|expired|forfeited|pending)","turnover_required","turnover_done","expires_at","eligible_products[]","claim_otp?","forfeit_reason?"],
+    api:"GET /history/rewards?status=\nGET /rewards/{id}",
+    notes:["Every non-credit outcome carries a reason (expired unclaimed / forfeited on early withdrawal / ineligible).","Turnover progress here = same source as withdrawal 'churn unmet' rejections — never disagree.","Referral rewards appear here AND in Referrals (category 6) — same record, two views."]
+  }
+},
+{
+  group:"B · Categories", id:"security", title:"5 · Account & Security Changes",
+  states:["List","OTP audit entry"],
+  render:(s)=>s===1?`
+    <div class="scr-title"><span class="x">←</span>Security Event</div>
+    <div class="kv"><span>Action</span><span>Password changed</span></div>
+    <div class="kv"><span>Time</span><span>Jul 15 · 21:10</span></div>
+    <div class="kv"><span>Verified by</span><span>OTP · SMS to 091***233 ✓</span></div>
+    <div class="kv"><span>Attempts</span><span>1 (no failures)</span></div>
+    <div class="kv"><span>Device</span><span>iPhone 15 · V9 App · HCMC</span></div>
+    <div class="kv"><span>Effect</span><span>All sessions logged out</span></div>
+    ${CTA("Not you? Contact Live Chat",'ghost')}
+    <div class="hint">＊ Member view. Back-office audit adds full IP, OTP request timestamps, channel, failure count — never the OTP value.</div>`
+  :`
+    <div class="scr-title"><span class="x">←</span>Account &amp; Security</div>
+    <div class="scr-step">Changes to how you sign in and get verified</div>
+    <div class="hrow"><span class="ic">🔐</span><span class="b">Password changed<small>OTP · SMS ✓ · all sessions logged out</small></span><span class="r"><small>Jul 15 21:10</small></span></div>
+    <div class="hrow"><span class="ic">📱</span><span class="b">Phone number changed<small>091***233 → 099***888 · 2 OTPs ✓</small></span><span class="r"><small>Jul 12 10:04</small></span></div>
+    <div class="hrow"><span class="ic">✉️</span><span class="b">Email added &amp; verified<small>ba*****on@gmail.com · may be used as Account ID</small></span><span class="r"><small>Jul 10 18:30</small></span></div>
+    <div class="hrow"><span class="ic">👤</span><span class="b">Face ID / Passkey enabled<small>iPhone 15</small></span><span class="r"><small>Jul 10 18:35</small></span></div>
+    <div class="hrow"><span class="ic">G</span><span class="b">Google account linked<small>g***@gmail.com</small></span><span class="r"><small>Jul 9 09:12</small></span></div>
+    <div class="hrow"><span class="ic">💱</span><span class="b">Account currency set · VND<small>Locked — cannot be changed</small></span><span class="r"><small>Jul 9 09:15</small></span></div>
+    <div class="hrow"><span class="ic">🔑</span><span class="b">OTP verification · withdrawal<small>SMS · first-time payout account</small></span><span class="r"><small><span class="st ok">Passed</span> Jul 16</small></span></div>`,
+  spec:{
+    goal:"Audit trail the member can read: every change to credentials, contacts, passkeys, linked socials, currency lock — plus each OTP verification (action + channel + result, never the code). Required by the Unified OTP docx.",
+    states:["list","event detail (member view)","'not you' → Live Chat with event context"],
+    fields:["event(password_change|contact_add|contact_change|passkey_on|passkey_off|social_link|social_unlink|currency_lock|otp_verify)","ts","verified_by{mode,contact_masked}","attempts","device","effect","related_action?"],
+    api:"GET /history/security\nGET /security/events/{id}\n(back-office) GET /audit/otp?member_id=…",
+    notes:["Docx: audit log = request time, channel, result, related action, failed count, contact-change result, member ID, device/session — OTP value never stored in plain text.","Member-visible subset hides raw IP and failure forensics; those stay in the back-office audit store.","Contact changes show old → new (both masked) so the member can spot tampering."]
+  }
+},
+{
+  group:"B · Categories", id:"referral", title:"6 · Referrals",
+  states:["List","Friend detail"],
+  render:(s)=>s===1?`
+    <div class="scr-title"><span class="x">←</span>Referral Detail</div>
+    <div class="kv"><span>Friend</span><span>ng***hu</span></div>
+    <div class="kv"><span>Signed up</span><span>Jul 8 · via link ?ref=V9-AB12</span></div>
+    <div class="kv"><span>First deposit</span><span>Jul 9 · ₫300,000</span></div>
+    <div class="kv"><span>Your reward</span><span>+₫150,000 · <span class="st ok">Credited</span></span></div>
+    <div class="kv"><span>Friend's reward</span><span>+₫50,000</span></div>
+    <div class="kv"><span>Next milestone</span><span>Friend turnover ₫5M → +₫100,000</span></div>`
+  :`
+    <div class="scr-title"><span class="x">←</span>Referrals</div>
+    <div class="promo"><span class="tag">Your code</span><div style="font-size:20px;font-weight:800;letter-spacing:2px;margin:6px 0">V9-AB12</div><div class="hint" style="margin:0">3 friends · ₫150,000 earned · <b>Copy / Share</b></div></div>
+    <div class="hrow"><span class="ic">🤝</span><span class="b">ng***hu<small>Deposited Jul 9</small></span><span class="r">+₫150,000<small><span class="st ok">Credited</span></small></span></div>
+    <div class="hrow"><span class="ic">🤝</span><span class="b">tr***an<small>Signed up Jul 12 · no deposit yet</small></span><span class="r"><small><span class="st wait">Pending</span></small></span></div>
+    <div class="hrow"><span class="ic">🤝</span><span class="b">le***vy<small>Signed up Jul 14 · KYC pending</small></span><span class="r"><small><span class="st wait">Pending</span></small></span></div>
+    <div class="hint">＊ Referral codes are auto-captured from ?ref= links (sign-up decision) — this page closes the loop so members see it worked.</div>`,
+  spec:{
+    goal:"Who the member invited, where each friend is in the funnel, and what rewards resulted — the visible half of the ?ref= auto-capture decision.",
+    states:["list (code + friends + earnings)","friend detail (milestones)","reward pending → reason (no deposit / KYC)"],
+    fields:["ref_code","friend_masked","signed_up_at","first_deposit_at?","friend_status(signed_up|deposited|kyc_pending|churned)","my_reward","friend_reward","next_milestone?"],
+    api:"GET /history/referrals\nGET /referrals/{id}",
+    notes:["Same reward record as category 4 — do not double-count.","Pending rows must say what's missing (deposit / KYC) so the referrer can nudge.","Fraud flags (self-referral, same device) are back-office only; member sees 'under review'."]
+  }
+},
+{
+  group:"B · Categories", id:"kyc", title:"7 · KYC & Profile Changes",
+  states:["List","Rejected doc"],
+  render:(s)=>s===1?`
+    <div class="scr-title"><span class="x">←</span>KYC Event</div>
+    <div class="err">ID document rejected — photo blurred / corners cut off</div>
+    <div class="kv"><span>Submitted</span><span>Jul 11 · 16:40</span></div>
+    <div class="kv"><span>Reviewed</span><span>Jul 11 · 18:02</span></div>
+    <div class="kv"><span>Impact</span><span>Withdrawals paused until re-submitted</span></div>
+    ${CTA("Re-submit document")}`
+  :`
+    <div class="scr-title"><span class="x">←</span>KYC &amp; Profile</div>
+    <div class="hrow"><span class="ic">🪪</span><span class="b">Identity verified<small>National ID · level 2</small></span><span class="r"><small><span class="st ok">Approved</span> Jul 12</small></span></div>
+    <div class="hrow"><span class="ic">🪪</span><span class="b">ID document rejected<small>Blurred photo</small></span><span class="r"><small><span class="st bad">Rejected</span> Jul 11</small></span></div>
+    <div class="hrow"><span class="ic">🏦</span><span class="b">Bank account added<small>Vietcombank ****3213 · name matched</small></span><span class="r"><small><span class="st ok">Verified</span> Jul 10</small></span></div>
+    <div class="hrow"><span class="ic">₮</span><span class="b">USDT address added<small>TRC20 · 0x…89a0</small></span><span class="r"><small><span class="st ok">Saved</span> Jul 10</small></span></div>
+    <div class="hrow"><span class="ic">👤</span><span class="b">Profile completed<small>Full name · DOB (for promo claim)</small></span><span class="r"><small>Jul 9</small></span></div>
+    <div class="hint">＊ Withdrawal blocks always trace back to a row here — link both ways.</div>`,
+  spec:{
+    goal:"Identity / profile / payout-account changes and their review outcomes — the answer to 'why is my withdrawal blocked'.",
+    states:["list","rejected document (reason + re-submit)","approved","payout account added / removed"],
+    fields:["event(kyc_submit|kyc_result|profile_update|bank_add|bank_remove|usdt_add|usdt_remove)","ts","status(pending|approved|rejected)","reason?","impact?"],
+    api:"GET /history/kyc\nPOST /kyc/resubmit",
+    notes:["Rejections carry a human reason and a one-tap re-submit.","Payout account rows link to first-time-account withdrawal OTP (category 5)."]
+  }
+},
+{
+  group:"B · Categories", id:"rg", title:"8 · Responsible Gaming",
+  states:["List","Limit change · cooling-off"],
+  render:(s)=>s===1?`
+    <div class="scr-title"><span class="x">←</span>Limit Change</div>
+    <div class="kv"><span>Deposit limit</span><span>₫5,000,000 → ₫3,000,000 / week</span></div>
+    <div class="kv"><span>Requested</span><span>Jul 14 · 22:10</span></div>
+    <div class="kv"><span>Effective</span><span><span class="st ok">Immediately</span> (decreases apply now)</span></div>
+    <div class="hint">＊ Increases apply after a 24-hour cooling-off; decreases apply immediately (regulatory pattern).</div>
+    ${CTA("Manage limits",'ghost')}`
+  :`
+    <div class="scr-title"><span class="x">←</span>Responsible Gaming</div>
+    <div class="scr-step">Your limits, breaks and reminders</div>
+    <div class="hrow"><span class="ic">🛡️</span><span class="b">Deposit limit lowered<small>₫5M → ₫3M / week · effective now</small></span><span class="r"><small>Jul 14</small></span></div>
+    <div class="hrow"><span class="ic">⏱️</span><span class="b">Session reminder<small>You've played 2 hours today</small></span><span class="r"><small>Jul 13</small></span></div>
+    <div class="hrow"><span class="ic">📉</span><span class="b">Loss-limit warning · 80%<small>₫800,000 of ₫1,000,000 / month</small></span><span class="r"><small>Jul 12</small></span></div>
+    <div class="hrow"><span class="ic">⏸️</span><span class="b">Cooling-off · 7 days<small>Jun 20 – Jun 27 · completed</small></span><span class="r"><small><span class="st ok">Ended</span></small></span></div>
+    <div class="link"><b>Manage limits</b> · <b>Take a break</b> · <b>Self-exclude</b></div>`,
+  spec:{
+    goal:"Self-set limits (deposit / loss / time), changes with effective dates, cooling-off / self-exclusion periods, and system reminders — the compliance record the member owns.",
+    states:["list","limit change (decrease now / increase after 24h)","cooling-off active / ended","self-exclusion (locked account view)","reminder shown"],
+    fields:["event(limit_set|limit_change|cooloff|self_exclude|reminder|warning)","limit_type(deposit|loss|time)","old","new","period","requested_at","effective_at","status"],
+    api:"GET /history/rg\nPOST /rg/limits · POST /rg/cooloff · POST /rg/self-exclude",
+    notes:["Foundations lists Responsible Gaming as a legal item — this is its member-facing history.","Loss-limit warnings read from category 3 P&L; deposit limits from category 2.","Self-exclusion cannot be undone from the app during the period (Live Chat only)."]
+  }
+},
+{
+  group:"C · Reference", id:"matrix", title:"Retention & Visibility Matrix",
+  states:["Overview"],
+  render:()=>`
+    <div class="scr-title">What we keep, for how long, who sees it</div>
+    ${[["1 Login & devices","90 d member · longer audit","member + risk"],["2 Deposits & withdrawals","5–7 yrs","member + finance"],["3 Bets & results","5–7 yrs","member + ops"],["4 Rewards","life of promo + 1 yr","member + CRM"],["5 Security / OTP audit","2 yrs+ (audit)","member subset · full back-office"],["6 Referrals","life of programme","member + fraud"],["7 KYC / profile","account life + regulatory","member subset · compliance"],["8 Responsible Gaming","account life","member + compliance"],["— Notifications","30 d","Message Center (not duplicated)"]].map(r=>`<div class="hrow"><span class="b"><b>${r[0]}</b><small>${r[1]}</small></span><span class="r"><small>${r[2]}</small></span></div>`).join('')}
+    <div class="hint">＊ Numbers are proposals — confirm with legal per market (VN / TH).</div>`,
+  spec:{
+    goal:"Reference sheet: retention period and audience (member-visible vs back-office) per category.",
+    states:["reference only"],
+    fields:["category","retention","audience"],
+    api:"Config-driven; enforce with per-table TTL / archival jobs.",
+    notes:["Member-visible = what this History flow renders; back-office = audit store with raw IP, OTP internals, fraud flags.","Export (CSV / PDF) available for categories 2 and 3 at minimum.","Retention values are proposals pending legal confirmation per market."]
+  }
+},
+];
+
+/* small components used inside screens */
+function ci(n,label,tag,done){return `<div class="ci ${done?'done':''}"><span class="num">${done?'✓':n}</span><span class="g">${label}${tag?`<small>${tag}</small>`:''}</span><span style="color:#bbb">›</span></div>`}
+function tog(label,on){return `<div class="opt"><span style="flex:1">${label}</span><span style="width:40px;height:22px;border-radius:12px;border:1px solid var(--line2);background:${on?'var(--solid)':'#fff'};position:relative"><span style="position:absolute;top:2px;${on?'right:2px':'left:2px'};width:16px;height:16px;border-radius:50%;background:#fff;border:1px solid var(--line2)"></span></span></div>`}
+
+/* ---------- runtime ---------- */
+let idx=0, st=0;
+const navEl=document.getElementById('nav');
+function buildNav(){
+  let html='', lastG='';
+  screens.forEach((sc,i)=>{
+    if(sc.group!==lastG){html+=`<div class="group-title">${sc.group}</div>`;lastG=sc.group;}
+    html+=`<div class="nav ${i===idx?'active':''}" data-i="${i}"><span class="num">${i+1}</span>${sc.title}</div>`;
+  });
+  navEl.innerHTML=html;
+  navEl.querySelectorAll('.nav').forEach(n=>n.onclick=()=>{idx=+n.dataset.i;st=0;draw();});
+}
+function draw(){
+  const sc=screens[idx];
+  document.getElementById('screen').innerHTML=sc.render(st);
+  // states
+  const stWrap=document.getElementById('states');
+  stWrap.innerHTML=sc.states.map((s,i)=>`<button class="${i===st?'on':''}" data-s="${i}">${s}</button>`).join('');
+  stWrap.querySelectorAll('button').forEach(b=>b.onclick=()=>{st=+b.dataset.s;draw();});
+  document.getElementById('bread').textContent=`Screen ${idx+1} / ${screens.length} · ${sc.title}${sc.step?' · '+sc.step:''}`;
+  // spec
+  const sp=sc.spec;
+  document.getElementById('spec').innerHTML=`
+    <h2>Screen Goal</h2><p style="font-size:13px;margin:0">${sp.goal}</p>
+    <h2>States</h2><div class="stlist">${sp.states.map(x=>`<span class="pill">${x}</span>`).join('')}</div>
+    <h2>Fields</h2><div class="stlist">${sp.fields.map(x=>`<span class="pill">${x}</span>`).join('')}</div>
+    <h2>API / Data</h2><div class="api">${sp.api}</div>
+    <h2>Dev Notes</h2><ul>${sp.notes.map(x=>`<li>${x}</li>`).join('')}</ul>`;
+  buildNav();
+}
+document.getElementById('prev').onclick=()=>{if(idx>0){idx--;st=0;draw();}};
+document.getElementById('next').onclick=()=>{if(idx<screens.length-1){idx++;st=0;draw();}};
+draw();
+</script>
+<script>
+/* ---------- ✏️ 文字編輯模式：右下角開關，點字直接改；存 localStorage，重整 / 切畫面不會消失 ---------- */
+(function(){
+const FILE=location.pathname.split('/').pop()||'page';
+const KEY='wfTextEdits:'+FILE;
+const DYN=['screen','spec','bread'];                                   // draw() 重繪的區塊
+const STATIC=[['aside h1','h1'],['aside .sub','sub'],['aside .legend','legend']]; // 靜態區塊
+const dynKey=id=>id==='screen'?`d|${idx}|${st}|screen`:`d|${idx}|${id}`;
+const nodes=el=>{const w=document.createTreeWalker(el,NodeFilter.SHOW_TEXT),a=[];let n;while(n=w.nextNode())a.push(n);return a};
+const load=()=>{try{const d=JSON.parse(localStorage.getItem(KEY)||'{}');return{edits:d.edits||{},orig:d.orig||{}}}catch(e){return{edits:{},orig:{}}}};
+const persist=d=>localStorage.setItem(KEY,JSON.stringify(d));
+const fresh={};                                                        // 每個 key 的原始文字（重繪後快照）
+function applyKey(el,k){const v=load().edits[k];if(!v)return;const ns=nodes(el);for(let i=0;i<Math.min(ns.length,v.length);i++)ns[i].nodeValue=v[i]}
+function snapApply(el,k){if(!(k in fresh))fresh[k]=nodes(el).map(n=>n.nodeValue);applyKey(el,k)}
+function record(el,k){
+  const d=load(),cur=nodes(el).map(n=>n.nodeValue),o=fresh[k]||d.orig[k];
+  if(o&&cur.length===o.length&&cur.every((t,i)=>t===o[i])){delete d.edits[k];delete d.orig[k]}
+  else{d.edits[k]=cur;if(o&&!d.orig[k])d.orig[k]=o}
+  persist(d);flash('已儲存 ✓')}
+const _draw=draw;
+draw=function(){_draw();DYN.forEach(id=>{const el=document.getElementById(id);if(el)snapApply(el,dynKey(id))})};
+STATIC.forEach(([sel,k])=>{const el=document.querySelector(sel);if(el){snapApply(el,'s|'+k);el.addEventListener('input',()=>record(el,'s|'+k))}});
+DYN.forEach(id=>{const el=document.getElementById(id);if(el)el.addEventListener('input',()=>record(el,dynKey(id)))});
+draw();                                                                // 載入時套用已存的修改
+/* --- 編輯開關 --- */
+let editing=false;
+const plainOK=(()=>{const t=document.createElement('div');try{t.contentEditable='plaintext-only'}catch(e){return false}return t.contentEditable==='plaintext-only'})();
+const editables=()=>DYN.map(id=>document.getElementById(id)).concat(STATIC.map(([sel])=>document.querySelector(sel))).filter(Boolean);
+function setEditing(on){editing=on;
+  editables().forEach(el=>{if(on){el.setAttribute('contenteditable',plainOK?'plaintext-only':'true');el.setAttribute('spellcheck','false')}else{el.removeAttribute('contenteditable')}});
+  document.body.toggleAttribute('data-editing',on);
+  const b=document.getElementById('eb-toggle');b.textContent=on?'✅ 完成':'✏️ 編輯文字';b.classList.toggle('on',on);
+  flash(on?'點畫面上的字直接修改（自動儲存）':'')}
+document.addEventListener('beforeinput',e=>{if(editing&&!plainOK&&(e.inputType==='insertParagraph'||e.inputType==='insertLineBreak'))e.preventDefault()},true);
+/* --- 工具列 --- */
+const css=document.createElement('style');css.textContent=`
+#editbar{position:fixed;right:14px;bottom:14px;z-index:9999;display:flex;gap:6px;align-items:center;background:#fff;border:1px solid #d0d3d8;border-radius:10px;padding:6px 8px;box-shadow:0 4px 18px rgba(0,0,0,.14);font:12px/1.4 -apple-system,"Noto Sans TC",Arial,sans-serif}
+#editbar button{font:inherit;border:1px solid #d0d3d8;background:#fff;border-radius:7px;padding:4px 9px;cursor:pointer;color:#333}
+#editbar button:hover{border-color:#19c37d;color:#0f8a5f}
+#editbar #eb-toggle.on{background:#19c37d;border-color:#19c37d;color:#fff}
+#eb-msg{color:#0f8a5f;font-size:11px;max-width:170px}
+body[data-editing] [contenteditable]{outline:1.5px dashed #19c37d;outline-offset:3px;border-radius:3px;cursor:text}
+body[data-editing] [contenteditable]:focus{outline-style:solid}`;
+document.head.appendChild(css);
+const bar=document.createElement('div');bar.id='editbar';
+bar.innerHTML=`<button id="eb-toggle" title="開啟後直接點畫面文字修改，自動儲存在此瀏覽器">✏️ 編輯文字</button><button id="eb-copy" title="複製修改清單（原文 → 新文），可貼給 Claude 寫回 HTML">📋 複製修改</button><button id="eb-reset" title="清除此頁所有文字修改並還原">↺ 還原</button><span id="eb-msg"></span>`;
+document.body.appendChild(bar);
+document.getElementById('eb-toggle').onclick=()=>setEditing(!editing);
+document.getElementById('eb-reset').onclick=()=>{if(confirm('還原此頁所有文字修改？')){localStorage.removeItem(KEY);location.reload()}};
+document.getElementById('eb-copy').onclick=()=>{
+  const d=load();let out=`【文字修改】${FILE}\n`,cnt=0;
+  Object.keys(d.edits).forEach(k=>{const o=d.orig[k]||fresh[k]||[];(d.edits[k]||[]).forEach((t,i)=>{if(o[i]!==t){cnt++;out+=`\n${cnt}. 原：${(o[i]??'(?)').trim()}\n   改：${t.trim()}\n`}})});
+  if(!cnt)out+='（目前沒有修改）';
+  const done=()=>flash('已複製 ✓');
+  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(out).then(done,()=>fallbackCopy(out,done));else fallbackCopy(out,done)};
+function fallbackCopy(t,cb){const ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();cb()}
+let flTimer;function flash(m){const el=document.getElementById('eb-msg');if(!el)return;el.textContent=m;clearTimeout(flTimer);if(m&&m.includes('✓'))flTimer=setTimeout(()=>{el.textContent=editing?'編輯模式':''},1500)}
+})();
+</script>
+</body>
+</html>

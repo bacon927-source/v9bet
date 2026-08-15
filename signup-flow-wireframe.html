@@ -466,7 +466,7 @@ const screens = [
   }
 },
 {
-  group:"D · Login & Verify", id:"login", title:"Login",
+  group:"D · Login", id:"login", title:"Login",
   states:["Password","One-time code","Biometric / Passkey"],
   render:(s)=>`
     <div class="scr-title"><span class="x">✕</span>Login</div>
@@ -495,7 +495,7 @@ const screens = [
   }
 },
 {
-  group:"D · Login & Verify", id:"verify2", title:"Security Verification",
+  group:"E · Verification", id:"verify2", title:"Security Verification",
   states:["Both verified → choose","Only one → auto","Code entry (shared OTP)"],
   render:(s)=>s===2?`
     <div class="scr-title"><span class="x">✕</span>Enter Code</div>
@@ -524,7 +524,7 @@ const screens = [
   }
 },
 {
-  group:"D · Login & Verify", id:"contact-change", title:"Add / Change Phone·Email",
+  group:"E · Verification", id:"contact-change", title:"Add / Change Phone·Email",
   states:["Step 1 · Verify existing","Step 2 · Verify new","Done · both usable"],
   render:(s)=>s===0?`
     <div class="scr-title"><span class="x">←</span>Change Email</div>
