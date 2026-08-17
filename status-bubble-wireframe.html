@@ -145,7 +145,7 @@
   .bub{position:absolute;width:52px;height:52px;border-radius:50%;background:#fff;border:2px solid var(--solid);display:grid;place-items:center;font-size:20px;box-shadow:0 6px 16px rgba(0,0,0,.18)}
   .bub .ring{position:absolute;inset:-4px;border-radius:50%;border:3px solid #ddd;border-top-color:var(--solid);animation:spin 1.6s linear infinite}
   .bub .cnt{position:absolute;top:-6px;right:-6px;min-width:18px;height:18px;border-radius:9px;background:#b56;color:#fff;font-size:10px;display:grid;place-items:center;padding:0 4px;border:2px solid #fff}
-  .bub .lbl{position:absolute;top:56px;left:50%;transform:translateX(-50%);font-size:9px;color:#444;white-space:nowrap;background:#fff;border:1px solid var(--line);border-radius:4px;padding:0 4px}
+  .bub .lbl{position:absolute;top:56px;right:0;font-size:9px;color:#444;white-space:nowrap;background:#fff;border:1px solid var(--line);border-radius:4px;padding:0 4px}
   .bub.done{border-color:#2a7}.bub.err{border-color:#b56}
   .fab{position:absolute;right:14px;bottom:14px;width:44px;height:44px;border-radius:50%;background:var(--solid);color:#fff;display:grid;place-items:center;font-size:18px}
   .fab.camp{bottom:70px;background:#fff;color:#444;border:1px solid var(--line2)}
@@ -205,12 +205,12 @@ const screens = [
   group:"A · Bubble", id:"states", title:"Bubble States",
   states:["Hidden (nothing in flight)","Pending · spinning","Step changed · nudge","Done · tap to dismiss","Error · needs action"],
   render:(s)=>{
-    const bub=(x,y,ico,cls,ring,cnt,lbl)=>`<div class="bub ${cls||''}" style="left:${x}px;top:${y}px">${ring?'<span class="ring"></span>':''}${ico}${cnt?`<span class="cnt">${cnt}</span>`:''}${lbl?`<span class="lbl">${lbl}</span>`:''}</div>`;
-    const b= s===0?'' : s===1?bub(300,120,'🏧','',true,'','Withdrawal · Review')
-      : s===2?`<div class="ghost" style="left:300px;top:120px"></div>`+bub(240,300,'🏧','',true,'','Paid out soon')
-      : s===3?bub(300,220,'✓','done',false,'','Paid out')
-      : bub(300,220,'!','err',false,'','Action needed');
-    const hint=['No bubble when nothing is in flight — zero noise.','Appears the moment a deposit / withdrawal / KYC / claim goes pending; spinner ring = still moving.','On each status change the bubble hops to a new spot (bounded lane) + short bounce — motion draws the eye without a modal.','Green ring + ✓ · auto-hides 10 s after the member taps it (or 60 s if not).','Red ring · stays until tapped; tap opens the fix (upload proof / churn / KYC).'][s];
+    const bub=(x,y,ico,cls,ring,cnt,lbl)=>`<div class="bub ${cls||''}" style="right:${x}px;top:${y}px">${ring?'<span class="ring"></span>':''}${ico}${cnt?`<span class="cnt">${cnt}</span>`:''}${lbl?`<span class="lbl">${lbl}</span>`:''}</div>`;
+    const b= s===0?'' : s===1?bub(14,110,'🏧','',true,'','Withdrawal · Review')
+      : s===2?`<div class="ghost" style="right:14px;top:110px"></div>`+bub(14,235,'🏧','',true,'','Paid out soon')
+      : s===3?bub(14,180,'✓','done',false,'','Paid out')
+      : bub(14,180,'!','err',false,'','Action needed');
+    const hint=['No bubble when nothing is in flight — zero noise.','Appears the moment a deposit / withdrawal / KYC / claim goes pending; spinner ring = still moving.','On each status change the bubble hops to a new spot in the lane + short bounce — motion draws the eye without a modal. (Dashed circle = previous position, annotation only.)','Green ring + ✓ · auto-hides 10 s after the member taps it (or 60 s if not).','Red ring · stays until tapped; tap opens the fix (upload proof / churn / KYC).'][s];
     return `
     <div class="scr-title">Home</div>
     <div class="stage">
@@ -242,7 +242,7 @@ const screens = [
     <div class="scr-title">Home</div>
     <div class="stage">
       <div class="content">[ page content dimmed ]</div>
-      <div class="bub" style="left:300px;top:120px"><span class="ring"></span>${c[0]}</div>
+      <div class="bub" style="right:14px;top:110px"><span class="ring"></span>${c[0]}</div>
       <div class="card2"><div class="ttl"><span>${c[0]} ${c[1]}</span><span>✕</span></div>${c[2]}
         <div class="grid3" style="grid-template-columns:1fr 1fr"><span class="g on">${c[3]}</span><span class="g">${c[4]}</span></div>
         <div class="hint" style="margin:6px 0 0;text-align:center">Updates live · <b>Open in History</b></div>
@@ -264,7 +264,7 @@ const screens = [
     <div class="scr-title">Home</div>
     <div class="stage">
       <div class="content">[ page content ]</div>
-      ${s===0?`<div class="bub" style="left:300px;top:140px"><span class="ring"></span>⏳<span class="cnt">2</span><span class="lbl">2 in progress</span></div>`:`<div class="bub" style="left:300px;top:60px"><span class="ring"></span>⏳<span class="cnt">2</span></div>
+      ${s===0?`<div class="bub" style="right:14px;top:140px"><span class="ring"></span>⏳<span class="cnt">2</span><span class="lbl">2 in progress</span></div>`:`<div class="bub" style="right:14px;top:60px"><span class="ring"></span>⏳<span class="cnt">2</span></div>
       <div class="card2" style="bottom:auto;top:130px">
         <div class="ttl"><span>In progress</span><span>✕</span></div>
         <div class="li"><span class="ic">🏧</span><span class="g">Withdrawal ₫60,000<small>Review · ETA 30 min</small></span><span class="rt">›</span></div>
@@ -321,8 +321,8 @@ const screens = [
     <div class="scr-title">Rules</div>
     <div class="stage" style="height:300px">
       <div class="content">[ safe lane: right edge · y 15%–75% ]</div>
-      <div class="ghost" style="left:300px;top:50px"></div><div class="ghost" style="left:300px;top:130px"></div><div class="ghost" style="left:300px;top:210px"></div>
-      <div style="position:absolute;left:290px;top:40px;width:72px;height:240px;border:1px dashed #999;border-radius:36px"></div>
+      <div class="ghost" style="right:14px;top:50px"></div><div class="ghost" style="right:14px;top:130px"></div><div class="ghost" style="right:14px;top:210px"></div>
+      <div style="position:absolute;left:262px;top:40px;width:72px;height:240px;border:1px dashed #999;border-radius:36px"></div>
       <div class="fab camp">🎡</div><div class="fab">💬</div>
       <div style="position:absolute;left:12px;bottom:12px;font-size:10px;color:#999">bottom 25%: FAB zone — bubble never enters</div>
     </div>
