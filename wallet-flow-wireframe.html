@@ -1,0 +1,485 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>V9Bet · Wallet Flow — Wireframe</title>
+<style>
+  :root{
+    --ink:#2b2b2b; --line:#c9c9c9; --line2:#9a9a9a; --muted:#8a8a8a;
+    --paper:#ffffff; --bg:#ececed; --fill:#f3f3f4; --solid:#3a3a3a;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font:14px/1.5 -apple-system,"Noto Sans TC",Arial,sans-serif;color:var(--ink);background:var(--bg)}
+  /* ---- layout ---- */
+  .app{display:grid;grid-template-columns:260px 1fr 340px;min-height:100vh}
+  aside{background:var(--paper);border-right:1px solid var(--line);padding:16px;overflow:auto}
+  main{padding:24px;display:flex;flex-direction:column;align-items:center;gap:14px}
+  .spec{background:var(--paper);border-left:1px solid var(--line);padding:16px;overflow:auto}
+  h1{font-size:15px;margin:0 0 4px}
+  .sub{color:var(--muted);font-size:12px;margin:0 0 14px}
+  .navlist{display:flex;flex-direction:column;gap:2px}
+  .nav{display:flex;gap:8px;align-items:center;border:1px solid transparent;border-radius:6px;padding:7px 8px;cursor:pointer;font-size:13px}
+  .nav:hover{background:var(--fill)}
+  .nav.active{background:#e3e3e6;border-color:var(--line2);font-weight:600}
+  .nav .num{width:20px;height:20px;flex:0 0 20px;border:1px solid var(--line2);border-radius:50%;display:grid;place-items:center;font-size:11px;color:var(--muted)}
+  .nav.active .num{background:var(--solid);color:#fff;border-color:var(--solid)}
+  .group-title{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:14px 0 6px}
+  /* ---- phone ---- */
+  .stage{display:flex;flex-direction:column;align-items:center;gap:10px}
+  .toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:center}
+  .btn{border:1px solid var(--line2);background:#fff;border-radius:6px;padding:6px 12px;font-size:12px;cursor:pointer}
+  .btn:hover{background:var(--fill)}
+  .state-tabs{display:flex;gap:4px;border:1px solid var(--line);border-radius:8px;padding:3px;background:#fff}
+  .state-tabs button{border:0;background:none;padding:5px 10px;border-radius:6px;font-size:12px;cursor:pointer;color:var(--muted)}
+  .state-tabs button.on{background:var(--solid);color:#fff}
+  .phone{width:380px;border:2px solid var(--ink);border-radius:28px;background:var(--paper);padding:10px;box-shadow:0 6px 24px rgba(0,0,0,.12)}
+  .notch{height:20px;display:flex;justify-content:center}
+  .notch::after{content:"";width:120px;height:18px;background:var(--ink);border-radius:0 0 12px 12px}
+  .screen{height:680px;overflow:auto;border:1px solid var(--line);border-radius:18px;padding:18px;background:#fff}
+  .screen::-webkit-scrollbar{width:6px}.screen::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px}
+  .scr-title{text-align:center;font-weight:700;font-size:16px;margin:2px 0 4px;position:relative}
+  .scr-title .x{position:absolute;left:0;top:0;color:var(--muted);font-weight:400}
+  .scr-step{text-align:center;color:var(--muted);font-size:12px;margin-bottom:14px}
+  /* wireframe primitives */
+  .field{border:1px dashed var(--line2);border-radius:10px;padding:13px 14px;color:var(--muted);margin:10px 0;display:flex;justify-content:space-between;align-items:center;background:var(--fill)}
+  .field small{color:#b0b0b0}
+  .row{display:flex;gap:10px}
+  .row>*{flex:1}
+  .opt{border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin:8px 0;display:flex;align-items:center;gap:12px}
+  .opt.sel{border-color:var(--solid);border-width:2px}
+  .dot{width:18px;height:18px;border:1px solid var(--line2);border-radius:50%;flex:0 0 18px}
+  .dot.on{border-color:var(--solid);border-width:5px}
+  .sq{width:18px;height:18px;border:1px solid var(--line2);border-radius:4px;flex:0 0 18px}
+  .sq.on{background:var(--solid)}
+  .ph{height:90px;border:1px dashed var(--line2);border-radius:10px;display:grid;place-items:center;color:#b6b6b6;background:var(--fill);margin:10px 0}
+  .cta{background:var(--solid);color:#fff;text-align:center;border-radius:24px;padding:14px;margin:16px 0 8px;font-weight:600}
+  .cta.ghost{background:#fff;color:var(--muted);border:1px solid var(--line2)}
+  .cta.disabled{background:#cfcfcf;color:#fff}
+  .link{text-align:center;color:#666;font-size:13px;margin-top:8px}
+  .link b{color:var(--ink);text-decoration:underline}
+  .hint{font-size:12px;color:var(--muted);margin:6px 2px}
+  .badge{display:inline-block;font-size:10px;border:1px solid var(--line2);border-radius:4px;padding:1px 6px;color:var(--muted);vertical-align:middle;margin-left:6px}
+  .badge.req{border-color:#b56;color:#b56}
+  .otpcells{display:flex;gap:8px;justify-content:center;margin:18px 0}
+  .otpcells span{width:42px;height:52px;border:1px solid var(--line2);border-radius:8px;display:grid;place-items:center;font-size:20px;color:var(--muted)}
+  .otpcells span.f{border-color:var(--solid);border-width:2px}
+  .err{border:1px solid #c98;background:#fbf2ef;color:#a55;border-radius:8px;padding:10px 12px;font-size:12px;margin:8px 0}
+  .checklist .ci{display:flex;align-items:center;gap:12px;border:1px solid var(--line);border-radius:10px;padding:12px;margin:8px 0}
+  .checklist .ci .num{width:22px;height:22px;border:1px solid var(--line2);border-radius:50%;display:grid;place-items:center;font-size:11px;color:var(--muted);flex:0 0 22px}
+  .checklist .ci.done .num{background:var(--solid);color:#fff;border-color:var(--solid)}
+  .checklist .ci .g{flex:1}
+  .checklist .ci .g small{color:var(--muted);font-size:11px;display:block}
+  .dots{display:flex;gap:6px;justify-content:center;margin:14px 0}
+  .dots i{width:7px;height:7px;border-radius:50%;background:var(--line2)}
+  .dots i.on{background:var(--solid);width:18px;border-radius:4px}
+  .promo{border:1px dashed var(--line2);border-radius:12px;padding:14px;margin:10px 0;background:var(--fill)}
+  .promo .tag{font-size:10px;border:1px solid var(--line2);border-radius:4px;padding:1px 6px;color:var(--muted)}
+  /* social login */
+  .or{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:11px;margin:14px 0 4px}
+  .or::before,.or::after{content:"";flex:1;height:1px;background:var(--line)}
+  .socbtn{display:flex;align-items:center;gap:10px;border:1px solid var(--line2);border-radius:10px;padding:11px 14px;margin:8px 0;font-size:13px;background:#fff;cursor:pointer}
+  .socbtn .ic{width:22px;height:22px;border:1px solid var(--line2);border-radius:50%;display:grid;place-items:center;font-size:11px;color:var(--muted);flex:0 0 22px}
+  .socbtn small{margin-left:auto;color:#b0b0b0;font-size:10px}
+  .socbtn .last{margin-left:auto;font-size:9px;border:1px solid var(--solid);border-radius:4px;padding:1px 5px;color:var(--solid)}
+  .ccpop{border:1px solid var(--line2);border-radius:10px;background:#fff;box-shadow:0 6px 18px rgba(0,0,0,.08);margin:-4px 0 10px;overflow:hidden}
+  .ccpop .cc{padding:11px 14px;font-size:13px;display:flex;align-items:center;gap:8px;color:#444}
+  .ccpop .cc.on{background:var(--fill);font-weight:700}
+  .ccpop .cc small{margin-left:auto;color:#b0b0b0}
+  .mtabs{display:flex;border:1px solid var(--line2);border-radius:10px;overflow:hidden;margin:10px 0;font-size:13px;text-align:center}
+  .mtabs span{flex:1;padding:9px 0;color:var(--muted);background:var(--fill)}
+  .mtabs span.on{background:#fff;color:#222;font-weight:700;box-shadow:inset 0 -2px 0 var(--solid)}
+  .socrow .sic{position:relative}
+  .socrow .lu{position:absolute;top:-9px;left:50%;transform:translateX(-50%);font-size:8px;border:1px solid var(--solid);color:var(--solid);background:#fff;border-radius:4px;padding:0 4px;white-space:nowrap}
+  .socrow{display:flex;justify-content:center;gap:26px;margin:12px 0 4px}
+  .socrow .sic{display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer}
+  .socrow .c{width:46px;height:46px;border:1px solid var(--line2);border-radius:50%;display:grid;place-items:center;font-size:14px;font-weight:700;color:var(--muted);background:#fff}
+  .socrow small{font-size:10px;color:var(--muted)}
+  /* spec panel */
+  .spec h2{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:18px 0 6px}
+  .spec h2:first-child{margin-top:0}
+  .spec ul{margin:0;padding-left:16px}
+  .spec li{margin:4px 0;font-size:12.5px}
+  .stlist{display:flex;flex-wrap:wrap;gap:6px}
+  .pill{font-size:11px;border:1px solid var(--line2);border-radius:12px;padding:2px 9px;background:var(--fill)}
+  .api{font-family:ui-monospace,Menlo,monospace;font-size:11px;background:var(--fill);border:1px solid var(--line);border-radius:6px;padding:8px;white-space:pre-wrap;color:#555}
+  .legend{font-size:11px;color:var(--muted);border-top:1px solid var(--line);margin-top:14px;padding-top:10px}
+  .grp{font-size:11px;font-weight:700;color:#555;margin:12px 0 2px;display:flex;align-items:center;gap:6px}
+  .li{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:10px;padding:11px 12px;margin:6px 0;font-size:13px}
+  .li .ic{width:26px;height:26px;border:1px solid var(--line2);border-radius:7px;display:grid;place-items:center;font-size:13px;flex:0 0 26px;background:var(--fill)}
+  .li .g{flex:1}
+  .li .g small{display:block;color:var(--muted);font-size:11px}
+  .li .rt{color:var(--muted);font-size:12px;white-space:nowrap;text-align:right}
+  .li .rt b{color:var(--ink)}
+  .st{display:inline-block;font-size:9.5px;border:1px solid var(--line2);border-radius:4px;padding:0 5px;color:var(--muted);vertical-align:middle;margin-left:4px}
+  .st.ok{border-color:#2a7;color:#2a7}.st.bad{border-color:#b56;color:#b56}.st.wait{border-color:#c93;color:#c93}
+  .kv{display:flex;justify-content:space-between;align-items:center;font-size:12.5px;padding:8px 0;border-bottom:1px dashed var(--line)}
+  .kv span:first-child{color:var(--muted)}
+  .chips{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+  .chip{font-size:11px;border:1px solid var(--line2);border-radius:14px;padding:3px 10px;color:#666;background:#fff}
+  .chip.on{background:var(--solid);color:#fff;border-color:var(--solid)}
+  .amt{text-align:center;font-size:26px;font-weight:800;margin:6px 0 2px}
+  .amt small{display:block;font-size:11px;font-weight:400;color:var(--muted)}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:8px 0}
+  .grid3 .g{border:1px solid var(--line2);border-radius:8px;padding:9px 0;text-align:center;font-size:12.5px;background:#fff}
+  .grid3 .g.on{background:var(--solid);color:#fff;border-color:var(--solid)}
+  .pm{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:8px 0}
+  .pm .p{border:1px solid var(--line2);border-radius:10px;padding:12px 10px;text-align:center;font-size:12px;background:#fff;position:relative}
+  .pm .p.on{border:2px solid var(--solid)}
+  .pm .p .pref{position:absolute;top:-8px;left:8px;font-size:8px;border:1px solid var(--solid);border-radius:4px;padding:0 4px;background:#fff}
+  .pbar{height:7px;background:#e5e5e5;border-radius:4px;overflow:hidden;margin:6px 0}
+  .pbar i{display:block;height:100%;background:var(--solid)}
+  .promocard{border:1px solid var(--line2);border-radius:12px;overflow:hidden;margin:8px 0;background:#fff}
+  .promocard .img{height:110px;background:var(--fill);border-bottom:1px dashed var(--line2);display:grid;place-items:center;color:#b6b6b6;font-size:12px}
+  .promocard .bd{padding:10px 12px;font-size:12.5px}
+  .sheet{border:2px solid var(--solid);border-radius:14px 14px 0 0;padding:12px 14px;margin:14px -18px -18px;background:#fff;box-shadow:0 -6px 18px rgba(0,0,0,.08)}
+  .tc{font-size:11.5px;color:#555;line-height:1.55;margin:6px 0}
+  .tc ol{padding-left:18px;margin:4px 0}
+  .bigico{font-size:44px;text-align:center;margin:26px 0 8px}
+  .prog3{display:flex;gap:5px;margin:10px 0 2px}
+  .prog3 .p{flex:1;font-size:9.5px;text-align:center;padding:5px 0;border:1px solid var(--line2);border-radius:7px;color:var(--muted);background:var(--fill)}
+  .prog3 .p.on{background:var(--solid);border-color:var(--solid);color:#fff;font-weight:700}
+  .prog3 .p.done{border-color:var(--solid);color:var(--solid)}
+</style>
+</head>
+<body>
+<div class="app">
+  <!-- LEFT: flow nav -->
+  <aside>
+    <h1>Wallet Flow</h1>
+    <p class="sub">Low-fidelity wireframe · Mobile / App first<br>Wallet home · Deposit · Withdrawal (VND / THB, USDT wrapped)<br>Aligned to Jul 16 withdrawal mockup + OTP rules</p>
+    <div id="nav"></div>
+    <div class="legend">
+      Grayscale wireframe only, no visual design.<br>
+      <span class="badge req">Required</span> = mandatory ·
+      <span class="badge">app only</span> = App only<br>
+      Right panel: spec / states / API fields for Dev.
+    </div>
+  </aside>
+
+  <!-- CENTER: phone -->
+  <main>
+    <div class="toolbar">
+      <button class="btn" id="prev">← Previous</button>
+      <div class="state-tabs" id="states"></div>
+      <button class="btn" id="next">Next →</button>
+    </div>
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="screen" id="screen"></div>
+    </div>
+    <div class="hint" id="bread"></div>
+  </main>
+
+  <!-- RIGHT: spec -->
+  <div class="spec" id="spec"></div>
+</div>
+
+<script>
+/* ---------- wireframe component helpers ---------- */
+const F = (label, sub='') => `<div class="field"><span>${label}</span>${sub?`<small>${sub}</small>`:''}</div>`;
+const CTA = (t, mod='') => `<div class="cta ${mod}">${t}</div>`;
+const OPT = (t, sel=false, kind='dot') => `<div class="opt ${sel?'sel':''}"><span class="${kind} ${sel?'on':''}"></span><span style="flex:1">${t}</span></div>`;
+const SOC = (ic, t, sub='', last=false) => `<div class="socbtn"><span class="ic">${ic}</span><span>${t}</span>${last?`<span class="last">Last used</span>`:sub?`<small>${sub}</small>`:''}</div>`;
+
+/* ---------- screen definitions ---------- */
+const screens = [
+{
+  group:"A · Wallet", id:"home", title:"Wallet Home",
+  states:["Default","Bonus churn active","Withdrawal processing"],
+  render:(s)=>`
+    <div class="scr-title"><span class="x">←</span>My Wallet <span class="badge">VND</span></div>
+    <div class="amt">₫ 1,250,000<small>Total balance · <b>Withdrawable ₫800,000</b></small></div>
+    ${s===2?`<div class="err" style="border-color:#c93;background:#fdf6ea;color:#a70">Withdrawal ₫800,000 processing · Review → Payout · ETA 30 min</div>`:''}
+    <div class="grid3"><span class="g on">＋ Deposit</span><span class="g">Withdraw</span><span class="g">History</span></div>
+    ${s>=1?`<div class="grp">Bonus wallets</div>
+    <div class="li"><span class="ic">🎰</span><span class="g">Casino bonus · ₫500,000<small>churn ×10 · ₫1,250,000 / ₫5,000,000 · 14 days left</small><div class="pbar"><i style="width:25%"></i></div></span><span class="rt">›</span></div>
+    <div class="li"><span class="ic">⚽</span><span class="g">Sports free bet · ₫50,000<small>per-bet limit ₫10,000 · 3 days left</small></span><span class="rt">›</span></div>
+    <div class="hint">＊ Bonus moves to main balance when churn is met; lost bonus resets that wallet's churn.</div>`:''}
+    <div class="grp">Recent</div>
+    <div class="li"><span class="ic">💰</span><span class="g">Deposit · ACB<small>Jul 16 14:20</small></span><span class="rt">+₫500,000 <span class="st ok">✓</span></span></div>
+    <div class="li"><span class="ic">🎲</span><span class="g">Bet · MU vs LIV<small>Jul 15 19:30</small></span><span class="rt">−₫100,000</span></div>
+    <div class="link"><b>View all in History</b></div>
+    <div class="hint">＊ USDT is a deposit / withdrawal rail inside this VND wallet — no separate USDT balance.</div>`,
+  spec:{
+    goal:"Wallet home: total vs withdrawable balance (VND or THB — currency locked), quick actions, bonus wallets with churn, recent activity, processing banner.",
+    states:["default","bonus wallets w/ churn progress","withdrawal processing banner","churn unmet notice"],
+    fields:["currency(vnd|thb)","balance","withdrawable","bonus_wallets[]{product,balance,churn_x,churn_done,per_bet_limit,expires_at}","pending_withdrawal?"],
+    api:"GET /wallet → { currency, balance, withdrawable, bonus_wallets, pending }",
+    notes:["USDT wrapped: shown only as a payment method in deposit / withdrawal, converted at live rate (decision Jul 15).","Withdrawable = balance − locked bonus − pending; the same number gates the withdrawal screen.","'History' = History Flow category 2 (Money)."]
+  }
+},
+{
+  group:"B · Deposit", id:"dep-method", title:"Deposit · Method & Amount",
+  states:["Bank transfer","USDT","QR / e-wallet"],
+  render:(s)=>`
+    <div class="scr-title"><span class="x">✕</span>Banking</div>
+    <div class="mtabs"><span class="on">Deposit</span><span>Withdrawal</span></div>
+    <div class="grp">Payment options <span class="badge">?</span></div>
+    <div class="pm"><span class="p ${s===0?'on':''}"><span class="pref">Preferred</span>🏦 BANK TRANSFER</span><span class="p ${s===1?'on':''}">₮ USDT<br><small>TRC20 · ERC20</small></span><span class="p ${s===2?'on':''}">▦ QR / e-wallet<br><small>MoMo · ZaloPay · PromptPay</small></span><span class="p">💳 Card<br><small>coming soon</small></span></div>
+    <div class="grp">${s===1?'Amount (USDT)':'Deposit amount (VND)'}</div>
+    <div class="grid3">${(s===1?['10','50','100','200','500','Custom']:['50,000','100,000','200,000','500,000','1,000,000','Custom']).map((a,i)=>`<span class="g ${i===2?'on':''}">${a}</span>`).join('')}</div>
+    ${F(s===1?"Amount 10 – 5,000 USDT":"Amount 50,000 – 300,000,000", s===1?"≈ ₫2,400,000 · rate 24,000":"")}
+    <div class="grp">Apply a coupon <span class="badge">optional</span></div>
+    <div class="li"><span class="ic">🎁</span><span class="g">100% First Deposit Bonus<small>+100% up to ₫2,000,000 · churn ×10</small></span><span class="rt"><span class="sq on"></span></span></div>
+    ${CTA("Next")}`,
+  spec:{
+    goal:"Step 1: pick method (Bank preferred · USDT · QR / e-wallet), amount with presets + limits, optional coupon (Shopee-style picker), live USDT rate.",
+    states:["bank","usdt (rate + ≈ VND)","qr / e-wallet","coupon selected / none / not stackable","amount out of range error"],
+    fields:["method(bank|usdt|qr|ewallet)","amount","currency","usdt_amount?","rate?","coupon_id?"],
+    api:"GET /deposit/methods · GET /rates/usdt · GET /promotions/claimable?context=deposit\nPOST /deposit/quote { method, amount, coupon_id? } ← { pay_instructions, expires_at }",
+    notes:["Layout mirrors the Jul 16 mockup (Banking · Deposit | Withdrawal tabs · Payment Options grid with 'Preferred' tag).","Method availability is market-aware (MoMo/ZaloPay VN · PromptPay TH).","Coupon summary (deposit + bonus = total credited) shown on the confirm step (docx103/104)."]
+  }
+},
+{
+  group:"B · Deposit", id:"dep-pay", title:"Deposit · Pay & Proof",
+  states:["Bank instructions","USDT address","QR code","Upload proof"],
+  render:(s)=>s===3?`
+    <div class="scr-title"><span class="x">←</span>Upload Proof</div>
+    <div class="scr-step">Transferred? Upload the receipt so we can match it faster</div>
+    <div class="ph" style="height:150px">📎 Tap to upload receipt<br><small>screenshot / photo · JPG PNG PDF</small></div>
+    ${F("Reference / note (optional)","")}
+    ${CTA("Submit proof")}
+    <div class="link"><b>I'll do it later</b></div>`
+  :`
+    <div class="scr-title"><span class="x">←</span>${s===0?'Bank Transfer':s===1?'USDT Deposit':'Scan to Pay'}</div>
+    <div class="scr-step">Complete payment within <b>14:59</b></div>
+    ${s===0?`<div class="kv"><span>Bank</span><span>Vietcombank</span></div><div class="kv"><span>Account no.</span><span>0123 4567 8901 <b>⧉</b></span></div><div class="kv"><span>Account name</span><span>CONG TY V9 <b>⧉</b></span></div><div class="kv"><span>Amount</span><span><b>₫200,000</b> <b>⧉</b></span></div><div class="kv"><span>Transfer note</span><span><b>V9 8F3K22</b> <b>⧉</b></span></div><div class="hint">＊ Use the exact note — it's how we match your payment.</div>`
+     :s===1?`<div class="ph" style="height:130px">[ QR · TRC20 address ]</div><div class="kv"><span>Network</span><span>TRC20</span></div><div class="kv"><span>Address</span><span>TX7f…9aQ2 <b>⧉</b></span></div><div class="kv"><span>Send exactly</span><span><b>100 USDT</b></span></div><div class="kv"><span>You'll receive</span><span>≈ ₫2,400,000 <small>rate locked 15 min</small></span></div><div class="hint">＊ Wrong network = lost funds. 1 confirmation to credit.</div>`
+     :`<div class="ph" style="height:170px">[ QR · MoMo / ZaloPay / PromptPay ]</div><div class="kv"><span>Amount</span><span><b>₫200,000</b></span></div><div class="hint">＊ Open your e-wallet app and scan; auto-credited on callback.</div>`}
+    ${CTA("I have paid")}
+    <div class="link"><b>Cancel deposit</b></div>`,
+  spec:{
+    goal:"Step 2: payment instructions per method (bank details + unique note · USDT address + locked rate · QR), countdown, copy buttons, optional proof upload.",
+    states:["bank instructions (copy)","usdt address (network warning, rate lock)","qr","proof upload (optional)","quote expired → re-quote"],
+    fields:["quote_id","instructions{…}","expires_at","proof_image?"],
+    api:"POST /deposit/{quote_id}/paid · POST /deposit/{quote_id}/proof",
+    notes:["Unique transfer note per deposit is the matching key for bank transfers.","USDT rate lock 15 min; network mismatch warning is mandatory copy.","Proof upload is optional for auto-matched channels, required if unmatched after N minutes."]
+  }
+},
+{
+  group:"B · Deposit", id:"dep-status", title:"Deposit · Status",
+  states:["Pending","Credited","Failed / unmatched"],
+  render:(s)=>s===1?`
+    <div class="scr-title">Deposit credited ✓</div>
+    <div class="bigico">💰</div>
+    <div class="scr-step"><b>+₫200,000</b> credited to your wallet</div>
+    <div class="kv"><span>Coupon</span><span>100% First Deposit Bonus · <b>+₫200,000 bonus</b></span></div>
+    <div class="kv"><span>Total credited</span><span><b>₫400,000</b></span></div>
+    <div class="kv"><span>Transaction ID</span><span>8F3K-22A9 <b>⧉</b></span></div>
+    ${CTA("Start playing")}
+    <div class="link"><b>View in History</b></div>`
+  :s===2?`
+    <div class="scr-title"><span class="x">←</span>Deposit</div>
+    <div class="err">We couldn't match your transfer yet (30 min). Upload proof or contact us.</div>
+    ${CTA("Upload proof")}
+    ${CTA("Contact Live Chat",'ghost')}
+    <div class="hint">＊ Live Chat opens with this deposit's context pre-loaded.</div>`
+  :`
+    <div class="scr-title"><span class="x">←</span>Deposit</div>
+    <div class="scr-step">We're matching your payment</div>
+    <div class="prog3"><span class="p done">Paid</span><span class="p on">Matching</span><span class="p">Credited</span></div>
+    <div class="kv"><span>Amount</span><span>₫200,000</span></div>
+    <div class="kv"><span>Usually within</span><span>3 minutes</span></div>
+    <div class="kv"><span>Transaction ID</span><span>8F3K-22A9</span></div>
+    <div class="hint">＊ You can leave — we'll notify you when it's credited.</div>
+    ${CTA("Back to wallet",'ghost')}`,
+  spec:{
+    goal:"Step 3: pending (Paid → Matching → Credited), credited summary incl. coupon bonus, failed / unmatched with proof + Live Chat.",
+    states:["pending","credited (+ coupon summary)","failed / unmatched → proof / Live Chat","push + inbox on credit"],
+    fields:["txn_id","status","credited_amount","bonus_amount?","total_credited"],
+    api:"GET /deposit/{id}/status (poll / websocket)",
+    notes:["Credited amount + bonus = the same numbers as Wallet and History 2 / 4.","Unmatched after SLA → auto-notify + Live Chat context handoff."]
+  }
+},
+{
+  group:"C · Withdrawal", id:"wd-account", title:"Withdrawal · Account & Amount",
+  states:["Bank account","USDT address","Add new account","Churn unmet"],
+  render:(s)=>s===3?`
+    <div class="scr-title"><span class="x">←</span>Withdrawal</div>
+    <div class="err">Turnover requirement not yet met — ₫3,200,000 remaining on your active bonus.</div>
+    <div class="kv"><span>Withdrawable now</span><span><b>₫0</b></span></div>
+    <div class="kv"><span>Locked by bonus</span><span>₫800,000</span></div>
+    <div class="pbar"><i style="width:36%"></i></div>
+    ${CTA("View churn progress")}
+    ${CTA("Forfeit bonus & withdraw",'ghost')}
+    <div class="hint">＊ Forfeit = bonus and its winnings removed; explicit confirm.</div>`
+  :`
+    <div class="scr-title"><span class="x">✕</span>Banking</div>
+    <div class="mtabs"><span>Deposit</span><span class="on">Withdrawal</span></div>
+    <div class="ph" style="height:80px">[ Balance ₫320,000,000 · Withdrawable ₫20,000,000 · Remaining churn ₫300,000,000 ]</div>
+    <div class="grp">Payment options</div>
+    <div class="pm"><span class="p ${s!==1?'on':''}"><span class="pref">Preferred</span>🏦 BANK TRANSFER</span><span class="p ${s===1?'on':''}">₮ USDT<br><small>TRC20 · ERC20</small></span></div>
+    ${s===2?`<div class="grp">Add new account</div>${F("Bank ▾","")}${F("Account number","")}${F("Account holder","Pei Chen · locked")}<div class="hint">＊ New account = first-time use → OTP required at submit.</div>`
+     :`<div class="grp">${s===1?'USDT Address':'Bank Account Details'} <span class="link" style="display:inline;margin:0"><b>Add New ⊕</b></span></div>
+    ${s===1?OPT("Bacon1234 · TRC20 &nbsp;<small style='color:#b0b0b0'>0x******89a0</small>",true)+OPT("0xVerewDererff2… &nbsp;<small style='color:#b0b0b0'>ERC20</small>",false)
+           :OPT("ACB &nbsp;<small style='color:#b0b0b0'>1234123312341234</small>",true)+OPT("Vietcombank &nbsp;<small style='color:#b0b0b0'>1234123412343213</small>",false)+OPT("Techcombank &nbsp;<small style='color:#b0b0b0'>1111123412349966</small>",false)}`}
+    <div class="grp">${s===1?'Amount (USDT)':'Amount (VND)'}</div>
+    <div class="grid3">${(s===1?['50','100','200','500','1,000','Custom']:['50,000','60,000','100,000','150,000','200,000','300,000']).map((a,i)=>`<span class="g ${i===1?'on':''}">${a}</span>`).join('')}</div>
+    ${F(s===1?"Amount 10 – 100,000 USDT":"Amount 50,000 – 300,000","")}
+    ${CTA("Submit", s===2?'':'')}`,
+  spec:{
+    goal:"Step 1 (Jul 16 mockup): Banking › Withdrawal tab — balance / withdrawable / remaining churn, payout method (bank preferred · USDT), saved accounts or add new, amount presets, churn-unmet blocker.",
+    states:["bank account list (default)","usdt address list","add new account (holder locked to profile)","churn unmet → progress / forfeit","amount out of range / over withdrawable"],
+    fields:["method(bank|usdt)","payout_account_id | new_account{…}","amount","withdrawable","churn_remaining"],
+    api:"GET /withdrawal/context → { withdrawable, churn_remaining, accounts[] }\nPOST /withdrawal/quote { method, account, amount }",
+    notes:["Holder name locked to Personal Information (Profile & Settings decision).","Churn-unmet blocker links to bonus progress; forfeit path needs an explicit confirm.","Limits per method / market shown inline."]
+  }
+},
+{
+  group:"C · Withdrawal", id:"wd-otp", title:"Withdrawal · OTP",
+  states:["First-time account → OTP","Known account → confirm","None verified → verify new"],
+  render:(s)=>`
+    <div class="scr-title"><span class="x">←</span>Withdrawal</div>
+    <div class="kv"><span>To</span><span>${s===1?'Vietcombank ****3213 <span class="st ok">used before</span>':'ACB ****1234 <span class="st wait">first time</span>'}</span></div>
+    <div class="kv"><span>Amount</span><span><b>₫60,000</b></span></div>
+    <div class="kv"><span>Fee</span><span>₫0</span></div>
+    <div class="kv"><span>You receive</span><span><b>₫60,000</b> · ETA 30 min</span></div>
+    ${s===1?CTA("Confirm withdrawal")
+     :`<div class="sheet"><b style="font-size:14px">🔒 OTP verification required</b>
+      <div class="hint" style="margin:4px 0">${s===0?'First withdrawal to this account':'No verified contact — verify one now (serves as OTP)'}</div>
+      ${s===0?OPT("✉️ &nbsp; Send via email to c***@gmail.com",false)+OPT("📱 &nbsp; Send via SMS to 091***233",true):OPT("✉️ &nbsp; Send via Email",false)+OPT("📱 &nbsp; Send via SMS",true)+F("Email / Phone number","Required")}
+      ${CTA("Request OTP")}<div class="link"><b>Cancel</b></div></div>`}`,
+  spec:{
+    goal:"Step 2: confirm summary; OTP sheet appears ONLY when the payout account / USDT address is used for the first time (or nothing is verified yet).",
+    states:["first-time account → OTP (shared component)","known account → plain confirm","none verified → verify new inline","OTP failed → withdrawal not submitted"],
+    fields:["quote_id","first_time(bool)","stepup_token → action_token"],
+    api:"POST /withdrawal { quote_id, action_token? } → 403 OTP_REQUIRED when first_time",
+    notes:["OTP scope per Jul 16 design: first-time payout account (incl. USDT); repeat accounts skip.","Component + rules: verification-flow-wireframe.html.","Optional risk step-up (large amount / new device) can force OTP even on known accounts — flag in spec."]
+  }
+},
+{
+  group:"C · Withdrawal", id:"wd-status", title:"Withdrawal · Status",
+  states:["Processing","Paid out","Rejected","Delayed"],
+  render:(s)=>s===1?`
+    <div class="scr-title">Paid out ✓</div>
+    <div class="bigico">🏧</div>
+    <div class="scr-step"><b>₫60,000</b> sent to ACB ****1234</div>
+    <div class="kv"><span>Requested</span><span>Jul 16 · 09:02</span></div>
+    <div class="kv"><span>Paid out</span><span>Jul 16 · 09:24</span></div>
+    <div class="kv"><span>Transaction ID</span><span>W7Q2-91LM <b>⧉</b></span></div>
+    ${CTA("Back to wallet")}
+    <div class="link"><b>View in History</b></div>`
+  :s===2?`
+    <div class="scr-title"><span class="x">←</span>Withdrawal</div>
+    <div class="err">Rejected — turnover requirement not met (₫3,200,000 remaining). Amount refunded to your balance.</div>
+    ${CTA("View churn progress")}
+    ${CTA("Try again",'ghost')}
+    <div class="hint">＊ Every rejection states the reason and the fix (churn / KYC / name mismatch / limit).</div>`
+  :`
+    <div class="scr-title"><span class="x">←</span>Withdrawal</div>
+    <div class="scr-step">${s===3?'Taking longer than usual':'We\'re processing your withdrawal'}</div>
+    <div class="prog3"><span class="p done">Requested 09:02</span><span class="p on">Review</span><span class="p">Paid out</span></div>
+    <div class="kv"><span>Amount</span><span>₫60,000 → ACB ****1234</span></div>
+    <div class="kv"><span>ETA</span><span>${s===3?'<span class="st bad">over SLA</span> — we\'re on it':'within 30 min'}</span></div>
+    ${s===3?`<div class="err" style="border-color:#c93;background:#fdf6ea;color:#a70">Delay notice: bank maintenance 06:30–08:30. No action needed.</div>${CTA("Contact Live Chat",'ghost')}`:CTA("Back to wallet",'ghost')}
+    <div class="hint">＊ Balance shows this amount as pending until paid out.</div>`,
+  spec:{
+    goal:"Step 3: Requested → Review → Paid out; paid summary; rejected with reason + refund + fix; delay notice when over SLA.",
+    states:["processing","paid out","rejected (reason + refund)","delayed (over SLA → notice + Live Chat)","cancelled by member (while in Review)"],
+    fields:["txn_id","status","status_history[]","reject_reason?","eta"],
+    api:"GET /withdrawal/{id}/status · DELETE /withdrawal/{id} (only in Review)",
+    notes:["Same status trail as History 2 withdrawal detail.","Delay notice copy mirrors the mockup's Scheduled Maintenance banner.","Push + inbox on every status change."]
+  }
+},
+];
+
+/* small components used inside screens */
+function ci(n,label,tag,done){return `<div class="ci ${done?'done':''}"><span class="num">${done?'✓':n}</span><span class="g">${label}${tag?`<small>${tag}</small>`:''}</span><span style="color:#bbb">›</span></div>`}
+function tog(label,on){return `<div class="opt"><span style="flex:1">${label}</span><span style="width:40px;height:22px;border-radius:12px;border:1px solid var(--line2);background:${on?'var(--solid)':'#fff'};position:relative"><span style="position:absolute;top:2px;${on?'right:2px':'left:2px'};width:16px;height:16px;border-radius:50%;background:#fff;border:1px solid var(--line2)"></span></span></div>`}
+
+/* ---------- runtime ---------- */
+let idx=0, st=0;
+const navEl=document.getElementById('nav');
+function buildNav(){
+  let html='', lastG='';
+  screens.forEach((sc,i)=>{
+    if(sc.group!==lastG){html+=`<div class="group-title">${sc.group}</div>`;lastG=sc.group;}
+    html+=`<div class="nav ${i===idx?'active':''}" data-i="${i}"><span class="num">${i+1}</span>${sc.title}</div>`;
+  });
+  navEl.innerHTML=html;
+  navEl.querySelectorAll('.nav').forEach(n=>n.onclick=()=>{idx=+n.dataset.i;st=0;draw();});
+}
+function draw(){
+  const sc=screens[idx];
+  document.getElementById('screen').innerHTML=sc.render(st);
+  // states
+  const stWrap=document.getElementById('states');
+  stWrap.innerHTML=sc.states.map((s,i)=>`<button class="${i===st?'on':''}" data-s="${i}">${s}</button>`).join('');
+  stWrap.querySelectorAll('button').forEach(b=>b.onclick=()=>{st=+b.dataset.s;draw();});
+  document.getElementById('bread').textContent=`Screen ${idx+1} / ${screens.length} · ${sc.title}${sc.step?' · '+sc.step:''}`;
+  // spec
+  const sp=sc.spec;
+  document.getElementById('spec').innerHTML=`
+    <h2>Screen Goal</h2><p style="font-size:13px;margin:0">${sp.goal}</p>
+    <h2>States</h2><div class="stlist">${sp.states.map(x=>`<span class="pill">${x}</span>`).join('')}</div>
+    <h2>Fields</h2><div class="stlist">${sp.fields.map(x=>`<span class="pill">${x}</span>`).join('')}</div>
+    <h2>API / Data</h2><div class="api">${sp.api}</div>
+    <h2>Dev Notes</h2><ul>${sp.notes.map(x=>`<li>${x}</li>`).join('')}</ul>`;
+  buildNav();
+}
+document.getElementById('prev').onclick=()=>{if(idx>0){idx--;st=0;draw();}};
+document.getElementById('next').onclick=()=>{if(idx<screens.length-1){idx++;st=0;draw();}};
+draw();
+</script>
+<script>
+/* ---------- ✏️ 文字編輯模式：右下角開關，點字直接改；存 localStorage，重整 / 切畫面不會消失 ---------- */
+(function(){
+const FILE=location.pathname.split('/').pop()||'page';
+const KEY='wfTextEdits:'+FILE;
+const DYN=['screen','spec','bread'];                                   // draw() 重繪的區塊
+const STATIC=[['aside h1','h1'],['aside .sub','sub'],['aside .legend','legend']]; // 靜態區塊
+const dynKey=id=>id==='screen'?`d|${idx}|${st}|screen`:`d|${idx}|${id}`;
+const nodes=el=>{const w=document.createTreeWalker(el,NodeFilter.SHOW_TEXT),a=[];let n;while(n=w.nextNode())a.push(n);return a};
+const load=()=>{try{const d=JSON.parse(localStorage.getItem(KEY)||'{}');return{edits:d.edits||{},orig:d.orig||{}}}catch(e){return{edits:{},orig:{}}}};
+const persist=d=>localStorage.setItem(KEY,JSON.stringify(d));
+const fresh={};                                                        // 每個 key 的原始文字（重繪後快照）
+function applyKey(el,k){const v=load().edits[k];if(!v)return;const ns=nodes(el);for(let i=0;i<Math.min(ns.length,v.length);i++)ns[i].nodeValue=v[i]}
+function snapApply(el,k){if(!(k in fresh))fresh[k]=nodes(el).map(n=>n.nodeValue);applyKey(el,k)}
+function record(el,k){
+  const d=load(),cur=nodes(el).map(n=>n.nodeValue),o=fresh[k]||d.orig[k];
+  if(o&&cur.length===o.length&&cur.every((t,i)=>t===o[i])){delete d.edits[k];delete d.orig[k]}
+  else{d.edits[k]=cur;if(o&&!d.orig[k])d.orig[k]=o}
+  persist(d);flash('已儲存 ✓')}
+const _draw=draw;
+draw=function(){_draw();DYN.forEach(id=>{const el=document.getElementById(id);if(el)snapApply(el,dynKey(id))})};
+STATIC.forEach(([sel,k])=>{const el=document.querySelector(sel);if(el){snapApply(el,'s|'+k);el.addEventListener('input',()=>record(el,'s|'+k))}});
+DYN.forEach(id=>{const el=document.getElementById(id);if(el)el.addEventListener('input',()=>record(el,dynKey(id)))});
+draw();                                                                // 載入時套用已存的修改
+/* --- 編輯開關 --- */
+let editing=false;
+const plainOK=(()=>{const t=document.createElement('div');try{t.contentEditable='plaintext-only'}catch(e){return false}return t.contentEditable==='plaintext-only'})();
+const editables=()=>DYN.map(id=>document.getElementById(id)).concat(STATIC.map(([sel])=>document.querySelector(sel))).filter(Boolean);
+function setEditing(on){editing=on;
+  editables().forEach(el=>{if(on){el.setAttribute('contenteditable',plainOK?'plaintext-only':'true');el.setAttribute('spellcheck','false')}else{el.removeAttribute('contenteditable')}});
+  document.body.toggleAttribute('data-editing',on);
+  const b=document.getElementById('eb-toggle');b.textContent=on?'✅ 完成':'✏️ 編輯文字';b.classList.toggle('on',on);
+  flash(on?'點畫面上的字直接修改（自動儲存）':'')}
+document.addEventListener('beforeinput',e=>{if(editing&&!plainOK&&(e.inputType==='insertParagraph'||e.inputType==='insertLineBreak'))e.preventDefault()},true);
+/* --- 工具列 --- */
+const css=document.createElement('style');css.textContent=`
+#editbar{position:fixed;right:14px;bottom:14px;z-index:9999;display:flex;gap:6px;align-items:center;background:#fff;border:1px solid #d0d3d8;border-radius:10px;padding:6px 8px;box-shadow:0 4px 18px rgba(0,0,0,.14);font:12px/1.4 -apple-system,"Noto Sans TC",Arial,sans-serif}
+#editbar button{font:inherit;border:1px solid #d0d3d8;background:#fff;border-radius:7px;padding:4px 9px;cursor:pointer;color:#333}
+#editbar button:hover{border-color:#19c37d;color:#0f8a5f}
+#editbar #eb-toggle.on{background:#19c37d;border-color:#19c37d;color:#fff}
+#eb-msg{color:#0f8a5f;font-size:11px;max-width:170px}
+body[data-editing] [contenteditable]{outline:1.5px dashed #19c37d;outline-offset:3px;border-radius:3px;cursor:text}
+body[data-editing] [contenteditable]:focus{outline-style:solid}`;
+document.head.appendChild(css);
+const bar=document.createElement('div');bar.id='editbar';
+bar.innerHTML=`<button id="eb-toggle" title="開啟後直接點畫面文字修改，自動儲存在此瀏覽器">✏️ 編輯文字</button><button id="eb-copy" title="複製修改清單（原文 → 新文），可貼給 Claude 寫回 HTML">📋 複製修改</button><button id="eb-reset" title="清除此頁所有文字修改並還原">↺ 還原</button><span id="eb-msg"></span>`;
+document.body.appendChild(bar);
+document.getElementById('eb-toggle').onclick=()=>setEditing(!editing);
+document.getElementById('eb-reset').onclick=()=>{if(confirm('還原此頁所有文字修改？')){localStorage.removeItem(KEY);location.reload()}};
+document.getElementById('eb-copy').onclick=()=>{
+  const d=load();let out=`【文字修改】${FILE}\n`,cnt=0;
+  Object.keys(d.edits).forEach(k=>{const o=d.orig[k]||fresh[k]||[];(d.edits[k]||[]).forEach((t,i)=>{if(o[i]!==t){cnt++;out+=`\n${cnt}. 原：${(o[i]??'(?)').trim()}\n   改：${t.trim()}\n`}})});
+  if(!cnt)out+='（目前沒有修改）';
+  const done=()=>flash('已複製 ✓');
+  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(out).then(done,()=>fallbackCopy(out,done));else fallbackCopy(out,done)};
+function fallbackCopy(t,cb){const ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();cb()}
+let flTimer;function flash(m){const el=document.getElementById('eb-msg');if(!el)return;el.textContent=m;clearTimeout(flTimer);if(m&&m.includes('✓'))flTimer=setTimeout(()=>{el.textContent=editing?'編輯模式':''},1500)}
+})();
+</script>
+</body>
+</html>
