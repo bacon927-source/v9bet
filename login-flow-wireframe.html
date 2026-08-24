@@ -157,7 +157,7 @@ const screens = [
   group:"A · Login", id:"login", title:"Login",
   states:["Password","One-time code","Biometric / Passkey"],
   render:(s)=>`
-    <div class="scr-title"><span class="x">✕</span>Login</div>
+    <div class="scr-title"><span class="x">✕</span>Login<span class="x" style="left:auto;right:0;font-size:13px;text-decoration:underline;color:#444">Sign Up</span></div>
     <div class="ph" style="height:64px">[ V9 Logo ]</div>
     <div class="socrow" style="margin-top:16px">
       <div class="sic"><span class="lu">Last used</span><span class="c">G</span><small>Google</small></div>
@@ -166,20 +166,19 @@ const screens = [
     </div>
     <div class="or">or login with</div>
     <div class="mtabs"><span class="${s===1?'on':''}">One-time code</span><span class="${s===1?'':'on'}">Password</span></div>
-    ${F("Account ID / Email / Phone")}
+    ${s===1?F("Email / Phone number","Required"):F("Account ID / Email / Phone")}
     ${s===0?F("Password","👁")
-      :s===1?`<div class="hint">We'll send a one-time code via Zalo ZNS / SMS / LINE / WhatsApp / Email — no password needed.</div>`
+      :s===1?`<div class="hint">＊ Enter the email or phone on your account — we'll send a 6-digit code (Email / SMS). Account ID can't receive a code.</div>`
       :`<div class="ph" style="height:100px">👤 Face ID / Passkey (WebAuthn)</div>`}
     <div class="opt"><span class="sq on"></span><span style="flex:1">Keep me logged in</span></div>
     ${CTA(s===1?"Send code":"Login")}
-    <div class="link"><b>Forgot password?</b></div>
-    <div class="link">No account? <b>Sign Up</b></div>`,
+    <div class="link"><b>Forgot password?</b></div>`,
   spec:{
     goal:"Login home: social icon row on top (last-used badge), then One-time code | Password tabs; biometric/passkey for returning devices.",
-    states:["password tab","one-time code tab (no password)","biometric / passkey (WebAuthn)","social icon tap → Google / LINE / X branch","lockout → Security screen","risk trigger → step-up verification"],
+    states:["password tab","one-time code tab (identifier = email / phone only; no password)","biometric / passkey (WebAuthn)","social icon tap → Google / LINE / X branch","lockout → Security screen","risk trigger → step-up verification"],
     fields:["identifier(account_id|email|phone, single field)","method(password|one_time_code|passkey|google|line|x)","secret? / otp_code? / webauthn_assertion?","remember(bool)"],
     api:"POST /auth/login { identifier, method, ... }\n← { session, requires_stepup? }\nerr: LOCKED / RISK_STEPUP / INVALID_CREDENTIALS",
-    notes:["Social row promoted to the top; 'Last used' badge above the provider icon reduces trial-and-error.","'Forgot account' removed — the link is password recovery only (see Recovery).","'Keep me logged in' explicit — high-frequency bettors feel session expiry the most.","Analytics: login event carries the method param, mirrors sign_up."]
+    notes:["Social row promoted to the top; 'Last used' badge above the provider icon reduces trial-and-error.","Sign Up entry at the top-RIGHT of the title bar (Jul 16); bottom 'No account?' link removed.","'Forgot account' removed — the link is password recovery only (see Recovery).","One-time code tab swaps the identifier field to Email / Phone only — an Account ID has no inbox, so it cannot receive a code (Jul 16).","'Keep me logged in' explicit — high-frequency bettors feel session expiry the most.","Analytics: login event carries the method param, mirrors sign_up."]
   }
 },
 {
@@ -279,33 +278,26 @@ const screens = [
 },
 {
   group:"C · Security", id:"security", title:"Lockout & Risk Step-up",
-  states:["Locked (too many attempts)","New device → step-up","Session rules"],
+  states:["Locked (too many attempts)","New device → step-up"],
   render:(s)=>s===0?`
     <div class="scr-title"><span class="x">✕</span>Account Locked</div>
     <div class="err">Too many failed login attempts. Try again in 15:00.</div>
     <div class="scr-step">Or verify your identity to unlock now</div>
     ${CTA("Unlock via one-time code")}
     ${CTA("Contact Live Chat",'ghost')}`
-  :s===1?`
+  :`
     <div class="scr-title"><span class="x">✕</span>New Device Check</div>
     <div class="scr-step">First login from this device — quick verification</div>
     ${OPT("📱 &nbsp; Phone OTP +66 ****1234 <small style='color:#b0b0b0'>verified</small>", true)}
     ${OPT("✉️ &nbsp; Email OTP b***@gmail.com <small style='color:#b0b0b0'>verified</small>", false)}
     ${CTA("Send OTP")}
-    <div class="hint">＊ Risk-triggered step-up (new device / geo change / VPN pattern) — reuses the Verification Flow.</div>`
-  :`
-    <div class="scr-title">Session Rules</div>
-    <div class="scr-step">Reference — how sessions behave</div>
-    ${tog("Keep me logged in (30 days)",true)}
-    ${tog("Re-verify for sensitive actions",true)}
-    ${tog("Single active session per device type",false)}
-    <div class="hint">＊ Sensitive actions always re-verify via the Unified OTP flow regardless of session age (rule matrix).</div>`,
+    <div class="hint">＊ Risk-triggered step-up (new device / geo change / VPN pattern) — reuses the Verification Flow.</div>`,
   spec:{
     goal:"Login-side security: attempt lockout with self-unlock, risk-triggered new-device step-up, and session policy.",
-    states:["locked (cooldown timer)","self-unlock via OTP","new device / risk → step-up OTP","session policy reference"],
+    states:["locked (cooldown timer)","self-unlock via OTP","new device / risk → step-up OTP"],
     fields:["lock_until","risk_flags[]","device_id","session_ttl"],
     api:"err: LOCKED { retry_after } / RISK_STEPUP → open step-up sheet\nPOST /auth/stepup/* (see Verification Flow)",
-    notes:["Lockout: N failed attempts → cooldown; self-unlock via OTP beats waiting (fewer Live Chat tickets).","Step-up reuses the Verification Flow sheet — one component.","Session: 'Keep me logged in' is explicit; sensitive actions re-verify regardless (docx rule matrix)."]
+    notes:["Lockout: N failed attempts → cooldown; self-unlock via OTP beats waiting (fewer Live Chat tickets).","Step-up reuses the Verification Flow sheet — one component.","Session policy (keep-logged-in, auto log out, re-verify for sensitive actions) lives in Profile & Settings › Security — not duplicated here (Jul 16)."]
   }
 },
 ];

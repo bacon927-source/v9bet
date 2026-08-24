@@ -161,7 +161,7 @@ const screens = [
     <div class="scr-step">Source: Unified OTP docx + design mockups (Jul 16)</div>
     <div class="grp">Entry points that require OTP</div>
     <div class="checklist">
-      ${ci(1,"First-time add phone / email","from Profile",false)}
+      ${ci(1,"First-time add phone / email","from Profile · 🎁 +10 points",false)}
       ${ci(2,"Add secondary contact","verify existing first",false)}
       ${ci(3,"Change phone / email","verify current first · same type",false)}
       ${ci(4,"Change password","2FA · no old password",false)}
@@ -179,7 +179,7 @@ const screens = [
     states:["reference only"],
     fields:["email_status(verified|not)","phone_status(verified|not)","action(add_first|add_secondary|change_contact|change_password|withdrawal|promo_claim|forgot_password)"],
     api:"Rule matrix enforced server-side on every protected action.",
-    notes:["OTP modes this release = Email / SMS only (Select Verification Mode). Zalo ZNS / LINE / WhatsApp delivery = phase 2.","Docx said change password / withdrawal are NOT allowed with no verified contact — the Jul 16 design supersedes this: inline first-time verification serves as the OTP everywhere.","Component params (design): 6-digit code · resend countdown 32s · after 3rd resend the cooldown escalates to 03:00 · 'Invalid OTP entered' error state · masked contacts (091***233 / ta***@gmail.com) · iOS SMS autofill.","Audit log per docx: request time, channel, result, action, attempts, member ID — never the OTP value in plain text."]
+    notes:["Reward (Jul 16): completing first-time add phone / email earns +10 points — credited once per contact type per member (anti-abuse), recorded in History category 4 (Rewards).","OTP modes this release = Email / SMS only (Select Verification Mode). Zalo ZNS / LINE / WhatsApp delivery = phase 2.","Docx said change password / withdrawal are NOT allowed with no verified contact — the Jul 16 design supersedes this: inline first-time verification serves as the OTP everywhere.","Component params (design): 6-digit code · resend countdown 32s · after 3rd resend the cooldown escalates to 03:00 · 'Invalid OTP entered' error state · masked contacts (091***233 / ta***@gmail.com) · iOS SMS autofill.","Audit log per docx: request time, channel, result, action, attempts, member ID — never the OTP value in plain text."]
   }
 },
 {
@@ -219,18 +219,20 @@ const screens = [
     <div class="scr-title"><span class="x">✕</span>Verify Phone Number</div>
     ${F("+84 ▾ &nbsp; Phone number","Required")}
     ${CTA("Get OTP",'disabled')}
+    <div class="hint">🎁 Verify your number and earn <b>+10 points</b></div>
     <div class="hint">＊ Get OTP enables once the number is valid. This screen is also the Profile first-time input — after saving, the phone number has no self-serve edit (change flow / Customer Service only).</div>`
   :`
     <div class="scr-title"><span class="x">✕</span>Verify Email</div>
     ${F("Email","Required")}
     <div class="hint">Verified Email may be used as Account ID.</div>
+    <div class="hint">🎁 Verify your email and earn <b>+10 points</b></div>
     ${CTA("Get OTP")}`,
   spec:{
     goal:"Enter-and-verify a new contact: used by Profile first-time add AND by any entry point when nothing is verified yet (the verification serves as the OTP).",
     states:["phone input (+84, Get OTP disabled until valid)","email input","format invalid inline error","contact already used error","→ OTP code screens"],
     fields:["contact_type(phone|email)","new_contact","country_code(+84|+66)"],
     api:"POST /auth/otp/first-time { contact_type, new_contact }\n← { stepup_token, otp_sent:true }\nerr: INVALID_FORMAT / CONTACT_IN_USE",
-    notes:["Design shows +84 (VN); country picker limited to TH +66 / VN +84 per sign-up decision.","Verified email can double as Account ID (design note).","On success the contact is saved as Verified and the original flow resumes."]
+    notes:["Design shows +84 (VN); country picker limited to TH +66 / VN +84 per sign-up decision.","Verified email can double as Account ID (design note).","On success the contact is saved as Verified, +10 points are credited (once per contact type per member — no repeat on change / re-verify), and the original flow resumes.","Points credit lands in History 4 (Rewards); balance surfaces in loyalty / points display."]
   }
 },
 {

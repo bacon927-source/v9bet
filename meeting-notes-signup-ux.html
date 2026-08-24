@@ -43,7 +43,9 @@
       <li>表單只有三件事：<b>📱 Phone number｜✉️ Email 分頁</b> → 帳號欄位 → <b>Password</b>（👁 顯示切換）→ 21+/Terms 勾選。</li>
       <li>電話分頁輸入數字 → 彈出國碼選擇，<b>只有 🇹🇭 泰國 +66 / 🇻🇳 越南 +84</b>（依語系/geo-IP 預設）。在電話分頁貼上 email 會自動切到 Email 分頁。</li>
       <li><b>推薦碼移出註冊頁</b>（原欄位由密碼取代）。</li>
-      <li><b>Account ID 放回註冊表單</b>（07-16）：獨立的登入帳號名，註冊時設定（檢查重複，err ACCOUNT_ID_TAKEN）；忘記密碼 OTP 通過後會顯示；已驗證的 Email 也可當 Account ID 用。登入欄位同時接受 <b>Account ID / Email / 電話</b>。</li>
+      <li><s>Account ID 放回註冊表單</s> → <b>最終（07-16 晚）：註冊表單不收 Account ID 也不收密碼</b>——註冊只有 phone/email＋OTP。<b>Account ID 改為系統自動產生</b>（如 AHHHHHH）：個人資料唯讀顯示、忘記密碼 OTP 後顯示、已驗證 Email 也可當 Account ID；登入欄位仍接受 Account ID / Email / 電話。<b>密碼改為選配</b>：Setup Step 2「Set a password」（要用密碼登入才設）；沒設密碼就用一次性驗證碼／社群／Passkey 登入。</li>
+      <li><b>版面（07-16）</b>：Sign Up 頁社群 icon 移到最上方（同 Login 版式），下方「or sign up with」再接 Phone/Email 分頁；<b>標題列互相連結</b>——Sign Up 頁左上角放 Login 入口（✕ 移右上）、Login 頁右上角放 Sign Up 入口，兩頁底部的互連文字連結移除；Welcome 頁優惠卡移除 Claim now（改註記 auto-applied at first deposit，主 CTA 只留 Go to deposit）。</li>
+      <li><b>社群 Complete Setup 不再重複問 21+/Terms</b>（07-16）：Sign Up 頁社群 icon 下方註明「繼續即代表已滿 21 歲並同意條款」，點 icon 那一下就是同意紀錄（時間戳＋條款版本）；Complete Setup 只剩幣別一項。</li>
     </ul>
     <p class="why">歷程：原本國碼+電話+推薦碼 → 改單一欄位自動判斷 → 最終定案加回明確的雙分頁（單一欄位邏輯保留在偵測行為）。</p>
   </div>
@@ -84,6 +86,7 @@
       <li><b>同類型規則</b>：改 Email 第一步 OTP 只能發到舊 Email（電話 OTP 不能代替）；改電話同理。新聯絡方式兩段 OTP 都通過才生效。</li>
       <li>無驗證聯絡方式：改密碼／提款 = <b>不允許</b>；領優惠／首次綁定 = 現場輸入並驗證新聯絡方式後繼續。</li>
       <li>忘記密碼：不得在驗證成功前洩漏帳號是否存在；用於復原的聯絡方式不自動變 Verified（待業務確認）。</li>
+      <li><b>+10 points 獎勵</b>（07-16）：首次綁定並驗證電話/Email 完成後獎勵 10 點——每人每種聯絡方式只發一次（防重複領取；換綁/重驗不再發），入帳記在 History 第 4 類（Rewards）。</li>
       <li>OTP 通則：有效 5–10 分鐘；系統需定義過期/錯誤上限/重發間隔/重發上限/失敗後動作/重用政策/<b>信任期</b>；OTP 綁定 會員+聯絡方式+動作+session；稽核日誌不存明碼。</li>
     </ul>
     <p class="files">verification-flow-wireframe.html · 8 個畫面 · 含編輯模式 · 頻道層（Zalo/SMS/LINE/WhatsApp）是 Phone OTP 底下的遞送細節</p>
@@ -128,11 +131,13 @@
     <h3><span class="n">8</span>Setup 設定頁 = 三步驟＋頂部進度條</h3>
     <table>
       <tr><th>步驟</th><th>內容</th><th>可否跳過</th></tr>
-      <tr><td><b>Step 1 · Required</b></td><td>帳戶幣別、Profile + bank/USDT</td><td><span class="tag w">不可 pass</span></td></tr>
+      <tr><td><b>Step 1 · Required</b></td><td>帳戶幣別、<b>個人資料</b>、<b>收款帳戶（Bank/USDT）</b>——後兩項 07-16 由「Profile + bank/USDT」拆成獨立項目與獨立畫面（收款帳戶持有人姓名鎖定為個人資料的姓名）</td><td><span class="tag w">不可 pass</span></td></tr>
       <tr><td><b>Step 2 · Security</b></td><td>Face ID / biometric / passkey、備援 Email、密碼/PIN（註冊已設，此處為修改）</td><td><span class="tag k">可 pass</span></td></tr>
       <tr><td><b>Step 3 · Preferences</b></td><td>通知權限、主題/語言</td><td><span class="tag k">可 pass</span></td></tr>
     </table>
     <p><b>教學（Interactive tutorial）與 App 下載移出清單</b> —— Setup 完成後在下一頁（Tutorial &amp; App 單一頁）一起呈現，之後才是 Welcome + Offers。</p>
+    <p><b>頂部改為獎勵進度條</b>（07-16）：Setup 總覽和每個子畫面最上方顯示「🎁 Setup rewards · n / 100 points」——<b>9 項 × 10 點 ＋ 全部完成再送 10 點 = 100 點</b>；每個項目列尾標「+10 pts」。點數入帳記在 History 第 4 類，每項只發一次。三步驟分段指示保留在其下。</p>
+    <p><b>新增第 9 項：Social message ID</b>（Step 3 可跳過）——LINE（TH）／Telegram（intl）／Zalo（VN）擇一填 ID，供客服接手與活動觸達使用；<b>不是登入方式、也不是驗證錨點</b>，儲存即代表該管道的聯絡同意，可隨時在 Settings 清除。</p>
   </div>
 
   <h2>五、History（客人做過什麼的紀錄）— 07-16</h2>

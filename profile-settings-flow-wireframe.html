@@ -174,9 +174,9 @@ const screens = [
   render:(s)=>`
     <div class="scr-title"><span class="x">←</span>Settings</div>
     <div class="scr-step">Home › Profile › Settings</div>
-    ${s===0?`<div class="setupcard"><b>Complete your setup</b> <span class="st wait">3 / 7</span>
+    ${s===0?`<div class="setupcard"><b>Complete your setup</b> <span class="st wait">🎁 30 / 100 pts</span>
       <div class="bar"><i></i></div>
-      <div class="hint" style="margin:0 0 6px">You skipped these during sign-up — finish anytime, in any order</div>
+      <div class="hint" style="margin:0 0 6px">You skipped these during sign-up — each one earns +10 points, finish anytime</div>
       <div class="li"><span class="ic">👤</span><span class="g">Face ID / biometric / passkey<small>Step 2 · Security</small></span><span class="rt"><b>Set up ›</b></span></div>
       <div class="li"><span class="ic">✉️</span><span class="g">Add recovery email<small>Step 2 · Security · also usable as Account ID</small></span><span class="rt"><b>Add ›</b></span></div>
       <div class="li"><span class="ic">🔔</span><span class="g">Notification permission<small>Step 3 · Preferences</small></span><span class="rt"><b>Allow ›</b></span></div>
@@ -400,8 +400,8 @@ const screens = [
   render:()=>`
     <div class="scr-title">Setup ↔ Settings</div>
     <div class="scr-step">Everything entered at sign-up or setup can be reviewed here — same screen, two entry points</div>
-    <div class="hint">＊ Sign-up fields (Account ID · phone / email · password) and every Setup item are all re-viewable in Settings / Personal Information. Read-only after the fact: currency 🔒 · name / DOB / nationality after KYC 🔒 · verified phone (change via same-type OTP only).</div>
-    ${[["Step 1","Account currency","Personal Info · locked 🔒","cannot skip"],["Step 1","Profile + bank/USDT","Personal Info · Bank/USDT","cannot skip"],["Step 2","Face ID / passkey","Security","can skip"],["Step 2","Recovery email","Phone · Email","can skip"],["Step 2","Password / PIN","Change password","set at sign-up"],["Step 3","Notifications","Preferences › Notifications","can skip"],["Step 3","Theme / language","Preferences › Theme & Language","can skip"],["Post-setup","Tutorial & app","Help › Quick tour / Get the app","optional"]].map(r=>`<div class="li"><span class="ic" style="font-size:9px">${r[0]}</span><span class="g">${r[1]}<small>→ ${r[2]}</small></span><span class="rt"><span class="st ${r[3].startsWith('cannot')?'bad':r[3]==='optional'?'':'ok'}">${r[3]}</span></span></div>`).join('')}
+    <div class="hint">＊ Sign-up fields (phone / email; Account ID auto-generated) and every Setup item are all re-viewable in Settings / Personal Information. Read-only after the fact: currency 🔒 · name / DOB / nationality after KYC 🔒 · verified phone (change via same-type OTP only).</div>
+    ${[["Step 1","Account currency","Personal Info · locked 🔒","cannot skip"],["Step 1","Personal information","Personal Info","cannot skip"],["Step 1","Bank account / USDT","Bank/USDT","cannot skip"],["Step 2","Face ID / passkey","Security","can skip"],["Step 2","Recovery email","Phone · Email","can skip"],["Step 2","Set a password (optional)","Change password","can skip"],["Step 3","Notifications","Preferences › Notifications","can skip"],["Step 3","Theme / language","Preferences › Theme & Language","can skip"],["Step 3","Social message ID","Preferences › Contact channels","can skip"],["Post-setup","Tutorial & app","Help › Quick tour / Get the app","optional"]].map(r=>`<div class="li"><span class="ic" style="font-size:9px">${r[0]}</span><span class="g">${r[1]}<small>→ ${r[2]}</small></span><span class="rt"><span class="st ${r[3].startsWith('cannot')?'bad':r[3]==='optional'?'':'ok'}">${r[3]}</span></span></div>`).join('')}
     <div class="hint">＊ Skipped items surface in the Settings 'Complete your setup' card until done; the card never nags for optional items (tutorial / app).</div>`,
   spec:{
     goal:"Reference: which Settings screen owns each Setup item, so nothing is built twice and skipped items always have a way back.",

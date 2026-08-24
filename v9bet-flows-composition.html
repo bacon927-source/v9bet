@@ -126,7 +126,7 @@ function authflow(){
    `<div class="flow">${P(6,login,'Login')}${PLUS()}${P(0,method,'Verification method (15)')}${PLUS()}${P(0,forgot,'Forgot/Recovery (17)')}</div>`;
 }
 function signup(){
- const su=BAR('Sign Up','✕')+`<div class="stp">Phone (default) | Email tabs · digits→TH/VN country code</div>`+SEG(['📱 Phone number','✉️ Email'],0)+F('Account ID','Required')+F('Phone number','Required')+F('Password','👁')+`<div class="opt"><span class="sq"></span><span style="flex:1">21+ & agree to terms</span></div>`+CTA('Sign Up','dis')+`<div style="text-align:center;font-size:10px;color:#888;margin:7px 0 3px">— or continue with —</div>`+`<div style="display:flex;justify-content:center;gap:14px;margin:3px 0 5px">${['G','LINE','X'].map(t=>`<span style="width:30px;height:30px;border:1px solid #bbb;border-radius:50%;display:inline-grid;place-items:center;font-size:${t==='LINE'?'7px':'11px'};font-weight:700;color:#777;background:#fff">${t}</span>`).join('')}</div>`+`<div style="font-size:10.5px;color:#999;margin:4px 2px">＊Phone→OTP · email→inbox code · social (G/LINE/X)→no OTP, straight to welcome</div>`+`<div style="text-align:center;font-size:11px;color:#666">Already have an account? <b>Login</b></div>`;
+ const su=BAR('Sign Up','✕')+`<div class="stp">Phone (default) | Email tabs · digits→TH/VN country code</div>`+`<div style="text-align:center;font-size:10px;color:#888;margin:7px 0 3px">icons on top · then — or sign up with —</div>`+`<div style="display:flex;justify-content:center;gap:14px;margin:3px 0 5px">${['G','LINE','X'].map(t=>`<span style="width:30px;height:30px;border:1px solid #bbb;border-radius:50%;display:inline-grid;place-items:center;font-size:${t==='LINE'?'7px':'11px'};font-weight:700;color:#777;background:#fff">${t}</span>`).join('')}</div>`+SEG(['📱 Phone number','✉️ Email'],0)+F('Phone number','Required')+`<div class="opt"><span class="sq"></span><span style="flex:1">21+ & agree to terms</span></div>`+CTA('Sign Up','dis')+`<div style="font-size:10.5px;color:#999;margin:4px 2px">＊Phone→OTP · email→inbox code · social (G/LINE/X)→no OTP, straight to welcome</div>`+`<div style="text-align:center;font-size:11px;color:#666">Already have an account? <b>Login</b></div>`;
  const otp=BAR('Verify Phone Number','✕')+`<div class="stp">We sent code verification to 091***233</div>`+`<div style="display:flex;gap:5px;justify-content:center;margin:12px 0">${'______'.split('').map((_,i)=>`<span style="width:30px;height:38px;border:${i===0?2:1}px solid ${i===0?'#3a3a3a':'#9a9a9a'};border-radius:6px;display:inline-grid;place-items:center;color:#aaa">_</span>`).join('')}</div>`+`<div style="text-align:center;font-size:10px;color:#888;margin:4px 0">Resent code in <b>00:32</b> · 3rd resend → 03:00</div>`+`<div class="err">Invalid OTP entered</div>`+CTA('Verify');
  return ANN('<b>Current site→change:</b> <span class="strike">Account ID + password + currency radio</span> → phone OTP as primary; currency moved down to new-customer wizard; shared OTP component (Email/SMS · 32s resend · 3rd→03:00; WhatsApp fallback deferred to phase 2).')+
    `<div class="flow">${P(1,su,'Sign Up')}${A()}${P(2,otp,'OTP (fail→WhatsApp)')}${A()}${BOX('Hand off to new-customer wizard')}</div>`;
@@ -134,13 +134,14 @@ function signup(){
 function wiz(){
  const prog=n=>`<div class="prog"><i style="width:${n}%"></i></div>`;
  const a=BAR('Verify phone')+`<div class="stp">OTP success</div>`+BOX('✓ Verified<br>Go straight to setup (no home detour)')+CTA('Start setup');
- const b=BAR('Setup overview')+`<div class="stp">Finish required items first</div>`+['Currency ★Required','Face ID ★app','Notifications','Profile + bank','Email Optional*','Password/PIN'].map((x,i)=>LI(x,'›',i+1)).join('')+BOX('…9 steps total');
+ const b=BAR('Setup overview')+`<div class="stp">Finish required items first</div>`+['Currency ★ +10','Personal info ★ +10','Bank / USDT ★ +10','Face ID +10','Email +10','Password +10','Social message ID +10'].map((x,i)=>LI(x,'›',i+1)).join('')+BOX('🎁 9 items × 10 pts + 10 bonus = 100 points');
  const c=BAR('Currency ★Required')+prog(11)+OPT('🇻🇳 VND <small style="color:#b0b0b0">USDT ok</small>',true)+OPT('🇹🇭 THB <small style="color:#b0b0b0">USDT ok</small>')+`<div style="font-size:10px;color:#999;margin:4px 2px">＊USDT wrapped inside VND/THB (deposit/withdraw, live rate)</div>`+CTA('Confirm');
- const d=BAR('Profile + payout')+prog(44)+BOX('★ Move profile/bank needed for<br>deposit up to here')+F('Name')+SEG(['Bank','USDT'],0)+F('Bank ▾')+F('Account no.')+CTA('Save');
- const e=BAR('🎉 Welcome aboard','')+prog(100)+`<div class="stp">Account ready + exclusive offer</div>`+`<div class="card"><b>First Deposit 100%</b><div style="font-size:10px;color:#888">churn x10</div>${CTA('Claim now','sm')}</div>`+CTA('Go to deposit');
+ const d1=BAR('Personal info')+prog(38)+BOX('★ Moved earlier — needed before deposit')+F('Full name')+F('Date of birth')+CTA('Save');
+ const d2=BAR('Bank / USDT')+prog(50)+SEG(['Bank','USDT'],0)+F('Bank ▾')+F('Account no.')+F('Holder · locked')+CTA('Save');
+ const e=BAR('🎉 Welcome aboard','')+prog(100)+`<div class="stp">Account ready + exclusive offer</div>`+`<div class="card"><b>First Deposit 100%</b><div style="font-size:10px;color:#888">churn x10 · auto-applied at first deposit</div></div>`+CTA('Go to deposit');
  return ANN('<b>Main flow (docx83–95):</b> OTP→setup wizard (progress + required-item gating)→welcome + offer→route to deposit.')+
-   `<div class="flow">${P(1,a,'OTP success')}${A()}${P(2,b,'Overview')}${A()}${P(3,c,'Required')}${A()}${P(4,d,'Profile moved earlier★')}${A()}${P(5,e,'Welcome')}</div>`+
-   ANN('<b>Key:</b> Step 4 = profile/bank that the current site stalls on at deposit, moved here → zero-friction deposit.',true);
+   `<div class="flow">${P(1,a,'OTP success')}${A()}${P(2,b,'Overview')}${A()}${P(3,c,'Required')}${A()}${P(4,d1,'Personal info★')}${A()}${P(5,d2,'Bank / USDT★')}${A()}${P(6,e,'Welcome')}</div>`+
+   ANN('<b>Key:</b> Steps 4–5 = personal info & payout (split) that the current site stalls on at deposit, moved here → zero-friction deposit.',true);
 }
 
 /* ============ Account ============ */
@@ -246,7 +247,7 @@ function fb(){
 const pages={
  prelogin:["Pre-login Home","Lucky theme+top menu+product shortcuts+live winners+sign-up CTA (M16/M0)",prelogin,[["1","Top-menu IA","Left→top menu · docx59"]]],
  authflow:["Login / Auth / Recovery","Multiple methods+PIN/biometric+past-password recovery (M02)",authflow,[["6","Login","Password/PIN/biometric · docx16"]]],
- signup:["Sign Up + OTP","Phone/Email tabs + password; shared OTP component (32s resend, 3rd→03:00) (M01)",signup,[["1","Sign Up","Phone/Email tabs · docx76"],["2","OTP","Shared component · 32s/03:00"]]],
+ signup:["Sign Up + OTP","Phone/Email tabs + OTP only (no password / Account ID at sign-up); shared OTP component (32s resend, 3rd→03:00) (M01)",signup,[["1","Sign Up","Phone/Email tabs · docx76"],["2","OTP","Shared component · 32s/03:00"]]],
  wiz:["New-customer Wizard","OTP→setup→profile moved earlier→welcome+offer (M03)",wiz,[["4","Profile moved earlier","Zero-friction deposit key · docx88"]]],
  account:["Account Home","Balance+entry to each setting; username random ID editable (M04)",account,[["—","Account Home","docx21/24/97"]]],
  profile:["Profile & Preferences","FaceID/theme/time zone/language/notifications/recovery/product prefs",profile,[["—","Profile prefs","docx24"]]],
