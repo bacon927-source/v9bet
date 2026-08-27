@@ -70,6 +70,7 @@
   .checklist .ci.done .num{background:var(--solid);color:#fff;border-color:var(--solid)}
   .checklist .ci .g{flex:1}
   .checklist .ci .g small{color:var(--muted);font-size:11px;display:block}
+  .checklist .ci .pts{background:#fef6e0;border:1px solid #eccb7a;color:#8a6d1a;font-size:10.5px;font-weight:800;border-radius:12px;padding:3px 9px;margin-left:6px;white-space:nowrap;flex:0 0 auto}
   .dots{display:flex;gap:6px;justify-content:center;margin:14px 0}
   .dots i{width:7px;height:7px;border-radius:50%;background:var(--line2)}
   .dots i.on{background:var(--solid);width:18px;border-radius:4px}
@@ -167,7 +168,6 @@ const screens = [
       <div class="sic"><span class="c" style="font-size:10px">LINE</span><small>LINE</small></div>
       <div class="sic"><span class="c">X</span><small>X</small></div>
     </div>
-    <div class="hint" style="text-align:center">＊ By continuing you confirm 21+ &amp; agree to the Terms (no re-ask later)</div>
     <div class="or">or sign up with</div>
     <div class="mtabs"><span class="${s===4?'':'on'}">📱 Phone number</span><span class="${s===4?'on':''}">✉️ Email</span></div>
     ${s===4?F("Email address","Required")
@@ -187,7 +187,7 @@ const screens = [
     states:["phone tab · default (button disabled)","phone detected → country-code picker (TH / VN)","email tab (code to inbox)","button enabled after Terms checked","Captcha shown conditionally (risk trigger)","submitting loading","phone / email already exists error","format error inline error","social icon tap → Google / LINE / X OAuth branch"],
     fields:["identifier (email | phone, single field)","country_code? (phone only, TH/VN)","accept_terms(bool)","captcha_token?","method(phone|email|google|line|x)"],
     api:"POST /register/start\n→ { identifier, country_code? (phone only), accept_terms }\n← { register_token, otp_sent:true }\nerr: PHONE_EXISTS / EMAIL_EXISTS / INVALID_PHONE / RATE_LIMITED\nGET auth.&lt;stable&gt;/oauth/{provider} → session_token (central auth domain)",
-    notes:["Tabs: Phone number (default) | Email. Detection still applies — pasting an email in the phone tab auto-switches tabs; digits pop the country-code picker (TH +66 / VN +84, default by site locale / geo-IP).","No password and no Account ID at sign-up (final, Jul 16): phone / email + OTP is the whole registration. Password is OPTIONAL — set later in Setup Step 2 for password login; until then the member logs in via one-time code / social / passkey.","Deferring language / currency / referral does NOT hurt member→customer conversion: the account is created as soon as this page + OTP (or social consent) completes. Mitigations for each deferred item — referral: auto-captured from the invite link (?ref=), manual entry stays available in Promotions for 7 days; currency: setup Step 1, and force-prompted at first deposit intent (gates deposit, not sign-up); language: auto-detected from locale / geo-IP with an always-visible switcher in the header.","Account ID is AUTO-GENERATED at registration (e.g. AHHHHHH) — never typed by the member: shown read-only in Personal Information, revealed in Forgot Password after OTP; a verified email may also be used as Account ID. Login still accepts Account ID / email / phone in one field.","Terms not checked → Sign Up disabled.","Login entry moved to the top-LEFT of the title bar (Jul 16); ✕ close moves to the right; bottom 'Login here' link removed.","Social icons promoted to the TOP of the screen (Jul 16, same layout as Login); consent line sits under the icons. Icons only (no full-width buttons): Google / LINE / X. Visibility is market-aware — hide an icon where the provider is blocked or irrelevant (e.g. LINE strongest in TH). Telegram entry removed from this screen. Apple / Facebook still excluded (policy).","All social icons go through the central verification domain (auth.&lt;stable&gt;) so public mirror rotation never breaks OAuth.","Analytics: sign_up event must carry method param (phone_otp | email | google | line | x)."]
+    notes:["Tabs: Phone number (default) | Email. Detection still applies — pasting an email in the phone tab auto-switches tabs; digits pop the country-code picker (TH +66 / VN +84, default by site locale / geo-IP).","No password and no Account ID at sign-up (final, Jul 16): phone / email + OTP is the whole registration. Password is OPTIONAL — set later in Setup Step 2 for password login; until then the member logs in via one-time code / social / passkey.","Deferring language / currency / referral does NOT hurt member→customer conversion: the account is created as soon as this page + OTP (or social consent) completes. Mitigations for each deferred item — referral: auto-captured from the invite link (?ref=), manual entry stays available in Promotions for 7 days; currency: setup Step 1, and force-prompted at first deposit intent (gates deposit, not sign-up); language: auto-detected from locale / geo-IP with an always-visible switcher in the header.","Account ID is AUTO-GENERATED at registration (e.g. AHHHHHH) — never typed by the member: shown read-only in Personal Information, revealed in Forgot Password after OTP; a verified email may also be used as Account ID. Login still accepts Account ID / email / phone in one field.","Terms not checked → Sign Up disabled.","Login entry moved to the top-LEFT of the title bar (Jul 16); ✕ close moves to the right; bottom 'Login here' link removed.","Social icons promoted to the TOP of the screen (Jul 16, same layout as Login). The 21+ / Terms checkbox below is SHARED by every method — social included: tapping an icon while it is unchecked shows an inline prompt to accept first, and the checked state is the recorded consent (timestamp + terms version). No separate consent line under the icons, and no re-ask in Complete Setup. Icons only (no full-width buttons): Google / LINE / X. Visibility is market-aware — hide an icon where the provider is blocked or irrelevant (e.g. LINE strongest in TH). Telegram entry removed from this screen. Apple / Facebook still excluded (policy).","All social icons go through the central verification domain (auth.&lt;stable&gt;) so public mirror rotation never breaks OAuth.","Analytics: sign_up event must carry method param (phone_otp | email | google | line | x)."]
   }
 },
 {
@@ -220,19 +220,13 @@ const screens = [
 },
 {
   group:"A · Sign Up", id:"social", title:"Social Sign Up / Bind",
-  states:["Complete setup (new user)","Done → You're a customer","Account exists → Bind"],
+  states:["Done → You're a customer","Account exists → Bind"],
   render:(s)=>s===0?`
-    <div class="scr-title"><span class="x">←</span>Complete Setup</div>
-    <div class="scr-step">Signed in as g***@gmail.com — a few required items left</div>
-    ${F("Account currency ▾","auto: VND")}
-    <div class="hint">＊ Only currency left — 21+ / Terms consent was already given on the Sign Up page (tapping a social icon implies agreement). Next: straight to the welcome screen.</div>
-    ${CTA("Create account")}`
-  :s===1?`
     <div class="scr-title">Welcome!</div>
     <div class="ph" style="height:110px">🎉<br><small>account created</small></div>
     <div class="scr-step" style="font-size:15px;color:#333"><b>You're now a V9 customer</b><br>Signed up with Google — no OTP needed.</div>
-    ${CTA("Start playing")}
-    ${CTA("Set up account (currency, app…)",'ghost')}`
+    ${CTA("Set up account · earn 100 points 🎁")}
+    ${CTA("Start playing",'ghost')}`
   :`
     <div class="scr-title"><span class="x">←</span>Account Found</div>
     <div class="err">This Google account / phone already matches an existing account <b>v9_user***</b>.</div>
@@ -241,11 +235,11 @@ const screens = [
     ${CTA("Use a different account",'ghost')}
     <div class="link"><b>Not you? Contact Live Chat</b></div>`,
   spec:{
-    goal:"Social sign-up (Google / LINE / X icons) via the central verification domain — NO OTP: provider consent → minimal setup → immediate 'You're now a customer' welcome. Bind flow prevents duplicate accounts.",
-    states:["provider consent (Google One Tap / LINE / X, no in-app redirect screen)","new user → minimal complete-setup","done → welcome, customer created (no OTP)","existing match → bind & login","cancelled / provider error → back to sign-up"],
-    fields:["provider(google|line|x)","session_token","currency(auto-detected)","accept_terms(implicit — recorded at social tap on Sign Up)"],
+    goal:"Social sign-up (Google / LINE / X icons) via the central verification domain — NO OTP, no separate currency-capture screen: provider consent → immediate 'You're now a customer' welcome, which pushes into the standard Setup Overview (same as phone/email members). Bind flow prevents duplicate accounts.",
+    states:["provider consent (Google One Tap / LINE / X, no in-app redirect screen)","done → welcome, customer created (no OTP)","existing match → bind & login","cancelled / provider error → back to sign-up"],
+    fields:["provider(google|line|x)","session_token","accept_terms(implicit — recorded at social tap on Sign Up)"],
     api:"GET auth.&lt;stable&gt;/oauth/{provider}\n← redirect back with session_token\nPOST /auth/social/exchange { session_token }\n← { customer_id, is_new, needs_bind }",
-    notes:["No OTP anywhere in the social flow — the provider (Google / LINE / X) already verified the identity; after Create account the user lands directly on the welcome screen as a customer.","Phone OTP is deferred: only asked later at withdrawal / promo claim (phone remains the KYC anchor).","Central verification domain: OAuth redirect URI binds ONLY to auth.&lt;stable&gt;, so public mirror rotation never breaks login.","Providers = Google / LINE / X (Telegram entry removed 2026-07-15; it stays available only as an OTP channel in TH / intl). Icon visibility is market-aware — hide a provider where blocked.","Bind flow also lives in Profile for existing username/password users.","Google One Tap auto-hides if the consent app is blocked (degrade design)."]
+    notes:["'Complete Setup (currency-only)' screen removed (Jul 16) — redundant with Setup Overview, which already collects currency as Step 1 · Required right after. Social members land on Welcome immediately.","Welcome CTA order flips for social sign-up: 'Set up account · earn 100 points' is the PRIMARY (solid) button to pull members into Setup Overview; 'Start playing' is secondary (ghost) — encourages completing setup rather than skipping straight to play.","No OTP anywhere in the social flow — the provider (Google / LINE / X) already verified the identity.","Phone OTP is deferred: only asked later at withdrawal / promo claim (phone remains the KYC anchor).","Central verification domain: OAuth redirect URI binds ONLY to auth.&lt;stable&gt;, so public mirror rotation never breaks login.","Providers = Google / LINE / X (Telegram entry removed 2026-07-15; it stays available only as an OTP channel in TH / intl). Icon visibility is market-aware — hide a provider where blocked.","Bind flow also lives in Profile for existing username/password users.","Google One Tap auto-hides if the consent app is blocked (degrade design)."]
   }
 },
 {
@@ -292,7 +286,9 @@ const screens = [
   states:["None selected","VND selected"],
   render:(s)=>`
     <div class="scr-title"><span class="x">←</span>Account Currency<span class="badge req">Required</span></div>
-    <div class="scr-step">Currency cannot be changed once set</div>
+    <div class="pbar-lbl"><span>🎁 Setup rewards</span><b>0 / 100 points</b></div>
+    <div class="pbar"><i style="width:0%"></i></div>
+    <div class="scr-step" style="margin-top:8px">Currency cannot be changed once set</div>
     ${OPT("🇻🇳 &nbsp; VND — Vietnamese Dong <small style='color:#b0b0b0'>USDT supported</small>", s===1)}
     ${OPT("🇹🇭 &nbsp; THB — Thai Baht <small style='color:#b0b0b0'>USDT supported</small>", false)}
     <div class="hint">＊ USDT is not a separate account currency — deposits & withdrawals in USDT are supported inside both VND and THB accounts (live conversion).</div>
@@ -310,6 +306,8 @@ const screens = [
   states:["Prompt","Enabled"],
   render:(s)=>`
     <div class="scr-title"><span class="x">←</span>Face ID / Biometrics / Passkey<span class="badge">app only</span></div>
+    <div class="pbar-lbl"><span>🎁 Setup rewards</span><b>30 / 100 points</b></div>
+    <div class="pbar"><i style="width:30%"></i></div>
     <div class="ph" style="height:140px">[ Face ID icon ]</div>
     <div class="scr-step">Enable for quick login with face/fingerprint</div>
     ${s===1?`<div class="opt sel"><span class="dot on"></span><span>Face ID enabled</span></div>`:''}
@@ -328,7 +326,9 @@ const screens = [
   states:["Prompt"],
   render:()=>`
     <div class="scr-title"><span class="x">←</span>Notification Settings</div>
-    <div class="scr-step">Choose which notifications you want to receive</div>
+    <div class="pbar-lbl"><span>🎁 Setup rewards</span><b>60 / 100 points</b></div>
+    <div class="pbar"><i style="width:60%"></i></div>
+    <div class="scr-step" style="margin-top:8px">Choose which notifications you want to receive</div>
     ${tog("Deposit / withdrawal status",true)}
     ${tog("Bet settlement notice",true)}
     ${tog("Exclusive offers / events",true)}
@@ -388,7 +388,9 @@ const screens = [
   states:["Phone verified (optional)","Email-only sign-up (verify required)"],
   render:(s)=>`
     <div class="scr-title"><span class="x">←</span>Add Email<span class="badge ${s===1?'req':''}">${s===1?'Required':'Optional*'}</span></div>
-    <div class="scr-step">A secondary contact for account recovery</div>
+    <div class="pbar-lbl"><span>🎁 Setup rewards</span><b>40 / 100 points</b></div>
+    <div class="pbar"><i style="width:40%"></i></div>
+    <div class="scr-step" style="margin-top:8px">A secondary contact for account recovery</div>
     ${F("Email address")}
     ${s===1?`<div class="hint">You signed up with Email; phone verification is required before claiming offers / withdrawing.</div>`
             :`<div class="hint">＊Phone verified, Email can be added later in Profile.</div>`}
@@ -407,6 +409,8 @@ const screens = [
   states:["Set password","Set PIN"],
   render:(s)=>`
     <div class="scr-title"><span class="x">←</span>Set Login Security</div>
+    <div class="pbar-lbl"><span>🎁 Setup rewards</span><b>50 / 100 points</b></div>
+    <div class="pbar"><i style="width:50%"></i></div>
     <div class="state-tabs" style="justify-content:center;margin:10px auto"><button class="${s===0?'on':''}">Password</button><button class="${s===1?'on':''}">Simple PIN</button></div>
     ${s===0?F("Password","8+ chars")+F("Re-enter password"):`<div class="otpcells"><span>_</span><span>_</span><span>_</span><span>_</span></div><div class="scr-step">Set a 4-digit PIN</div>`}
     ${CTA("Set")}`,
@@ -423,6 +427,8 @@ const screens = [
   states:["Theme","Language"],
   render:(s)=>`
     <div class="scr-title"><span class="x">←</span>Appearance</div>
+    <div class="pbar-lbl"><span>🎁 Setup rewards</span><b>70 / 100 points</b></div>
+    <div class="pbar"><i style="width:70%"></i></div>
     ${s===0?`<div class="scr-step">Choose theme</div>${OPT("🌙 Dark",true)}${OPT("☀️ Light",false)}${OPT("⚙️ Follow system settings",false)}`
             :`<div class="scr-step">Choose language</div>${OPT("繁體中文",true)}${OPT("English",false)}${OPT("Tiếng Việt",false)}${OPT("ไทย",false)}`}
     ${CTA("Continue")}`,
@@ -629,7 +635,11 @@ const screens = [
 ];
 
 /* small components used inside screens */
-function ci(n,label,tag,done){return `<div class="ci ${done?'done':''}"><span class="num">${done?'✓':n}</span><span class="g">${label}${tag?`<small>${tag}</small>`:''}</span><span style="color:#bbb">›</span></div>`}
+function ci(n,label,tag,done){
+  let pts='';
+  if(tag){ const m=tag.match(/\+(\d+)\s*pts$/); if(m){ pts=m[1]; tag=tag.replace(/\s*·?\s*\+\d+\s*pts$/,'').trim(); } }
+  return `<div class="ci ${done?'done':''}"><span class="num">${done?'✓':n}</span><span class="g">${label}${tag?`<small>${tag}</small>`:''}</span>${pts?`<span class="pts">🎁+${pts}</span>`:''}<span style="color:#bbb">›</span></div>`;
+}
 function tog(label,on){return `<div class="opt"><span style="flex:1">${label}</span><span style="width:40px;height:22px;border-radius:12px;border:1px solid var(--line2);background:${on?'var(--solid)':'#fff'};position:relative"><span style="position:absolute;top:2px;${on?'right:2px':'left:2px'};width:16px;height:16px;border-radius:50%;background:#fff;border:1px solid var(--line2)"></span></span></div>`}
 
 /* ---------- runtime ---------- */

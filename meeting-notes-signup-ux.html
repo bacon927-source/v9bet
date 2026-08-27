@@ -45,7 +45,7 @@
       <li><b>推薦碼移出註冊頁</b>（原欄位由密碼取代）。</li>
       <li><s>Account ID 放回註冊表單</s> → <b>最終（07-16 晚）：註冊表單不收 Account ID 也不收密碼</b>——註冊只有 phone/email＋OTP。<b>Account ID 改為系統自動產生</b>（如 AHHHHHH）：個人資料唯讀顯示、忘記密碼 OTP 後顯示、已驗證 Email 也可當 Account ID；登入欄位仍接受 Account ID / Email / 電話。<b>密碼改為選配</b>：Setup Step 2「Set a password」（要用密碼登入才設）；沒設密碼就用一次性驗證碼／社群／Passkey 登入。</li>
       <li><b>版面（07-16）</b>：Sign Up 頁社群 icon 移到最上方（同 Login 版式），下方「or sign up with」再接 Phone/Email 分頁；<b>標題列互相連結</b>——Sign Up 頁左上角放 Login 入口（✕ 移右上）、Login 頁右上角放 Sign Up 入口，兩頁底部的互連文字連結移除；Welcome 頁優惠卡移除 Claim now（改註記 auto-applied at first deposit，主 CTA 只留 Go to deposit）。</li>
-      <li><b>社群 Complete Setup 不再重複問 21+/Terms</b>（07-16）：Sign Up 頁社群 icon 下方註明「繼續即代表已滿 21 歲並同意條款」，點 icon 那一下就是同意紀錄（時間戳＋條款版本）；Complete Setup 只剩幣別一項。</li>
+      <li><b>21+/Terms 同意只有一處</b>（07-16 最終）：社群 icon 下方那行說明<b>移除</b>，全部方式（電話／Email／社群）<b>共用下面同一個勾選框</b>；未勾選就點社群 icon → 提示先同意，勾選狀態即同意紀錄（時間戳＋條款版本）。Complete Setup 不再重複問，只剩幣別一項。</li>
     </ul>
     <p class="why">歷程：原本國碼+電話+推薦碼 → 改單一欄位自動判斷 → 最終定案加回明確的雙分頁（單一欄位邏輯保留在偵測行為）。</p>
   </div>
@@ -136,7 +136,8 @@
       <tr><td><b>Step 3 · Preferences</b></td><td>通知權限、主題/語言</td><td><span class="tag k">可 pass</span></td></tr>
     </table>
     <p><b>教學（Interactive tutorial）與 App 下載移出清單</b> —— Setup 完成後在下一頁（Tutorial &amp; App 單一頁）一起呈現，之後才是 Welcome + Offers。</p>
-    <p><b>頂部改為獎勵進度條</b>（07-16）：Setup 總覽和每個子畫面最上方顯示「🎁 Setup rewards · n / 100 points」——<b>9 項 × 10 點 ＋ 全部完成再送 10 點 = 100 點</b>；每個項目列尾標「+10 pts」。點數入帳記在 History 第 4 類，每項只發一次。三步驟分段指示保留在其下。</p>
+    <p><b>頂部改為獎勵進度條</b>（07-16）：Setup 總覽和每一個子畫面最上方都顯示「🎁 Setup rewards · n / 100 points」——<b>9 項 × 10 點 ＋ 全部完成再送 10 點 = 100 點</b>；進度條數字會隨著走到哪一步跟著累加（Currency 0 → Personal Info 10 → Bank/USDT 20 → Face ID 30 → Email 40 → Password 50 → Notifications 60 → Theme/Language 70 → Message Channel 80），不是只出現在總覽頁。點數入帳記在 History 第 4 類，每項只發一次。三步驟分段指示保留在其下。</p>
+    <p><b>+10 pts 改成明顯的金色小標籤</b>（07-16）：原本混在灰色說明文字裡的「+10 pts」拿出來獨立做成一顆金底色的圓角 chip（🎁+10），視覺上更像一個小 tab，一眼就看到獎勵。</p>
     <p><b>新增第 9 項：Message channel（溝通渠道）</b>（Step 3 可跳過）——客人選我們用什麼管道聯絡他：</p>
     <ul>
       <li><b>四個選項</b>：📨 SMS ／ ✉️ Email ／ 💬 社群通訊（再選 WhatsApp · Zalo · Telegram · LINE）／ 🔕 不要收訊息。</li>
@@ -203,6 +204,13 @@
       <li>資料同源：進度卡 = Wallet 狀態頁 = History 明細，三個介面一份資料。</li>
     </ul>
     <p class="files">status-bubble-wireframe.html · 5 個畫面 · index 第 ⑧ 區</p>
+  </div>
+  <div class="card">
+    <h3><span class="n">W</span>社群註冊拿掉多餘的「Complete Setup」貨幣頁，Welcome 頁鼓勵去做 Setup（07-16）</h3>
+    <ul>
+      <li>社群註冊（Google/LINE/X）原本在進歡迎頁前會先問一次幣別的「Complete Setup」畫面——但緊接著的 Setup Overview Step 1 本來就會問幣別，<b>重複了</b>，直接拿掉；社群授權完成後直接進 Welcome 頁。</li>
+      <li><b>Welcome 頁按鈕順序對調</b>：「Set up account · earn 100 points 🎁」改為<b>主要按鈕（實心，在上）</b>，「Start playing」降為次要（外框，在下）——鼓勵客人先去把 Setup 做完拿滿 100 點，而不是先跳去玩。</li>
+    </ul>
   </div>
   <div class="card">
     <h3><span class="n">→</span>後續順序</h3>
