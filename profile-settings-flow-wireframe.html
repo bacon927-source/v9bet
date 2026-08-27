@@ -359,6 +359,8 @@ const screens = [
   states:["Notifications","Theme & language","Product preferences"],
   render:(s)=>s===0?`
     <div class="scr-title"><span class="x">←</span>Notifications</div>
+    <div class="grp">Message channel</div>
+    <div class="li"><span class="ic">💬</span><span class="g">How we contact you<small>Zalo · 0912***233 · default</small></span><span class="rt">Change ›</span></div>
     <div class="grp">Channels</div>
     ${tog("Push notifications", true)}
     ${tog("SMS", false)}
@@ -401,7 +403,7 @@ const screens = [
     <div class="scr-title">Setup ↔ Settings</div>
     <div class="scr-step">Everything entered at sign-up or setup can be reviewed here — same screen, two entry points</div>
     <div class="hint">＊ Sign-up fields (phone / email; Account ID auto-generated) and every Setup item are all re-viewable in Settings / Personal Information. Read-only after the fact: currency 🔒 · name / DOB / nationality after KYC 🔒 · verified phone (change via same-type OTP only).</div>
-    ${[["Step 1","Account currency","Personal Info · locked 🔒","cannot skip"],["Step 1","Personal information","Personal Info","cannot skip"],["Step 1","Bank account / USDT","Bank/USDT","cannot skip"],["Step 2","Face ID / passkey","Security","can skip"],["Step 2","Recovery email","Phone · Email","can skip"],["Step 2","Set a password (optional)","Change password","can skip"],["Step 3","Notifications","Preferences › Notifications","can skip"],["Step 3","Theme / language","Preferences › Theme & Language","can skip"],["Step 3","Social message ID","Preferences › Contact channels","can skip"],["Post-setup","Tutorial & app","Help › Quick tour / Get the app","optional"]].map(r=>`<div class="li"><span class="ic" style="font-size:9px">${r[0]}</span><span class="g">${r[1]}<small>→ ${r[2]}</small></span><span class="rt"><span class="st ${r[3].startsWith('cannot')?'bad':r[3]==='optional'?'':'ok'}">${r[3]}</span></span></div>`).join('')}
+    ${[["Step 1","Account currency","Personal Info · locked 🔒","cannot skip"],["Step 1","Personal information","Personal Info","cannot skip"],["Step 1","Bank account / USDT","Bank/USDT","cannot skip"],["Step 2","Face ID / passkey","Security","can skip"],["Step 2","Recovery email","Phone · Email","can skip"],["Step 2","Set a password (optional)","Change password","can skip"],["Step 3","Notifications","Preferences › Notifications","can skip"],["Step 3","Theme / language","Preferences › Theme & Language","can skip"],["Step 3","Message channel","Preferences › Message channel","can skip"],["Post-setup","Tutorial & app","Help › Quick tour / Get the app","optional"]].map(r=>`<div class="li"><span class="ic" style="font-size:9px">${r[0]}</span><span class="g">${r[1]}<small>→ ${r[2]}</small></span><span class="rt"><span class="st ${r[3].startsWith('cannot')?'bad':r[3]==='optional'?'':'ok'}">${r[3]}</span></span></div>`).join('')}
     <div class="hint">＊ Skipped items surface in the Settings 'Complete your setup' card until done; the card never nags for optional items (tutorial / app).</div>`,
   spec:{
     goal:"Reference: which Settings screen owns each Setup item, so nothing is built twice and skipped items always have a way back.",

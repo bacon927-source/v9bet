@@ -134,7 +134,7 @@ function signup(){
 function wiz(){
  const prog=n=>`<div class="prog"><i style="width:${n}%"></i></div>`;
  const a=BAR('Verify phone')+`<div class="stp">OTP success</div>`+BOX('✓ Verified<br>Go straight to setup (no home detour)')+CTA('Start setup');
- const b=BAR('Setup overview')+`<div class="stp">Finish required items first</div>`+['Currency ★ +10','Personal info ★ +10','Bank / USDT ★ +10','Face ID +10','Email +10','Password +10','Social message ID +10'].map((x,i)=>LI(x,'›',i+1)).join('')+BOX('🎁 9 items × 10 pts + 10 bonus = 100 points');
+ const b=BAR('Setup overview')+`<div class="stp">Finish required items first</div>`+['Currency ★ +10','Personal info ★ +10','Bank / USDT ★ +10','Face ID +10','Email +10','Password +10','Message channel +10'].map((x,i)=>LI(x,'›',i+1)).join('')+BOX('🎁 9 items × 10 pts + 10 bonus = 100 points');
  const c=BAR('Currency ★Required')+prog(11)+OPT('🇻🇳 VND <small style="color:#b0b0b0">USDT ok</small>',true)+OPT('🇹🇭 THB <small style="color:#b0b0b0">USDT ok</small>')+`<div style="font-size:10px;color:#999;margin:4px 2px">＊USDT wrapped inside VND/THB (deposit/withdraw, live rate)</div>`+CTA('Confirm');
  const d1=BAR('Personal info')+prog(38)+BOX('★ Moved earlier — needed before deposit')+F('Full name')+F('Date of birth')+CTA('Save');
  const d2=BAR('Bank / USDT')+prog(50)+SEG(['Bank','USDT'],0)+F('Bank ▾')+F('Account no.')+F('Holder · locked')+CTA('Save');
