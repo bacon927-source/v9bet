@@ -543,7 +543,7 @@ const screens = [
 },
 {
   group:"D · Login", id:"login", title:"Login",
-  states:["Password","One-time code","Biometric / Passkey"],
+  states:["Password","One-time code","Biometric / Passkey","Password tab · none set yet"],
   render:(s)=>`
     <div class="scr-title"><span class="x">✕</span>Login<span class="x" style="left:auto;right:0;font-size:13px;text-decoration:underline;color:#444">Sign Up</span></div>
     <div class="ph" style="height:64px">[ V9 Logo ]</div>
@@ -557,16 +557,17 @@ const screens = [
     ${s===1?F("Email / Phone number","Required"):F("Account ID / Email / Phone")}
     ${s===0?F("Password","👁")
       :s===1?`<div class="hint">＊ Enter the email or phone on your account — we'll send a 6-digit code (Email / SMS). Account ID can't receive a code.</div>`
+      :s===3?`<div class="err" style="border-color:#c93;background:#fdf6ea;color:#a70">No password set yet for this account — you signed up without one.</div>${CTA("Use one-time code instead",'ghost')}<div class="link"><b>Set a password in Settings</b></div>`
       :`<div class="ph" style="height:100px">👤 Face ID / Passkey (WebAuthn)</div>`}
-    <div class="opt"><span class="sq on"></span><span style="flex:1">Keep me logged in</span></div>
-    ${CTA(s===1?"Send code":"Login")}
-    <div class="link"><b>Forgot password?</b></div>`,
+    ${s===3?'':`<div class="opt"><span class="sq on"></span><span style="flex:1">Keep me logged in</span></div>`}
+    ${s===3?'':CTA(s===1?"Send code":"Login")}
+    ${s===3?'':`<div class="link"><b>Forgot password?</b></div>`}`,
   spec:{
     goal:"Login: social icon row (Google / LINE / X) on top with the last-used badge; below it two tabs — one-time code (via chosen channel) / password — plus biometric-passkey.",
-    states:["password tab","one-time code tab (identifier = email / phone only; no password)","biometric / passkey (WebAuthn)","social icon tap → Google / LINE / X branch","lockout (too many failures)","risk trigger → step-up verification screen"],
+    states:["password tab (password set)","one-time code tab (identifier = email / phone only; no password)","biometric / passkey (WebAuthn)","password tab but NO password set yet → inline notice + one-time-code fallback","social icon tap → Google / LINE / X branch","lockout (too many failures)","risk trigger → step-up verification screen"],
     fields:["identifier(account_id|email|phone, single field)","method(password|one_time_code|passkey|google|line|x)","secret? / otp_code? / webauthn_assertion?","remember(bool)"],
     api:"POST /auth/login { identifier, method, ... }\n← { session, requires_stepup? }\nerr: LOCKED / RISK_STEPUP / INVALID_CREDENTIALS",
-    notes:["Passkey (WebAuthn) targets high InAppWebView traffic — biggest returning-user win (P0 per auth analysis).","One-time code tab swaps the identifier field to Email / Phone only — an Account ID has no inbox, so it cannot receive a code (Jul 16).","'Keep me logged in' made explicit (P1); high-frequency bettors feel session expiry the most.","Social row promoted to the top of the screen; 'Last used' badge above the provider icon reduces trial-and-error (P2).","'Forgot account' removed — link is password recovery only.","Sign Up entry moved to the top-RIGHT of the title bar (Jul 16); bottom 'No account?' link removed. Mirrors the Sign Up page (Login top-left).","Analytics: login event carries method param, mirrors sign_up."]
+    notes:["Passkey (WebAuthn) targets high InAppWebView traffic — biggest returning-user win (P0 per auth analysis).","How to log in with a password (Jul 16 Q&A): sign-up no longer collects one — a password only exists once the member sets it in Setup Step 2 \u2018Set a password\u2019 or later in Profile & Settings › Change password. Until then the Password tab shows this inline notice instead of a blank field and offers one-time code as the fallback (no dead end).","One-time code tab swaps the identifier field to Email / Phone only — an Account ID has no inbox, so it cannot receive a code (Jul 16).","'Keep me logged in' made explicit (P1); high-frequency bettors feel session expiry the most.","Social row promoted to the top of the screen; 'Last used' badge above the provider icon reduces trial-and-error (P2).","'Forgot account' removed — link is password recovery only.","Sign Up entry moved to the top-RIGHT of the title bar (Jul 16); bottom 'No account?' link removed. Mirrors the Sign Up page (Login top-left).","Analytics: login event carries method param, mirrors sign_up."]
   }
 },
 {
