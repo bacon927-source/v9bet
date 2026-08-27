@@ -269,7 +269,6 @@ const S=[
 {g:"2 · New-customer Setup",t:"Setup overview",src:"66,83,84",states:["Step 1 · Required","Step 2 · Security","Step 3 · Preferences"],
  r:(s)=>{const li=(x,i)=>{let tag=x[1],pts='';if(tag){const m=tag.match(/\+(\d+)\s*pts$/);if(m){pts=m[1];tag=tag.replace(/\s*·?\s*\+\d+\s*pts$/,'').trim();}}return `<div class="li"><span class="ic">${x[2]?'✓':i}</span><span class="g">${x[0]}${tag?`<small>${tag}</small>`:''}</span>${pts?`<span class="pts">🎁+${pts}</span>`:''}<span class="rt">›</span></div>`;};
   return BAR("Set up your account","")+PROG([0,30,60][s],"🎁 Setup rewards",`${[0,30,60][s]} / 100 points`)+STEP(`Step ${s+1} of 3 — required first, the rest can be skipped`)+
-   `<div class="prog3">${["1 · Required","2 · Security","3 · Preferences"].map((t,i)=>`<span class="p ${i<s?'done':i===s?'on':''}">${t}</span>`).join('')}</div>`+
    `<div class="grp">Step 1 · Required ${BADGE("cannot skip",true)}</div>`+
    [["Choose account currency","mandatory · +10 pts",s>0],["Personal information","mandatory · +10 pts",s>0],["Bank account / USDT","mandatory · +10 pts",s>0]].map((x,i)=>li(x,i+1)).join('')+
    `<div class="grp">Step 2 · Security ${BADGE("can skip")}</div>`+

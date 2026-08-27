@@ -251,7 +251,6 @@ const screens = [
     <div class="pbar"><i style="width:${[0,30,60][s]}%"></i></div>
     <div class="hint" style="text-align:center;margin:2px 0 6px">${["Finish all 9 items to earn 100 points","30 earned · 70 to go","60 earned · 40 to go"][s]}</div>
     <div class="scr-step">Step ${s+1} of 3 — required first, the rest can be skipped</div>
-    <div class="prog3">${["1 · Required","2 · Security","3 · Preferences"].map((t,i)=>`<span class="p ${i<s?'done':i===s?'on':''}">${t}</span>`).join('')}</div>
     <div class="grp">Step 1 · Required <span class="badge req">cannot skip</span></div>
     <div class="checklist">
       ${ci(1,"Choose account currency","mandatory · +10 pts",s>0)}
