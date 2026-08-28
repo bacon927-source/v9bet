@@ -213,12 +213,13 @@
     </ul>
   </div>
   <div class="card">
-    <h3><span class="n">Q</span>Q&amp;A：拿掉密碼後，怎麼用密碼登入？（07-16）</h3>
-    <p>答：註冊時已經不收密碼，密碼是<b>選配</b>——要等客人在 Setup Step 2「Set a password」或之後在 Profile &amp; Settings › Change password 主動設定，密碼登入才會存在。</p>
+    <h3><span class="n">Q</span>Q&amp;A：拿掉密碼後，怎麼用密碼登入？（07-16，含後續修正）</h3>
+    <p>密碼是<b>選配</b>——要等客人在 Setup Step 2「Set a password」或之後在 Profile &amp; Settings › Change password 主動設定，密碼登入才會存在。</p>
+    <p><s>第一版做法：Password 分頁偵測到沒設密碼時，主動顯示「No password set yet」提示 + 導去設定</s> → <b>使用者指出安全問題後撤回</b>：登入前系統本來就不該知道、也不該告訴使用者「這個帳號有沒有密碼」——那等於在驗證前洩漏帳號存在與其驗證方式，跟 Forgot Password 早就定案的「不洩漏帳號是否存在」是同一個道理。</p>
     <ul>
-      <li>在此之前點 Login 的 <b>Password 分頁</b>，畫面不會給一個空白密碼欄讓人亂猜——改顯示提示：「No password set yet for this account — you signed up without one.」</li>
-      <li>提示下方給兩條路：主要按鈕「<b>Use one-time code instead</b>」（切去 OTC 分頁直接登入）、次要連結「<b>Set a password in Settings</b>」（去補設密碼）。</li>
-      <li>三個檔案（signup-flow、login-flow、full-wireframe）Login 畫面都加了這個「Password tab · none set yet」狀態，行為一致。</li>
+      <li><b>最終做法</b>：Password 分頁沒有特殊提示畫面；沒設密碼的人用 Password 登入，一律當成一般的 <code>INVALID_CREDENTIALS</code> 失敗處理，不特別說明原因。</li>
+      <li>不會卡住：One-time code／Passkey／社群登入永遠可用，密碼要不要設、什麼時候設，客人自己去 Settings 決定，系統不主動提醒。</li>
+      <li>三個檔案（signup-flow、login-flow、full-wireframe）的 Login 畫面已還原為原本 3～4 個狀態，不含「none set yet」。</li>
     </ul>
   </div>
   <div class="card">
