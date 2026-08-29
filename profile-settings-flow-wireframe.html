@@ -179,15 +179,17 @@ const screens = [
       <div class="hint" style="margin:0 0 6px">You skipped these during sign-up — each one earns +10 points, finish anytime</div>
       <div class="li"><span class="ic">👤</span><span class="g">Face ID / biometric / passkey<small>Step 2 · Security</small></span><span class="rt"><b>Set up ›</b></span></div>
       <div class="li"><span class="ic">✉️</span><span class="g">Add recovery email<small>Step 2 · Security · also usable as Account ID</small></span><span class="rt"><b>Add ›</b></span></div>
+      <div class="li"><span class="ic">🔑</span><span class="g">Set a password<small>Step 2 · Security · optional, sign-up used OTP only</small></span><span class="rt"><b>Set up ›</b></span></div>
       <div class="li"><span class="ic">🔔</span><span class="g">Notification permission<small>Step 3 · Preferences</small></span><span class="rt"><b>Allow ›</b></span></div>
       <div class="li"><span class="ic">🌙</span><span class="g">Theme / language<small>Step 3 · Preferences · defaults applied</small></span><span class="rt"><b>Review ›</b></span></div>
+      <div class="li"><span class="ic">💬</span><span class="g">Message channel<small>Step 3 · Preferences · how we contact you</small></span><span class="rt"><b>Choose ›</b></span></div>
     </div>`:''}
     <div class="grp">Account related</div>
     <div class="li"><span class="ic">🪪</span><span class="g">Personal information</span><span class="rt">${s===0?'<span class="st bad">Not added</span>':'Complete'} ›</span></div>
     <div class="li"><span class="ic">🏦</span><span class="g">Manage bank account / USDT</span><span class="rt">${s===0?'<span class="st bad">Not added</span>':'2 accounts'} ›</span></div>
     <div class="li"><span class="ic">📱</span><span class="g">Phone number</span><span class="rt">091***233 <span class="st ok">✓</span> ›</span></div>
     <div class="li"><span class="ic">✉️</span><span class="g">Email</span><span class="rt">${s===0?'<span class="st wait">Add</span>':'ba*****on@… <span class="st ok">✓</span>'} ›</span></div>
-    <div class="li"><span class="ic">🔑</span><span class="g">Change password</span><span class="rt">›</span></div>
+    <div class="li"><span class="ic">🔑</span><span class="g">${s===0?'Set a password<small>Not set — signed up with OTP only</small>':'Change password'}</span><span class="rt">›</span></div>
     <div class="grp">Security</div>
     <div class="hint" style="margin:0 2px 4px">Verify both your phone number and email address to protect against unnecessary access and easy account recovery.</div>
     ${tog("Enable Face ID / biometrics", s===1)}
@@ -256,7 +258,7 @@ const screens = [
 },
 {
   group:"B · Contact & Login", id:"contacts", title:"Phone · Email · Password",
-  states:["Phone (verified)","Email (add)","Change password"],
+  states:["Phone (verified)","Email (add)","Set a password (first time)","Change password (existing)"],
   render:(s)=>s===0?`
     <div class="scr-title"><span class="x">←</span>Phone Number</div>
     ${F("+84 &nbsp; 091***233 &nbsp; ✓","verified")}
@@ -269,6 +271,15 @@ const screens = [
     <div class="hint">Add Email as your second login method. Verified Email may be used as Account ID.</div>
     ${CTA("Verify Now")}
     <div class="hint">＊ Adding a 2nd contact = verify the existing one first (OTP), then the new one — see Verification Flow › Add / Change Contact.</div>`
+  :s===2?`
+    <div class="scr-title"><span class="x">←</span>Set a Password</div>
+    <div class="scr-step">Home › Profile › Settings › Set a Password</div>
+    <div class="ph" style="height:60px">🔒 OTP verified · SMS ✓</div>
+    ${F("New password","👁")}
+    ${F("Confirm new password","👁")}
+    <div class="hint">You signed up with OTP only — this adds a password as an extra login option. Phone/email OTP login keeps working either way.</div>
+    ${CTA("Save",'disabled')}
+    <div class="hint">＊ No "current password" field — there isn't one yet. Same OTP-gated screen as Change Password, just first-run copy.</div>`
   :`
     <div class="scr-title"><span class="x">←</span>Change Password</div>
     <div class="scr-step">Home › Profile › Settings › Change Password</div>
@@ -280,7 +291,7 @@ const screens = [
     <div class="hint">＊ 2FA by OTP — no old-password field (Jul 16 design).</div>`,
   spec:{
     goal:"Contact & credential rows from Settings: each one hands off to the Verification Flow, then returns here.",
-    states:["phone verified → change via same-type OTP","email missing → add (verify existing first) / present → change","change password after OTP (no old password, re-login)","passkey / social links (see Security)"],
+    states:["phone verified → change via same-type OTP","email missing → add (verify existing first) / present → change","set a password (first time, no password exists yet)","change password (existing) after OTP (no old password, re-login)","passkey / social links (see Security)"],
     fields:["phone{value_masked,verified}","email{value_masked,verified}","password_updated_at"],
     api:"See Verification Flow: /account/contact/* · /auth/otp/* · POST /account/password",
     notes:["These screens are thin wrappers — the OTP mechanics live in verification-flow-wireframe.html (single source).","Copy lifted from the Jul 16 mockups (Verify Now / Add Email as your second login method / Re-login will be required)."]

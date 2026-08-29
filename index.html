@@ -139,7 +139,7 @@
   <div class="cards">
     <a class="card full" href="profile-settings-flow-wireframe.html">
       <div class="t">Profile &amp; Settings Flow (grayscale)<span class="ar">→</span></div>
-      <div class="d">7 screens: Settings home (with a "Complete your setup" card that resurfaces skipped Step 2/3 items and deep-links to the same setup screens) → Personal Information (identity, KYC status, optional address / occupation, read-only account facts; locked after KYC) → Phone · Email · Password (thin wrappers over the Verification Flow) → Security &amp; Sessions (biometrics, passkey, sessions, linked Google / LINE / X) → Bank Account / USDT (holder name locked to profile) → Notifications · Theme · Language · Product preferences → Setup ↔ Settings map. Everything entered at sign-up / setup is re-viewable here.</div>
+      <div class="d">7 screens: Settings home (with a "Complete your setup" card listing all 6 skippable Step 2/3 items — Face ID, recovery email, set a password, notifications, theme/language, message channel — each deep-linking to the same setup screen) → Personal Information (identity, KYC status, optional address / occupation, read-only account facts; locked after KYC) → Phone · Email · Password (set a password first-time vs change password once one exists; thin wrappers over the Verification Flow) → Security &amp; Sessions (biometrics, passkey, sessions, linked Google / LINE / X) → Bank Account / USDT (holder name locked to profile) → Notifications · Theme · Language · Product preferences → Setup ↔ Settings map. Everything entered at sign-up / setup is re-viewable here.</div>
       <div class="tags"><span class="tag">Low-fidelity</span><span class="tag k">Resume skipped setup</span><span class="tag">Personal info</span><span class="tag">Reuse setup screens</span><span class="fname">profile-settings-flow-wireframe.html</span></div>
     </a>
   </div>
@@ -170,6 +170,15 @@
       <div class="t">Live Status Bubble + LINE / Push deep links (grayscale)<span class="ar">→</span></div>
       <div class="d">5 screens: floating progress bubble (BC.Game-style) that exists only while a record is in flight — pending / step-changed hop + bounce (not a fixed corner, draws the eye) / done / error → tap opens a bottom progress card (withdrawal, deposit, KYC, bonus churn) → multiple records collapse to one bubble w/ count → LINE (TH) / Zalo (VN) / push messages carry deep links that open the exact record or an explainer article → placement, collision, suppression, priority &amp; auto-hide rules.</div>
       <div class="tags"><span class="tag">Low-fidelity</span><span class="tag k">Floating bubble</span><span class="tag">LINE / push deep link</span><span class="tag">z30 w/ FAB</span><span class="fname">status-bubble-wireframe.html</span></div>
+    </a>
+  </div>
+
+  <h2>⑨ Home Flow</h2>
+  <div class="cards">
+    <a class="card full" href="home-flow-wireframe.html">
+      <div class="t">Home Flow (grayscale)<span class="ar">→</span></div>
+      <div class="d">5 screens: Home · pre-login (marquee, hero, product shortcuts, prominent Sign Up CTA, live winners, bottom tab gates Messages/Account behind Login) → Home · logged-in (balance chip, search, message-channel-aware notification bell, "For you" personalized row, missions/check-in, claimable offers, product grid) → Home · new member / empty (setup-rewards card takes the top slot before any favourites/recent exist) → Desktop top menu (replaces bottom tab, account icons move top-right) → Module map (cross-references each block to its owning page — Home Composition, Growth &amp; Support, Wallet, Status Bubble — nothing rebuilt twice).</div>
+      <div class="tags"><span class="tag">Low-fidelity</span><span class="tag k">Pre-login → logged-in</span><span class="tag">Personalization</span><span class="fname">home-flow-wireframe.html</span></div>
     </a>
   </div>
 
