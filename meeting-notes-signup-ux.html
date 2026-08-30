@@ -241,6 +241,11 @@
     </ul>
   </div>
   <div class="card">
+    <h3><span class="n">U</span>Face ID / passkey：mandatory 字樣跟 can-skip 獎勵制矛盾（08-30）</h3>
+    <p>問 passkey 實際怎麼運作時發現：Setup 這個項目的分組標記寫「Step 2 · Security (can skip)」、也算 +10 pts 獎勵項目，但 spec goal／notes 卻原封不動抄 docx 原文「mandatory」——兩邊互相矛盾。<b>裁定：can skip</b>，跟現有的 9 項 ×10pts 獎勵制一致；已更新 signup-flow-wireframe、v9bet-full-wireframe 的 spec 文字，拿掉「mandatory」字樣。</p>
+    <p>順便記一個技術筆記：這個項目名稱把「App 生物辨識解鎖」（本機用臉/指紋開啟既有 session，換新裝置沒用）跟「Passkey／WebAuthn」（真正註冊到伺服器的公私鑰憑證，透過 iCloud 鑰匙圈/Google 密碼管理員可以同步到新裝置登入）混成一個開關。目前先不拆——如果之後真的要做「passkey 跨裝置登入」這個功能，才需要把兩者分開存欄位。</p>
+  </div>
+  <div class="card">
     <h3><span class="n">→</span>後續順序</h3>
     <p>產品頁、產品細項頁、Bet slip —— <b>最後處理</b>（使用者指示 07-16）。<b>首頁（Home Flow）08-30 已開工</b>：新增 <code>home-flow-wireframe.html</code>（登入前／登入後／新客空狀態／桌面版 top menu／模組對照表），接進 index.html ⑨ 區，跟既有的 <code>v9bet-home-composition.html</code>（10 模組）對齊、不重複。C 批（賽果/開獎、公告、語言切換頁、session 覆蓋層細節）視需要再做。</p>
   </div>

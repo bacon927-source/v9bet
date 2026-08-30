@@ -325,11 +325,11 @@ const screens = [
     ${CTA(s===1?"Enabled, continue":"Enable Face ID")}
     <div class="link"><b>Later</b></div>`,
   spec:{
-    goal:"Enable biometric login on the app (mandatory on app).",
-    states:["prompt","system permission denied → guide to settings","enabled","Web: this step auto-skipped"],
+    goal:"Enable biometric login / passkey on the app — skippable, +10 pts (docx's original 'mandatory' does not survive the Jul 16 reward-based Setup redesign, where Step 2 · Security is all skippable).",
+    states:["prompt","system permission denied → guide to settings","enabled","skipped → +0 pts, resurfaces in Settings","Web: this step auto-skipped"],
     fields:["biometric_enabled(bool)","device_id"],
     api:"Device-side keychain/biometric API; backend only stores enabled flag + device binding.",
-    notes:["docx: 'Allow face ID or biometrics (for mobile app only), mandatory'.","Not shown on Web/Mobile Web."]
+    notes:["docx originally said 'mandatory' — superseded (Jul 16): Setup Step 2 items are all can-skip, this one included, and it counts toward the 9×10pt reward like the rest.","Not shown on Web/Mobile Web.","Naming note: this toggle covers app-side biometric unlock; if a true WebAuthn passkey (server-registered credential, works on a fresh device via platform keychain sync) is ever split out as its own item, it wouldn't share a flag with plain biometric — worth revisiting if passkey cross-device login becomes a real feature, not just a label."]
   }
 },
 {

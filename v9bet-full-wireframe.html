@@ -287,7 +287,7 @@ const S=[
 
 {g:"2 · New-customer Setup",t:"Face ID",src:"86",states:["Prompt","Enabled"],
  r:(s)=>BAR("Face ID / biometric"+BADGE("app only"))+PROG(30,"🎁 Setup rewards","30 / 100 points")+PH("[ Face ID ]",130)+STEP("For quick login")+(s===1?OPT("Enabled",true):'')+CTA(s===1?"Continue":"Enable Face ID")+LINK("<b>Later</b>"),
- spec:{goal:"App-side biometric (mandatory on app).",states:["prompt","permission denied","enabled","skipped on Web"],fields:["biometric_enabled","device_id"],notes:["docx86 required on App only."]}},
+ spec:{goal:"App-side biometric / passkey — skippable, +10 pts (docx's original 'mandatory' superseded by the Jul 16 reward-based Setup, where Step 2 · Security is all skippable).",states:["prompt","permission denied","enabled","skipped → resurfaces in Settings","skipped on Web"],fields:["biometric_enabled","device_id"],notes:["docx86 originally said required — superseded (Jul 16): all Step 2 items are can-skip, this one included, counts toward the 9×10pt reward.","App only."]}},
 
 {g:"2 · New-customer Setup",t:"Notifications",src:"87",states:["Prompt"],
  r:()=>BAR("Notification settings")+PROG(60,"🎁 Setup rewards","60 / 100 points")+STEP("Choose notification types")+TOG("Deposit/withdrawal status",true)+TOG("Bet settlement alerts",true)+TOG("Exclusive promotions",true)+TOG("System/maintenance",false)+CTA("Allow and continue")+LINK("<b>Later</b>"),
