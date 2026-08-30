@@ -43,42 +43,78 @@
   </header>
 
   <div class="pipe">
-    <span class="s">Live captures</span><span class="a">→</span>
-    <span class="s">16 Modules UX</span><span class="a">→</span>
-    <span class="s">Page compositions</span><span class="a">→</span>
-    <span class="s">Component contracts</span><span class="a">→</span>
-    <span class="s">Foundations / Full site</span>
+    <span class="s">① Confirmed flows</span><span class="a">→</span>
+    <span class="s">② Compositions</span><span class="a">→</span>
+    <span class="s">③ Foundations / Components</span><span class="a">→</span>
+    <span class="s">④ Full-platform reference</span><span class="a">→</span>
+    <span class="s">⑤ Meeting notes</span>
   </div>
-  <div class="meta"><span><b>docx</b> 117 items fully covered</span><span><b>52</b> screen wireframes</span><span><b>17</b> page compositions</span><span><b>24</b> components</span><span><b>13</b> foundation items</span><span>Mobile/App first · Desktop centered</span></div>
+  <div class="meta"><span><b>docx</b> 117 items fully covered</span><span><b>11</b> confirmed flow pages</span><span><b>52</b> full-platform screens</span><span><b>17</b> page compositions</span><span><b>24</b> components</span><span>Mobile/App first · Desktop centered</span></div>
 
-  <h2>① Foundations / Full Site</h2>
+  <h2>① Confirmed Flow Wireframes — start here</h2>
   <div class="cards">
-    <a class="card full" href="v9bet-foundations.html">
-      <div class="t">Foundations & Full Site<span class="ar">→</span></div>
-      <div class="d">Cross-site definitions beyond pages/components: Global Header/Footer, navigation, RWD breakpoints, form validation, i18n, system/error pages, Session, permissions, Responsible Gaming, event tracking, realtime connections.</div>
-      <div class="tags"><span class="tag k">Site-wide framework</span><span class="tag">RWD breakpoints</span><span class="tag">Form validation</span><span class="tag">⚠ Responsible Gaming (legal)</span><span class="tag">Event tracking</span><span class="fname">v9bet-foundations.html</span></div>
+    <a class="card" href="signup-flow-wireframe.html">
+      <div class="t">Sign-up Wireframe (grayscale)<span class="ar">→</span></div>
+      <div class="d">16 screens + multiple states, IT spec on the right. Latest structure: Phone (default) | Email tabs + OTP only — no password / Account ID at sign-up (Account ID auto-generated; password optional in Setup Step 2; digits → TH/VN country-code picker); social consent implicit at icon tap (no re-ask in Complete Setup); 3rd-party = Google / LINE / X icons — matching existing account requires re-verifying that account before binding; 3-step setup with progress bar.</div>
+      <div class="tags"><span class="tag">Low-fidelity</span><span class="tag k">3rd-party login</span><span class="tag">3-step setup</span><span class="fname">signup-flow-wireframe.html</span></div>
     </a>
-    <a class="card full" href="v9bet-analytics.html">
-      <div class="t">Analytics & Event Tracking<span class="ar">→</span></div>
-      <div class="d">Standalone analytics spec: 4 funnels (drop-off), full event taxonomy & naming, event-spec template, KPI scorecard, AARRR dashboards, segments/cohorts, and governance (incl. Responsible Gaming compliance). docx 51/55.</div>
-      <div class="tags"><span class="tag k">Funnels</span><span class="tag">Event taxonomy</span><span class="tag">KPIs / dashboards</span><span class="tag">Governance</span><span class="fname">v9bet-analytics.html</span></div>
+    <a class="card" href="login-flow-wireframe.html">
+      <div class="t">Login Flow (grayscale)<span class="ar">→</span></div>
+      <div class="d">5 screens: Login home (social icons on top w/ last-used badge, One-time code | Password tabs) → one-time code login (verified contact + channel) → biometric/passkey (WebAuthn + fallback) → forgot password (Unified OTP flow) → lockout & risk step-up + session rules. Single active session — a new login elsewhere ends the other device automatically.</div>
+      <div class="tags"><span class="tag">Low-fidelity</span><span class="tag k">Passwordless</span><span class="tag">Passkey</span><span class="fname">login-flow-wireframe.html</span></div>
+    </a>
+    <a class="card" href="verification-flow-wireframe.html">
+      <div class="t">Verification Flow — Unified OTP docx + design mockups<span class="ar">→</span></div>
+      <div class="d">8 screens: rules & mode matrix (both→select Email/SMS · one→auto · none→verify new contact inline, serves as OTP) → Select Verification Mode → First-time Verify → OTP code states → result → add/change contact (same-type rule) → forgot password (Account ID revealed after OTP) → entry points (change password, first-time payout account, promo claim).</div>
+      <div class="tags"><span class="tag">Low-fidelity</span><span class="tag k">Unified OTP</span><span class="tag">Email / SMS</span><span class="fname">verification-flow-wireframe.html</span></div>
+    </a>
+    <a class="card" href="home-flow-wireframe.html">
+      <div class="t">Home Flow (grayscale)<span class="ar">→</span></div>
+      <div class="d">5 screens: pre-login (hero, product shortcuts, sign-up CTA, live winners) → logged-in (balance chip, search, message-channel-aware bell, "For you" personalization, missions, claimable offers) → new member / empty (setup-rewards card leads until there's activity) → desktop top menu → module map cross-referencing Home Composition, Growth &amp; Support, Wallet, Status Bubble.</div>
+      <div class="tags"><span class="tag">Low-fidelity</span><span class="tag k">Pre-login → logged-in</span><span class="tag">Personalization</span><span class="fname">home-flow-wireframe.html</span></div>
+    </a>
+    <a class="card" href="profile-settings-flow-wireframe.html">
+      <div class="t">Profile &amp; Settings Flow (grayscale)<span class="ar">→</span></div>
+      <div class="d">7 screens: Settings home (with a "Complete your setup" card listing all 6 skippable items — Face ID, recovery email, set a password, notifications, theme/language, message channel) → Personal Information → Phone · Email · Password → Security &amp; Sessions (biometrics, passkey, the one active session, linked Google / LINE / X) → Bank Account / USDT → Notifications · Theme · Language · Product preferences → Setup ↔ Settings map.</div>
+      <div class="tags"><span class="tag">Low-fidelity</span><span class="tag k">Resume skipped setup</span><span class="tag">Reuse setup screens</span><span class="fname">profile-settings-flow-wireframe.html</span></div>
+    </a>
+    <a class="card" href="history-flow-wireframe.html">
+      <div class="t">History Flow (grayscale)<span class="ar">→</span></div>
+      <div class="d">9 screens: History home (timeline · category chips · date range · search · empty state) → 7 record categories — Deposits &amp; withdrawals, Bets &amp; results, Rewards &amp; promotions, Account &amp; security changes, Referrals, KYC &amp; profile, Responsible Gaming → retention &amp; visibility matrix. No Login &amp; Devices category — those records live solely in Profile &amp; Settings › Security &amp; Sessions.</div>
+      <div class="tags"><span class="tag">Low-fidelity</span><span class="tag k">7 categories</span><span class="tag">Retention matrix</span><span class="fname">history-flow-wireframe.html</span></div>
+    </a>
+    <a class="card" href="wallet-flow-wireframe.html">
+      <div class="t">Wallet Flow (grayscale)<span class="ar">→</span></div>
+      <div class="d">8 screens: Wallet home (VND/THB, withdrawable, bonus wallets w/ churn, USDT wrapped) → Deposit (method grid, pay instructions, proof → pending / credited) → Withdrawal (saved accounts or add new w/ locked holder name, churn-unmet blocker → first-time-account OTP → processing / paid / rejected / delayed).</div>
+      <div class="tags"><span class="tag">Low-fidelity</span><span class="tag k">Deposit + Withdrawal</span><span class="tag">USDT wrapped</span><span class="fname">wallet-flow-wireframe.html</span></div>
+    </a>
+    <a class="card" href="promotion-flow-wireframe.html">
+      <div class="t">Promotion Flow (grayscale)<span class="ar">→</span></div>
+      <div class="d">5 screens: list (filters, claimable, my rewards) → detail (banner, max bonus / how to claim / turnover, full T&amp;C) → Claim → Personal Details sheet → OTP sheet (shared component) → result (bonus active w/ churn &amp; expiry · deposit-first · failed).</div>
+      <div class="tags"><span class="tag">Low-fidelity</span><span class="tag k">Claim → OTP</span><span class="fname">promotion-flow-wireframe.html</span></div>
+    </a>
+    <a class="card" href="growth-support-wireframe.html">
+      <div class="t">Growth &amp; Support Pages (grayscale)<span class="ar">→</span></div>
+      <div class="d">7 screens: Search · Favourites &amp; recently played · VIP / Loyalty · Refer a Friend · Responsible Gaming centre (limits, take a break, self-exclude) · KYC upload · App install &amp; onboarding.</div>
+      <div class="tags"><span class="tag">Low-fidelity</span><span class="tag k">RG · KYC · RAF</span><span class="fname">growth-support-wireframe.html</span></div>
+    </a>
+    <a class="card" href="system-pages-wireframe.html">
+      <div class="t">System &amp; Legal Pages (grayscale)<span class="ar">→</span></div>
+      <div class="d">4 screens: Terms / Privacy / RG policy (in-context sheet) · Help Center / FAQ / About / Contact · Error pages (404, offline, session-expired) · System states (maintenance, region block, soft vs hard app update).</div>
+      <div class="tags"><span class="tag">Low-fidelity</span><span class="tag k">Legal + errors</span><span class="fname">system-pages-wireframe.html</span></div>
+    </a>
+    <a class="card full" href="status-bubble-wireframe.html">
+      <div class="t">Live Status Bubble + LINE / Push deep links (grayscale)<span class="ar">→</span></div>
+      <div class="d">5 screens: floating progress bubble that exists only while a record is in flight — pending / step-changed / done / error → tap opens a bottom progress card → multiple records collapse to one bubble → LINE (TH) / Zalo (VN) / push messages carry deep links → placement, collision, suppression, priority &amp; auto-hide rules.</div>
+      <div class="tags"><span class="tag">Low-fidelity</span><span class="tag k">Floating bubble</span><span class="tag">LINE / push deep link</span><span class="fname">status-bubble-wireframe.html</span></div>
     </a>
   </div>
 
-  <h2>② Components</h2>
-  <div class="cards">
-    <a class="card full" href="v9bet-components.html">
-      <div class="t">Component Library (Component Contract)<span class="ar">→</span></div>
-      <div class="d">24 cross-page shared components + Z-index layer order table. Each component defined by a 9-column contract (purpose/trigger/position/duration/blocking/layer/variants/source/a11y).</div>
-      <div class="tags"><span class="tag k">Toast/Popup/Banner</span><span class="tag">Panel/Overlay/Chat</span><span class="tag">Skeleton/Empty/Error</span><span class="tag">Z-index order</span><span class="fname">v9bet-components.html</span></div>
-    </a>
-  </div>
-
-  <h2>③ Page Compositions</h2>
+  <h2>② Page Compositions / Module Maps</h2>
   <div class="cards">
     <a class="card" href="v9bet-home-composition.html">
       <div class="t">Home Composition<span class="ar">→</span></div>
-      <div class="d">Optimized home page, Desktop (top menu) / Mobile (bottom tab) switch, block numbers mapped to modules.</div>
+      <div class="d">Optimized home page, Desktop (top menu) / Mobile (bottom tab) switch, block numbers mapped to modules. Module-level companion to Home Flow above.</div>
       <div class="tags"><span class="tag k">Live winners/jackpot</span><span class="tag">Personalization</span><span class="fname">v9bet-home-composition.html</span></div>
     </a>
     <a class="card" href="v9bet-flows-composition.html">
@@ -88,97 +124,45 @@
     </a>
     <a class="card full" href="v9bet-campaign-flow.html">
       <div class="t">Campaign Launch Flow<span class="ar">→</span></div>
-      <div class="d">When a campaign goes live: told → joins → claims. 6 views: ① launch flow (popup → campaign screen) · ② multi-channel reach (popup/push/inbox/marquee) · ③ screen states (active/joined/completed/ended/ineligible) · ④ two+ campaigns (one combined popup, never two) · ⑤ types (missions / daily check-in / spin wheel / red packet 🧧) · ⑥ button-only (TikTok-style floating 悬浮球). Frequency-cap & targeting rules included. docx 36/45/47.</div>
-      <div class="tags"><span class="tag k">Popup → Campaign</span><span class="tag">Multi-channel reach</span><span class="tag">Types: check-in/wheel/红包</span><span class="tag">Floating 悬浮球</span><span class="fname">v9bet-campaign-flow.html</span></div>
+      <div class="d">When a campaign goes live: told → joins → claims. 6 views: launch flow (popup → campaign screen) · multi-channel reach (popup/push/inbox/marquee) · screen states (active/joined/completed/ended/ineligible) · two+ campaigns (one combined popup, never two) · types (missions / daily check-in / spin wheel / red packet 🧧) · button-only (TikTok-style floating 悬浮球). Frequency-cap & targeting rules included. docx 36/45/47.</div>
+      <div class="tags"><span class="tag k">Popup → Campaign</span><span class="tag">Multi-channel reach</span><span class="tag">Floating 悬浮球</span><span class="fname">v9bet-campaign-flow.html</span></div>
     </a>
   </div>
 
-  <h2>④ Full Platform Per-Screen Wireframe</h2>
+  <h2>③ Foundations &amp; Components</h2>
+  <div class="cards">
+    <a class="card full" href="v9bet-foundations.html">
+      <div class="t">Foundations & Full Site<span class="ar">→</span></div>
+      <div class="d">Cross-site definitions beyond pages/components: Global Header/Footer, navigation, RWD breakpoints, form validation, i18n, system/error pages, Session, permissions, Responsible Gaming, event tracking, realtime connections.</div>
+      <div class="tags"><span class="tag k">Site-wide framework</span><span class="tag">RWD breakpoints</span><span class="tag">⚠ Responsible Gaming (legal)</span><span class="fname">v9bet-foundations.html</span></div>
+    </a>
+    <a class="card full" href="v9bet-components.html">
+      <div class="t">Component Library (Component Contract)<span class="ar">→</span></div>
+      <div class="d">24 cross-page shared components + Z-index layer order table. Each component defined by a 9-column contract (purpose/trigger/position/duration/blocking/layer/variants/source/a11y).</div>
+      <div class="tags"><span class="tag k">Toast/Popup/Banner</span><span class="tag">Panel/Overlay/Chat</span><span class="tag">Z-index order</span><span class="fname">v9bet-components.html</span></div>
+    </a>
+    <a class="card full" href="v9bet-analytics.html">
+      <div class="t">Analytics & Event Tracking<span class="ar">→</span></div>
+      <div class="d">Standalone analytics spec: 4 funnels (drop-off), full event taxonomy & naming, event-spec template, KPI scorecard, AARRR dashboards, segments/cohorts, and governance (incl. Responsible Gaming compliance). docx 51/55.</div>
+      <div class="tags"><span class="tag k">Funnels</span><span class="tag">Event taxonomy</span><span class="tag">Governance</span><span class="fname">v9bet-analytics.html</span></div>
+    </a>
+  </div>
+
+  <h2>④ Full-Platform Reference (52 screens, per full docx)</h2>
   <div class="cards">
     <a class="card full" href="v9bet-full-wireframe.html">
       <div class="t">Full Platform Wireframe (52 screens)<span class="ar">→</span></div>
-      <div class="d">Per-screen wireframes for all 117 docx items, each with IT spec (purpose/States/Fields/API/dev notes) + docx line numbers; pure rules collected under "Rules & Notes".</div>
+      <div class="d">Per-screen wireframes for all 117 docx items, each with IT spec (purpose/States/Fields/API/dev notes) + docx line numbers; pure rules collected under "Rules & Notes". Kept in sync with ① as a full-site mirror — for day-to-day work, the confirmed flow pages in ① are the single source of truth.</div>
       <div class="tags"><span class="tag k">52 screens · 12 groups</span><span class="tag">Per-screen spec</span><span class="tag">docx line refs</span><span class="fname">v9bet-full-wireframe.html</span></div>
     </a>
   </div>
 
-  <h2>⑤ Sign-up & Verification Flows</h2>
+  <h2>⑤ Meeting Notes / Decision Log</h2>
   <div class="cards">
-    <a class="card" href="signup-flow-wireframe.html">
-      <div class="t">Sign-up Wireframe (grayscale)<span class="ar">→</span></div>
-      <div class="d">16 screens + multiple states, IT spec on the right. Latest structure: Phone (default) | Email tabs + OTP only — no password / Account ID at sign-up (Account ID auto-generated; password optional in Setup Step 2; digits → TH/VN country-code picker); social consent implicit at icon tap (no re-ask in Complete Setup); 3rd-party = Google / LINE / X icons, social flow skips OTP and ends at a "You're now a customer" welcome; Login (Account ID / email / phone in one field) with social-on-top + One-time code | Password tabs; 3-step setup with progress bar.</div>
-      <div class="tags"><span class="tag">Low-fidelity</span><span class="tag k">3rd-party login</span><span class="tag">3-step setup</span><span class="fname">signup-flow-wireframe.html</span></div>
-    </a>
-    <a class="card" href="login-flow-wireframe.html">
-      <div class="t">Login Flow (grayscale)<span class="ar">→</span></div>
-      <div class="d">5 screens: Login home (social icons on top w/ last-used badge, One-time code | Password tabs) → one-time code login (verified contact + channel) → biometric/passkey (WebAuthn + fallback) → forgot password (Unified OTP flow) → lockout & risk step-up + session rules.</div>
-      <div class="tags"><span class="tag">Low-fidelity</span><span class="tag k">Passwordless</span><span class="tag">Passkey</span><span class="fname">login-flow-wireframe.html</span></div>
-    </a>
-    <a class="card full" href="verification-flow-wireframe.html">
-      <div class="t">Verification Flow (grayscale) — Unified OTP docx + design mockups<span class="ar">→</span></div>
-      <div class="d">8 screens: rules & mode matrix (both→select Email/SMS · one→auto · none→verify new contact inline, serves as OTP) → Select Verification Mode → First-time Verify (enter new phone/email) → OTP code states (32s resend, Invalid OTP, 3rd-resend 03:00 cooldown) → result → add/change contact (same-type rule, CS fallback) → forgot password (Account ID revealed after OTP, strength meter) → entry points (change password 2FA no-old-password + re-login, first-time payout account withdrawals incl. USDT, promo claim after Personal Details).</div>
-      <div class="tags"><span class="tag">Low-fidelity</span><span class="tag k">Unified OTP</span><span class="tag">Email / SMS</span><span class="tag">Same-type rule</span><span class="fname">verification-flow-wireframe.html</span></div>
-    </a>
     <a class="card full" href="meeting-notes-signup-ux.html">
-      <div class="t">📝 Sign-up UX 決議記錄 (Jul 15–16)<span class="ar">→</span></div>
-      <div class="d">Decision log: phone/email tabs + password, deferred language/currency/referral (+mitigations), G/LINE/X social no-OTP welcome, OTP channels (Zalo/SMS/LINE/WhatsApp/Email), login re-layout, VND/THB with USDT wrapped, 3-step setup, tutorial & app download post-setup, file cleanup, open items.</div>
+      <div class="t">📝 Sign-up UX 決議記錄 (Jul 15 – Aug 30)<span class="ar">→</span></div>
+      <div class="d">Decision log: phone/email tabs, deferred language/currency/referral (+mitigations), G/LINE/X social sign-up (re-auth required to bind an existing account), OTP channels, login re-layout, single active session policy, reward-based Setup, Face ID/passkey mandatory-vs-skip, History category consolidation, open items.</div>
       <div class="tags"><span class="tag k">Meeting notes</span><span class="tag">Decision log</span><span class="fname">meeting-notes-signup-ux.html</span></div>
-    </a>
-  </div>
-
-  <h2>⑥ History Flow</h2>
-  <div class="cards">
-    <a class="card full" href="history-flow-wireframe.html">
-      <div class="t">History Flow (grayscale)<span class="ar">→</span></div>
-      <div class="d">9 screens: History home (timeline · category chips · date range · search · empty state) → 7 record categories — ① Deposits &amp; withdrawals (status trail, USDT rate, reject reasons, export) ② Bets &amp; results (detail, open bets, P&amp;L) ③ Rewards &amp; promotions (churn progress, expiry / forfeit reasons) ④ Account &amp; security changes (OTP audit, member view) ⑤ Referrals ⑥ KYC &amp; profile ⑦ Responsible Gaming → retention &amp; visibility matrix. No Login &amp; Devices category (08-30) — login/session records live solely in Profile &amp; Settings › Security &amp; Sessions.</div>
-      <div class="tags"><span class="tag">Low-fidelity</span><span class="tag k">7 categories</span><span class="tag">Retention matrix</span><span class="tag">Member vs back-office</span><span class="fname">history-flow-wireframe.html</span></div>
-    </a>
-  </div>
-
-  <h2>⑦ Profile &amp; Settings Flow</h2>
-  <div class="cards">
-    <a class="card full" href="profile-settings-flow-wireframe.html">
-      <div class="t">Profile &amp; Settings Flow (grayscale)<span class="ar">→</span></div>
-      <div class="d">7 screens: Settings home (with a "Complete your setup" card listing all 6 skippable Step 2/3 items — Face ID, recovery email, set a password, notifications, theme/language, message channel — each deep-linking to the same setup screen) → Personal Information (identity, KYC status, optional address / occupation, read-only account facts; locked after KYC) → Phone · Email · Password (set a password first-time vs change password once one exists; thin wrappers over the Verification Flow) → Security &amp; Sessions (biometrics, passkey, the one active session — only one device may be logged in at a time — plus linked Google / LINE / X) → Bank Account / USDT (holder name locked to profile) → Notifications · Theme · Language · Product preferences → Setup ↔ Settings map. Everything entered at sign-up / setup is re-viewable here.</div>
-      <div class="tags"><span class="tag">Low-fidelity</span><span class="tag k">Resume skipped setup</span><span class="tag">Personal info</span><span class="tag">Reuse setup screens</span><span class="fname">profile-settings-flow-wireframe.html</span></div>
-    </a>
-  </div>
-
-  <h2>⑧ Wallet · Promotions · System · Growth</h2>
-  <div class="cards">
-    <a class="card" href="promotion-flow-wireframe.html">
-      <div class="t">Promotion Flow (grayscale)<span class="ar">→</span></div>
-      <div class="d">5 screens per Jul 16 claim mockup: list (filters, claimable, my rewards) → detail (banner, badges, max bonus / how to claim / turnover, full T&amp;C; claimable / claimed / ended / ineligible) → Claim → Personal Details sheet (name must match bank account, DOB) → OTP sheet (shared component; none verified → verify new) → result (bonus active w/ churn &amp; expiry · deposit-first · failed).</div>
-      <div class="tags"><span class="tag">Low-fidelity</span><span class="tag k">Claim → OTP</span><span class="fname">promotion-flow-wireframe.html</span></div>
-    </a>
-    <a class="card" href="wallet-flow-wireframe.html">
-      <div class="t">Wallet Flow (grayscale)<span class="ar">→</span></div>
-      <div class="d">8 screens: Wallet home (VND/THB, withdrawable, bonus wallets w/ churn, USDT wrapped) → Deposit (method grid Bank preferred / USDT / QR-e-wallet, amount, coupon → pay instructions / USDT address w/ rate lock / QR, proof → pending / credited / unmatched) → Withdrawal per Jul 16 mockup (saved accounts or add new w/ locked holder name, amount, churn-unmet blocker → first-time-account OTP → processing / paid / rejected w/ reason / delayed).</div>
-      <div class="tags"><span class="tag">Low-fidelity</span><span class="tag k">Deposit + Withdrawal</span><span class="tag">USDT wrapped</span><span class="fname">wallet-flow-wireframe.html</span></div>
-    </a>
-    <a class="card" href="system-pages-wireframe.html">
-      <div class="t">System &amp; Legal Pages (grayscale)<span class="ar">→</span></div>
-      <div class="d">4 screens: Terms / Privacy / RG policy (versioned, bilingual, in-context sheet from sign-up so the form isn't lost) · Help Center / FAQ / About / Contact (articles deep-link into History &amp; Settings) · Error pages (404, offline, session-expired overlay that restores state, generic w/ ref id) · System states (scheduled maintenance w/ ETA, provider maintenance cross-sell, region block, soft vs hard app update).</div>
-      <div class="tags"><span class="tag">Low-fidelity</span><span class="tag k">Legal + errors</span><span class="fname">system-pages-wireframe.html</span></div>
-    </a>
-    <a class="card" href="growth-support-wireframe.html">
-      <div class="t">Growth &amp; Support Pages (grayscale)<span class="ar">→</span></div>
-      <div class="d">7 screens (batch B): Search (recent / trending / grouped results) · Favourites &amp; recently played · VIP / Loyalty (tier card, benefits table, progress) · Refer a Friend (share, how it works, ?ref= guest landing) · Responsible Gaming centre (limits w/ 24h-increase rule, take a break, self-exclude hard confirm) · KYC upload (ID → selfie → review / reject reasons) · App install &amp; onboarding (smart banner, install page, iOS Add-to-Home, soft update).</div>
-      <div class="tags"><span class="tag">Low-fidelity</span><span class="tag k">Batch B</span><span class="tag">RG · KYC · RAF</span><span class="fname">growth-support-wireframe.html</span></div>
-    </a>
-    <a class="card full" href="status-bubble-wireframe.html">
-      <div class="t">Live Status Bubble + LINE / Push deep links (grayscale)<span class="ar">→</span></div>
-      <div class="d">5 screens: floating progress bubble (BC.Game-style) that exists only while a record is in flight — pending / step-changed hop + bounce (not a fixed corner, draws the eye) / done / error → tap opens a bottom progress card (withdrawal, deposit, KYC, bonus churn) → multiple records collapse to one bubble w/ count → LINE (TH) / Zalo (VN) / push messages carry deep links that open the exact record or an explainer article → placement, collision, suppression, priority &amp; auto-hide rules.</div>
-      <div class="tags"><span class="tag">Low-fidelity</span><span class="tag k">Floating bubble</span><span class="tag">LINE / push deep link</span><span class="tag">z30 w/ FAB</span><span class="fname">status-bubble-wireframe.html</span></div>
-    </a>
-  </div>
-
-  <h2>⑨ Home Flow</h2>
-  <div class="cards">
-    <a class="card full" href="home-flow-wireframe.html">
-      <div class="t">Home Flow (grayscale)<span class="ar">→</span></div>
-      <div class="d">5 screens: Home · pre-login (marquee, hero, product shortcuts, prominent Sign Up CTA, live winners, bottom tab gates Messages/Account behind Login) → Home · logged-in (balance chip, search, message-channel-aware notification bell, "For you" personalized row, missions/check-in, claimable offers, product grid) → Home · new member / empty (setup-rewards card takes the top slot before any favourites/recent exist) → Desktop top menu (replaces bottom tab, account icons move top-right) → Module map (cross-references each block to its owning page — Home Composition, Growth &amp; Support, Wallet, Status Bubble — nothing rebuilt twice).</div>
-      <div class="tags"><span class="tag">Low-fidelity</span><span class="tag k">Pre-login → logged-in</span><span class="tag">Personalization</span><span class="fname">home-flow-wireframe.html</span></div>
     </a>
   </div>
 
@@ -193,7 +177,7 @@
 
   <div class="note">
     All grayscale low-fidelity wireframes, intended to lock down UX and structure; UI visuals to follow once approved.<br>
-    Suggested reading order: ① Foundations → ② Components → ③ Page Compositions → (for details) ④ Full Platform Per-Screen. Share this page's link directly when handing off to Dev.
+    ① is the confirmed, day-to-day source of truth. ② shows how pages compose from modules. ③/④ are shared/reference material. ⑤ is the decision history behind ①. Share this page's link directly when handing off to Dev.
   </div>
 </div>
 <script>
