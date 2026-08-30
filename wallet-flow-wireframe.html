@@ -248,13 +248,14 @@ const screens = [
      :s===1?`<div class="ph" style="height:130px">[ QR · TRC20 address ]</div><div class="kv"><span>Network</span><span>TRC20</span></div><div class="kv"><span>Address</span><span>TX7f…9aQ2 <b>⧉</b></span></div><div class="kv"><span>Send exactly</span><span><b>100 USDT</b></span></div><div class="kv"><span>You'll receive</span><span>≈ ₫2,400,000 <small>rate locked 15 min</small></span></div><div class="hint">＊ Wrong network = lost funds. 1 confirmation to credit.</div>`
      :`<div class="ph" style="height:170px">[ QR · MoMo / ZaloPay / PromptPay ]</div><div class="kv"><span>Amount</span><span><b>₫200,000</b></span></div><div class="hint">＊ Open your e-wallet app and scan; auto-credited on callback.</div>`}
     ${CTA("I have paid")}
-    <div class="link"><b>Cancel deposit</b></div>`,
+    <div class="link"><b>I'll do this later</b></div>
+    <div class="hint">＊ This just closes the screen — if you still send the payment using the details above, it will be matched and credited automatically even after you leave.</div>`,
   spec:{
     goal:"Step 2: payment instructions per method (bank details + unique note · USDT address + locked rate · QR), countdown, copy buttons, optional proof upload.",
     states:["bank instructions (copy)","usdt address (network warning, rate lock)","qr","proof upload (optional)","quote expired → re-quote"],
     fields:["quote_id","instructions{…}","expires_at","proof_image?"],
     api:"POST /deposit/{quote_id}/paid · POST /deposit/{quote_id}/proof",
-    notes:["Unique transfer note per deposit is the matching key for bank transfers.","USDT rate lock 15 min; network mismatch warning is mandatory copy.","Proof upload is optional for auto-matched channels, required if unmatched after N minutes."]
+    notes:["Unique transfer note per deposit is the matching key for bank transfers.","USDT rate lock 15 min; network mismatch warning is mandatory copy.","Proof upload is optional for auto-matched channels, required if unmatched after N minutes.","No 'Cancel deposit' action (08-30): a bank transfer, USDT send, or e-wallet payment can't actually be cancelled from our side once the customer has the details — they could still complete it via their own bank/wallet app regardless of what happens in V9's UI. 'I'll do this later' only closes this screen (matches the identical copy already used on the proof-upload state); it does not invalidate the transfer note / address, so a late-arriving payment still gets matched and credited — falling to the unmatched/manual-reconciliation path if the quote has since expired."]
   }
 },
 {
