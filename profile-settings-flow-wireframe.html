@@ -193,7 +193,7 @@ const screens = [
     <div class="grp">Security</div>
     <div class="hint" style="margin:0 2px 4px">Verify both your phone number and email address to protect against unnecessary access and easy account recovery.</div>
     ${tog("Enable Face ID / biometrics", s===1)}
-    <div class="li"><span class="ic">💻</span><span class="g">Login sessions</span><span class="rt">2 active ›</span></div>
+    <div class="li"><span class="ic">💻</span><span class="g">Active session<small>Only one device at a time</small></span><span class="rt">This device ›</span></div>
     ${tog("Auto log out <small>after 30 min inactivity</small>", false)}
     <div class="grp">Preferences</div>
     ${tog("Push notifications", true)}
@@ -299,14 +299,18 @@ const screens = [
 },
 {
   group:"B · Contact & Login", id:"security", title:"Security & Sessions",
-  states:["Overview","Login sessions","Linked accounts"],
+  states:["Overview","Active session","Linked accounts"],
   render:(s)=>s===1?`
-    <div class="scr-title"><span class="x">←</span>Login Sessions</div>
-    <div class="li"><span class="ic">📱</span><span class="g">iPhone 15 · V9 App<small>This device · HCMC · now</small></span><span class="rt"><span class="st ok">Current</span></span></div>
-    <div class="li"><span class="ic">💻</span><span class="g">Windows · Chrome<small>Hanoi · 2 days ago</small></span><span class="rt"><b>Log out</b></span></div>
-    <div class="li"><span class="ic">📱</span><span class="g">Android · Chrome<small>Bangkok · 5 days ago</small></span><span class="rt"><b>Log out</b></span></div>
-    ${CTA("Log out of all other devices",'ghost')}
-    <div class="link"><b>View full login history</b></div>`
+    <div class="scr-title"><span class="x">←</span>Active Session</div>
+    <div class="li"><span class="ic">📱</span><span class="g">iPhone 15 · V9 App<small>This device · HCMC · active now</small></span><span class="rt"><span class="st ok">Current</span></span></div>
+    <div class="hint">＊ Only one device can be logged in at a time. Logging in elsewhere ends this session automatically — nothing to manage across devices here.</div>
+    <div class="grp">Recent logins</div>
+    <div class="li"><span class="ic">✓</span><span class="g">Password · iPhone 15<small>HCMC · Jul 15 20:58</small></span></div>
+    <div class="li"><span class="ic">✓</span><span class="g">Google · Windows Chrome<small>Hanoi · Jul 13 09:12</small></span></div>
+    <div class="li"><span class="ic">✕</span><span class="g">Failed login ×3 · Android Chrome<small>Bangkok · Jul 12 · locked 15m</small></span></div>
+    <div class="link"><b>View full login history</b></div>
+    ${CTA("Log out this device",'ghost')}
+    <div class="hint">＊ Use this if your phone is lost or stolen — ends the session immediately, even before you sign in anywhere else.</div>`
   :s===2?`
     <div class="scr-title"><span class="x">←</span>Linked Accounts</div>
     <div class="li"><span class="ic">G</span><span class="g">Google<small>g***@gmail.com · last used</small></span><span class="rt"><b>Unlink</b></span></div>
@@ -317,17 +321,17 @@ const screens = [
     <div class="scr-title"><span class="x">←</span>Security</div>
     ${tog("Enable Face ID / biometrics", true)}
     <div class="li"><span class="ic">🔑</span><span class="g">Passkey<small>iPhone 15 · added Jul 10</small></span><span class="rt">Manage ›</span></div>
-    <div class="li"><span class="ic">💻</span><span class="g">Login sessions</span><span class="rt">3 active ›</span></div>
+    <div class="li"><span class="ic">💻</span><span class="g">Active session<small>Only one device at a time</small></span><span class="rt">This device ›</span></div>
     ${tog("Auto log out <small>after 30 min inactivity</small>", false)}
     <div class="li"><span class="ic">🔗</span><span class="g">Linked accounts<small>Google · LINE · X</small></span><span class="rt">1 linked ›</span></div>
     <div class="li"><span class="ic">🔐</span><span class="g">Change password</span><span class="rt">›</span></div>
     <div class="link"><b>Security history</b></div>`,
   spec:{
-    goal:"Security controls the member owns: biometrics / passkey, active sessions (log out one / all), auto-logout, linked social providers, and links into History categories 1 & 5.",
-    states:["overview","login sessions (log out one / all others)","linked accounts (link / unlink with guard)","passkey manage (add / revoke)"],
-    fields:["biometric_enabled","passkeys[]","sessions[]","auto_logout(bool,30m)","linked_providers[]"],
-    api:"GET/PUT /account/security · GET /sessions · DELETE /sessions/{id}|?all_others=1\nPOST /auth/social/link · DELETE /auth/social/link/{provider}",
-    notes:["Sessions list is the same data as History › Login & Devices — this is the control surface, History is the log.","Passkey enrolment reuses the Setup Step 2 screen.","Guard: cannot unlink last login method; cannot disable password if it's the only method.","Lost/stolen device (08-30 Q&A): losing the phone never locks the account — passkey is never the only login method, since the account itself was created with OTP. Sign back in on a new device via Password or One-time code (see login-flow-wireframe.html's 'Passkey Unavailable' fallback), then here: (1) Login Sessions → log out the lost device's session, (2) Passkey · Manage → revoke the passkey tied to that device — required even for a synced passkey (iCloud Keychain / Google Password Manager), since sync would otherwise let it resurface on the next device signed into that same Apple/Google account, (3) optionally enroll a new passkey on the new device."]
+    goal:"Security controls the member owns: biometrics / passkey, the one active session (view + force logout), auto-logout, linked social providers, and links into History categories 1 & 5.",
+    states:["overview","active session (single device — view + force logout)","linked accounts (link / unlink with guard)","passkey manage (add / revoke)"],
+    fields:["biometric_enabled","passkeys[]","session{device,geo,started_at}","auto_logout(bool,30m)","linked_providers[]"],
+    api:"GET/PUT /account/security · GET /session · DELETE /session\nPOST /auth/social/link · DELETE /auth/social/link/{provider}",
+    notes:["Single active session policy (08-30 Q&A): only one device can be logged in at a time — logging in anywhere automatically ends the previous session, server-enforced. This is why there's no multi-device list to manage, unlike a typical 'sign out other sessions' screen — just the one current session, plus a manual 'Log out this device' for when the member wants to kill it themselves without switching device.","Recent-logins rows here are read-only, same data as History › Login & Devices — this screen is the control surface (view current + force logout), History is the full log.","Passkey enrolment reuses the Setup Step 2 screen.","Guard: cannot unlink last login method; cannot disable password if it's the only method.","Lost/stolen device (08-30 Q&A): losing the phone never locks the account — passkey is never the only login method, since the account itself was created with OTP. Sign back in on a new device via Password or One-time code (see login-flow-wireframe.html's 'Passkey Unavailable' fallback) — the single-session policy means this alone already ends the lost device's session automatically, no separate step needed. Still required manually: Passkey · Manage → revoke the passkey tied to that device — a session ending does NOT revoke its passkey, and revoke is needed even for a synced passkey (iCloud Keychain / Google Password Manager), since sync would otherwise let it resurface on the next device. Optionally enroll a new passkey on the new device afterward."]
   }
 },
 {

@@ -246,6 +246,16 @@
     <p>順便記一個技術筆記：這個項目名稱把「App 生物辨識解鎖」（本機用臉/指紋開啟既有 session，換新裝置沒用）跟「Passkey／WebAuthn」（真正註冊到伺服器的公私鑰憑證，透過 iCloud 鑰匙圈/Google 密碼管理員可以同步到新裝置登入）混成一個開關。目前先不拆——如果之後真的要做「passkey 跨裝置登入」這個功能，才需要把兩者分開存欄位。</p>
   </div>
   <div class="card">
+    <h3><span class="n">V</span>單一裝置登入 —— 「Login sessions」列表不寫實（08-30）</h3>
+    <p>使用者指出：我們只能允許<b>一台裝置登入</b>，Security 頁那個「3 active / 2 active」多裝置清單（可以個別 Log out）不寫實——同時也確認 History 的登入紀錄本來就該是<b>多筆歷史紀錄</b>（3 筆以上），這兩件事不衝突：一個是「現在同時有幾台裝置在線」（只能 1），一個是「過去登入過幾次」（本來就會很多筆）。</p>
+    <ul>
+      <li><b>Security &amp; Sessions</b>（profile-settings-flow-wireframe／v9bet-full-wireframe「Account Security」）：「Login sessions · N active」改成「Active session · This device」，子畫面拿掉多裝置清單，只顯示<b>目前這一台</b> ＋ 最近幾筆登入記錄（唯讀）＋「Log out this device」（手動強制登出，掉手機時可用）。</li>
+      <li><b>Login</b>（login-flow-wireframe）：任何方式登入成功，都會<b>自動結束另一台裝置的 session</b>（伺服器強制），不會出現確認畫面——被登出的那台就是直接掉線；這個事件本身會被記一筆「Logout · ended by new login」進 History。</li>
+      <li><b>History › Login &amp; Devices</b>：「Active sessions」清單改成只顯示這一台，拿掉「Log out」按鈕跟「Log out of all other devices」連結——History 定位改成<b>唯讀記錄</b>，真正的強制登出動作只在 Settings › Security 做。「Recent activity」照舊維持多筆歷史紀錄。</li>
+      <li>掉手機的復原流程也跟著簡化：新裝置登入本身就會自動結束舊裝置的 session（不用再手動去 Login sessions 裡登出），唯一還需要手動做的是去 Passkey · Manage 撤銷舊裝置那把 passkey（session 結束不會連帶撤銷 passkey）。</li>
+    </ul>
+  </div>
+  <div class="card">
     <h3><span class="n">→</span>後續順序</h3>
     <p>產品頁、產品細項頁、Bet slip —— <b>最後處理</b>（使用者指示 07-16）。<b>首頁（Home Flow）08-30 已開工</b>：新增 <code>home-flow-wireframe.html</code>（登入前／登入後／新客空狀態／桌面版 top menu／模組對照表），接進 index.html ⑨ 區，跟既有的 <code>v9bet-home-composition.html</code>（10 模組）對齊、不重複。C 批（賽果/開獎、公告、語言切換頁、session 覆蓋層細節）視需要再做。</p>
   </div>

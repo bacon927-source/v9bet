@@ -216,26 +216,25 @@ const screens = [
     <div class="scr-title"><span class="x">←</span>Login & Devices</div>
     <div class="err">⚠ Login from a new device in Bangkok, TH · Jul 16 03:12 — was this you?</div>
     ${CTA("Yes, it was me",'ghost')}
-    ${CTA("No — log out all devices & change password")}
+    ${CTA("No — log out this device & change password")}
     <div class="hint">＊ Suspicious-login banner pins to the top until acknowledged; the 'No' path runs the shared OTP + change-password flow.</div>`
   :`
     <div class="scr-title"><span class="x">←</span>Login & Devices</div>
     <div class="scr-step">Where and how you signed in</div>
-    <div class="grp">Active sessions</div>
+    <div class="grp">Active session <span class="badge">only one device at a time</span></div>
     <div class="hrow"><span class="ic">📱</span><span class="b">iPhone 15 · V9 App<small>This device · Ho Chi Minh City</small></span><span class="r"><small><span class="st ok">Active</span></small></span></div>
-    <div class="hrow"><span class="ic">💻</span><span class="b">Windows · Chrome<small>Hanoi · last active 2 days ago</small></span><span class="r"><small><b>Log out</b></small></span></div>
     <div class="grp">Recent activity</div>
     <div class="hrow"><span class="ic">✓</span><span class="b">Login · Password<small>iPhone 15 · Safari · HCMC</small></span><span class="r"><small>Jul 15 20:58</small></span></div>
     <div class="hrow"><span class="ic">✓</span><span class="b">Login · Google<small>Windows · Chrome · Hanoi</small></span><span class="r"><small>Jul 13 09:12</small></span></div>
     <div class="hrow"><span class="ic">✕</span><span class="b">Failed login · wrong password ×3<small>Android · Chrome · Bangkok</small></span><span class="r"><small><span class="st bad">Locked 15m</span> Jul 12</small></span></div>
-    <div class="hrow"><span class="ic">↩</span><span class="b">Logout<small>iPhone 15 · V9 App</small></span><span class="r"><small>Jul 11 23:40</small></span></div>
-    <div class="link"><b>Log out of all other devices</b></div>`,
+    <div class="hrow"><span class="ic">↩</span><span class="b">Logout · ended by new login<small>Windows · Chrome · Hanoi</small></span><span class="r"><small>Jul 13 09:12</small></span></div>
+    <div class="link"><b>Manage in Security &amp; Sessions ›</b></div>`,
   spec:{
-    goal:"Login / logout / failed attempts / lockouts / active sessions per device — the member's own security dashboard.",
-    states:["list (active sessions + recent activity)","detail (one event)","suspicious login banner → acknowledge / secure account","log out one device / all others"],
+    goal:"Login / logout / failed attempts / lockouts / the one active session — the member's own security dashboard (read-only log; the force-logout action itself lives in Profile & Settings › Security & Sessions).",
+    states:["list (active session + recent activity log)","detail (one event)","suspicious login banner → acknowledge / secure account"],
     fields:["ts","result(success|failed|locked)","method(password|one_time_code|passkey|google|line|x)","device{model,os,app|browser}","geo{city,country}","ip(masked)","session{remember,expires_at}"],
-    api:"GET /history/logins · GET /sessions · DELETE /sessions/{id} · DELETE /sessions?all_others=1\nPOST /security/report-suspicious { event_id }",
-    notes:["Feeds risk step-up: new device / new geo → RISK_STEPUP on next login (see Login Flow).","IP shown masked to the member; full IP back-office only.","Retention 90 days member-visible; longer in audit store per policy.","'Not you?' runs shared OTP → change password → invalidate all sessions."]
+    api:"GET /history/logins · GET /session\nPOST /security/report-suspicious { event_id }",
+    notes:["Single active session policy (08-30 Q&A): only one device can be logged in at a time — a new login elsewhere ends the previous session automatically (server-enforced), which is itself logged here as a 'Logout · ended by new login' row. No multi-device list or per-device log-out on this page; that's exactly why it's a log, not a control surface — force-logout of the current session lives in Settings.","Feeds risk step-up: new device / new geo → RISK_STEPUP on next login (see Login Flow).","IP shown masked to the member; full IP back-office only.","Retention 90 days member-visible; longer in audit store per policy.","'Not you?' runs shared OTP → change password → invalidate the session (singular, since only one exists)."]
   }
 },
 {
