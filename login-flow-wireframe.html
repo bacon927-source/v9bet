@@ -237,7 +237,7 @@ const screens = [
     states:["prompt","verifying","success → session","cancelled / unsupported → fallback","passkey revoked → re-enroll in setup"],
     fields:["webauthn_assertion","device_id"],
     api:"POST /auth/login/webauthn { assertion } ← { session }\nerr: PASSKEY_INVALID / NOT_ENROLLED",
-    notes:["Targets high InAppWebView traffic — biggest returning-user win (P0 per auth analysis).","Enrolment happens in Setup Step 2 (Face ID / biometric / passkey).","Availability degrades silently — button hidden when the platform can't do WebAuthn."]
+    notes:["Targets high InAppWebView traffic — biggest returning-user win (P0 per auth analysis).","Enrolment happens in Setup Step 2 (Face ID / biometric / passkey).","Availability degrades silently — button hidden when the platform can't do WebAuthn.","Lost/stolen device (08-30 Q&A): this 'Passkey Unavailable' fallback IS the recovery path — Login with password / one-time code needs neither the old device nor its passkey. After signing back in, revoke the old device's session and its passkey in Profile & Settings › Security & Sessions (see profile-settings-flow-wireframe.html) — required even if the passkey was synced via iCloud Keychain / Google Password Manager, since sync would otherwise let it resurface on the next device."]
   }
 },
 {

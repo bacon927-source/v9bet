@@ -327,7 +327,7 @@ const screens = [
     states:["overview","login sessions (log out one / all others)","linked accounts (link / unlink with guard)","passkey manage (add / revoke)"],
     fields:["biometric_enabled","passkeys[]","sessions[]","auto_logout(bool,30m)","linked_providers[]"],
     api:"GET/PUT /account/security · GET /sessions · DELETE /sessions/{id}|?all_others=1\nPOST /auth/social/link · DELETE /auth/social/link/{provider}",
-    notes:["Sessions list is the same data as History › Login & Devices — this is the control surface, History is the log.","Passkey enrolment reuses the Setup Step 2 screen.","Guard: cannot unlink last login method; cannot disable password if it's the only method."]
+    notes:["Sessions list is the same data as History › Login & Devices — this is the control surface, History is the log.","Passkey enrolment reuses the Setup Step 2 screen.","Guard: cannot unlink last login method; cannot disable password if it's the only method.","Lost/stolen device (08-30 Q&A): losing the phone never locks the account — passkey is never the only login method, since the account itself was created with OTP. Sign back in on a new device via Password or One-time code (see login-flow-wireframe.html's 'Passkey Unavailable' fallback), then here: (1) Login Sessions → log out the lost device's session, (2) Passkey · Manage → revoke the passkey tied to that device — required even for a synced passkey (iCloud Keychain / Google Password Manager), since sync would otherwise let it resurface on the next device signed into that same Apple/Google account, (3) optionally enroll a new passkey on the new device."]
   }
 },
 {
