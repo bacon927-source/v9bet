@@ -220,26 +220,38 @@ const screens = [
 },
 {
   group:"A · Sign Up", id:"social", title:"Social Sign Up / Bind",
-  states:["Done → You're a customer","Account exists → Bind"],
+  states:["Done → You're a customer","Account Found → link?","Verify existing account (OTP)","Bound → logged in"],
   render:(s)=>s===0?`
     <div class="scr-title">Welcome!</div>
     <div class="ph" style="height:110px">🎉<br><small>account created</small></div>
     <div class="scr-step" style="font-size:15px;color:#333"><b>You're now a V9 customer</b><br>Signed up with Google — no OTP needed.</div>
     ${CTA("Set up account · earn 100 points 🎁")}
     ${CTA("Start playing",'ghost')}`
-  :`
+  :s===1?`
     <div class="scr-title"><span class="x">←</span>Account Found</div>
-    <div class="err">This Google account / phone already matches an existing account <b>v9_user***</b>.</div>
-    <div class="scr-step">Bind it to that account to avoid duplicates</div>
-    ${CTA("Bind and login")}
+    <div class="err">This Google account already matches an existing account <b>v9_user***</b>.</div>
+    <div class="scr-step">Verify it's you to link this Google account — for your protection, we can't link it on Google's word alone</div>
+    ${CTA("Send code to existing account")}
     ${CTA("Use a different account",'ghost')}
-    <div class="link"><b>Not you? Contact Live Chat</b></div>`,
+    <div class="link"><b>Not you? Contact Live Chat</b></div>`
+  :s===2?`
+    <div class="scr-title"><span class="x">←</span>Verify It's You</div>
+    <div class="scr-step">Code sent to the phone on file for v9_user*** &nbsp; 091***233</div>
+    <div class="otpcells"><span class="f">_</span><span>_</span><span>_</span><span>_</span><span>_</span><span>_</span></div>
+    <div class="hint" style="text-align:center">Resend in 32s</div>
+    ${CTA("Verify and link",'disabled')}
+    <div class="hint">＊ This proves ownership of the EXISTING account, not the new Google identity — Google already proved that side.</div>`
+  :`
+    <div class="scr-title">Welcome back!</div>
+    <div class="ph" style="height:110px">🔗✅<br><small>Google account linked</small></div>
+    <div class="scr-step" style="font-size:15px;color:#333"><b>You're logged in as v9_user***</b><br>Google is now a login option on this account.</div>
+    ${CTA("Continue")}`,
   spec:{
-    goal:"Social sign-up (Google / LINE / X icons) via the central verification domain — NO OTP, no separate currency-capture screen: provider consent → immediate 'You're now a customer' welcome, which pushes into the standard Setup Overview (same as phone/email members). Bind flow prevents duplicate accounts.",
-    states:["provider consent (Google One Tap / LINE / X, no in-app redirect screen)","done → welcome, customer created (no OTP)","existing match → bind & login","cancelled / provider error → back to sign-up"],
-    fields:["provider(google|line|x)","session_token","accept_terms(implicit — recorded at social tap on Sign Up)"],
-    api:"GET auth.&lt;stable&gt;/oauth/{provider}\n← redirect back with session_token\nPOST /auth/social/exchange { session_token }\n← { customer_id, is_new, needs_bind }",
-    notes:["'Complete Setup (currency-only)' screen removed (Jul 16) — redundant with Setup Overview, which already collects currency as Step 1 · Required right after. Social members land on Welcome immediately.","Welcome CTA order flips for social sign-up: 'Set up account · earn 100 points' is the PRIMARY (solid) button to pull members into Setup Overview; 'Start playing' is secondary (ghost) — encourages completing setup rather than skipping straight to play.","No OTP anywhere in the social flow — the provider (Google / LINE / X) already verified the identity.","Phone OTP is deferred: only asked later at withdrawal / promo claim (phone remains the KYC anchor).","Central verification domain: OAuth redirect URI binds ONLY to auth.&lt;stable&gt;, so public mirror rotation never breaks login.","Providers = Google / LINE / X (Telegram entry removed 2026-07-15; it stays available only as an OTP channel in TH / intl). Icon visibility is market-aware — hide a provider where blocked.","Bind flow also lives in Profile for existing username/password users.","Google One Tap auto-hides if the consent app is blocked (degrade design)."]
+    goal:"Social sign-up (Google / LINE / X icons) via the central verification domain — NO OTP, no separate currency-capture screen for a brand-new account: provider consent → immediate 'You're now a customer' welcome, which pushes into the standard Setup Overview (same as phone/email members). When the provider identity matches an EXISTING account, the flow requires re-proving ownership of that existing account before linking (market-standard account-linking pattern) rather than logging straight in.",
+    states:["provider consent (Google One Tap / LINE / X, no in-app redirect screen)","done → welcome, new customer created (no OTP)","existing match → Account Found, offers to link","re-auth → OTP sent to the EXISTING account's phone (not the new provider)","OTP correct → bound & logged in as the existing account","cancelled / provider error → back to sign-up"],
+    fields:["provider(google|line|x)","session_token","accept_terms(implicit — recorded at social tap on Sign Up)","existing_account_phone_masked","otp_code"],
+    api:"GET auth.&lt;stable&gt;/oauth/{provider}\n← redirect back with session_token\nPOST /auth/social/exchange { session_token }\n← { customer_id, is_new, needs_bind, existing_account_phone_masked }\nPOST /auth/social/bind/otp/send { customer_id }\nPOST /auth/social/bind/otp/verify { customer_id, otp } → bind + login",
+    notes:["'Complete Setup (currency-only)' screen removed (Jul 16) — redundant with Setup Overview, which already collects currency as Step 1 · Required right after. Brand-new social members land on Welcome immediately, no OTP.","Welcome CTA order flips for social sign-up: 'Set up account · earn 100 points' is the PRIMARY (solid) button to pull members into Setup Overview; 'Start playing' is secondary (ghost) — encourages completing setup rather than skipping straight to play.","Account-linking rule (market standard — Auth0 account linking / Google Identity Platform 'account-exists-with-different-credential'): request authentication for BOTH sides before linking. Google proves the new identity; an OTP to the phone already on file proves the existing account. Binding straight off the provider's say-so alone (no re-auth) is the weaker 'automatic linking' mode both platforms flag as a security tradeoff — not used here.","Match only ever surfaces 'Account Found' against a VERIFIED email/phone on the existing account — an unverified stored contact never triggers it, or anyone could plant someone else's real email on a dormant account and hijack it the moment the real owner signs in with Google.","Phone OTP for a brand-new social account is still deferred to withdrawal / promo claim (phone remains the KYC anchor) — this OTP is only for the existing-account re-auth path.","Central verification domain: OAuth redirect URI binds ONLY to auth.&lt;stable&gt;, so public mirror rotation never breaks login.","Providers = Google / LINE / X (Telegram entry removed 2026-07-15; it stays available only as an OTP channel in TH / intl). Icon visibility is market-aware — hide a provider where blocked.","Bind flow also lives in Profile for existing username/password users.","Google One Tap auto-hides if the consent app is blocked (degrade design)."]
   }
 },
 {
