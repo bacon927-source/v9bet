@@ -86,7 +86,7 @@
       <li><b>同類型規則</b>：改 Email 第一步 OTP 只能發到舊 Email（電話 OTP 不能代替）；改電話同理。新聯絡方式兩段 OTP 都通過才生效。</li>
       <li>無驗證聯絡方式：改密碼／提款 = <b>不允許</b>；領優惠／首次綁定 = 現場輸入並驗證新聯絡方式後繼續。</li>
       <li>忘記密碼：不得在驗證成功前洩漏帳號是否存在；用於復原的聯絡方式不自動變 Verified（待業務確認）。</li>
-      <li><b>+10 points 獎勵</b>（07-16）：首次綁定並驗證電話/Email 完成後獎勵 10 點——每人每種聯絡方式只發一次（防重複領取；換綁/重驗不再發），入帳記在 History 第 4 類（Rewards）。</li>
+      <li><b>+10 points 獎勵</b>（07-16）：首次綁定並驗證電話/Email 完成後獎勵 10 點——每人每種聯絡方式只發一次（防重複領取；換綁/重驗不再發），入帳記在 History 第 3 類（Rewards，08-30：Login & Devices 移出 History 後全部類別序號 -1）。</li>
       <li>OTP 通則：有效 5–10 分鐘；系統需定義過期/錯誤上限/重發間隔/重發上限/失敗後動作/重用政策/<b>信任期</b>；OTP 綁定 會員+聯絡方式+動作+session；稽核日誌不存明碼。</li>
     </ul>
     <p class="files">verification-flow-wireframe.html · 8 個畫面 · 含編輯模式 · 頻道層（Zalo/SMS/LINE/WhatsApp）是 Phone OTP 底下的遞送細節</p>
@@ -136,7 +136,7 @@
       <tr><td><b>Step 3 · Preferences</b></td><td>通知權限、主題/語言</td><td><span class="tag k">可 pass</span></td></tr>
     </table>
     <p><b>教學（Interactive tutorial）與 App 下載移出清單</b> —— Setup 完成後在下一頁（Tutorial &amp; App 單一頁）一起呈現，之後才是 Welcome + Offers。</p>
-    <p><b>頂部改為獎勵進度條</b>（07-16）：Setup 總覽和每一個子畫面最上方都顯示「🎁 Setup rewards · n / 100 points」——<b>9 項 × 10 點 ＋ 全部完成再送 10 點 = 100 點</b>；進度條數字會隨著走到哪一步跟著累加（Currency 0 → Personal Info 10 → Bank/USDT 20 → Face ID 30 → Email 40 → Password 50 → Notifications 60 → Theme/Language 70 → Message Channel 80），不是只出現在總覽頁。點數入帳記在 History 第 4 類，每項只發一次。三步驟分段指示保留在其下。</p>
+    <p><b>頂部改為獎勵進度條</b>（07-16）：Setup 總覽和每一個子畫面最上方都顯示「🎁 Setup rewards · n / 100 points」——<b>9 項 × 10 點 ＋ 全部完成再送 10 點 = 100 點</b>；進度條數字會隨著走到哪一步跟著累加（Currency 0 → Personal Info 10 → Bank/USDT 20 → Face ID 30 → Email 40 → Password 50 → Notifications 60 → Theme/Language 70 → Message Channel 80），不是只出現在總覽頁。點數入帳記在 History 第 3 類，每項只發一次。三步驟分段指示保留在其下。</p>
     <p><b>+10 pts 改成明顯的金色小標籤</b>（07-16）：原本混在灰色說明文字裡的「+10 pts」拿出來獨立做成一顆金底色的圓角 chip（🎁+10），視覺上更像一個小 tab，一眼就看到獎勵。</p>
     <p><b>新增第 9 項：Message channel（溝通渠道）</b>（Step 3 可跳過）——客人選我們用什麼管道聯絡他：</p>
     <ul>
@@ -251,9 +251,9 @@
     <ul>
       <li><b>Security &amp; Sessions</b>（profile-settings-flow-wireframe／v9bet-full-wireframe「Account Security」）：「Login sessions · N active」改成「Active session · This device」，子畫面拿掉多裝置清單，只顯示<b>目前這一台</b> ＋ 最近幾筆登入記錄（唯讀）＋「Log out this device」（手動強制登出，掉手機時可用）。</li>
       <li><b>Login</b>（login-flow-wireframe）：任何方式登入成功，都會<b>自動結束另一台裝置的 session</b>（伺服器強制），不會出現確認畫面——被登出的那台就是直接掉線；這個事件本身會被記一筆「Logout · ended by new login」進 History。</li>
-      <li><b>History › Login &amp; Devices</b>：「Active sessions」清單改成只顯示這一台，拿掉「Log out」按鈕跟「Log out of all other devices」連結——History 定位改成<b>唯讀記錄</b>，真正的強制登出動作只在 Settings › Security 做。「Recent activity」照舊維持多筆歷史紀錄。</li>
       <li>掉手機的復原流程也跟著簡化：新裝置登入本身就會自動結束舊裝置的 session（不用再手動去 Login sessions 裡登出），唯一還需要手動做的是去 Passkey · Manage 撤銷舊裝置那把 passkey（session 結束不會連帶撤銷 passkey）。</li>
     </ul>
+    <p><b>後續追問「3 筆歷史記錄要放哪」（08-30）</b>：使用者確認乾脆<b>整組併進 Settings，History 拿掉「Login &amp; Devices」這個獨立分類</b>——登入/裝置記錄從此只存在於 Profile &amp; Settings › Security &amp; Sessions 一個地方，不再跟 History 重複。History 的 8 大分類變成 <b>7 類</b>，原本 2–8 類（Deposits/Withdrawals…Responsible Gaming）序號各 <b>-1</b>（現為 1–7）；所有引用舊分類編號的地方（promotion-flow、growth-support、verification-flow、profile-settings 的 spec notes，以及本記錄前面第 5 條）都已同步改號。</p>
   </div>
   <div class="card">
     <h3><span class="n">→</span>後續順序</h3>

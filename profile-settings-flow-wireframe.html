@@ -253,7 +253,7 @@ const screens = [
     states:["not added (empty form, Save disabled)","complete (editable rows)","locked after KYC (name / DOB / nationality read-only → Live Chat)","KYC upgrade CTA"],
     fields:["nickname?","avatar?","full_name(title,first,last)","dob","gender?","nationality","residence_country","kyc_level","id_document{type,number_masked,status}","address?","occupation?","account_id(ro)","member_since(ro)","currency(ro,locked)","tier(ro)"],
     api:"GET /account/profile · PUT /account/profile { … }\nerr: NAME_LOCKED_KYC / UNDERAGE / INVALID_DOB",
-    notes:["Additions vs the setup form: nickname/avatar (social features), nationality/residence (market + KYC), ID document status, address (physical lifetime gifts), occupation (KYC L2 / AML), read-only account facts.","Full name must equal the payout account name (promo-claim design copy).","After KYC approval, identity fields lock — this prevents 'change name to match a friend's bank account' abuse.","Every edit is written to History category 7."]
+    notes:["Additions vs the setup form: nickname/avatar (social features), nationality/residence (market + KYC), ID document status, address (physical lifetime gifts), occupation (KYC L2 / AML), read-only account facts.","Full name must equal the payout account name (promo-claim design copy).","After KYC approval, identity fields lock — this prevents 'change name to match a friend's bank account' abuse.","Every edit is written to History category 6."]
   }
 },
 {
@@ -327,7 +327,7 @@ const screens = [
     <div class="li"><span class="ic">🔐</span><span class="g">Change password</span><span class="rt">›</span></div>
     <div class="link"><b>Security history</b></div>`,
   spec:{
-    goal:"Security controls the member owns: biometrics / passkey, the one active session (view + force logout), auto-logout, linked social providers, and links into History categories 1 & 5.",
+    goal:"Security controls the member owns: biometrics / passkey, the one active session (view + force logout), auto-logout, linked social providers, and links into History category 4 (Security changes) — login/session records themselves live only here, not in History (08-30).",
     states:["overview","active session (single device — view + force logout)","linked accounts (link / unlink with guard)","passkey manage (add / revoke)"],
     fields:["biometric_enabled","passkeys[]","session{device,geo,started_at}","auto_logout(bool,30m)","linked_providers[]"],
     api:"GET/PUT /account/security · GET /session · DELETE /session\nPOST /auth/social/link · DELETE /auth/social/link/{provider}",
@@ -366,7 +366,7 @@ const screens = [
     states:["list (default badge)","add bank (name pre-filled, must match)","add USDT (network + address + label)","remove → OTP","set default"],
     fields:["bank_accounts[{bank,number_masked,holder,default,verified}]","usdt_addresses[{network,address_masked,label}]"],
     api:"GET/POST/DELETE /account/payout · PUT /account/payout/{id}/default\nerr: NAME_MISMATCH / ACCOUNT_IN_USE / OTP_REQUIRED",
-    notes:["Same screen as Setup Step 1 'Profile + bank/USDT' — reused.","Holder-name lock + first-time-account withdrawal OTP together close the 'withdraw to someone else's account' hole.","Every add/remove lands in History category 7."]
+    notes:["Same screen as Setup Step 1 'Profile + bank/USDT' — reused.","Holder-name lock + first-time-account withdrawal OTP together close the 'withdraw to someone else's account' hole.","Every add/remove lands in History category 6."]
   }
 },
 {

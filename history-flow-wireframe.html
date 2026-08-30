@@ -130,7 +130,7 @@
   <!-- LEFT: flow nav -->
   <aside>
     <h1>History Flow</h1>
-    <p class="sub">Low-fidelity wireframe · Mobile / App first<br>What the member did — 8 record categories<br>Decided Jul 16 (see meeting notes)</p>
+    <p class="sub">Low-fidelity wireframe · Mobile / App first<br>What the member did — 7 record categories<br>Decided Jul 16 (see meeting notes); Login &amp; Devices moved to Settings 08-30</p>
     <div id="nav"></div>
     <div class="legend">
       Grayscale wireframe only, no visual design.<br>
@@ -180,7 +180,7 @@ const screens = [
     <div class="scr-title"><span class="x">←</span>History</div>
     <div class="scr-step">Home › Profile › History</div>
     ${F("🔍 Search txn ID / bet ID / promo","")}
-    <div class="chips"><span class="chip on">All</span><span class="chip">Login</span><span class="chip">Money</span><span class="chip">Bets</span><span class="chip">Rewards</span><span class="chip">Security</span><span class="chip">Referral</span><span class="chip">KYC</span><span class="chip">RG</span></div>
+    <div class="chips"><span class="chip on">All</span><span class="chip">Money</span><span class="chip">Bets</span><span class="chip">Rewards</span><span class="chip">Security</span><span class="chip">Referral</span><span class="chip">KYC</span><span class="chip">RG</span></div>
     ${s===2?`<div class="ccpop" style="margin:0 0 10px"><div class="cc on">📅 Last 7 days<small>✓</small></div><div class="cc">Last 30 days</div><div class="cc">Last 90 days</div><div class="cc">Custom range</div></div>`:''}
     <div class="daysep">Today · Jul 16</div>
     <div class="hrow"><span class="ic">💰</span><span class="b">Deposit · Bank transfer<small>ACB ****1234 · TXN 8F3K…</small></span><span class="r">+₫500,000<small><span class="st ok">Completed</span> 14:20</small></span></div>
@@ -188,57 +188,17 @@ const screens = [
     <div class="hrow"><span class="ic">🎲</span><span class="b">Sports · MU vs LIV · Over 2.5<small>Bet #B91K… · @1.90</small></span><span class="r">−₫100,000<small><span class="st wait">Open</span> 15:02</span></div>
     <div class="daysep">Yesterday · Jul 15</div>
     <div class="hrow"><span class="ic">🔐</span><span class="b">Password changed<small>OTP via SMS ✓ · re-login required</small></span><span class="r"><small><span class="st ok">Done</span> 21:10</small></span></div>
-    <div class="hrow"><span class="ic">📱</span><span class="b">Login · iPhone 15 · Safari<small>Ho Chi Minh City · Password</small></span><span class="r"><small><span class="st ok">Success</span> 20:58</small></span></div>
     <div class="link"><b>Load more</b> · <b>Export CSV</b></div>`,
   spec:{
     goal:"One timeline for everything the member did or that happened to their account; category chips + date range + search; grouped by day, newest first.",
     states:["default (all categories, last 7 days)","empty (new member) → CTA to first deposit","filter panel open (date range)","category chip selected → filtered list","search by txn / bet / promo ID","load more (infinite scroll, 20 per page)"],
-    fields:["category(all|login|money|bets|rewards|security|referral|kyc|rg)","date_range(7d|30d|90d|custom)","query","cursor"],
+    fields:["category(all|money|bets|rewards|security|referral|kyc|rg)","date_range(7d|30d|90d|custom)","query","cursor"],
     api:"GET /history?category=&from=&to=&q=&cursor=\n← { items:[{id,type,ts,title,subtitle,amount?,status,detail_ref}], next_cursor }\nGET /history/export?…  → CSV (async, link via inbox)",
-    notes:["Entry: Profile → History (also deep-linked from Wallet 'View all', Promotions 'My rewards', Settings 'Login activity').","Member-visible vs back-office: this page shows the member-facing subset; audit-grade detail (IP, failed attempts, OTP internals) is back-office only.","Retention: money & bets 5–7 yrs (regulatory); login/device 90 days; notifications 30 days (Message Center, not duplicated here).","Amounts always in account currency (VND / THB); USDT rows show both (100 USDT ≈ ₫2.4M).","Analytics: history_view carries category + range."]
+    notes:["Entry: Profile → History (also deep-linked from Wallet 'View all', Promotions 'My rewards').","No 'Login & Devices' category (08-30, moved out): login/session records live solely in Profile & Settings › Security & Sessions, not duplicated here — single active session policy means there's no multi-device log worth a whole History category, and Security changes (password/contact changes) already have their own category below.","Member-visible vs back-office: this page shows the member-facing subset; audit-grade detail (IP, failed attempts, OTP internals) is back-office only.","Retention: money & bets 5–7 yrs (regulatory); notifications 30 days (Message Center, not duplicated here).","Amounts always in account currency (VND / THB); USDT rows show both (100 USDT ≈ ₫2.4M).","Analytics: history_view carries category + range."]
   }
 },
 {
-  group:"B · Categories", id:"login", title:"1 · Login & Devices",
-  states:["List","Detail","Suspicious"],
-  render:(s)=>s===1?`
-    <div class="scr-title"><span class="x">←</span>Login Detail</div>
-    <div class="kv"><span>Time</span><span>Jul 15 · 20:58:14</span></div>
-    <div class="kv"><span>Result</span><span><span class="st ok">Success</span></span></div>
-    <div class="kv"><span>Method</span><span>Password</span></div>
-    <div class="kv"><span>Device</span><span>iPhone 15 · iOS 18.5</span></div>
-    <div class="kv"><span>App / browser</span><span>Safari 18</span></div>
-    <div class="kv"><span>Location</span><span>Ho Chi Minh City, VN</span></div>
-    <div class="kv"><span>IP</span><span>113.***.***.42</span></div>
-    <div class="kv"><span>Session</span><span>Keep me logged in · expires Aug 14</span></div>
-    ${CTA("Not you? Secure my account",'ghost')}`
-  :s===2?`
-    <div class="scr-title"><span class="x">←</span>Login & Devices</div>
-    <div class="err">⚠ Login from a new device in Bangkok, TH · Jul 16 03:12 — was this you?</div>
-    ${CTA("Yes, it was me",'ghost')}
-    ${CTA("No — log out this device & change password")}
-    <div class="hint">＊ Suspicious-login banner pins to the top until acknowledged; the 'No' path runs the shared OTP + change-password flow.</div>`
-  :`
-    <div class="scr-title"><span class="x">←</span>Login & Devices</div>
-    <div class="scr-step">Where and how you signed in</div>
-    <div class="grp">Active session <span class="badge">only one device at a time</span></div>
-    <div class="hrow"><span class="ic">📱</span><span class="b">iPhone 15 · V9 App<small>This device · Ho Chi Minh City</small></span><span class="r"><small><span class="st ok">Active</span></small></span></div>
-    <div class="grp">Recent activity</div>
-    <div class="hrow"><span class="ic">✓</span><span class="b">Login · Password<small>iPhone 15 · Safari · HCMC</small></span><span class="r"><small>Jul 15 20:58</small></span></div>
-    <div class="hrow"><span class="ic">✓</span><span class="b">Login · Google<small>Windows · Chrome · Hanoi</small></span><span class="r"><small>Jul 13 09:12</small></span></div>
-    <div class="hrow"><span class="ic">✕</span><span class="b">Failed login · wrong password ×3<small>Android · Chrome · Bangkok</small></span><span class="r"><small><span class="st bad">Locked 15m</span> Jul 12</small></span></div>
-    <div class="hrow"><span class="ic">↩</span><span class="b">Logout · ended by new login<small>Windows · Chrome · Hanoi</small></span><span class="r"><small>Jul 13 09:12</small></span></div>
-    <div class="link"><b>Manage in Security &amp; Sessions ›</b></div>`,
-  spec:{
-    goal:"Login / logout / failed attempts / lockouts / the one active session — the member's own security dashboard (read-only log; the force-logout action itself lives in Profile & Settings › Security & Sessions).",
-    states:["list (active session + recent activity log)","detail (one event)","suspicious login banner → acknowledge / secure account"],
-    fields:["ts","result(success|failed|locked)","method(password|one_time_code|passkey|google|line|x)","device{model,os,app|browser}","geo{city,country}","ip(masked)","session{remember,expires_at}"],
-    api:"GET /history/logins · GET /session\nPOST /security/report-suspicious { event_id }",
-    notes:["Single active session policy (08-30 Q&A): only one device can be logged in at a time — a new login elsewhere ends the previous session automatically (server-enforced), which is itself logged here as a 'Logout · ended by new login' row. No multi-device list or per-device log-out on this page; that's exactly why it's a log, not a control surface — force-logout of the current session lives in Settings.","Feeds risk step-up: new device / new geo → RISK_STEPUP on next login (see Login Flow).","IP shown masked to the member; full IP back-office only.","Retention 90 days member-visible; longer in audit store per policy.","'Not you?' runs shared OTP → change password → invalidate the session (singular, since only one exists)."]
-  }
-},
-{
-  group:"B · Categories", id:"money", title:"2 · Deposits & Withdrawals",
+  group:"B · Categories", id:"money", title:"1 · Deposits & Withdrawals",
   states:["List","Deposit detail","Withdrawal · processing","Withdrawal · rejected"],
   render:(s)=>s===1?`
     <div class="scr-title"><span class="x">←</span>Deposit Detail</div>
@@ -284,7 +244,7 @@ const screens = [
   }
 },
 {
-  group:"B · Categories", id:"bets", title:"3 · Bets & Results",
+  group:"B · Categories", id:"bets", title:"2 · Bets & Results",
   states:["List","Bet detail (settled)","Open bets","P&L summary"],
   render:(s)=>s===1?`
     <div class="scr-title"><span class="x">←</span>Bet Detail</div>
@@ -326,11 +286,11 @@ const screens = [
     states:["list (filter by product / open)","bet detail (settled)","open bets","P&L summary (7/30/90/all)","dispute → Live Chat with bet context"],
     fields:["bet_id","product(sports|live|slots|lottery|cards)","provider","event|game","placed_at","stake","odds?","result(won|lost|void|open|cashout)","payout","settled_at","balance_before","balance_after","coupon_used?","turnover_credited"],
     api:"GET /history/bets?product=&status=&from=&to=\nGET /bets/{id}\nGET /history/pnl?range=",
-    notes:["Slots / live may aggregate per session (spins, hands) with drill-down; sports / lottery are per ticket.","P&L is the data source for Responsible Gaming loss-limit checks (category 8).","Provider IDs kept for reconciliation; member sees V9 bet ID.","Retention 5–7 years."]
+    notes:["Slots / live may aggregate per session (spins, hands) with drill-down; sports / lottery are per ticket.","P&L is the data source for Responsible Gaming loss-limit checks (category 7).","Provider IDs kept for reconciliation; member sees V9 bet ID.","Retention 5–7 years."]
   }
 },
 {
-  group:"B · Categories", id:"rewards", title:"4 · Rewards & Promotions",
+  group:"B · Categories", id:"rewards", title:"3 · Rewards & Promotions",
   states:["List","Active bonus detail","Expired / forfeited"],
   render:(s)=>s===1?`
     <div class="scr-title"><span class="x">←</span>100% First Deposit Bonus</div>
@@ -367,7 +327,7 @@ const screens = [
   }
 },
 {
-  group:"B · Categories", id:"security", title:"5 · Account & Security Changes",
+  group:"B · Categories", id:"security", title:"4 · Account & Security Changes",
   states:["List","OTP audit entry"],
   render:(s)=>s===1?`
     <div class="scr-title"><span class="x">←</span>Security Event</div>
@@ -398,7 +358,7 @@ const screens = [
   }
 },
 {
-  group:"B · Categories", id:"referral", title:"6 · Referrals",
+  group:"B · Categories", id:"referral", title:"5 · Referrals",
   states:["List","Friend detail"],
   render:(s)=>s===1?`
     <div class="scr-title"><span class="x">←</span>Referral Detail</div>
@@ -424,7 +384,7 @@ const screens = [
   }
 },
 {
-  group:"B · Categories", id:"kyc", title:"7 · KYC & Profile Changes",
+  group:"B · Categories", id:"kyc", title:"6 · KYC & Profile Changes",
   states:["List","Rejected doc"],
   render:(s)=>s===1?`
     <div class="scr-title"><span class="x">←</span>KYC Event</div>
@@ -450,7 +410,7 @@ const screens = [
   }
 },
 {
-  group:"B · Categories", id:"rg", title:"8 · Responsible Gaming",
+  group:"B · Categories", id:"rg", title:"7 · Responsible Gaming",
   states:["List","Limit change · cooling-off"],
   render:(s)=>s===1?`
     <div class="scr-title"><span class="x">←</span>Limit Change</div>
@@ -480,14 +440,14 @@ const screens = [
   states:["Overview"],
   render:()=>`
     <div class="scr-title">What we keep, for how long, who sees it</div>
-    ${[["1 Login & devices","90 d member · longer audit","member + risk"],["2 Deposits & withdrawals","5–7 yrs","member + finance"],["3 Bets & results","5–7 yrs","member + ops"],["4 Rewards","life of promo + 1 yr","member + CRM"],["5 Security / OTP audit","2 yrs+ (audit)","member subset · full back-office"],["6 Referrals","life of programme","member + fraud"],["7 KYC / profile","account life + regulatory","member subset · compliance"],["8 Responsible Gaming","account life","member + compliance"],["— Notifications","30 d","Message Center (not duplicated)"]].map(r=>`<div class="hrow"><span class="b"><b>${r[0]}</b><small>${r[1]}</small></span><span class="r"><small>${r[2]}</small></span></div>`).join('')}
+    ${[["1 Deposits & withdrawals","5–7 yrs","member + finance"],["2 Bets & results","5–7 yrs","member + ops"],["3 Rewards","life of promo + 1 yr","member + CRM"],["4 Security / OTP audit","2 yrs+ (audit)","member subset · full back-office"],["5 Referrals","life of programme","member + fraud"],["6 KYC / profile","account life + regulatory","member subset · compliance"],["7 Responsible Gaming","account life","member + compliance"],["— Notifications","30 d","Message Center (not duplicated)"],["— Login & devices","see Settings › Security & Sessions","member only (08-30, moved out of History)"]].map(r=>`<div class="hrow"><span class="b"><b>${r[0]}</b><small>${r[1]}</small></span><span class="r"><small>${r[2]}</small></span></div>`).join('')}
     <div class="hint">＊ Numbers are proposals — confirm with legal per market (VN / TH).</div>`,
   spec:{
     goal:"Reference sheet: retention period and audience (member-visible vs back-office) per category.",
     states:["reference only"],
     fields:["category","retention","audience"],
     api:"Config-driven; enforce with per-table TTL / archival jobs.",
-    notes:["Member-visible = what this History flow renders; back-office = audit store with raw IP, OTP internals, fraud flags.","Export (CSV / PDF) available for categories 2 and 3 at minimum.","Retention values are proposals pending legal confirmation per market."]
+    notes:["Member-visible = what this History flow renders; back-office = audit store with raw IP, OTP internals, fraud flags.","Export (CSV / PDF) available for categories 1 and 2 at minimum.","Login & devices is no longer a History category (08-30) — it lives solely in Profile & Settings › Security & Sessions, listed here only to point there.","Retention values are proposals pending legal confirmation per market."]
   }
 },
 ];

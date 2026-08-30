@@ -246,7 +246,7 @@ const screens = [
     <div class="pbar"><i style="width:62%"></i></div>
     <div class="kv"><span>Done</span><span>₫12.4M / ₫20M · 41 days left</span></div>
     <div class="kv"><span>Tier review</span><span>Quarterly · downgrade protection 1 quarter</span></div>
-    <div class="hint">＊ Turnover source = History category 3 (bets).</div>`
+    <div class="hint">＊ Turnover source = History category 2 (bets).</div>`
   :`
     <div class="scr-title"><span class="x">←</span>VIP Club</div>
     <div class="promocard"><div class="img">[ Silver card · Pei Chen ]</div><div class="bd"><b>Silver</b> · member since Jul 2026<div class="pbar"><i style="width:62%"></i></div><div class="hint" style="margin:0">₫12.4M / ₫20M to Gold · 41 days left</div></div></div>
@@ -289,7 +289,7 @@ const screens = [
     states:["share (copy / share sheet / QR)","how it works","guest invite landing (?ref=)","pending → History 6"],
     fields:["ref_code","ref_link","stats{friends,earned,pending}"],
     api:"GET /referrals/me · GET /r/{code} (landing)",
-    notes:["Closes the loop on the sign-up decision: referral code moved out of the form, auto-captured from the link.","Records live in History category 6."]
+    notes:["Closes the loop on the sign-up decision: referral code moved out of the form, auto-captured from the link.","Records live in History category 5."]
   }
 },
 {
@@ -334,7 +334,7 @@ const screens = [
     states:["overview","set limit (period tabs, effective rules)","take a break (24h/7d/30d)","self-exclude confirm (checkbox gate)","limit reached → blocker in deposit flow"],
     fields:["limits{deposit,loss,time}{amount,period,effective_at}","cooloff{until}","self_exclusion{until|permanent}"],
     api:"GET/PUT /rg/limits · POST /rg/cooloff · POST /rg/self-exclude",
-    notes:["Records → History category 8; summary numbers from History 3 (P&L) and 2 (deposits).","Self-exclusion is irreversible in-app; Live Chat cannot lift it either (compliance).","Deposit flow must enforce limits (blocker with link back here)."]
+    notes:["Records → History category 7; summary numbers from History 2 (P&L) and 1 (deposits).","Self-exclusion is irreversible in-app; Live Chat cannot lift it either (compliance).","Deposit flow must enforce limits (blocker with link back here)."]
   }
 },
 {
@@ -372,7 +372,7 @@ const screens = [
     states:["intro (what's needed, why)","capture ID (camera / upload)","selfie","submitted → under review","approved (locks identity fields)","rejected (reason + retry)"],
     fields:["doc_type","doc_images[]","selfie","status","reject_reason?"],
     api:"POST /kyc/submit · GET /kyc/status · POST /kyc/resubmit",
-    notes:["Results → History category 7; approved locks name / DOB / nationality (Profile & Settings decision).","Prompted from withdrawal blocks and Personal Information 'Upgrade'.","Provider (OCR / liveness) TBD — wireframe is provider-agnostic."]
+    notes:["Results → History category 6; approved locks name / DOB / nationality (Profile & Settings decision).","Prompted from withdrawal blocks and Personal Information 'Upgrade'.","Provider (OCR / liveness) TBD — wireframe is provider-agnostic."]
   }
 },
 {
