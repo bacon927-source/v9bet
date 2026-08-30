@@ -132,7 +132,7 @@
     <table>
       <tr><th>步驟</th><th>內容</th><th>可否跳過</th></tr>
       <tr><td><b>Step 1 · Required</b></td><td>帳戶幣別、<b>個人資料</b>、<b>收款帳戶（Bank/USDT）</b>——後兩項 07-16 由「Profile + bank/USDT」拆成獨立項目與獨立畫面（收款帳戶持有人姓名鎖定為個人資料的姓名）</td><td><span class="tag w">不可 pass</span></td></tr>
-      <tr><td><b>Step 2 · Security</b></td><td>Face ID / biometric / passkey、備援 Email、密碼/PIN（註冊已設，此處為修改）</td><td><span class="tag k">可 pass</span></td></tr>
+      <tr><td><b>Step 2 · Security</b></td><td>Face ID / biometric / passkey、備援 Email、<s>密碼/PIN</s> 密碼（08-30 拿掉 PIN 選項，見下方 T）</td><td><span class="tag k">可 pass</span></td></tr>
       <tr><td><b>Step 3 · Preferences</b></td><td>通知權限、主題/語言</td><td><span class="tag k">可 pass</span></td></tr>
     </table>
     <p><b>教學（Interactive tutorial）與 App 下載移出清單</b> —— Setup 完成後在下一頁（Tutorial &amp; App 單一頁）一起呈現，之後才是 Welcome + Offers。</p>
@@ -223,8 +223,26 @@
     </ul>
   </div>
   <div class="card">
+    <h3><span class="n">R</span>社群登入配對到既有帳號 —— 改成先驗證既有帳號才綁定（08-30）</h3>
+    <p>原本 Google 登入配對到既有帳號（Account Found）時，「Bind and login」按一下就直接登進去——只靠 Google 這一邊的驗證。查了市場作法（Auth0 account linking／Google Identity Platform 的 <code>account-exists-with-different-credential</code>）後改掉：<b>兩邊都要各自證明身分才能綁定</b>，不是新身分驗證過就夠。</p>
+    <ul>
+      <li>Account Found → <b>「Send code to existing account」</b>（發 OTP 到既有帳號留底的手機）→ 輸入正確 → 才真正綁定＋登入（Welcome back!）。</li>
+      <li>配對規則：只跟既有帳號<b>已驗證</b>的 email/phone 比對——沒驗證過的聯絡方式不會觸發配對，避免有人在閒置帳號填別人的 email，等真正的擁有者用 Google 登入時被劫持。</li>
+      <li>新帳號（沒有配對到既有帳號）仍然維持原本「無需 OTP」——Google 已經驗證過那個新身分了。</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h3><span class="n">T</span>Setup／Login 拿掉「Simple PIN」選項（08-30）</h3>
+    <p>原本 Setup Step 2「Password / PIN」讓客人二選一當帳號登入方式，4 位數 PIN 只有一萬種組合，拿來當一個博弈/金流帳號的登入密碼太弱——這是原始 docx「Set account password or simple pin」直接照搬的問題。</p>
+    <ul>
+      <li>移除：帳號登入安全只剩 <b>Password（選配）＋ Face ID / passkey</b> 兩種，畫面改名「Set a Password」。</li>
+      <li>之後如果真的要做「快速解鎖」，應該放在裝置/App Lock 那層（跟 Face ID 同級）——只能打開 App，不能拿來登入或授權提款/改安全設定這類敏感動作。</li>
+      <li>已同步：signup-flow-wireframe、v9bet-full-wireframe（含 Login 畫面本身也移除 PIN state，跟 login-flow-wireframe 對齊）、v9bet-flows-composition。</li>
+    </ul>
+  </div>
+  <div class="card">
     <h3><span class="n">→</span>後續順序</h3>
-    <p>產品頁、產品細項頁、首頁、Bet slip —— <b>最後處理</b>（使用者指示 07-16）。C 批（賽果/開獎、公告、語言切換頁、session 覆蓋層細節）視需要再做。</p>
+    <p>產品頁、產品細項頁、Bet slip —— <b>最後處理</b>（使用者指示 07-16）。<b>首頁（Home Flow）08-30 已開工</b>：新增 <code>home-flow-wireframe.html</code>（登入前／登入後／新客空狀態／桌面版 top menu／模組對照表），接進 index.html ⑨ 區，跟既有的 <code>v9bet-home-composition.html</code>（10 模組）對齊、不重複。C 批（賽果/開獎、公告、語言切換頁、session 覆蓋層細節）視需要再做。</p>
   </div>
 
   <h2>六、檔案與工具</h2>

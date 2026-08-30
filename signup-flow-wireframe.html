@@ -416,21 +416,23 @@ const screens = [
   }
 },
 {
-  group:"B · Account Setup", id:"pin", title:"Password / PIN", step:"Step 2 · Security (can skip)",
-  states:["Set password","Set PIN"],
+  group:"B · Account Setup", id:"password", title:"Set a Password", step:"Step 2 · Security (can skip)",
+  states:["Set password","Too weak / mismatch"],
   render:(s)=>`
     <div class="scr-title"><span class="x">←</span>Set Login Security</div>
     <div class="pbar-lbl"><span>🎁 Setup rewards</span><b>50 / 100 points</b></div>
     <div class="pbar"><i style="width:50%"></i></div>
-    <div class="state-tabs" style="justify-content:center;margin:10px auto"><button class="${s===0?'on':''}">Password</button><button class="${s===1?'on':''}">Simple PIN</button></div>
-    ${s===0?F("Password","8+ chars")+F("Re-enter password"):`<div class="otpcells"><span>_</span><span>_</span><span>_</span><span>_</span></div><div class="scr-step">Set a 4-digit PIN</div>`}
-    ${CTA("Set")}`,
+    ${F("Password","8+ chars")}
+    ${F("Re-enter password")}
+    ${s===1?`<div class="err">Passwords must match and be at least 8 characters.</div>`:''}
+    ${CTA("Set")}
+    <div class="hint">＊ Password is one option alongside Face ID / passkey — sign-up itself uses OTP only, so this is optional. No 4-digit PIN option: too weak as a login credential for a money account.</div>`,
   spec:{
-    goal:"Set a login password or a simple PIN.",
-    states:["password tab","pin tab","too weak","mismatch","set"],
-    fields:["auth_secret(hashed)","auth_type(password|pin)"],
-    api:"PUT /account/credentials",
-    notes:["docx: 'Set account password or simple pin'.","Coexists with Face ID: biometrics for quick login, password/PIN as fallback."]
+    goal:"Set a login password (optional — sign-up already used OTP only).",
+    states:["set password","too weak / mismatch → inline error"],
+    fields:["auth_secret(hashed)"],
+    api:"PUT /account/credentials { password }",
+    notes:["Coexists with Face ID / passkey: either (or both) can be set as a login method alongside phone/email OTP.","No 'Simple PIN' option (removed): a 4-digit PIN is too weak as a stand-alone account credential for a money account (10,000 combinations). If a quick-unlock PIN is wanted later, it belongs at the device/app-lock layer next to Face ID — a convenience to reopen an already-logged-in session, never something that can authorize login or sensitive actions by itself."]
   }
 },
 {
