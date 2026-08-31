@@ -283,6 +283,14 @@
     </ul>
   </div>
   <div class="card">
+    <h3><span class="n">AA</span>Personal Information：Complete 突然多出一堆欄位——砍回跟表單一樣（08-30）</h3>
+    <p>使用者問：Not added 只要填 5 項，Complete 卻變成 10 項，不合理——「一個只是填了，一個未填」不是嗎？查了才發現 Complete 狀態確實混進一堆表單裡從沒問過的東西：Account ID、KYC level、ID document、Address、Occupation、Member since、Currency、Tier——這些不是「填完表單後出現的資料」，是別的流程或系統欄位，混在同一頁造成 Not added → Complete 看起來像變魔術。</p>
+    <ul>
+      <li>Complete／Locked after KYC 兩個 state 都砍回跟 Not added 表單完全一樣的 4 個欄位（Full name、DOB、Gender、Nationality）——現在三個 state 只差在「空的／填了／填了且鎖住」，不會再突然冒出新分類。</li>
+      <li>被拿掉的欄位各自已經有該待的地方，不是憑空消失：Account ID 本來就在 Settings Home 跟忘記密碼流程會顯示；KYC level/ID document 屬於 KYC upload 流程（growth-support-wireframe.html），不該在這裡重複一份；Member since/Currency/Tier 是唯讀帳戶事實，之後真的需要可以放 Settings Home 的「Account status」列，不該混進個人資料的編輯表單。</li>
+    </ul>
+  </div>
+  <div class="card">
     <h3><span class="n">→</span>後續順序</h3>
     <p>產品頁、產品細項頁、Bet slip —— <b>最後處理</b>（使用者指示 07-16）。<b>首頁（Home Flow）08-30 已開工</b>：新增 <code>home-flow-wireframe.html</code>（登入前／登入後／新客空狀態／桌面版 top menu／模組對照表），接進 index.html ⑨ 區，跟既有的 <code>v9bet-home-composition.html</code>（10 模組）對齊、不重複。C 批（賽果/開獎、公告、語言切換頁、session 覆蓋層細節）視需要再做。</p>
   </div>

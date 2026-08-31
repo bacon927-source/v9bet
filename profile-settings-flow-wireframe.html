@@ -222,29 +222,17 @@ const screens = [
   :`
     <div class="scr-title"><span class="x">←</span>Personal Information</div>
     <div class="avatar">🙂</div><div class="link" style="margin:0 0 6px"><b>Change photo</b></div>
-    <div class="grp">Identity</div>
-    <div class="kv"><span>Account ID</span><span>AHHHHHH <span class="lock">read-only</span></span></div>
     <div class="kv"><span>Full name</span><span>Ms. Pei Chen ${s===2?'<span class="lock">🔒 KYC verified</span>':'›'}</span></div>
     <div class="kv"><span>Date of birth</span><span>1992-04-18 ${s===2?'<span class="lock">🔒</span>':'›'}</span></div>
     <div class="kv"><span>Gender</span><span>Female ›</span></div>
     <div class="kv"><span>Nationality</span><span>🇻🇳 Vietnam ${s===2?'<span class="lock">🔒</span>':'›'}</span></div>
-    <div class="grp">Verification</div>
-    <div class="kv"><span>KYC level</span><span>${s===2?'Level 2 <span class="st ok">Verified</span>':'Level 1 <span class="st wait">Upgrade ›</span>'}</span></div>
-    <div class="kv"><span>ID document</span><span>${s===2?'National ID ****789 <span class="st ok">✓</span>':'<span class="st bad">Not submitted</span> ›'}</span></div>
-    <div class="grp">Optional</div>
-    <div class="kv"><span>Address</span><span>${s===2?'District 1, HCMC ›':'Add › <span class="lock">for physical gifts</span>'}</span></div>
-    <div class="kv"><span>Occupation</span><span>Add › <span class="lock">KYC level 2</span></span></div>
-    <div class="grp">Account</div>
-    <div class="kv"><span>Member since</span><span>Jul 9, 2026</span></div>
-    <div class="kv"><span>Currency</span><span>VND <span class="lock">🔒 locked</span></span></div>
-    <div class="kv"><span>Tier</span><span>Silver ›</span></div>
     ${s===2?`<div class="hint">＊ Name / DOB / nationality are locked after KYC — changes go through Live Chat with documents.</div>`:''}`,
   spec:{
-    goal:"Everything the member IS: identity fields (name matched to bank, DOB 21+, nationality), KYC status, optional address / occupation, and read-only account facts (Account ID, member since, locked currency, tier).",
-    states:["not added (empty form, Save disabled)","complete (editable rows)","locked after KYC (name / DOB / nationality read-only → Live Chat)","KYC upgrade CTA"],
-    fields:["avatar?","full_name(title,first,last)","dob","gender?","nationality","residence_country","kyc_level","id_document{type,number_masked,status}","address?","occupation?","account_id(ro)","member_since(ro)","currency(ro,locked)","tier(ro)"],
+    goal:"Exactly what the member filled in at Setup, now editable: name matched to bank, DOB 21+, gender, nationality. Same 4 fields in every state — 'Not added' is this form empty, 'Complete' is it filled, 'Locked after KYC' is it filled and read-only. No extra fields appear on completion that weren't part of the form.",
+    states:["not added (empty form, Save disabled)","complete (editable rows, same 4 fields)","locked after KYC (name / DOB / nationality read-only → Live Chat)"],
+    fields:["avatar?","full_name(title,first,last)","dob","gender?","nationality"],
     api:"GET /account/profile · PUT /account/profile { … }\nerr: NAME_LOCKED_KYC / UNDERAGE / INVALID_DOB",
-    notes:["No nickname field (08-30, removed): the account already has a full legal name (KYC-bound) and an auto-generated Account ID — a third, separate display-name concept was unused surface area.","Additions vs the setup form: avatar (social feature), nationality/residence (market + KYC), ID document status, address (physical lifetime gifts), occupation (KYC L2 / AML), read-only account facts.","Full name must equal the payout account name (promo-claim design copy).","After KYC approval, identity fields lock — this prevents 'change name to match a friend's bank account' abuse.","Every edit is written to History category 6."]
+    notes:["08-30 fix: 'Complete' used to sprout Account ID, KYC level, ID document, Address, Occupation, Member since, Currency and Tier — none of which were ever part of the form 'Not added' shows, so filling in 5 fields appeared to conjure 10+ new ones out of nowhere. Trimmed 'Complete' back to the same 4 fields as the form; it's genuinely just filled-in vs empty now.","Where the removed facts actually belong: Account ID is already shown on Settings Home and revealed via Forgot Password after OTP; KYC level / ID document status belongs to the KYC upload flow (growth-support-wireframe.html) rather than being duplicated here; Member since / Currency / Tier are read-only account facts that could surface on Settings Home's 'Account status' row if ever needed, not on a personal-information EDIT form.","No nickname field (08-30, removed): the account already has a full legal name (KYC-bound) and an auto-generated Account ID — a third, separate display-name concept was unused surface area.","Full name must equal the payout account name (promo-claim design copy).","After KYC approval, identity fields lock — this prevents 'change name to match a friend's bank account' abuse.","Every edit is written to History category 6."]
   }
 },
 {
