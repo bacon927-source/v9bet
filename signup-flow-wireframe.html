@@ -401,14 +401,14 @@ const screens = [
     <div class="scr-title"><span class="x">←</span>Add Email<span class="badge ${s===1?'req':''}">${s===1?'Required':'Optional*'}</span></div>
     <div class="pbar-lbl"><span>🎁 Setup rewards</span><b>40 / 100 points</b></div>
     <div class="pbar"><i style="width:40%"></i></div>
-    <div class="scr-step" style="margin-top:8px">A secondary contact for account recovery</div>
+    <div class="scr-step" style="margin-top:8px">Verified Email can be used to log in, and to recover your account</div>
     ${F("Email address")}
     ${s===1?`<div class="hint">You signed up with Email; phone verification is required before claiming offers / withdrawing.</div>`
             :`<div class="hint">＊Phone verified, Email can be added later in Profile.</div>`}
     ${CTA("Send verification email and continue")}
     ${s===0?`<div class="link"><b>Later</b></div>`:''}`,
   spec:{
-    goal:"Add and verify a secondary Email for account recovery.",
+    goal:"Add and verify Email — a login method in its own right (same standing as the phone number), and a recovery contact.",
     states:["optional (phone verified)","required (email-only sign-up path)","verification email sent","verified","verification link expired"],
     fields:["email","email_verified(bool)"],
     api:"POST /account/email + verification link callback",

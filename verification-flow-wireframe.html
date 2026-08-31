@@ -162,7 +162,7 @@ const screens = [
     <div class="grp">Entry points that require OTP</div>
     <div class="checklist">
       ${ci(1,"First-time add phone / email","🎁 +10 points",false)}
-      ${ci(2,"Add secondary contact","",false)}
+      ${ci(2,"Add second contact","",false)}
       ${ci(3,"Change phone","",false)}
       ${ci(4,"Change email","",false)}
       ${ci(5,"Change password","2FA · no old password",false)}
@@ -287,7 +287,7 @@ const screens = [
 },
 {
   group:"C · Contacts", id:"contact", title:"Add / Change Contact",
-  states:["First time (Profile)","Add secondary · step 1","Change · verify current","Change · current unverified","Fill in new","Done"],
+  states:["First time (Profile)","Add second · step 1","Change · verify current","Change · current unverified","Fill in new","Done"],
   render:(s)=>s===0?`
     <div class="scr-title"><span class="x">✕</span>Verify Phone Number</div>
     <div class="scr-step">Home › Profile › Setting › Phone Number</div>
@@ -295,11 +295,11 @@ const screens = [
     ${CTA("Get OTP",'disabled')}
     <div class="hint">＊ First-time input from Profile. Phone edit function removed — once verified, changes go through the Change flow only.</div>`
   :s===1?`
-    <div class="scr-title"><span class="x">✕</span>Add Secondary Contact</div>
+    <div class="scr-title"><span class="x">✕</span>Add Contact</div>
     <div class="scr-step">One contact already verified — verify it first (OTP), then add the new one</div>
     ${OPT("📱 &nbsp; SMS to 091***233 <small style='color:#b0b0b0'>verified</small>", true)}
     ${CTA("Request OTP")}
-    <div class="hint">＊ After this OTP: enter the new email / phone → separate OTP → saved as Verified. "Add Email as your second login method."</div>`
+    <div class="hint">＊ After this OTP: enter the new email / phone → separate OTP → saved as Verified. Once verified it is a full login method, same as the one already on the account.</div>`
   :s===2?`
     <div class="scr-title"><span class="x">✕</span>Change Phone Number</div>
     <div class="scr-step">Verify your current number first to change to a new one</div>
@@ -326,8 +326,8 @@ const screens = [
     ${CTA("Done")}
     <div class="hint">＊ Abandoning mid-way changes nothing.</div>`,
   spec:{
-    goal:"Design flows: Profile first-time input (no edit after), add-secondary (existing OTP → new OTP), change (verify current same-type → fill new → new OTP; CS fallback when the current contact is unreachable).",
-    states:["first time · enter + OTP (from Profile)","add secondary · step 1 OTP on existing","change · current verified → same-type OTP","change · current unverified → Edit or Get OTP","fill new → Save → OTP on new","done","new contact already used → CONTACT_IN_USE"],
+    goal:"Design flows: Profile first-time input (no edit after), add-second (existing OTP → new OTP), change (verify current same-type → fill new → new OTP; CS fallback when the current contact is unreachable). Phone and Email are peers — whichever is added second is a full login method too, not a fallback.",
+    states:["first time · enter + OTP (from Profile)","add second · step 1 OTP on existing","change · current verified → same-type OTP","change · current unverified → Edit or Get OTP","fill new → Save → OTP on new","done","new contact already used → CONTACT_IN_USE"],
     fields:["target(phone|email)","mode(add_first|add_secondary|change)","step1_token","new_contact","otp_code"],
     api:"POST /account/contact/start { target, mode }\n→ step-1 OTP (current, same-type on change) ← { step1_token }\nPOST /account/contact/commit { step1_token, new_contact, otp_code }\nerr: CONTACT_IN_USE / INVALID_FORMAT / OTP_WRONG / STEP1_EXPIRED",
     notes:["Same-type rule (docx acceptance criteria): change email → old-email OTP only; change phone → old-phone OTP only.","No access to the current contact → Customer Service (design copy).","Profile Security section copy: 'Verify both your phone number and email address to protect against unnecessary access and easy account recovery.'"]

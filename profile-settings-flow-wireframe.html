@@ -247,9 +247,10 @@ const screens = [
   :s===1?`
     <div class="scr-title"><span class="x">←</span>Email</div>
     ${F("Email","Required")}
-    <div class="hint">Add Email as your second login method. Verified Email may be used as Account ID.</div>
+    <div class="hint">Verified Email can be used to log in, and as your Account ID.</div>
     ${CTA("Verify Now")}
-    <div class="hint">＊ Adding a 2nd contact = verify the existing one first (OTP), then the new one — see Verification Flow › Add / Change Contact.</div>`
+    <div class="hint">＊ Verify the contact you already have first (OTP), then the new Email — see Verification Flow › Add / Change Contact.</div>
+    <div class="hint">＊ Verified Email is a login method in its own right, same as the phone number — not a fallback.</div>`
   :s===2?`
     <div class="scr-title"><span class="x">←</span>Set a Password</div>
     <div class="scr-step">Home › Profile › Settings › Set a Password</div>
@@ -273,7 +274,7 @@ const screens = [
     states:["phone verified → change via same-type OTP","email missing → add (verify existing first) / present → change","set a password (first time, no password exists yet)","change password (existing) after OTP (no old password, re-login)","passkey / social links (see Security)"],
     fields:["phone{value_masked,verified}","email{value_masked,verified}","password_updated_at"],
     api:"See Verification Flow: /account/contact/* · /auth/otp/* · POST /account/password",
-    notes:["These screens are thin wrappers — the OTP mechanics live in verification-flow-wireframe.html (single source).","Copy lifted from the Jul 16 mockups (Verify Now / Add Email as your second login method / Re-login will be required)."]
+    notes:["These screens are thin wrappers — the OTP mechanics live in verification-flow-wireframe.html (single source).","Phone and Email are PEER login methods (08-30): both accept login, both can be the Account ID, and both follow the same same-type rule (verify the current one before changing it). The Jul 16 mockup copy 'Add Email as your second login method' is deliberately NOT used — it framed Email as a fallback, which stopped being true once sign-up moved to phone-or-email + OTP.","Remaining copy from the Jul 16 mockups: Verify Now / Re-login will be required."]
   }
 },
 {
