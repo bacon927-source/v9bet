@@ -369,7 +369,7 @@ const screens = [
 },
 {
   group:"C · Withdrawal", id:"wd-account", title:"Withdrawal · Account & Amount",
-  states:["Bank account","USDT address","Add new account","Bonus active → forfeit warning","KYC required"],
+  states:["Bank account","USDT address","Add new account","Bonus active → forfeit warning"],
   render:(s)=>s===3?`
     <div class="scr-title"><span class="x">←</span>Withdrawal</div>
     <div class="err" style="border-color:#c93;background:#fdf6ea;color:#a70">You have an active bonus with <b>₫3,200,000 turnover</b> to go. Withdrawing now forfeits that bonus and everything won with it.</div>
@@ -381,15 +381,6 @@ const screens = [
     ${CTA("Keep the bonus — don't withdraw",'ghost')}
     <div class="link"><b>View turnover progress</b></div>
     <div class="hint">＊ NOT a block: the member's own money is always withdrawable. This screen exists to make the trade-off visible before they confirm, not to refuse. Forfeit removes the bonus and its winnings and needs an explicit confirm.</div>`
-  :s===4?`
-    <div class="scr-title"><span class="x">←</span>Withdrawal</div>
-    <div class="err">Identity verification needed for this amount — Level 2 is required above ₫10,000,000 per day.</div>
-    <div class="kv"><span>This withdrawal</span><span><b>₫15,000,000</b></span></div>
-    <div class="kv"><span>Your level</span><span>Level 1 <small style="color:#b0b0b0">phone verified</small></span></div>
-    <div class="kv"><span>Verification takes</span><span>~3 min · reviewed within 24 h</span></div>
-    ${CTA("Verify identity")}
-    ${CTA("Withdraw ₫10,000,000 instead",'ghost')}
-    <div class="hint">＊ Opens the KYC flow (growth-support-wireframe.html › KYC Upload) and returns here once approved. The name on the ID must match both Personal Information and the payout account.</div>`
   :`
     <div class="scr-title"><span class="x">✕</span>Banking</div>
     <div class="mtabs"><span>Deposit</span><span class="on">Withdrawal</span></div>
@@ -406,10 +397,10 @@ const screens = [
     ${CTA("Submit", s===2?'':'')}`,
   spec:{
     goal:"Step 1 (Jul 16 mockup): Banking › Withdrawal tab — balance / withdrawable / remaining churn, payout method (bank preferred · USDT), saved accounts or add new, amount presets, churn-unmet blocker.",
-    states:["bank account list (default)","usdt address list","add new account (holder locked to profile)","bonus active → forfeit warning (not a block)","KYC level too low for the amount → verify identity","amount out of range / over withdrawable"],
-    fields:["method(bank|usdt)","payout_account_id | new_account{…}","amount","withdrawable","bonus_balance","turnover_remaining","kyc_level","kyc_threshold"],
-    api:"GET /withdrawal/context → { withdrawable, bonus_balance, turnover_remaining, accounts[], kyc_level, kyc_threshold }\nPOST /withdrawal/quote { method, account, amount, forfeit_bonus? }\nerr: KYC_REQUIRED",
-    notes:["Holder name locked to Personal Information (Profile & Settings decision).","An active bonus warns, it does not block (08-30): the member's own money is never locked, so the screen shows what withdrawing would cost them — the bonus and its winnings — and asks them to confirm. An earlier version hard-blocked with 'Withdrawable ₫0', which contradicted the wallet model.","KYC blocker (08-30, drawn): previously KYC was only named in a rejection-reason hint with no screen and no way in — it is now a pre-submit blocker in the same shape as the churn one, linking into the KYC flow (growth-support-wireframe.html › KYC Upload) with an under-the-threshold escape hatch so the member is never simply stuck.","Blocked before submit rather than rejected after review: the threshold is known up front, so making the member wait for a rejection would be pointless friction.","Limits per method / market shown inline."]
+    states:["bank account list (default)","usdt address list","add new account (holder locked to profile)","bonus active → forfeit warning (not a block)","amount out of range / over withdrawable"],
+    fields:["method(bank|usdt)","payout_account_id | new_account{…}","amount","withdrawable","bonus_balance","turnover_remaining"],
+    api:"GET /withdrawal/context → { withdrawable, bonus_balance, turnover_remaining, accounts[] }\nPOST /withdrawal/quote { method, account, amount, forfeit_bonus? }",
+    notes:["Holder name locked to Personal Information (Profile & Settings decision).","An active bonus warns, it does not block (08-30): the member's own money is never locked, so the screen shows what withdrawing would cost them — the bonus and its winnings — and asks them to confirm. An earlier version hard-blocked with 'Withdrawable ₫0', which contradicted the wallet model.","No KYC gate on withdrawal (08-30, removed on request): withdrawals are not blocked or tiered by verification level for now. KYC still exists as a flow and can be done voluntarily from Settings › Identity verification — nothing depends on it here. If a threshold is introduced later it belongs as a pre-submit blocker (the amount limit is known up front, so making the member wait for a rejection would be pointless friction), shaped like the bonus warning above.","Limits per method / market shown inline."]
   }
 },
 {

@@ -208,7 +208,7 @@ const screens = [
 },
 {
   group:"B · Detail & Claim", id:"detail", title:"Promotion Detail",
-  states:["Claimable","Already claimed","Ended","Ineligible","Ineligible · KYC required"],
+  states:["Claimable","Already claimed","Ended","Ineligible"],
   render:(s)=>`
     <div class="scr-title"><span class="x">←</span>Promotion</div>
     <div class="scr-step">Home › Promotion › 1st Deposit Casino</div>
@@ -221,14 +221,13 @@ const screens = [
     ${s===0?CTA("Claim Now")
      :s===1?`<div class="err" style="border-color:#2a7;background:#eef8f2;color:#2a7">Claimed · bonus active — churn 25% done</div>${CTA("View my reward",'ghost')}`
      :s===2?`${CTA("Promotion ended",'disabled')}<div class="link"><b>See current promotions</b></div>`
-     :s===3?`<div class="err">Not eligible — this offer is for new customers only.</div>${CTA("Browse other offers",'ghost')}`
-     :`<div class="err">Identity verification required — this offer needs KYC Level 2, and you're at Level 1.</div>${CTA("Verify identity")}<div class="link"><b>Browse other offers</b></div>`}`,
+     :`<div class="err">Not eligible — this offer is for new customers only.</div>${CTA("Browse other offers",'ghost')}`}`,
   spec:{
     goal:"Full promotion page per the Jul 16 mockup: banner, badges, key numbers (max bonus / how to claim / turnover), full T&C, sticky Claim Now.",
-    states:["claimable → Claim Now","already claimed → link to reward","ended → disabled + redirect","ineligible · permanent (new-customer only / already used / market) → reason + browse","ineligible · fixable (KYC level) → reason + Verify identity","T&C expand / collapse"],
-    fields:["promo_id","title","banner","eligibility","max_bonus{vnd,thb}","churn_x","eligible_products[]","ends_at","terms[]","member_status(claimable|claimed|ended|ineligible)","ineligible_reason","ineligible_fixable(bool)"],
-    api:"GET /promotions/{id} → { …, member_status, reason?, fixable? }",
-    notes:["Sticky Claim Now (mockup: yellow bar bottom).","T&C in-page, not a modal — members screenshot it for disputes.","Ineligible always says why — and splits by whether the member can DO anything about it (08-30): permanent reasons (new-customer only, already used, wrong market) dead-end into 'Browse other offers', while a fixable one (KYC level too low) leads with 'Verify identity' into the KYC flow (growth-support-wireframe.html › KYC Upload). Previously KYC ineligibility was only named in this note with no state and no way in, so a member who could have qualified just saw a dead end."]
+    states:["claimable → Claim Now","already claimed → link to reward","ended → disabled + redirect","ineligible → reason + browse","T&C expand / collapse"],
+    fields:["promo_id","title","banner","eligibility","max_bonus{vnd,thb}","turnover_x","eligible_products[]","ends_at","terms[]","member_status(claimable|claimed|ended|ineligible)","ineligible_reason"],
+    api:"GET /promotions/{id} → { …, member_status, reason? }",
+    notes:["Sticky Claim Now (mockup: yellow bar bottom).","T&C in-page, not a modal — members screenshot it for disputes.","Ineligible always says why (new-customer only / already used / market).","No KYC eligibility gate (08-30, removed on request): promotions are not tiered by verification level for now. If one is reintroduced it needs its own state rather than reusing this one — a fixable reason must lead with the fix ('Verify identity') instead of dead-ending into 'Browse other offers' like the permanent reasons do."]
   }
 },
 {
