@@ -372,7 +372,7 @@ const screens = [
     states:["intro (what's needed, why)","capture ID (camera / upload)","selfie","submitted → under review","approved (locks identity fields)","rejected (reason + retry)"],
     fields:["doc_type","doc_images[]","selfie","status","reject_reason?"],
     api:"POST /kyc/submit · GET /kyc/status · POST /kyc/resubmit",
-    notes:["Results → History category 6; approved locks name / DOB / nationality (Profile & Settings decision).","Prompted from withdrawal blocks and Personal Information 'Upgrade'.","Provider (OCR / liveness) TBD — wireframe is provider-agnostic."]
+    notes:["Results → History category 6; approved locks name / DOB / nationality — that locked state is Personal Information's 'Locked after KYC' state (profile-settings-flow-wireframe.html).","Entry points: Settings › Account related › 'Identity verification' row (08-30 — KYC status is account-level, so it lives on Settings Home, not as fields inside the Personal Information edit form), and withdrawal blocks that require a higher level.","Provider (OCR / liveness) TBD — wireframe is provider-agnostic."]
   }
 },
 {

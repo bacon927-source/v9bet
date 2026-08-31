@@ -165,10 +165,11 @@ const screens = [
       ${ci(2,"Add second contact","",false)}
       ${ci(3,"Change phone","",false)}
       ${ci(4,"Change email","",false)}
-      ${ci(5,"Change password","2FA · no old password",false)}
-      ${ci(6,"Withdrawal","first-time payout account (incl. USDT)",false)}
-      ${ci(7,"Claim promotion","after Personal Details",false)}
-      ${ci(8,"Forgot password","Active or Dormant account",false)}
+      ${ci(5,"Set a password","",false)}
+      ${ci(6,"Change password","2FA · no old password",false)}
+      ${ci(7,"Withdrawal","first-time payout account (incl. USDT)",false)}
+      ${ci(8,"Claim promotion","after Personal Details",false)}
+      ${ci(9,"Forgot password","Active or Dormant account",false)}
     </div>
     <div class="grp">OTP mode by verified-contact status</div>
     <div class="opt"><span style="flex:1">Both verified</span><small style="color:#b0b0b0">member selects (Email / SMS)</small></div>
@@ -178,7 +179,7 @@ const screens = [
   spec:{
     goal:"One shared OTP component (Email / SMS) plugged into every sensitive action; verified-contact status decides the mode.",
     states:["reference only"],
-    fields:["email_status(verified|not)","phone_status(verified|not)","action(add_first|add_secondary|change_contact|change_password|withdrawal|promo_claim|forgot_password)"],
+    fields:["email_status(verified|not)","phone_status(verified|not)","action(add_first|add_secondary|change_contact|set_password|change_password|withdrawal|promo_claim|forgot_password)"],
     api:"Rule matrix enforced server-side on every protected action.",
     notes:["Reward (Jul 16): completing first-time add phone / email earns +10 points — credited once per contact type per member (anti-abuse), recorded in History category 3 (Rewards).","OTP modes this release = Email / SMS only (Select Verification Mode). Zalo ZNS / LINE / WhatsApp delivery = phase 2.","Docx said change password / withdrawal are NOT allowed with no verified contact — the Jul 16 design supersedes this: inline first-time verification serves as the OTP everywhere.","Component params (design): 6-digit code · resend countdown 32s · after 3rd resend the cooldown escalates to 03:00 · 'Invalid OTP entered' error state · masked contacts (091***233 / ta***@gmail.com) · iOS SMS autofill.","Audit log per docx: request time, channel, result, action, attempts, member ID — never the OTP value in plain text."]
   }
@@ -371,8 +372,16 @@ const screens = [
 },
 {
   group:"E · Entry Points", id:"entries", title:"Entry Points",
-  states:["Change password (2FA)","Withdrawal · new bank account","Withdrawal · new USDT address","Claim promotion"],
+  states:["Set a password (first time)","Change password (2FA)","Withdrawal · new bank account","Withdrawal · new USDT address","Claim promotion"],
   render:(s)=>s===0?`
+    <div class="scr-title"><span class="x">←</span>Set a Password</div>
+    <div class="scr-step">Home › Profile › Setting › Set a Password · after OTP</div>
+    ${F("New password","👁")}
+    ${F("Confirm new password","👁")}
+    <div class="hint">Sign-up used OTP only, so there is no password yet — this adds one as an extra login option.</div>
+    ${CTA("Save",'disabled')}
+    <div class="hint">＊ Same OTP gate as Change Password: adding a password creates a NEW way into the account, so it can't be done off a logged-in session alone.</div>`
+  :s===1?`
     <div class="scr-title"><span class="x">←</span>Change Password</div>
     <div class="scr-step">Home › Profile › Setting › Change Password · after OTP (2FA)</div>
     ${F("New password","👁")}
@@ -380,13 +389,13 @@ const screens = [
     <div class="hint">Re-login will be required after changing the password.</div>
     ${CTA("Save",'disabled')}
     <div class="hint">＊ Old password field REMOVED — the OTP is the authentication.</div>`
-  :s===1?`
+  :s===2?`
     <div class="scr-title"><span class="x">←</span>Withdrawal</div>
     <div class="ph" style="height:96px">[ Bank Account Details — Add New Account ⊕<br>ACB · Vietcombank · Techcombank ]</div>
     ${F("Amount (VND)","50,000–300,000")}
     ${CTA("Submit")}
     <div class="hint">＊ OTP triggers when the payout account was NEVER used before. Verified contact → OTP (or choose); none verified → verify a new contact inline (serves as OTP).</div>`
-  :s===2?`
+  :s===3?`
     <div class="scr-title"><span class="x">←</span>Withdrawal · USDT</div>
     <div class="ph" style="height:96px">[ USDT Address — Add New Address ⊕<br>Bacon1234 · 0x******89a0 · TRC20/ERC20 ]</div>
     ${F("Amount (USDT)","10,000–100,000")}
@@ -403,11 +412,11 @@ const screens = [
     </div>
     <div class="hint">＊ Claim = complete Personal Details (name must match the Bank Account Name) → OTP → claim continues.</div>`,
   spec:{
-    goal:"Where the OTP component plugs in: change password (2FA, no old password, forced re-login), first-time payout account withdrawals (bank & USDT), promotion claims (after Personal Details).",
-    states:["change password · after OTP → new+confirm only","withdrawal · new bank account → OTP before continue","withdrawal · new USDT address → OTP before continue","promo claim · Personal Details → OTP → claim","none verified at any entry → inline first-time verify (serves as OTP)"],
+    goal:"Where the OTP component plugs in: set a password (first time), change password (2FA, no old password, forced re-login), first-time payout account withdrawals (bank & USDT), promotion claims (after Personal Details).",
+    states:["set a password · after OTP → new+confirm only","change password · after OTP → new+confirm only","withdrawal · new bank account → OTP before continue","withdrawal · new USDT address → OTP before continue","promo claim · Personal Details → OTP → claim","none verified at any entry → inline first-time verify (serves as OTP)"],
     fields:["action","stepup_token → action_token"],
     api:"Each protected endpoint returns 403 OTP_REQUIRED → FE opens the shared OTP component, then retries with action_token.",
-    notes:["Change password: old-password field removed; session invalidated after change → re-login (design).","Withdrawal OTP scope: only when the payout account / USDT address was never used before.","Promo claim: Full Name must match the Bank Account Name exactly (design copy); DOB required.","One shared component across all entry points — do not rebuild per feature."]
+    notes:["Set a password (08-30, added): sign-up collects no password, so first-time-set is now a normal path — arguably more common than change — and it is OTP-gated for the same reason change is. Adding a password creates a NEW way into the account, so a logged-in session alone must not be enough (otherwise a borrowed / stolen unlocked phone converts into permanent access). Same screen as Change Password minus the 'current password' framing.","Change password: old-password field removed; session invalidated after change → re-login (design).","Withdrawal OTP scope: only when the payout account / USDT address was never used before.","Promo claim: Full Name must match the Bank Account Name exactly (design copy); DOB required.","One shared component across all entry points — do not rebuild per feature."]
   }
 },
 ];
