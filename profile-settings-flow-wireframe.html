@@ -213,7 +213,6 @@ const screens = [
     <div class="scr-title"><span class="x">←</span>Personal Information</div>
     <div class="scr-step">Needed for promo claims and withdrawals</div>
     <div class="avatar">👤</div><div class="link" style="margin:0 0 6px"><b>Add photo</b> · optional</div>
-    ${F("Nickname","optional")}
     ${F("Full name (Ms. ▾)","must match bank account name")}
     ${F("Date of birth","📅 · 21+")}
     ${F("Gender ▾","optional")}
@@ -225,7 +224,6 @@ const screens = [
     <div class="avatar">🙂</div><div class="link" style="margin:0 0 6px"><b>Change photo</b></div>
     <div class="grp">Identity</div>
     <div class="kv"><span>Account ID</span><span>AHHHHHH <span class="lock">read-only</span></span></div>
-    <div class="kv"><span>Nickname</span><span>Bacon88 ›</span></div>
     <div class="kv"><span>Full name</span><span>Ms. Pei Chen ${s===2?'<span class="lock">🔒 KYC verified</span>':'›'}</span></div>
     <div class="kv"><span>Date of birth</span><span>1992-04-18 ${s===2?'<span class="lock">🔒</span>':'›'}</span></div>
     <div class="kv"><span>Gender</span><span>Female ›</span></div>
@@ -244,9 +242,9 @@ const screens = [
   spec:{
     goal:"Everything the member IS: identity fields (name matched to bank, DOB 21+, nationality), KYC status, optional address / occupation, and read-only account facts (Account ID, member since, locked currency, tier).",
     states:["not added (empty form, Save disabled)","complete (editable rows)","locked after KYC (name / DOB / nationality read-only → Live Chat)","KYC upgrade CTA"],
-    fields:["nickname?","avatar?","full_name(title,first,last)","dob","gender?","nationality","residence_country","kyc_level","id_document{type,number_masked,status}","address?","occupation?","account_id(ro)","member_since(ro)","currency(ro,locked)","tier(ro)"],
+    fields:["avatar?","full_name(title,first,last)","dob","gender?","nationality","residence_country","kyc_level","id_document{type,number_masked,status}","address?","occupation?","account_id(ro)","member_since(ro)","currency(ro,locked)","tier(ro)"],
     api:"GET /account/profile · PUT /account/profile { … }\nerr: NAME_LOCKED_KYC / UNDERAGE / INVALID_DOB",
-    notes:["Additions vs the setup form: nickname/avatar (social features), nationality/residence (market + KYC), ID document status, address (physical lifetime gifts), occupation (KYC L2 / AML), read-only account facts.","Full name must equal the payout account name (promo-claim design copy).","After KYC approval, identity fields lock — this prevents 'change name to match a friend's bank account' abuse.","Every edit is written to History category 6."]
+    notes:["No nickname field (08-30, removed): the account already has a full legal name (KYC-bound) and an auto-generated Account ID — a third, separate display-name concept was unused surface area.","Additions vs the setup form: avatar (social feature), nationality/residence (market + KYC), ID document status, address (physical lifetime gifts), occupation (KYC L2 / AML), read-only account facts.","Full name must equal the payout account name (promo-claim design copy).","After KYC approval, identity fields lock — this prevents 'change name to match a friend's bank account' abuse.","Every edit is written to History category 6."]
   }
 },
 {
