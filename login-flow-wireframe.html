@@ -183,34 +183,27 @@ const screens = [
 },
 {
   group:"A · Login", id:"otc", title:"One-time Code Login",
-  states:["Select mode","In progress (00:32)","Invalid OTP","Resend over 3rd → 03:00"],
+  states:["In progress (00:32)","Invalid OTP","Resend over 3rd → 03:00"],
   render:(s)=>{
-    if(s===0)return `
-    <div class="scr-title"><span class="x">←</span>Select Verification Mode</div>
-    <div class="scr-step">Please choose how you would like to receive your one-time password (OTP)</div>
-    ${OPT("✉️ &nbsp; Send via email to b***@gmail.com", false)}
-    ${OPT("📱 &nbsp; Send via SMS to 091***233", true)}
-    ${CTA("Request OTP")}
-    <div class="hint">＊ Only one contact verified → no picker, straight to the code screen.</div>`;
     const cell=(t,mod)=>`<span style="${mod==='g'?'border-color:#3a3a3a;border-width:2px;':mod==='r'?'border-color:#b56;border-width:2px;color:#b56;':''}">${t}</span>`;
-    const cells= s===1?[1,2,3,4,5].map(n=>cell(n,'g')).join('')+cell('_','')
-      : s===2?[1,2,3,4,5,4].map(n=>cell(n,'r')).join('')
+    const cells= s===0?[1,2,3,4,5].map(n=>cell(n,'g')).join('')+cell('_','')
+      : s===1?[1,2,3,4,5,4].map(n=>cell(n,'r')).join('')
       : ['_','_','_','_','_','_'].map(n=>cell(n,'')).join('');
     return `
     <div class="scr-title"><span class="x">←</span>Enter Code</div>
     <div class="scr-step">We sent code verification to<br><b>091***233</b></div>
     <div class="otpcells">${cells}</div>
-    ${s===2?`<div class="err">Invalid OTP entered</div>`:''}
-    <div class="link">Resent code in <b>${s===2?'00:11':s===3?'03:00':'00:32'}</b></div>
+    ${s===1?`<div class="err">Invalid OTP entered</div>`:''}
+    <div class="link">Resent code in <b>${s===1?'00:11':s===2?'03:00':'00:32'}</b></div>
     ${CTA("Login",'disabled')}
     <div class="hint" style="text-align:center">— shared OTP component — iOS keyboard suggests the code —</div>`;
   },
   spec:{
-    goal:"Passwordless login on the shared OTP component: select mode (Email / SMS, masked) → code states (32s resend · Invalid OTP · 3rd resend → 03:00) → straight into the session.",
-    states:["select mode (both verified → picker; one → auto)","code in progress (00:32, Login disabled)","6 digits → Login active","invalid OTP (countdown keeps running)","3rd resend → 03:00 cooldown","locked → password tab / Live Chat fallback"],
-    fields:["identifier","mode(email|sms)","otp_code(6)"],
-    api:"POST /auth/login/otc/send { identifier, mode }\nPOST /auth/login/otc/verify { otp_code } ← { session }\nerr: OTP_WRONG / OTP_EXPIRED / RESEND_LIMIT",
-    notes:["Same component + rules as the Verification Flow (Unified OTP) — keep in sync.","OTP modes this release = Email / SMS; Zalo ZNS / LINE / WhatsApp delivery = phase 2.","Fallback after lock: password tab or Live Chat.","Highest-value for users who forget passwords — expected to cut recovery tickets."]
+    goal:"Passwordless login on the shared OTP component: code states (32s resend · Invalid OTP · 3rd resend → 03:00) → straight into the session. No mode picker here — the Login screen's identifier field already IS the mode (typed an email → code goes to email; typed a phone → SMS).",
+    states:["code in progress (00:32, Login disabled)","6 digits → Login active","invalid OTP (countdown keeps running)","3rd resend → 03:00 cooldown","locked → password tab / Live Chat fallback"],
+    fields:["identifier","otp_code(6)"],
+    api:"POST /auth/login/otc/send { identifier }\nPOST /auth/login/otc/verify { otp_code } ← { session }\nerr: OTP_WRONG / OTP_EXPIRED / RESEND_LIMIT",
+    notes:["No 'Select mode' step (08-30 fix): that picker pattern is for the Unified OTP step-up flow, where the system already has an authenticated account and shows its VERIFIED contacts to choose a delivery channel. Login is the opposite direction — nobody's identified yet, so there's nothing to pick from; the member just typed their own email or phone on the Login screen's identifier field a moment ago, which unambiguously determines where the code goes. This screen used to show that picker anyway (copy-pasted from the Unified OTP pattern) — removed as a straight logic error, not a style choice.","Same OTP-entry component + rules as the Verification Flow (Unified OTP) — keep in sync; only the mode-selection step diverges, and login never has one.","OTP modes this release = Email / SMS; Zalo ZNS / LINE / WhatsApp delivery = phase 2.","Fallback after lock: password tab or Live Chat.","Highest-value for users who forget passwords — expected to cut recovery tickets."]
   }
 },
 {
