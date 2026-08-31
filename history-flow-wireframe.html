@@ -179,15 +179,18 @@ const screens = [
   :s===3?`
     <div class="scr-title"><span class="x">←</span>Ask AI</div>
     <div class="scr-step">Ask about your own activity — reads only your History data</div>
-    ${F("🤖 Ask e.g. \"how much did I deposit last month?\"","")}
-    <div class="chips"><span class="chip">Last month's deposits</span><span class="chip">Why is my withdrawal pending?</span><span class="chip">Bets this week</span></div>
     <div class="hint" style="margin:10px 2px 4px">You asked: "How much did I deposit last month?"</div>
     <div style="border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin:6px 0;background:var(--fill)">
       <b>₫3,200,000</b> across 4 deposits in July — 3 Bank transfer, 1 USDT.<br>
       <span style="color:var(--muted);font-size:12px">Largest ₫1,500,000 on Jul 9 · smallest ₫200,000 on Jul 22</span>
     </div>
     <div class="link"><b>View these 4 transactions ›</b></div>
-    <div class="hint">＊ Answers cite the exact records behind them — tapping through re-runs the same filtered History query, never a black-box number.</div>`
+    <div class="hint">＊ Answers cite the exact records behind them — tapping through re-runs the same filtered History query, never a black-box number.</div>
+    <div style="margin-top:20px;border-top:1px solid var(--line);padding-top:10px">
+      <div class="chips" style="margin-bottom:6px"><span class="chip">Last month's deposits</span><span class="chip">Why is my withdrawal pending?</span><span class="chip">Bets this week</span></div>
+      ${F("🤖 Ask about your deposits, bets, promotions…","")}
+    </div>
+    <div class="hint">＊ Composer pinned to the bottom, answers scroll above it — standard chat reading order. Suggestion chips sit directly above the field so they read as "tap instead of typing".</div>`
   :`
     <div class="scr-title"><span class="x">←</span>History</div>
     <div class="scr-step">Home › Profile › History</div>
