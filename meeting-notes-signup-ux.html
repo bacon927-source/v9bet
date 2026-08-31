@@ -249,7 +249,7 @@
     <h3><span class="n">V</span>單一裝置登入 —— 「Login sessions」列表不寫實（08-30）</h3>
     <p>使用者指出：我們只能允許<b>一台裝置登入</b>，Security 頁那個「3 active / 2 active」多裝置清單（可以個別 Log out）不寫實——同時也確認 History 的登入紀錄本來就該是<b>多筆歷史紀錄</b>（3 筆以上），這兩件事不衝突：一個是「現在同時有幾台裝置在線」（只能 1），一個是「過去登入過幾次」（本來就會很多筆）。</p>
     <ul>
-      <li><b>Security &amp; Sessions</b>（profile-settings-flow-wireframe／v9bet-full-wireframe「Account Security」）：「Login sessions · N active」改成「Active session · This device」，子畫面拿掉多裝置清單，只顯示<b>目前這一台</b> ＋ 最近幾筆登入記錄（唯讀）＋「Log out this device」（手動強制登出，掉手機時可用）。</li>
+      <li><b>Security &amp; Sessions</b>（profile-settings-flow-wireframe／v9bet-full-wireframe「Account Security」）：「Login sessions · N active」改成「Active session · This device」，子畫面拿掉多裝置清單，只顯示<b>目前這一台</b> ＋ 最近幾筆登入記錄（唯讀）。<s>＋「Log out this device」（手動強制登出，掉手機時可用）</s> → 這顆按鈕後來（08-30，見下方 Z）也被拿掉了——邏輯上做不到它宣稱的事。</li>
       <li><b>Login</b>（login-flow-wireframe）：任何方式登入成功，都會<b>自動結束另一台裝置的 session</b>（伺服器強制），不會出現確認畫面——被登出的那台就是直接掉線；這個事件本身會被記一筆「Logout · ended by new login」進 History。</li>
       <li>掉手機的復原流程也跟著簡化：新裝置登入本身就會自動結束舊裝置的 session（不用再手動去 Login sessions 裡登出），唯一還需要手動做的是去 Passkey · Manage 撤銷舊裝置那把 passkey（session 結束不會連帶撤銷 passkey）。</li>
     </ul>
@@ -271,6 +271,15 @@
       <li>拿掉整張大卡片，只留最上面一個兩行的進度條（🎁 Setup rewards · 30/100 points）。</li>
       <li>6 個項目各自的狀態／CTA 併回它們原本在清單裡該在的那一列，未完成時掛一顆金色「🎁+10」小標籤：Email、Set a password（Account related，本來就有）；Face ID/biometric/passkey（併入 Security 的 toggle 列，未設定時顯示「Set up ›」）；Push notifications（併入 Preferences 的 toggle 列，同樣邏輯）；Theme（掛在原本就有的 Theme 列）；Message channel（Preferences 原本沒有這列，這次補上）。</li>
       <li>全部完成後，金色標籤跟頂部進度條一起消失，toggle 列變回正常開關，Message channel 顯示目前選的渠道。</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h3><span class="n">Z</span>拿掉 Active Session 的「Log out this device」——邏輯講不通（08-30）</h3>
+    <p>使用者問：只允許一台裝置登入，我登入了要 logout 誰？——問到重點：既然單一裝置政策下你能看到這頁，代表你就是那唯一一台在線的裝置，「Log out this device」只可能把你自己現在登出，跟 Settings Home 本來就有的「Log out」沒兩樣。原本寫的「掉手機時可用、在你去別的地方登入之前就先登出」也站不住腳——你不可能在還沒登入任何裝置的情況下看到這個畫面，而你能看到這頁，就代表新裝置登入已經自動把舊裝置踢了。</p>
+    <ul>
+      <li>拿掉這個按鈕跟它的提示文字，Active Session 這頁改成純唯讀：目前這台裝置 + 最近登入記錄。</li>
+      <li>掉手機的復原邏輯不變（新裝置登入就會自動結束舊裝置 session），只是不再假裝有一個額外的「手動登出別的裝置」按鈕——那個按鈕從頭到尾都做不到它宣稱的事。</li>
+      <li>已同步 profile-settings-flow-wireframe.html、v9bet-full-wireframe.html「Account Security」。</li>
     </ul>
   </div>
   <div class="card">
