@@ -40,6 +40,10 @@
   .screen::-webkit-scrollbar{width:6px}.screen::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px}
   .scr-title{text-align:center;font-weight:700;font-size:16px;margin:2px 0 4px;position:relative}
   .scr-title .x{position:absolute;left:0;top:0;color:var(--muted);font-weight:400}
+  .authsw{display:flex;align-items:center;justify-content:center;gap:14px}
+  .authsw .on{font-size:21px;font-weight:800;letter-spacing:-.2px}
+  .authsw .off{font-size:14px;font-weight:600;color:var(--muted);text-decoration:underline;cursor:pointer}
+  .authsw .div{width:1px;height:22px;background:var(--line2)}
   .scr-step{text-align:center;color:var(--muted);font-size:12px;margin-bottom:14px}
   /* wireframe primitives */
   .field{border:1px dashed var(--line2);border-radius:10px;padding:13px 14px;color:var(--muted);margin:10px 0;display:flex;justify-content:space-between;align-items:center;background:var(--fill)}
@@ -157,7 +161,7 @@ const screens = [
   group:"A · Login", id:"login", title:"Login",
   states:["Password","One-time code","Biometric / Passkey"],
   render:(s)=>`
-    <div class="scr-title"><span class="x">✕</span>Login<span class="x" style="left:auto;right:0;font-size:13px;text-decoration:underline;color:#444">Sign Up</span></div>
+    <div class="scr-title"><span class="authsw"><span class="off">Sign up</span><span class="div"></span><span class="on">Login</span></span><span class="x" style="left:auto;right:0">✕</span></div>
     <div class="ph" style="height:64px">[ V9 Logo ]</div>
     <div class="socrow" style="margin-top:16px">
       <div class="sic"><span class="lu">Last used</span><span class="c">G</span><small>Google</small></div>
