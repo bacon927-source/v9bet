@@ -102,15 +102,16 @@
   .li .g small{display:block;color:var(--muted);font-size:11px}
   .li .rt{color:var(--muted);font-size:12px;white-space:nowrap}
   .li .rt b{color:var(--ink)}
+  .pts{background:#fef6e0;border:1px solid #eccb7a;color:#8a6d1a;font-size:10.5px;font-weight:800;border-radius:12px;padding:3px 9px;margin-left:6px;white-space:nowrap;flex:0 0 auto}
+  .pbar{height:8px;background:#e5e5e5;border-radius:4px;overflow:hidden;margin:4px 0 2px}
+  .pbar i{display:block;height:100%;background:var(--solid)}
+  .pbar-lbl{display:flex;justify-content:space-between;font-size:10.5px;color:var(--muted);margin-bottom:4px}
   .st{display:inline-block;font-size:9.5px;border:1px solid var(--line2);border-radius:4px;padding:0 5px;color:var(--muted);vertical-align:middle;margin-left:4px}
   .st.ok{border-color:#2a7;color:#2a7}.st.bad{border-color:#b56;color:#b56}.st.wait{border-color:#c93;color:#c93}
   .kv{display:flex;justify-content:space-between;align-items:center;font-size:12.5px;padding:8px 0;border-bottom:1px dashed var(--line)}
   .kv span:first-child{color:var(--muted)}
   .kv .lock{font-size:10px;color:#b0b0b0;margin-left:6px}
   .avatar{width:64px;height:64px;border-radius:50%;border:1px dashed var(--line2);background:var(--fill);display:grid;place-items:center;color:#b6b6b6;margin:6px auto 2px;font-size:22px}
-  .setupcard{border:2px solid var(--solid);border-radius:12px;padding:12px 14px;margin:8px 0 12px;background:#fff}
-  .setupcard .bar{height:6px;background:#e5e5e5;border-radius:3px;overflow:hidden;margin:8px 0}
-  .setupcard .bar i{display:block;height:100%;width:43%;background:var(--solid)}
   .socrow{display:flex;justify-content:center;gap:26px;margin:12px 0 4px}
   .socrow .sic{display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer}
   .socrow .c{width:46px;height:46px;border:1px solid var(--line2);border-radius:50%;display:grid;place-items:center;font-size:14px;font-weight:700;color:var(--muted);background:#fff}
@@ -174,31 +175,23 @@ const screens = [
   render:(s)=>`
     <div class="scr-title"><span class="x">←</span>Settings</div>
     <div class="scr-step">Home › Profile › Settings</div>
-    ${s===0?`<div class="setupcard"><b>Complete your setup</b> <span class="st wait">🎁 30 / 100 pts</span>
-      <div class="bar"><i></i></div>
-      <div class="hint" style="margin:0 0 6px">You skipped these during sign-up — each one earns +10 points, finish anytime</div>
-      <div class="li"><span class="ic">👤</span><span class="g">Face ID / biometric / passkey<small>Step 2 · Security</small></span><span class="rt"><b>Set up ›</b></span></div>
-      <div class="li"><span class="ic">✉️</span><span class="g">Add recovery email<small>Step 2 · Security · also usable as Account ID</small></span><span class="rt"><b>Add ›</b></span></div>
-      <div class="li"><span class="ic">🔑</span><span class="g">Set a password<small>Step 2 · Security · optional, sign-up used OTP only</small></span><span class="rt"><b>Set up ›</b></span></div>
-      <div class="li"><span class="ic">🔔</span><span class="g">Notification permission<small>Step 3 · Preferences</small></span><span class="rt"><b>Allow ›</b></span></div>
-      <div class="li"><span class="ic">🌙</span><span class="g">Theme / language<small>Step 3 · Preferences · defaults applied</small></span><span class="rt"><b>Review ›</b></span></div>
-      <div class="li"><span class="ic">💬</span><span class="g">Message channel<small>Step 3 · Preferences · how we contact you</small></span><span class="rt"><b>Choose ›</b></span></div>
-    </div>`:''}
+    ${s===0?`<div class="pbar-lbl"><span>🎁 Setup rewards</span><b>30 / 100 points</b></div><div class="pbar"><i style="width:30%"></i></div><div class="hint" style="margin:2px 0 10px">You skipped some items during sign-up — look for 🎁 below, finish anytime</div>`:''}
     <div class="grp">Account related</div>
     <div class="li"><span class="ic">🪪</span><span class="g">Personal information</span><span class="rt">${s===0?'<span class="st bad">Not added</span>':'Complete'} ›</span></div>
     <div class="li"><span class="ic">🏦</span><span class="g">Manage bank account / USDT</span><span class="rt">${s===0?'<span class="st bad">Not added</span>':'2 accounts'} ›</span></div>
     <div class="li"><span class="ic">📱</span><span class="g">Phone number</span><span class="rt">091***233 <span class="st ok">✓</span> ›</span></div>
-    <div class="li"><span class="ic">✉️</span><span class="g">Email</span><span class="rt">${s===0?'<span class="st wait">Add</span>':'ba*****on@… <span class="st ok">✓</span>'} ›</span></div>
-    <div class="li"><span class="ic">🔑</span><span class="g">${s===0?'Set a password<small>Not set — signed up with OTP only</small>':'Change password'}</span><span class="rt">›</span></div>
+    <div class="li"><span class="ic">✉️</span><span class="g">Email<small>${s===0?'Also usable as Account ID':''}</small></span><span class="rt">${s===0?'<span class="st wait">Add</span><span class="pts">🎁+10</span>':'ba*****on@… <span class="st ok">✓</span>'} ›</span></div>
+    <div class="li"><span class="ic">🔑</span><span class="g">${s===0?'Set a password<small>Not set — signed up with OTP only</small>':'Change password'}</span><span class="rt">${s===0?'<span class="pts">🎁+10</span>':''} ›</span></div>
     <div class="grp">Security</div>
     <div class="hint" style="margin:0 2px 4px">Verify both your phone number and email address to protect against unnecessary access and easy account recovery.</div>
-    ${tog("Enable Face ID / biometrics", s===1)}
+    ${s===0?`<div class="li"><span class="ic">👤</span><span class="g">Face ID / biometric / passkey</span><span class="rt"><span class="pts">🎁+10</span> <b>Set up ›</b></span></div>`:tog("Enable Face ID / biometrics", true)}
     <div class="li"><span class="ic">💻</span><span class="g">Active session<small>Only one device at a time</small></span><span class="rt">This device ›</span></div>
     ${tog("Auto log out <small>after 30 min inactivity</small>", false)}
     <div class="grp">Preferences</div>
-    ${tog("Push notifications", true)}
-    <div class="li"><span class="ic">🌙</span><span class="g">Theme</span><span class="rt">Dark ›</span></div>
+    ${s===0?`<div class="li"><span class="ic">🔔</span><span class="g">Push notifications</span><span class="rt"><span class="pts">🎁+10</span> <b>Allow ›</b></span></div>`:tog("Push notifications", true)}
+    <div class="li"><span class="ic">🌙</span><span class="g">Theme</span><span class="rt">${s===0?'<span class="pts">🎁+10</span> ':''}Dark ›</span></div>
     <div class="li"><span class="ic">🌐</span><span class="g">Language</span><span class="rt">Tiếng Việt ›</span></div>
+    <div class="li"><span class="ic">💬</span><span class="g">Message channel<small>How we contact you</small></span><span class="rt">${s===0?'<span class="pts">🎁+10</span> <b>Choose ›</b>':'Zalo · default ›'}</span></div>
     <div class="li"><span class="ic">🎯</span><span class="g">Product preferences</span><span class="rt">›</span></div>
     <div class="grp">More</div>
     <div class="li"><span class="ic">🛡️</span><span class="g">Responsible Gaming</span><span class="rt">›</span></div>
@@ -206,11 +199,11 @@ const screens = [
     <div class="li"><span class="ic">🟢</span><span class="g">Account status</span><span class="rt">Active ›</span></div>
     <div class="link"><b>Log out</b></div>`,
   spec:{
-    goal:"One Settings home (mirrors the design mockup's setting page) with a 'Complete your setup' card on top that resurfaces every skipped Setup Step 2/3 item and deep-links to the SAME screens used during setup.",
-    states:["setup incomplete → card with skipped items + progress","all done → card hidden","row status badges (Not added / ✓ / Add)"],
-    fields:["setup_progress[{key,step,done,required}]","contacts{phone,email,status}","security{biometric,auto_logout,sessions}","prefs{push,theme,language}"],
+    goal:"One Settings home (mirrors the design mockup's setting page). Skipped Setup Step 2/3 items are NOT a separate promo card — each one's prompt + 🎁+10 chip lives inline on its own row (Email, Password, Face ID, Push notifications, Theme, Message channel), deep-linking to the SAME screens used during setup. Utility rows people actually came here for stay right at the top, not pushed below a big nudge card.",
+    states:["setup incomplete → progress banner + 🎁 chips on the unfinished rows","all done → banner and chips gone, rows show normal state","row status badges (Not added / ✓ / Add)"],
+    fields:["setup_progress[{key,step,done,required}]","contacts{phone,email,status}","security{biometric,auto_logout,sessions}","prefs{push,theme,language,message_channel}"],
     api:"GET /account/settings → { setup_progress, contacts, security, prefs, status }",
-    notes:["Reuse, don't rebuild: each setup card row opens the exact Setup screen (Face ID / Email / Notifications / Theme+Language) — one component, two entry points.","Card disappears when all skippable items are done; required items (currency, profile+bank) can't be skipped so they never appear here — but 'Not added' rows still show if the member abandoned mid-setup.","Sensitive rows (phone / email / password / bank) go through the Verification Flow (shared OTP).","Section order & copy follow the Jul 16 design mockup (Account Related / Security / Preferences)."]
+    notes:["08-30 redesign: originally a 'Complete your setup' card up top listed all 6 skippable items again, pushing the actual settings list (what people come to this page to find) below the fold — a promo/nudge pattern fighting a utility/findability page. Folded each item's prompt into its own real row instead; only a compact 2-line progress banner remains at the top.","Reuse, don't rebuild: each 🎁 row opens the exact Setup screen (Face ID / Email / Notifications / Theme / Message channel) — one component, multiple entry points.","Chips disappear once all skippable items are done; required items (currency, profile+bank) can't be skipped so they never carry a 🎁 chip — but 'Not added' rows still show if the member abandoned mid-setup.","Sensitive rows (phone / email / password / bank) go through the Verification Flow (shared OTP).","Section order & copy follow the Jul 16 design mockup (Account Related / Security / Preferences)."]
   }
 },
 {

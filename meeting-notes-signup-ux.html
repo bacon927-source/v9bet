@@ -265,6 +265,15 @@
     </ul>
   </div>
   <div class="card">
+    <h3><span class="n">Y</span>Settings 首頁：拿掉「Complete your setup」大卡片，狀態併回各自的列（08-30）</h3>
+    <p>使用者問：這頁上面為什麼是這些內容、要滑下去才是主要的？——原本的「Complete your setup」把 6 個未完成項目整組列出來擋在最上面，把 Account related 那些真正會來 Settings 找的東西（改密碼、查收款帳戶）推到要滑動才看得到。Settings 是工具頁，使用者帶著目的進來，不是被促銷卡片導流進來的；這個提醒在 Setup Overview 頁本來就有更完整的版本，這裡沒必要整組複製一次。</p>
+    <ul>
+      <li>拿掉整張大卡片，只留最上面一個兩行的進度條（🎁 Setup rewards · 30/100 points）。</li>
+      <li>6 個項目各自的狀態／CTA 併回它們原本在清單裡該在的那一列，未完成時掛一顆金色「🎁+10」小標籤：Email、Set a password（Account related，本來就有）；Face ID/biometric/passkey（併入 Security 的 toggle 列，未設定時顯示「Set up ›」）；Push notifications（併入 Preferences 的 toggle 列，同樣邏輯）；Theme（掛在原本就有的 Theme 列）；Message channel（Preferences 原本沒有這列，這次補上）。</li>
+      <li>全部完成後，金色標籤跟頂部進度條一起消失，toggle 列變回正常開關，Message channel 顯示目前選的渠道。</li>
+    </ul>
+  </div>
+  <div class="card">
     <h3><span class="n">→</span>後續順序</h3>
     <p>產品頁、產品細項頁、Bet slip —— <b>最後處理</b>（使用者指示 07-16）。<b>首頁（Home Flow）08-30 已開工</b>：新增 <code>home-flow-wireframe.html</code>（登入前／登入後／新客空狀態／桌面版 top menu／模組對照表），接進 index.html ⑨ 區，跟既有的 <code>v9bet-home-composition.html</code>（10 模組）對齊、不重複。C 批（賽果/開獎、公告、語言切換頁、session 覆蓋層細節）視需要再做。</p>
   </div>
