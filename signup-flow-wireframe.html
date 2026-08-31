@@ -100,7 +100,7 @@
   .pbar{height:8px;background:#e5e5e5;border-radius:4px;overflow:hidden;margin:4px 0 2px}
   .pbar i{display:block;height:100%;background:var(--solid)}
   .pbar-lbl{display:flex;justify-content:space-between;font-size:10.5px;color:var(--muted);margin-bottom:4px}
-  .socrow{display:flex;justify-content:center;gap:26px;margin:12px 0 4px}
+  .socrow{display:flex;justify-content:center;gap:18px;margin:12px 0 4px}
   .socrow .sic{display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer}
   .socrow .c{width:46px;height:46px;border:1px solid var(--line2);border-radius:50%;display:grid;place-items:center;font-size:14px;font-weight:700;color:var(--muted);background:#fff}
   .socrow small{font-size:10px;color:var(--muted)}
@@ -159,35 +159,29 @@ const SOC = (ic, t, sub='', last=false) => `<div class="socbtn"><span class="ic"
 const screens = [
 {
   group:"A · Sign Up", id:"signup", title:"Sign Up",
-  states:["Default","Phone detected → country code","Ready to submit","Captcha (conditional)","Email tab"],
+  states:["Default","Ready to submit","Email already registered"],
   render:(s)=>`
     <div class="scr-title"><span class="x" style="font-size:13px;text-decoration:underline;color:#444">Login</span>Sign Up<span class="x" style="left:auto;right:0">✕</span></div>
-    <div class="scr-step">Sign up with phone number or email</div>
+    <div class="scr-step">Sign up with your email</div>
     <div class="socrow" style="margin-top:14px">
       <div class="sic"><span class="c">G</span><small>Google</small></div>
       <div class="sic"><span class="c" style="font-size:10px">LINE</span><small>LINE</small></div>
+      <div class="sic"><span class="c" style="font-size:9px">Zalo</span><small>Zalo</small></div>
       <div class="sic"><span class="c">X</span><small>X</small></div>
     </div>
     <div class="or">or sign up with</div>
-    <div class="mtabs"><span class="${s===4?'':'on'}">📱 Phone number</span><span class="${s===4?'on':''}">✉️ Email</span></div>
-    ${s===4?F("Email address","Required")
-    :s===1?`<div class="field" style="border-style:solid"><span><b>+66 ▾</b> &nbsp; 0812345678</span><small>phone detected</small></div>
-    <div class="ccpop">
-      <div class="cc on">🇹🇭 Thailand<small>+66 ✓</small></div>
-      <div class="cc">🇻🇳 Vietnam<small>+84</small></div>
-    </div>`
-    :F("Phone number","Required")}
-    <div class="opt"><span class="sq ${(s===2||s===3)?'on':''}"></span>
+    ${F("Email address","Required")}
+    ${s===2?`<div class="err">This email already has an account. <b style="text-decoration:underline">Log in instead</b></div>`:''}
+    <div class="opt"><span class="sq ${s===1?'on':''}"></span>
       <span style="flex:1">I am 21+ and agree to the <b style="text-decoration:underline">Terms</b> and <b style="text-decoration:underline">Privacy Policy</b></span></div>
-    ${s===3?`<div class="ph">Captcha (hCaptcha)<br><small>Shown only when risk control is triggered</small></div>`
-            :`<div class="hint">＊ ${s===4?'Email sign-up verifies via a code sent to the inbox.':s===1?'Digits detected → country-code picker pops up (TH +66 / VN +84).':'Phone → OTP verification. Pasting an email here auto-switches to the Email tab. Captcha skipped by default (risk triggers only).'}</div>`}
-    ${CTA("Sign Up", (s===2||s===3)?'':'disabled')}`,
+    <div class="hint">＊ We send a 6-digit code to this inbox — that code is the whole verification. No password to choose, nothing else to fill in.</div>
+    ${CTA("Sign Up", s===1?'':'disabled')}`,
   spec:{
-    goal:"Sign-up = phone (default tab) or email (tab switch) + OTP only — no password, no Account ID. Typing digits in the phone tab pops the country-code picker (TH +66 / VN +84). 3rd-party via icon row: Google / LINE / X (consent implicit at tap).",
-    states:["phone tab · default (button disabled)","phone detected → country-code picker (TH / VN)","email tab (code to inbox)","button enabled after Terms checked","Captcha shown conditionally (risk trigger)","submitting loading","phone / email already exists error","format error inline error","social icon tap → Google / LINE / X OAuth branch"],
-    fields:["identifier (email | phone, single field)","country_code? (phone only, TH/VN)","accept_terms(bool)","captcha_token?","method(phone|email|google|line|x)"],
-    api:"POST /register/start\n→ { identifier, country_code? (phone only), accept_terms }\n← { register_token, otp_sent:true }\nerr: PHONE_EXISTS / EMAIL_EXISTS / INVALID_PHONE / RATE_LIMITED\nGET auth.&lt;stable&gt;/oauth/{provider} → session_token (central auth domain)",
-    notes:["Tabs: Phone number (default) | Email. Detection still applies — pasting an email in the phone tab auto-switches tabs; digits pop the country-code picker (TH +66 / VN +84, default by site locale / geo-IP).","No password and no Account ID at sign-up (final, Jul 16): phone / email + OTP is the whole registration. Password is OPTIONAL — set later in Setup Step 2 for password login; until then the member logs in via one-time code / social / passkey.","Deferring language / currency / referral does NOT hurt member→customer conversion: the account is created as soon as this page + OTP (or social consent) completes. Mitigations for each deferred item — referral: auto-captured from the invite link (?ref=), manual entry stays available in Promotions for 7 days; currency: setup Step 1, and force-prompted at first deposit intent (gates deposit, not sign-up); language: auto-detected from locale / geo-IP with an always-visible switcher in the header.","Account ID is AUTO-GENERATED at registration (e.g. AHHHHHH) — never typed by the member: shown read-only in Personal Information, revealed in Forgot Password after OTP; a verified email may also be used as Account ID. Login still accepts Account ID / email / phone in one field.","Terms not checked → Sign Up disabled.","Login entry moved to the top-LEFT of the title bar (Jul 16); ✕ close moves to the right; bottom 'Login here' link removed.","Social icons promoted to the TOP of the screen (Jul 16, same layout as Login). The 21+ / Terms checkbox below is SHARED by every method — social included: tapping an icon while it is unchecked shows an inline prompt to accept first, and the checked state is the recorded consent (timestamp + terms version). No separate consent line under the icons, and no re-ask in Complete Setup. Icons only (no full-width buttons): Google / LINE / X. Visibility is market-aware — hide an icon where the provider is blocked or irrelevant (e.g. LINE strongest in TH). Telegram entry removed from this screen. Apple / Facebook still excluded (policy).","All social icons go through the central verification domain (auth.&lt;stable&gt;) so public mirror rotation never breaks OAuth.","Analytics: sign_up event must carry method param (phone_otp | email | google | line | x)."]
+    goal:"Sign-up = email + OTP only. No phone, no password, no Account ID. 3rd-party via icon row: Google / LINE / X (consent implicit at tap).",
+    states:["default (button disabled until Terms checked)","Terms checked → submittable","email already registered → inline error + Log in instead","invalid email format → inline error","submitting loading","social icon tap → Google / LINE / X OAuth branch"],
+    fields:["email","accept_terms(bool)","method(email|google|line|x)"],
+    api:"POST /register/start\n→ { email, accept_terms }\n← { register_token, otp_sent:true }\nerr: EMAIL_EXISTS / INVALID_EMAIL / RATE_LIMITED\nGET auth.&lt;stable&gt;/oauth/{provider} → session_token (central auth domain)",
+    notes:["EMAIL ONLY (08-30): phone number can no longer be used to register. The Phone | Email tabs, the TH/VN country-code picker and the paste-detection behaviour are all gone — there is one field. Phone becomes something the member adds later (Setup Step 2 / Settings), which is the exact reverse of the previous arrangement where email was the optional add-on.","Knock-on to check when reading the rest of this kit: sign-up OTP is now always an inbox code, never SMS; a brand-new member has NO phone on file, so anything that assumed one (SMS message channel, phone-as-KYC-anchor, SMS as the default OTP delivery) only applies after they add one.","No Captcha (08-30, removed): it was drawn as a conditional risk-triggered step. Email OTP already gates account creation — an attacker needs a real inbox per account — so the extra friction bought little. Risk control can still throttle server-side (rate limits, disposable-domain checks) without a visible challenge.","No password and no Account ID at sign-up (final, Jul 16): email + OTP is the whole registration. Password is OPTIONAL — set later in Setup Step 2 for password login; until then the member logs in via one-time code / social / passkey.","Deferring language / currency / referral does NOT hurt member→customer conversion: the account is created as soon as this page + OTP (or social consent) completes. Mitigations for each deferred item — referral: auto-captured from the invite link (?ref=), manual entry stays available in Promotions for 7 days; currency: setup Step 1, and force-prompted at first deposit intent (gates deposit, not sign-up); language: auto-detected from locale / geo-IP with an always-visible switcher in the header.","Account ID is AUTO-GENERATED at registration (e.g. AHHHHHH) — never typed by the member: shown read-only in Personal Information, revealed in Forgot Password after OTP; the registered email may also be used as Account ID. Login accepts Account ID / email / phone in one field (phone only once the member has added one).","Terms not checked → Sign Up disabled.","Login entry moved to the top-LEFT of the title bar (Jul 16); ✕ close moves to the right; bottom 'Login here' link removed.","Social icons promoted to the TOP of the screen (Jul 16, same layout as Login). The 21+ / Terms checkbox below is SHARED by every method — social included: tapping an icon while it is unchecked shows an inline prompt to accept first, and the checked state is the recorded consent (timestamp + terms version). No separate consent line under the icons, and no re-ask in Complete Setup. Icons only (no full-width buttons): Google / LINE / X. Visibility is market-aware — hide an icon where the provider is blocked or irrelevant (e.g. LINE strongest in TH). Telegram entry removed from this screen. Apple / Facebook still excluded (policy).","All social icons go through the central verification domain (auth.&lt;stable&gt;) so public mirror rotation never breaks OAuth.","Analytics: sign_up event must carry method param (email | google | line | x) — phone_otp retired."]
   }
 },
 {
@@ -200,41 +194,49 @@ const screens = [
       : s===3?[1,2,3,4,5,4].map(n=>cell(n,'r')).join('')
       : ['_','_','_','_','_','_'].map(n=>cell(n,'')).join('');
     return `
-    <div class="scr-title"><span class="x">✕</span>Verify Phone Number</div>
-    <div class="scr-step">We sent code verification to<br><b>091***233</b></div>
+    <div class="scr-title"><span class="x">✕</span>Verify Email</div>
+    <div class="scr-step">We sent a code to<br><b>ba*****on@gmail.com</b></div>
     <div class="otpcells">${cells}</div>
     ${s===3?`<div class="err">Invalid OTP entered</div>`:''}
     ${s===2?`<div class="link"><b>Resend OTP</b></div>`
       :`<div class="link">Resent code in <b>${s===3?'00:11':s===4?'03:00':'00:32'}</b></div>`}
     ${CTA("Verify", s===1?'':'disabled')}
-    <div class="link"><b>Change phone number</b></div>
-    <div class="hint" style="text-align:center">— iOS keyboard suggests the code (From Messages) —</div>`;
+    <div class="hint" style="text-align:center">Wrong address? Close this and start again.</div>`;
   },
   spec:{
-    goal:"Verify phone ownership with the shared 6-digit OTP component (same states/params as the Verification Flow); only then proceed to account setup. Email sign-up = same component, code to inbox.",
+    goal:"Verify email ownership with the shared 6-digit OTP component (same states/params as the Verification Flow); only then proceed to account setup.",
     states:["in progress · countdown 00:32 · Verify disabled","all 6 digits → Verify active","countdown done → Resend OTP link","invalid OTP → red cells + red Verify (countdown keeps running)","resend used 3× → cooldown escalates to 03:00","verified → account setup"],
-    fields:["register_token","otp_code(6)","mode(sms|email)"],
+    fields:["register_token","otp_code(6)"],
     api:"POST /register/verify-otp\n→ { register_token, otp_code }\n← { verified:true, customer_id }\nPOST /register/resend-otp\nerr: OTP_WRONG / OTP_EXPIRED / RESEND_LIMIT",
-    notes:["Shared OTP component (design Jul 16): 6 digits · resend 32s · Invalid OTP entered state · 3rd resend → 03:00 cooldown · masked contact · iOS SMS autofill.","Delivery this release = SMS (phone) / inbox code (email). Zalo ZNS / LINE / WhatsApp delivery + channel picker = phase 2 (docx49 WhatsApp fallback deferred with it).","On success, go straight into account setup (do not return to home)."]
+    notes:["The contact CANNOT be edited mid-OTP (08-30): there was a 'Change phone number' link here — removed. A code is already in flight against the address the member submitted, so editing it in place would mean silently voiding that code and issuing another, and the same affordance is what lets someone walk a list of addresses from one session. Typo'd it? Close (✕) and start sign-up again — one register_token, one contact, no exceptions.","Email only (08-30): sign-up no longer accepts a phone number, so this is always an inbox code. The iOS 'From Messages' autofill hint was dropped with it — that is SMS-specific and there is no email equivalent.","Shared OTP component (design Jul 16): 6 digits · resend 32s · Invalid OTP entered state · 3rd resend → 03:00 cooldown · masked contact.","On success, go straight into account setup (do not return to home)."]
   }
 },
 {
   group:"A · Sign Up", id:"social", title:"Social Sign Up / Bind",
-  states:["Done → You're a customer","Account Found → link?","Verify existing account (OTP)","Bound → logged in"],
+  states:["Google → has email","Zalo / LINE → no contact yet","Account Found → link?","Verify existing account (OTP)","Bound → logged in"],
   render:(s)=>s===0?`
     <div class="scr-title">Welcome!</div>
     <div class="ph" style="height:110px">🎉<br><small>account created</small></div>
     <div class="scr-step" style="font-size:15px;color:#333"><b>You're now a V9 customer</b><br>Signed up with Google — no OTP needed.</div>
+    <div class="hint">＊ Google supplied a verified email, so the account already has a contact we can reach and recover it with.</div>
     ${CTA("Set up account · earn 100 points 🎁")}
     ${CTA("Start playing",'ghost')}`
   :s===1?`
+    <div class="scr-title">Welcome!</div>
+    <div class="ph" style="height:110px">🎉<br><small>account created</small></div>
+    <div class="scr-step" style="font-size:15px;color:#333"><b>You're now a V9 customer</b><br>Signed up with Zalo — no OTP needed.</div>
+    <div class="err" style="border-color:#c93;background:#fdf6ea;color:#a70">Zalo only shares your account ID — no email or phone. Right now this Zalo login is the <b>only</b> way into your account.</div>
+    ${CTA("Add an email · 🎁 +10 points")}
+    ${CTA("Later",'ghost')}
+    <div class="hint">＊ Same for LINE. Adding an email (and later a phone) is what makes OTP, message delivery and account recovery possible — until then, losing the Zalo / LINE account means losing this one.</div>`
+  :s===2?`
     <div class="scr-title"><span class="x">←</span>Account Found</div>
     <div class="err">This Google account already matches an existing account <b>v9_user***</b>.</div>
     <div class="scr-step">Verify it's you to link this Google account — for your protection, we can't link it on Google's word alone</div>
     ${CTA("Send code to existing account")}
     ${CTA("Use a different account",'ghost')}
     <div class="link"><b>Not you? Contact Live Chat</b></div>`
-  :s===2?`
+  :s===3?`
     <div class="scr-title"><span class="x">←</span>Verify It's You</div>
     <div class="scr-step">Code sent to the phone on file for v9_user*** &nbsp; 091***233</div>
     <div class="otpcells"><span class="f">_</span><span>_</span><span>_</span><span>_</span><span>_</span><span>_</span></div>
@@ -247,11 +249,11 @@ const screens = [
     <div class="scr-step" style="font-size:15px;color:#333"><b>You're logged in as v9_user***</b><br>Google is now a login option on this account.</div>
     ${CTA("Continue")}`,
   spec:{
-    goal:"Social sign-up (Google / LINE / X icons) via the central verification domain — NO OTP, no separate currency-capture screen for a brand-new account: provider consent → immediate 'You're now a customer' welcome, which pushes into the standard Setup Overview (same as phone/email members). When the provider identity matches an EXISTING account, the flow requires re-proving ownership of that existing account before linking (market-standard account-linking pattern) rather than logging straight in.",
-    states:["provider consent (Google One Tap / LINE / X, no in-app redirect screen)","done → welcome, new customer created (no OTP)","existing match → Account Found, offers to link","re-auth → OTP sent to the EXISTING account's phone (not the new provider)","OTP correct → bound & logged in as the existing account","cancelled / provider error → back to sign-up"],
+    goal:"Social sign-up (Google / LINE / Zalo / X icons) via the central verification domain — NO OTP for a brand-new account: provider consent → immediate 'You're now a customer' welcome, which pushes into the standard Setup Overview. Providers split into two kinds by what they hand over, and that difference decides what the member must do next. When the identity matches an EXISTING account, ownership of that account is re-proved before linking rather than logging straight in.",
+    states:["provider consent (Google One Tap / LINE / Zalo / X, no in-app redirect screen)","Google → welcome, account has a verified email from the start","Zalo / LINE → welcome, account ID only, NO contact on file → prompted to add an email","existing match → Account Found, offers to link","re-auth → OTP to the EXISTING account's contact (not the new provider)","OTP correct → bound & logged in as the existing account","cancelled / provider error → back to sign-up"],
     fields:["provider(google|line|x)","session_token","accept_terms(implicit — recorded at social tap on Sign Up)","existing_account_phone_masked","otp_code"],
     api:"GET auth.&lt;stable&gt;/oauth/{provider}\n← redirect back with session_token\nPOST /auth/social/exchange { session_token }\n← { customer_id, is_new, needs_bind, existing_account_phone_masked }\nPOST /auth/social/bind/otp/send { customer_id }\nPOST /auth/social/bind/otp/verify { customer_id, otp } → bind + login",
-    notes:["'Complete Setup (currency-only)' screen removed (Jul 16) — redundant with Setup Overview, which already collects currency as Step 1 · Required right after. Brand-new social members land on Welcome immediately, no OTP.","Welcome CTA order flips for social sign-up: 'Set up account · earn 100 points' is the PRIMARY (solid) button to pull members into Setup Overview; 'Start playing' is secondary (ghost) — encourages completing setup rather than skipping straight to play.","Account-linking rule (market standard — Auth0 account linking / Google Identity Platform 'account-exists-with-different-credential'): request authentication for BOTH sides before linking. Google proves the new identity; an OTP to the phone already on file proves the existing account. Binding straight off the provider's say-so alone (no re-auth) is the weaker 'automatic linking' mode both platforms flag as a security tradeoff — not used here.","Match only ever surfaces 'Account Found' against a VERIFIED email/phone on the existing account — an unverified stored contact never triggers it, or anyone could plant someone else's real email on a dormant account and hijack it the moment the real owner signs in with Google.","Phone OTP for a brand-new social account is still deferred to withdrawal / promo claim (phone remains the KYC anchor) — this OTP is only for the existing-account re-auth path.","Central verification domain: OAuth redirect URI binds ONLY to auth.&lt;stable&gt;, so public mirror rotation never breaks login.","Providers = Google / LINE / X (Telegram entry removed 2026-07-15; it stays available only as an OTP channel in TH / intl). Icon visibility is market-aware — hide a provider where blocked.","Bind flow also lives in Profile for existing username/password users.","Google One Tap auto-hides if the consent app is blocked (degrade design)."]
+    notes:["'Complete Setup (currency-only)' screen removed (Jul 16) — redundant with Setup Overview, which already collects currency as Step 1 · Required right after. Brand-new social members land on Welcome immediately, no OTP.","Welcome CTA order flips for social sign-up: 'Set up account · earn 100 points' is the PRIMARY (solid) button to pull members into Setup Overview; 'Start playing' is secondary (ghost) — encourages completing setup rather than skipping straight to play.","Account-linking rule (market standard — Auth0 account linking / Google Identity Platform 'account-exists-with-different-credential'): request authentication for BOTH sides before linking. Google proves the new identity; an OTP to the phone already on file proves the existing account. Binding straight off the provider's say-so alone (no re-auth) is the weaker 'automatic linking' mode both platforms flag as a security tradeoff — not used here.","Match only ever surfaces 'Account Found' against a VERIFIED email/phone on the existing account — an unverified stored contact never triggers it, or anyone could plant someone else's real email on a dormant account and hijack it the moment the real owner signs in with Google. Zalo / LINE match on their provider account ID instead, since that is all they give us.","TWO KINDS OF PROVIDER (08-30) — this is the important distinction on this screen. Google returns a verified email, so that account starts with a real contact. Zalo and LINE return ONLY their account ID: no email, no phone. A member who signs up that way has no address we can send an OTP to, no channel to message, and nothing to recover the account with — the social login IS the account. So their welcome screen leads with 'Add an email', and Setup item 5 asks for whatever contacts are still missing. X is treated as ID-only unless it actually returns an email.","Re-auth on the bind path needs a contact to send the code to. If the EXISTING account is itself an ID-only social account with no email or phone, there is nothing to OTP — that case has to fall through to Live Chat rather than silently linking.","Central verification domain: OAuth redirect URI binds ONLY to auth.&lt;stable&gt;, so public mirror rotation never breaks login.","Providers = Google / LINE / Zalo / X (Zalo added 08-30 for VN reach; Telegram removed 2026-07-15, still available as an OTP channel in TH / intl). Icon visibility is market-aware — Zalo is the VN default pairing, LINE the TH one; hide a provider where blocked.","Bind flow also lives in Profile for existing username/password users.","Google One Tap auto-hides if the consent app is blocked (degrade design)."]
   }
 },
 {
@@ -272,7 +274,7 @@ const screens = [
     <div class="grp">Step 2 · Security <span class="badge">can skip</span></div>
     <div class="checklist">
       ${ci(4,"Face ID / biometric / passkey","app only · +10 pts",s>1)}
-      ${ci(5,"Add Email (account recovery)","Optional* · +10 pts",s>1)}
+      ${ci(5,"Add contact details","email / phone · +10 pts",s>1)}
       ${ci(6,"Set a password","optional · +10 pts",s>1)}
     </div>
     <div class="grp">Step 3 · Preferences <span class="badge">can skip</span></div>
@@ -289,7 +291,7 @@ const screens = [
     states:["step 1 · required (cannot skip)","step 2 · security (skippable)","step 3 · preferences (skippable)","all done → tutorial & app download page"],
     fields:["customer_id","setup_progress[{key,step(1|2|3),done,required,points}]","points_earned","points_total(100)"],
     api:"GET /account/setup-status → { steps:[{key,step(1|2|3),done,required}] }",
-    notes:["docx: 'immediately run through account configuration settings'.","Item 9 = Message channel: SMS / Email / social messaging (WhatsApp · Zalo · Telegram · LINE) / opt-out, with a pre-selected default; SMS + social require a verified phone.","Cannot pass: account currency · personal information · bank/USDT (split into two items, Jul 16). Can pass: Face ID/passkey · recovery email · set-a-password (optional; no password at sign-up) · notifications · theme/language.","TOP bar is a REWARD progress bar (user ask Jul 16): 9 items × +10 pts, +10 bonus on full completion = 100 points; the bar shows points earned / 100 and repeats on every setup sub-screen. Points land in History 4 (Rewards); each item credits once.","Tutorial & app download moved out of the checklist — presented on the next page after Start setup completes."]
+    notes:["docx: 'immediately run through account configuration settings'.","Item 9 = Message channel: Email / SMS / social messaging (WhatsApp · Zalo · Telegram · LINE) / opt-out. Default is EMAIL — sign-up is email-only (08-30), so a new member has no phone yet and SMS + social messaging stay gated behind adding one (item 5).","Cannot pass: account currency · personal information · bank/USDT (split into two items, Jul 16). Can pass: Face ID/passkey · add phone number · set-a-password (optional; no password at sign-up) · notifications · theme/language.","TOP bar is a REWARD progress bar (user ask Jul 16): 9 items × +10 pts, +10 bonus on full completion = 100 points; the bar shows points earned / 100 and repeats on every setup sub-screen. Points land in History 4 (Rewards); each item credits once.","Tutorial & app download moved out of the checklist — presented on the next page after Start setup completes."]
   }
 },
 {
@@ -395,24 +397,32 @@ const screens = [
   }
 },
 {
-  group:"B · Account Setup", id:"email", title:"Email", step:"Step 2 · Security (can skip)",
-  states:["Phone verified (optional)","Email-only sign-up (verify required)"],
+  group:"B · Account Setup", id:"email", title:"Contact Details", step:"Step 2 · Security (can skip)",
+  states:["Add phone (email sign-up)","Enter code","Add email (Zalo / LINE sign-up)"],
   render:(s)=>`
-    <div class="scr-title"><span class="x">←</span>Add Email<span class="badge ${s===1?'req':''}">${s===1?'Required':'Optional*'}</span></div>
+    <div class="scr-title"><span class="x">←</span>${s===2?'Add Email':'Add Phone Number'}<span class="badge">Optional</span></div>
     <div class="pbar-lbl"><span>🎁 Setup rewards</span><b>40 / 100 points</b></div>
     <div class="pbar"><i style="width:40%"></i></div>
-    <div class="scr-step" style="margin-top:8px">Verified Email can be used to log in, and to recover your account</div>
-    ${F("Email address")}
-    ${s===1?`<div class="hint">You signed up with Email; phone verification is required before claiming offers / withdrawing.</div>`
-            :`<div class="hint">＊Phone verified, Email can be added later in Profile.</div>`}
-    ${CTA("Send verification email and continue")}
-    ${s===0?`<div class="link"><b>Later</b></div>`:''}`,
+    <div class="scr-step" style="margin-top:8px">${s===2?'You signed up with Zalo — an email gives you a way back in if you lose it':'A verified phone adds a second way to log in and recover your account'}</div>
+    ${s===1?`<div class="field" style="border-style:solid"><span><b>+84 ▾</b> &nbsp; 091***233</span><small>code sent</small></div>
+    <div class="otpcells"><span class="f">_</span><span>_</span><span>_</span><span>_</span><span>_</span><span>_</span></div>
+    <div class="link">Resent code in <b>00:32</b></div>
+    ${CTA("Verify",'disabled')}
+    <div class="hint" style="text-align:center">— iOS keyboard suggests the code (From Messages) —</div>`
+    :s===2?`${F("Email address","Required")}
+    <div class="err" style="border-color:#c93;background:#fdf6ea;color:#a70">Your Zalo login is currently the only way into this account. An email means you can still get in — and get OTPs — if you ever lose it.</div>
+    ${CTA("Send code")}
+    <div class="link"><b>Later</b></div>`
+    :`<div class="field" style="border-style:solid"><span><b>+84 ▾</b> &nbsp; Phone number</span><small>TH +66 · VN +84</small></div>
+    <div class="hint">＊ Needed later for SMS notifications and as a payout-security anchor — but never required to sign up, deposit or play.</div>
+    ${CTA("Send code")}
+    <div class="link"><b>Later</b></div>`}`,
   spec:{
-    goal:"Add and verify Email — a login method in its own right (same standing as the phone number), and a recovery contact.",
-    states:["optional (phone verified)","required (email-only sign-up path)","verification email sent","verified","verification link expired"],
-    fields:["email","email_verified(bool)"],
-    api:"POST /account/email + verification link callback",
-    notes:["docx BE rule: phone verified → Email optional; Email-only → must complete phone verification before claiming offers/withdrawing.","Maps to account recovery email.","Rule ②: adding Email here is allowed without extra re-verify because the phone was JUST verified at sign-up. Later additions/changes go through 'Add / Change Phone·Email' (verify existing → verify new).","Once both are verified, any verification lets the member choose phone OR email (Rule ③)."]
+    goal:"Fill in whichever contacts the account is missing. Email sign-up → add a phone. Zalo / LINE sign-up → add an email first (the account has none at all), then a phone. One checklist item, contents driven by what is actually absent.",
+    states:["enter phone (country-code picker TH +66 / VN +84)","code sent → shared OTP component","verified → +10 pts","number already used by another account → error","skipped → resurfaces in Settings"],
+    fields:["phone","country_code(TH|VN)","phone_verified(bool)"],
+    api:"POST /account/phone → { otp_sent }\nPOST /account/phone/verify { otp_code }\nerr: PHONE_IN_USE / INVALID_PHONE / OTP_WRONG",
+    notes:["This item is now contact-agnostic (08-30). It used to be 'Add Email' back when sign-up took a phone number; sign-up is email-only now, so for those members email arrives already verified and PHONE is what is missing. But Zalo / LINE sign-ups arrive with NEITHER — those providers hand over only an account ID — so for them this item asks for an email first, and that case is the urgent one: until they add a contact, the social login is the single key to the account and there is no recovery path if they lose it.","Adding a phone here needs no re-verification of the email — it was just verified at sign-up (the same reasoning that previously let email be added right after phone OTP). Later changes go through Add / Change Contact (verify existing → verify new).","Skippable, like the rest of Step 2. Nothing in sign-up, deposit or play requires a phone; it matters for SMS delivery and as a security anchor on payouts, which is why it earns points rather than blocking anything.","Once both contacts are verified, any later verification lets the member pick email OR phone (Rule ③)."]
   }
 },
 {
@@ -455,14 +465,13 @@ const screens = [
 },
 {
   group:"B · Account Setup", id:"channel", title:"Message Channel", step:"Step 3 · Preferences (can skip)",
-  states:["Default (SMS)","Social messaging → pick app","Phone not verified → blocker","Opt out (confirm)","Saved"],
+  states:["Default (Email)","Social messaging → pick app","No phone yet → blocker","Opt out (confirm)","Saved"],
   render:(s)=>s===2?`
     <div class="scr-title"><span class="x">←</span>Message Channel</div>
-    <div class="err">SMS and social messaging need a verified phone number — yours isn't verified yet.</div>
-    <div class="opt"><span class="dot"></span><span style="flex:1">📱 &nbsp; +84 ****1234 <small style="color:#b0b0b0">not verified</small></span></div>
-    ${CTA("Verify my number now")}
-    ${CTA("Use Email instead",'ghost')}
-    <div class="hint">＊ Verifying also earns +10 points. Until then the channel falls back to Email (or in-app only if no email).</div>`
+    <div class="err">SMS and social messaging need a verified phone number. You signed up with email, so there's no phone on the account yet.</div>
+    ${CTA("Add a phone number")}
+    ${CTA("Keep using Email",'ghost')}
+    <div class="hint">＊ Adding one also earns +10 points (Setup item 5). Until then the channel stays on Email — never on nothing.</div>`
   :s===3?`
     <div class="scr-title"><span class="x">←</span>Turn off messages?</div>
     <div class="ph" style="height:100px">🔕<br><small>No promos, no updates</small></div>
@@ -481,8 +490,8 @@ const screens = [
     <div class="pbar-lbl"><span>🎁 Setup rewards</span><b>80 / 100 points</b></div>
     <div class="pbar"><i style="width:80%"></i></div>
     <div class="scr-step" style="margin-top:8px">How should we send you promotions and updates?</div>
-    ${OPT("📨 &nbsp; SMS <small style='color:#b0b0b0'>default · to +84 ****1234</small>", s===0)}
-    ${OPT("✉️ &nbsp; Email <small style='color:#b0b0b0'>ba*****on@gmail.com</small>", false)}
+    ${OPT("✉️ &nbsp; Email <small style='color:#b0b0b0'>default · ba*****on@gmail.com</small>", s===0)}
+    ${OPT("📨 &nbsp; SMS <small style='color:#b0b0b0'>needs a phone number</small>", false)}
     ${OPT("💬 &nbsp; Social messaging", s===1)}
     ${s===1?`<div class="ccpop">
       <div class="cc">🟢 WhatsApp<small>uses your phone</small></div>
@@ -500,7 +509,7 @@ const screens = [
     states:["default pre-selected (market / sign-up method)","social messaging → sub-picker + ID field for Telegram / LINE","SMS or social picked but phone NOT verified → blocker → verify (or fall back to Email)","opt out → confirm sheet (critical messages still delivered)","saved → confirmation + points"],
     fields:["channel(sms|email|social|none)","social_app(whatsapp|zalo|telegram|line)?","social_handle? (telegram|line only)","phone_verified(bool)","default_source(market|signup_method)"],
     api:"GET /account/message-channel → { channel, social_app?, handle?, default }\nPUT /account/message-channel { channel, social_app?, handle? }\nerr: PHONE_NOT_VERIFIED / HANDLE_IN_USE / INVALID_FORMAT",
-    notes:["Default rule: signed up with phone → SMS; signed up with email → Email; market overlay (VN → Zalo, TH → LINE) may pre-select social where reach is better. The default applies until the member changes it.","Verification gate: choosing SMS or ANY social app requires a verified phone (WhatsApp / Zalo are keyed to the number; Telegram / LINE still need the number as the account anchor). Not verified → blocker with 'Verify my number now' (which also earns +10 pts) or fall back to Email.","Opt-out ≠ silence: OTP, login / security alerts and deposit-withdrawal status are transactional and always delivered. Only promotions, campaigns and non-critical updates stop.","Telegram / LINE need a handle; WhatsApp / Zalo reuse the verified phone number — the ID field only appears for the two that need it.","Same screen is reused in Profile & Settings › Preferences › Message channel; consent record (channel + timestamp) is written on save.","Earns +10 points like every other setup item; the choice also drives the Notifications topic toggles."]
+    notes:["Default is always EMAIL (08-30): sign-up is email-only, so every new member has exactly one verified contact and it is their inbox. The old 'signed up with phone → SMS' branch is gone with the phone sign-up path. The default applies until the member changes it.","Verification gate: choosing SMS or ANY social app requires a verified phone (WhatsApp / Zalo are keyed to the number; Telegram / LINE still need the number as the account anchor). A brand-new member has none, so this blocker is now the COMMON case rather than an edge one — it must read as an invitation to add a number (+10 pts, Setup item 5), never as an error. Falling back to Email is always available.","Market overlay (VN → Zalo, TH → LINE) can pre-select social where reach is better, but only once a phone exists — until then it cannot override the Email default.","Opt-out ≠ silence: OTP, login / security alerts and deposit-withdrawal status are transactional and always delivered. Only promotions, campaigns and non-critical updates stop.","Telegram / LINE need a handle; WhatsApp / Zalo reuse the verified phone number — the ID field only appears for the two that need it.","Same screen is reused in Profile & Settings › Preferences › Message channel; consent record (channel + timestamp) is written on save.","Earns +10 points like every other setup item; the choice also drives the Notifications topic toggles."]
   }
 },
 {
