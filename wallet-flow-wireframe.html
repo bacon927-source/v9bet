@@ -295,7 +295,7 @@ const screens = [
 },
 {
   group:"C · Withdrawal", id:"wd-account", title:"Withdrawal · Account & Amount",
-  states:["Bank account","USDT address","Add new account","Churn unmet"],
+  states:["Bank account","USDT address","Add new account","Churn unmet","KYC required"],
   render:(s)=>s===3?`
     <div class="scr-title"><span class="x">←</span>Withdrawal</div>
     <div class="err">Turnover requirement not yet met — ₫3,200,000 remaining on your active bonus.</div>
@@ -305,6 +305,15 @@ const screens = [
     ${CTA("View churn progress")}
     ${CTA("Forfeit bonus & withdraw",'ghost')}
     <div class="hint">＊ Forfeit = bonus and its winnings removed; explicit confirm.</div>`
+  :s===4?`
+    <div class="scr-title"><span class="x">←</span>Withdrawal</div>
+    <div class="err">Identity verification needed for this amount — Level 2 is required above ₫10,000,000 per day.</div>
+    <div class="kv"><span>This withdrawal</span><span><b>₫15,000,000</b></span></div>
+    <div class="kv"><span>Your level</span><span>Level 1 <small style="color:#b0b0b0">phone verified</small></span></div>
+    <div class="kv"><span>Verification takes</span><span>~3 min · reviewed within 24 h</span></div>
+    ${CTA("Verify identity")}
+    ${CTA("Withdraw ₫10,000,000 instead",'ghost')}
+    <div class="hint">＊ Opens the KYC flow (growth-support-wireframe.html › KYC Upload) and returns here once approved. The name on the ID must match both Personal Information and the payout account.</div>`
   :`
     <div class="scr-title"><span class="x">✕</span>Banking</div>
     <div class="mtabs"><span>Deposit</span><span class="on">Withdrawal</span></div>
@@ -321,10 +330,10 @@ const screens = [
     ${CTA("Submit", s===2?'':'')}`,
   spec:{
     goal:"Step 1 (Jul 16 mockup): Banking › Withdrawal tab — balance / withdrawable / remaining churn, payout method (bank preferred · USDT), saved accounts or add new, amount presets, churn-unmet blocker.",
-    states:["bank account list (default)","usdt address list","add new account (holder locked to profile)","churn unmet → progress / forfeit","amount out of range / over withdrawable"],
-    fields:["method(bank|usdt)","payout_account_id | new_account{…}","amount","withdrawable","churn_remaining"],
-    api:"GET /withdrawal/context → { withdrawable, churn_remaining, accounts[] }\nPOST /withdrawal/quote { method, account, amount }",
-    notes:["Holder name locked to Personal Information (Profile & Settings decision).","Churn-unmet blocker links to bonus progress; forfeit path needs an explicit confirm.","Limits per method / market shown inline."]
+    states:["bank account list (default)","usdt address list","add new account (holder locked to profile)","churn unmet → progress / forfeit","KYC level too low for the amount → verify identity","amount out of range / over withdrawable"],
+    fields:["method(bank|usdt)","payout_account_id | new_account{…}","amount","withdrawable","churn_remaining","kyc_level","kyc_threshold"],
+    api:"GET /withdrawal/context → { withdrawable, churn_remaining, accounts[], kyc_level, kyc_threshold }\nPOST /withdrawal/quote { method, account, amount }\nerr: KYC_REQUIRED",
+    notes:["Holder name locked to Personal Information (Profile & Settings decision).","Churn-unmet blocker links to bonus progress; forfeit path needs an explicit confirm.","KYC blocker (08-30, drawn): previously KYC was only named in a rejection-reason hint with no screen and no way in — it is now a pre-submit blocker in the same shape as the churn one, linking into the KYC flow (growth-support-wireframe.html › KYC Upload) with an under-the-threshold escape hatch so the member is never simply stuck.","Blocked before submit rather than rejected after review: the threshold is known up front, so making the member wait for a rejection would be pointless friction.","Limits per method / market shown inline."]
   }
 },
 {
