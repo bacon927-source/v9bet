@@ -193,29 +193,30 @@ const screens = [
   states:["Default","Bonus churn active","Withdrawal processing"],
   render:(s)=>`
     <div class="scr-title"><span class="x">←</span>My Wallet <span class="badge">VND</span></div>
-    <div class="amt">₫ 1,250,000<small>Total balance · <b>Withdrawable ₫800,000</b></small></div>
+    <div class="amt">₫ ${s===1?'1,750,000':'1,250,000'}<small>Total balance · <b>Withdrawable ${s===1?'₫0':s===2?'₫450,000':'₫1,250,000'}</b></small></div>
+    ${s===1?`<div class="err" style="border-color:#c93;background:#fdf6ea;color:#a70">Bonus active — your <b>whole balance is locked</b>, including your own deposit, until turnover is met. ₫3,750,000 of ₫5,000,000 to go.</div>`:''}
     ${s===2?`<div class="err" style="border-color:#c93;background:#fdf6ea;color:#a70">Withdrawal ₫800,000 processing · Review → Payout · ETA 30 min</div>`:''}
     <div class="grid3" style="grid-template-columns:repeat(2,1fr)"><span class="g on">＋ Deposit</span><span class="g">Withdraw</span></div>
-    ${s>=1?`<div class="grp">Bonus wallets</div>
-    <div class="li"><span class="ic">🎰</span><span class="g">Casino bonus · ₫500,000<small>churn ×10 · ₫1,250,000 / ₫5,000,000 · 14 days left</small><div class="pbar"><i style="width:25%"></i></div></span><span class="rt">›</span></div>
+    ${s>=1?`<div class="grp">Active bonus</div>
+    <div class="li"><span class="ic">🎰</span><span class="g">Casino bonus · ₫500,000<small>turnover ×10 · ₫1,250,000 / ₫5,000,000 · 14 days left</small><div class="pbar"><i style="width:25%"></i></div></span><span class="rt">›</span></div>
     <div class="li"><span class="ic">⚽</span><span class="g">Sports free bet · ₫50,000<small>per-bet limit ₫10,000 · 3 days left</small></span><span class="rt">›</span></div>
-    <div class="hint">＊ Bonus moves to main balance when churn is met; lost bonus resets that wallet's churn.</div>`:''}
+    <div class="hint">＊ While a bonus is active the balance is locked as one pot — the bonus and your own money together. Meeting turnover releases everything; forfeiting the bonus releases your own money and removes the bonus plus anything won with it.</div>`:''}
     <div class="grp">Recent</div>
     <div class="li"><span class="ic">💰</span><span class="g">Deposit · ACB<small>Jul 16 14:20</small></span><span class="rt">+₫500,000 <span class="st ok">✓</span></span></div>
     <div class="li"><span class="ic">🎲</span><span class="g">Bet · MU vs LIV<small>Jul 15 19:30</small></span><span class="rt">−₫100,000</span></div>
     <div class="link"><b>View all in History ›</b></div>
     <div class="hint">＊ USDT is a deposit / withdrawal rail inside this VND wallet — no separate USDT balance.</div>`,
   spec:{
-    goal:"Wallet home: total vs withdrawable balance (VND or THB — currency locked), quick actions, bonus wallets with churn, recent activity, processing banner.",
-    states:["default","bonus wallets w/ churn progress","withdrawal processing banner","churn unmet notice"],
-    fields:["currency(vnd|thb)","balance","withdrawable","bonus_wallets[]{product,balance,churn_x,churn_done,per_bet_limit,expires_at}","pending_withdrawal?"],
-    api:"GET /wallet → { currency, balance, withdrawable, bonus_wallets, pending }",
-    notes:["USDT wrapped: shown only as a payment method in deposit / withdrawal, converted at live rate (decision Jul 15).","Withdrawable = balance − locked bonus − pending; the same number gates the withdrawal screen.","No 'History' button in the action row (08-30, removed): it duplicated the 'View all in History' link right below it, and it isn't a peer of Deposit / Withdraw — those two are money movements, History is reading records. The action row is now the two actions only.","'View all in History' deep-links to History filtered to category 1 (Deposits & withdrawals) — carrying the wallet context is more useful than landing on a generic History home. Note the Recent list here also shows bets, which live in History category 2."]
+    goal:"Wallet home: total vs withdrawable balance (VND or THB — currency locked), quick actions, active bonus with turnover progress, recent activity, processing banner.",
+    states:["default (no bonus → whole balance withdrawable)","bonus active → withdrawable ₫0, whole balance locked, turnover progress","withdrawal processing banner","forfeit path (see Withdrawal · churn unmet)"],
+    fields:["currency(vnd|thb)","balance","withdrawable","bonuses[]{product,balance,turnover_x,turnover_done,per_bet_limit,expires_at}","pending_withdrawal?"],
+    api:"GET /wallet → { currency, balance, withdrawable, bonuses, pending }",
+    notes:["Bonus locking model — LOCKED BALANCE (08-30 decision): accepting a bonus locks the member's ENTIRE balance, their own deposit included, until turnover is met. Withdrawable therefore drops to 0 while a bonus is active, not merely by the bonus amount. The alternative model (separate bonus wallet, deposit stays withdrawable) was considered and rejected. This page previously described that rejected model while the withdrawal blocker described this one — they now agree.","Because accepting a bonus freezes the member's own money, every place a bonus can be accepted must say so BEFORE acceptance: the deposit coupon picker and the promotion claim both carry the warning plus a confirm step. This is the single most dispute-prone rule in the wallet.","USDT wrapped: shown only as a payment method in deposit / withdrawal, converted at live rate (decision Jul 15).","Withdrawable = 0 while any bonus is active; otherwise balance − pending. The same number gates the withdrawal screen.","No 'History' button in the action row (08-30, removed): it duplicated the 'View all in History' link right below it, and it isn't a peer of Deposit / Withdraw — those two are money movements, History is reading records. The action row is now the two actions only.","'View all in History' deep-links to History filtered to category 1 (Deposits & withdrawals) — carrying the wallet context is more useful than landing on a generic History home. Note the Recent list here also shows bets, which live in History category 2."]
   }
 },
 {
   group:"B · Deposit", id:"dep-method", title:"Deposit · Method & Amount",
-  states:["Bank transfer","USDT","QR / e-wallet","Method under maintenance"],
+  states:["Bank transfer","USDT","QR / e-wallet","Method under maintenance","Coupon → lock confirm"],
   render:(s)=>`
     <div class="scr-title"><span class="x">✕</span>Banking</div>
     <div class="mtabs"><span class="on">Deposit</span><span>Withdrawal</span></div>
@@ -232,14 +233,25 @@ const screens = [
     <div class="grid3">${(s===1?['10','50','100','200','500','Custom']:['50,000','100,000','200,000','500,000','1,000,000','Custom']).map((a,i)=>`<span class="g ${i===2?'on':''}">${a}</span>`).join('')}</div>
     ${F(s===1?"Amount 10 – 5,000 USDT":"Amount 50,000 – 300,000,000", s===1?"≈ ₫2,400,000 · rate 24,000":"")}
     <div class="grp">Apply a coupon <span class="badge">optional</span></div>
-    <div class="li"><span class="ic">🎁</span><span class="g">100% First Deposit Bonus<small>+100% up to ₫2,000,000 · churn ×10</small></span><span class="rt"><span class="sq on"></span></span></div>
-    ${CTA("Next")}`,
+    <div class="li"><span class="ic">🎁</span><span class="g">100% First Deposit Bonus<small>+100% up to ₫2,000,000 · turnover ×10</small></span><span class="rt"><span class="sq ${s===4?'on':''}"></span></span></div>
+    <div class="hint">＊ Taking a bonus locks your <b>whole balance — this deposit included</b> — until turnover is met. Decline it and your deposit stays withdrawable at any time.</div>
+    ${s===4?`<div style="border:2px solid var(--solid);border-radius:12px;padding:12px 14px;margin:10px 0;background:#fff">
+      <b>Lock your balance for this bonus?</b>
+      <div class="kv"><span>You deposit</span><span>₫200,000</span></div>
+      <div class="kv"><span>Bonus</span><span>+₫200,000</span></div>
+      <div class="kv"><span>Locked until</span><span><b>₫4,000,000 turnover</b></span></div>
+      <div class="kv"><span>Bonus expires</span><span>14 days</span></div>
+      <div class="hint" style="margin:6px 0 0">Until then you can't withdraw — not the bonus, and not your ₫200,000. You can forfeit the bonus later to free your own money.</div>
+      ${CTA("Take the bonus")}
+      <div class="link"><b>Deposit without a bonus</b></div>
+    </div>`:''}
+    ${s===4?'':CTA("Next")}`,
   spec:{
     goal:"Step 1: pick method (Bank preferred · Direct bank · USDT · QR / e-wallet), amount with presets + limits, optional coupon (Shopee-style picker), live USDT rate.",
-    states:["bank","usdt (rate + ≈ VND)","qr / e-wallet","method under maintenance (dashed, non-tappable, end time stated)","coupon selected / none / not stackable","amount out of range error"],
+    states:["bank","usdt (rate + ≈ VND)","qr / e-wallet","method under maintenance (dashed, non-tappable, end time stated)","coupon ticked → lock confirm sheet before it applies","coupon none / not stackable","amount out of range error"],
     fields:["method(bank|direct_bank|usdt|qr|ewallet)","methods[].{min,max,status,maintenance_until?,offer?}","amount","currency","usdt_amount?","rate?","coupon_id?"],
     api:"GET /deposit/methods → [{ id, min, max, status(live|maintenance), maintenance_until?, offer? }]\nGET /rates/usdt · GET /promotions/claimable?context=deposit\nPOST /deposit/quote { method, amount, coupon_id? } ← { pay_instructions | gateway_session, expires_at }",
-    notes:["Layout mirrors the Jul 16 mockup (Banking · Deposit | Withdrawal tabs · Payment Options grid with 'Preferred' tag).","Per-tile metadata from the design mockups (08-30): minimum amount, promo offer badge, and maintenance with an explicit end time. A method that's down stays visible and dashed rather than disappearing — members otherwise assume the app is broken or that we removed their bank.","Method availability is market-aware (MoMo/ZaloPay VN · PromptPay TH).","Coupon summary (deposit + bonus = total credited) shown on the confirm step (docx103/104).","Two very different paths follow this screen: manual bank transfer / USDT go to Pay & Proof (member pays in their own app, we reconcile by reference); direct bank / e-wallet go through a third-party gateway — see Deposit · Gateway."]
+    notes:["Layout mirrors the Jul 16 mockup (Banking · Deposit | Withdrawal tabs · Payment Options grid with 'Preferred' tag).","Per-tile metadata from the design mockups (08-30): minimum amount, promo offer badge, and maintenance with an explicit end time. A method that's down stays visible and dashed rather than disappearing — members otherwise assume the app is broken or that we removed their bank.","Method availability is market-aware (MoMo/ZaloPay VN · PromptPay TH).","Coupon summary (deposit + bonus = total credited) shown on the confirm step (docx103/104).","Ticking the coupon opens a confirm sheet, it does not just apply (08-30): under the locked-balance model accepting a bonus freezes the member's own deposit too, so it needs stated consequences — deposit, bonus, turnover target, expiry — and an explicit 'Deposit without a bonus' way out. A silent checkbox here is how members end up unable to withdraw money they thought was theirs.","Two very different paths follow this screen: manual bank transfer / USDT go to Pay & Proof (member pays in their own app, we reconcile by reference); direct bank / e-wallet go through a third-party gateway — see Deposit · Gateway."]
   }
 },
 {
