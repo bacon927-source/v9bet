@@ -191,7 +191,7 @@ const screens = [
     <div class="scr-title"><span class="x">←</span>My Wallet <span class="badge">VND</span></div>
     <div class="amt">₫ 1,250,000<small>Total balance · <b>Withdrawable ₫800,000</b></small></div>
     ${s===2?`<div class="err" style="border-color:#c93;background:#fdf6ea;color:#a70">Withdrawal ₫800,000 processing · Review → Payout · ETA 30 min</div>`:''}
-    <div class="grid3"><span class="g on">＋ Deposit</span><span class="g">Withdraw</span><span class="g">History</span></div>
+    <div class="grid3" style="grid-template-columns:repeat(2,1fr)"><span class="g on">＋ Deposit</span><span class="g">Withdraw</span></div>
     ${s>=1?`<div class="grp">Bonus wallets</div>
     <div class="li"><span class="ic">🎰</span><span class="g">Casino bonus · ₫500,000<small>churn ×10 · ₫1,250,000 / ₫5,000,000 · 14 days left</small><div class="pbar"><i style="width:25%"></i></div></span><span class="rt">›</span></div>
     <div class="li"><span class="ic">⚽</span><span class="g">Sports free bet · ₫50,000<small>per-bet limit ₫10,000 · 3 days left</small></span><span class="rt">›</span></div>
@@ -199,14 +199,14 @@ const screens = [
     <div class="grp">Recent</div>
     <div class="li"><span class="ic">💰</span><span class="g">Deposit · ACB<small>Jul 16 14:20</small></span><span class="rt">+₫500,000 <span class="st ok">✓</span></span></div>
     <div class="li"><span class="ic">🎲</span><span class="g">Bet · MU vs LIV<small>Jul 15 19:30</small></span><span class="rt">−₫100,000</span></div>
-    <div class="link"><b>View all in History</b></div>
+    <div class="link"><b>View all in History ›</b></div>
     <div class="hint">＊ USDT is a deposit / withdrawal rail inside this VND wallet — no separate USDT balance.</div>`,
   spec:{
     goal:"Wallet home: total vs withdrawable balance (VND or THB — currency locked), quick actions, bonus wallets with churn, recent activity, processing banner.",
     states:["default","bonus wallets w/ churn progress","withdrawal processing banner","churn unmet notice"],
     fields:["currency(vnd|thb)","balance","withdrawable","bonus_wallets[]{product,balance,churn_x,churn_done,per_bet_limit,expires_at}","pending_withdrawal?"],
     api:"GET /wallet → { currency, balance, withdrawable, bonus_wallets, pending }",
-    notes:["USDT wrapped: shown only as a payment method in deposit / withdrawal, converted at live rate (decision Jul 15).","Withdrawable = balance − locked bonus − pending; the same number gates the withdrawal screen.","'History' = History Flow category 2 (Money)."]
+    notes:["USDT wrapped: shown only as a payment method in deposit / withdrawal, converted at live rate (decision Jul 15).","Withdrawable = balance − locked bonus − pending; the same number gates the withdrawal screen.","No 'History' button in the action row (08-30, removed): it duplicated the 'View all in History' link right below it, and it isn't a peer of Deposit / Withdraw — those two are money movements, History is reading records. The action row is now the two actions only.","'View all in History' deep-links to History filtered to category 1 (Deposits & withdrawals) — carrying the wallet context is more useful than landing on a generic History home. Note the Recent list here also shows bets, which live in History category 2."]
   }
 },
 {
