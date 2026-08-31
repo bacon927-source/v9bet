@@ -307,15 +307,8 @@ const screens = [
 },
 {
   group:"B · Deposit", id:"dep-pay", title:"Deposit · Pay & Proof",
-  states:["Bank instructions","USDT address","QR code","Upload proof"],
-  render:(s)=>s===3?`
-    <div class="scr-title"><span class="x">←</span>Upload Proof</div>
-    <div class="scr-step">Transferred? Upload the receipt so we can match it faster</div>
-    <div class="ph" style="height:150px">📎 Tap to upload receipt<br><small>screenshot / photo · JPG PNG PDF</small></div>
-    ${F("Reference / note (optional)","")}
-    ${CTA("Submit proof")}
-    <div class="link"><b>I'll do it later</b></div>`
-  :`
+  states:["Bank instructions","USDT address","QR code"],
+  render:(s)=>`
     <div class="scr-title"><span class="x">←</span>${s===0?'Bank Transfer':s===1?'USDT Deposit':'Scan to Pay'}</div>
     <div class="scr-step">Complete payment within <b>14:59</b></div>
     ${s===0?`<div class="kv"><span>Bank</span><span>Vietcombank</span></div><div class="kv"><span>Account no.</span><span>0123 4567 8901 <b>⧉</b></span></div><div class="kv"><span>Account name</span><span>CONG TY V9 <b>⧉</b></span></div><div class="kv"><span>Amount</span><span><b>₫200,000</b> <b>⧉</b></span></div><div class="kv"><span>Transfer note</span><span><b>V9 8F3K22</b> <b>⧉</b></span></div><div class="hint">＊ Use the exact note — it's how we match your payment.</div>`
@@ -325,11 +318,11 @@ const screens = [
     <div class="link"><b>I'll do this later</b></div>
     <div class="hint">＊ This just closes the screen — if you still send the payment using the details above, it will be matched and credited automatically even after you leave.</div>`,
   spec:{
-    goal:"Step 2: payment instructions per method (bank details + unique note · USDT address + locked rate · QR), countdown, copy buttons, optional proof upload.",
-    states:["bank instructions (copy)","usdt address (network warning, rate lock)","qr","proof upload (optional)","quote expired → re-quote"],
-    fields:["quote_id","instructions{…}","expires_at","proof_image?"],
-    api:"POST /deposit/{quote_id}/paid · POST /deposit/{quote_id}/proof",
-    notes:["Unique transfer note per deposit is the matching key for bank transfers.","USDT rate lock 15 min; network mismatch warning is mandatory copy.","Proof upload is optional for auto-matched channels, required if unmatched after N minutes.","No 'Cancel deposit' action (08-30): a bank transfer, USDT send, or e-wallet payment can't actually be cancelled from our side once the customer has the details — they could still complete it via their own bank/wallet app regardless of what happens in V9's UI. 'I'll do this later' only closes this screen (matches the identical copy already used on the proof-upload state); it does not invalidate the transfer note / address, so a late-arriving payment still gets matched and credited — falling to the unmatched/manual-reconciliation path if the quote has since expired."]
+    goal:"Step 2: payment instructions per method (bank details + unique note · USDT address + locked rate · QR), countdown, copy buttons.",
+    states:["bank instructions (copy)","usdt address (network warning, rate lock)","qr","quote expired → re-quote"],
+    fields:["quote_id","instructions{…}","expires_at"],
+    api:"POST /deposit/{quote_id}/paid",
+    notes:["Unique transfer note per deposit is the matching key for bank transfers.","USDT rate lock 15 min; network mismatch warning is mandatory copy.","Receipt upload is NOT here (08-30): it used to exist both as a step in this flow and on the status screen — two UIs for one action on one deposit. It now lives only on Deposit · Status, which is where the member ends up anyway and where the mockups put it: quietly optional while pending, prominent once we fail to match.","No 'Cancel deposit' action (08-30): a bank transfer, USDT send, or e-wallet payment can't actually be cancelled from our side once the customer has the details — they could still complete it via their own bank/wallet app regardless of what happens in V9's UI. 'I'll do this later' only closes this screen (matches the identical copy already used on the proof-upload state); it does not invalidate the transfer note / address, so a late-arriving payment still gets matched and credited — falling to the unmatched/manual-reconciliation path if the quote has since expired."]
   }
 },
 {
@@ -362,15 +355,16 @@ const screens = [
     <div class="kv"><span>Amount</span><span>₫200,000</span></div>
     <div class="kv"><span>Usually within</span><span>5 minutes</span></div>
     <div class="kv"><span>Reference</span><span>DNYYIB2108241690924 <b>⧉</b></span></div>
+    <div class="link" style="text-align:left;margin:8px 2px 0"><b>📎 Add a receipt</b> <small style="color:#b0b0b0">optional · speeds up matching</small></div>
     <div class="hint">＊ You can leave — we'll notify you when it's credited.</div>
     ${CTA("Track in History")}
-    ${CTA("Back to wallet",'ghost')}`,
+    ${CTA("Back to Banking",'ghost')}`,
   spec:{
     goal:"Step 3: pending (Paid → Matching → Credited), credited summary incl. coupon bonus, failed / unmatched with optional receipt + Live Chat. Every state hands off to History, which is where the deposit is actually followed once the member leaves this screen.",
     states:["pending → Track in History (primary)","credited (+ coupon summary) → View in History / Make another deposit","failed / unmatched → receipt upload + Live Chat + History","push + inbox on credit"],
     fields:["txn_id","provider_ref","status","credited_amount","bonus_amount?","total_credited","receipt_images[]?"],
     api:"GET /deposit/{id}/status (poll / websocket) · POST /deposit/{id}/receipt",
-    notes:["History link on EVERY state (08-30 request): a deposit is asynchronous, so this screen is a moment, not a place — the member closes it and the record keeps living in History › Deposits & withdrawals. Pending makes 'Track in History' the primary action for exactly that reason; the reference number is copyable in all three states.","Three ways to follow the same deposit, deliberately not merged: this screen while it's open, the Live Status Bubble while the member is elsewhere in the app, and History as the permanent record. All three read the same status field.","Receipt upload moved onto the unmatched state (design mockups): 3 slots, optional, framed as 'gets it processed faster' rather than a demand — most deposits auto-match and never need it.","Credited amount + bonus = the same numbers as Wallet and History 1 / 3.","Unmatched after SLA → auto-notify + Live Chat context handoff.","Reference number is the provider's, shown identically here, in History, and in Live Chat — one string the member can quote anywhere."]
+    notes:["History link on EVERY state (08-30 request): a deposit is asynchronous, so this screen is a moment, not a place — the member closes it and the record keeps living in History › Deposits & withdrawals. Pending makes 'Track in History' the primary action for exactly that reason; the reference number is copyable in all three states.","Three ways to follow the same deposit, deliberately not merged: this screen while it's open, the Live Status Bubble while the member is elsewhere in the app, and History as the permanent record. All three read the same status field.","Receipt upload lives ONLY on this screen (08-30): it briefly existed both here and as a step inside Pay & Proof — two UIs for the same action on the same deposit. One component, two weights: a quiet '📎 Add a receipt · optional' line while pending, and the full 3-slot uploader once we've failed to match. Most deposits auto-match and never need it, so it must never read as a required step.","Credited amount + bonus = the same numbers as Wallet and History 1 / 3.","Unmatched after SLA → auto-notify + Live Chat context handoff.","Reference number is the provider's, shown identically here, in History, and in Live Chat — one string the member can quote anywhere."]
   }
 },
 {
