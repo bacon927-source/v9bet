@@ -127,6 +127,10 @@
   .pm .p{border:1px solid var(--line2);border-radius:10px;padding:12px 10px;text-align:center;font-size:12px;background:#fff;position:relative}
   .pm .p.on{border:2px solid var(--solid)}
   .pm .p .pref{position:absolute;top:-8px;left:8px;font-size:8px;border:1px solid var(--solid);border-radius:4px;padding:0 4px;background:#fff}
+  .pm .p .mn{display:block;color:#b0b0b0;font-size:9.5px;margin-top:3px}
+  .pm .p.off{background:var(--fill);color:#b8b8b8;border-style:dashed}
+  .pm .p.off .mn{color:#c93}
+  .pm .p .offer{position:absolute;top:-8px;right:8px;font-size:8px;border:1px solid #c93;color:#c93;border-radius:4px;padding:0 4px;background:#fff}
   .pbar{height:7px;background:#e5e5e5;border-radius:4px;overflow:hidden;margin:6px 0}
   .pbar i{display:block;height:100%;background:var(--solid)}
   .promocard{border:1px solid var(--line2);border-radius:12px;overflow:hidden;margin:8px 0;background:#fff}
@@ -211,12 +215,19 @@ const screens = [
 },
 {
   group:"B · Deposit", id:"dep-method", title:"Deposit · Method & Amount",
-  states:["Bank transfer","USDT","QR / e-wallet"],
+  states:["Bank transfer","USDT","QR / e-wallet","Method under maintenance"],
   render:(s)=>`
     <div class="scr-title"><span class="x">✕</span>Banking</div>
     <div class="mtabs"><span class="on">Deposit</span><span>Withdrawal</span></div>
+    ${s===3?`<div class="err" style="border-color:#c93;background:#fdf6ea;color:#a70">Scheduled maintenance — Direct Bank Transfer is unavailable until Apr 7, 12:00 PM. Other methods work as usual.</div>`:''}
     <div class="grp">Payment options <span class="badge">?</span></div>
-    <div class="pm"><span class="p ${s===0?'on':''}"><span class="pref">Preferred</span>🏦 BANK TRANSFER</span><span class="p ${s===1?'on':''}">₮ USDT<br><small>TRC20 · ERC20</small></span><span class="p ${s===2?'on':''}">▦ QR / e-wallet<br><small>MoMo · ZaloPay · PromptPay</small></span><span class="p">💳 Card<br><small>coming soon</small></span></div>
+    <div class="pm">
+      <span class="p ${s===0?'on':''}"><span class="pref">Preferred</span>🏦 BANK TRANSFER<span class="mn">Min ₫50,000</span></span>
+      <span class="p ${s===3?'off':''}">🏧 DIRECT BANK<span class="mn">${s===3?'Maintenance · ends Apr 7, 12:00 PM':'Min ₫100,000'}</span></span>
+      <span class="p ${s===1?'on':''}">₮ USDT<br><small>TRC20 · ERC20</small><span class="mn">Min 10 USDT</span></span>
+      <span class="p ${s===2?'on':''}"><span class="offer">🎁 Offer</span>▦ QR / e-wallet<br><small>MoMo · ZaloPay · PromptPay</small><span class="mn">Min ₫100,000</span></span>
+    </div>
+    <div class="hint">＊ Each tile carries its own minimum and status. Tapping the <b>?</b> opens "how this method works"; a method under maintenance is dashed + non-tappable with the end time stated, never silently missing.</div>
     <div class="grp">${s===1?'Amount (USDT)':'Deposit amount (VND)'}</div>
     <div class="grid3">${(s===1?['10','50','100','200','500','Custom']:['50,000','100,000','200,000','500,000','1,000,000','Custom']).map((a,i)=>`<span class="g ${i===2?'on':''}">${a}</span>`).join('')}</div>
     ${F(s===1?"Amount 10 – 5,000 USDT":"Amount 50,000 – 300,000,000", s===1?"≈ ₫2,400,000 · rate 24,000":"")}
@@ -224,11 +235,57 @@ const screens = [
     <div class="li"><span class="ic">🎁</span><span class="g">100% First Deposit Bonus<small>+100% up to ₫2,000,000 · churn ×10</small></span><span class="rt"><span class="sq on"></span></span></div>
     ${CTA("Next")}`,
   spec:{
-    goal:"Step 1: pick method (Bank preferred · USDT · QR / e-wallet), amount with presets + limits, optional coupon (Shopee-style picker), live USDT rate.",
-    states:["bank","usdt (rate + ≈ VND)","qr / e-wallet","coupon selected / none / not stackable","amount out of range error"],
-    fields:["method(bank|usdt|qr|ewallet)","amount","currency","usdt_amount?","rate?","coupon_id?"],
-    api:"GET /deposit/methods · GET /rates/usdt · GET /promotions/claimable?context=deposit\nPOST /deposit/quote { method, amount, coupon_id? } ← { pay_instructions, expires_at }",
-    notes:["Layout mirrors the Jul 16 mockup (Banking · Deposit | Withdrawal tabs · Payment Options grid with 'Preferred' tag).","Method availability is market-aware (MoMo/ZaloPay VN · PromptPay TH).","Coupon summary (deposit + bonus = total credited) shown on the confirm step (docx103/104)."]
+    goal:"Step 1: pick method (Bank preferred · Direct bank · USDT · QR / e-wallet), amount with presets + limits, optional coupon (Shopee-style picker), live USDT rate.",
+    states:["bank","usdt (rate + ≈ VND)","qr / e-wallet","method under maintenance (dashed, non-tappable, end time stated)","coupon selected / none / not stackable","amount out of range error"],
+    fields:["method(bank|direct_bank|usdt|qr|ewallet)","methods[].{min,max,status,maintenance_until?,offer?}","amount","currency","usdt_amount?","rate?","coupon_id?"],
+    api:"GET /deposit/methods → [{ id, min, max, status(live|maintenance), maintenance_until?, offer? }]\nGET /rates/usdt · GET /promotions/claimable?context=deposit\nPOST /deposit/quote { method, amount, coupon_id? } ← { pay_instructions | gateway_session, expires_at }",
+    notes:["Layout mirrors the Jul 16 mockup (Banking · Deposit | Withdrawal tabs · Payment Options grid with 'Preferred' tag).","Per-tile metadata from the design mockups (08-30): minimum amount, promo offer badge, and maintenance with an explicit end time. A method that's down stays visible and dashed rather than disappearing — members otherwise assume the app is broken or that we removed their bank.","Method availability is market-aware (MoMo/ZaloPay VN · PromptPay TH).","Coupon summary (deposit + bonus = total credited) shown on the confirm step (docx103/104).","Two very different paths follow this screen: manual bank transfer / USDT go to Pay & Proof (member pays in their own app, we reconcile by reference); direct bank / e-wallet go through a third-party gateway — see Deposit · Gateway."]
+  }
+},
+{
+  group:"B · Deposit", id:"dep-gateway", title:"Deposit · Gateway (3rd-party)",
+  states:["Leaving to bank (redirect)","Embedded (iframe)","Back — confirming","Session failed → retry","Sent to bank — can't retry"],
+  render:(s)=>s===0?`
+    <div class="scr-title">Taking you to your bank</div>
+    <div class="ph" style="height:120px">🏦<br><small>[ redirecting to ACB ]</small></div>
+    <div class="kv"><span>Amount</span><span><b>₫200,000</b></span></div>
+    <div class="kv"><span>Reference</span><span>DNYYIB2108241690924</span></div>
+    <div class="hint">＊ Finish the payment in your bank's page, then come back — we'll bring you straight to the status screen. Closing the bank page early does not cancel anything.</div>
+    ${CTA("Continue to ACB")}
+    <div class="link"><b>Choose another method</b></div>`
+  :s===1?`
+    <div class="scr-title"><span class="x">✕</span>ACB<span class="badge">secure</span></div>
+    <div class="ph" style="height:230px">[ Bank's own page, embedded ]<br><small>we cannot read anything inside this frame</small></div>
+    <div class="hint">＊ Embedded so the member keeps our chrome and never loses the reference number. We still learn the outcome only from the bank's server callback — never from the frame.</div>
+    <div class="hint">＊ If the bank refuses to be framed (X-Frame-Options / CSP), fall back to the redirect state automatically — do not show an empty box.</div>`
+  :s===2?`
+    <div class="scr-title">Confirming with your bank</div>
+    <div class="ph" style="height:110px">⏳<br><small>usually a few seconds</small></div>
+    <div class="kv"><span>Amount</span><span>₫200,000</span></div>
+    <div class="kv"><span>Reference</span><span>DNYYIB2108241690924 <b>⧉</b></span></div>
+    <div class="hint">＊ Reached when the member returns from the bank. We are waiting for the callback, not for the member — this resolves on its own into Credited or stays Pending.</div>
+    ${CTA("Track in History",'ghost')}
+    <div class="hint">＊ Leaving is safe: the Live Status Bubble keeps following it, and the record is already in History.</div>`
+  :s===3?`
+    <div class="scr-title"><span class="x">←</span>Deposit</div>
+    <div class="err">Couldn't reach the payment provider. No money has left your account.</div>
+    <div class="hint" style="text-align:center">Retrying in <b>5s</b>…</div>
+    ${CTA("Try again")}
+    <div class="link"><b>Choose another method</b></div>
+    <div class="hint">＊ Safe to retry ONLY here: this failed before the member ever reached the bank, so no payment can be in flight. Retry re-creates the gateway session with a NEW reference.</div>`
+  :`
+    <div class="scr-title"><span class="x">←</span>Deposit</div>
+    <div class="err" style="border-color:#c93;background:#fdf6ea;color:#a70">We lost contact after you were sent to your bank. If you completed the payment it will still arrive.</div>
+    <div class="kv"><span>Reference</span><span>DNYYIB2108241690924 <b>⧉</b></span></div>
+    ${CTA("Check status")}
+    <div class="link"><b>Contact Live Chat</b></div>
+    <div class="hint">＊ Deliberately NO "Try again" once the member has been handed to the bank — the payment may have succeeded, and a retry risks paying twice. Only "check status" is safe.</div>`,
+  spec:{
+    goal:"Third-party payment handoff for direct-bank / e-wallet methods: hand off (redirect or embedded), come back, and wait for the provider's callback. Manual bank transfer and USDT skip this entirely.",
+    states:["leaving to bank (full redirect, return_url set)","embedded iframe (bank page inside our chrome)","returned → confirming, awaiting callback","gateway session failed before handoff → safe to retry","handed off then contact lost → check status only, never retry"],
+    fields:["method","amount","gateway_session_id","provider_ref","return_url","render_mode(redirect|iframe)","status"],
+    api:"POST /deposit/gateway/session { method, amount } ← { session_id, provider_ref, redirect_url | frame_url, render_mode }\nGET /deposit/{id}/status (poll / push)\nProvider → POST /webhooks/deposit (server-to-server; the ONLY source of truth for success)",
+    notes:["Two render modes, both needed (08-30): redirect leaves our app entirely, iframe keeps our chrome. Prefer iframe for continuity, but many bank pages send X-Frame-Options / frame-ancestors and simply refuse — detect and fall back to redirect rather than rendering an empty box.","We can never read the outcome from the front end: an iframe is cross-origin and a redirect return can be faked or interrupted. Success comes from the server-to-server webhook only. The UI's job is to say 'we're waiting', not to guess.","Retry safety is state-dependent, and this is the whole reason the last two states are separate: a failure BEFORE handoff means no money moved, so retry (with a new reference) is safe. Once the member has been sent to the bank, a retry can produce a double payment — so that state offers 'Check status' and Live Chat only. Never show one generic 'Try again' for both.","Not returning from the bank is NOT a failure: the member may just close the tab. The deposit stays pending and completes on the callback, so no state here may say 'cancelled' on the member's absence alone.","Every state carries the provider reference, copyable — it is what Live Chat and the bank both need.","Returning from the bank lands on 'confirming', which links into History; the Live Status Bubble tracks it from there so the member can leave."]
   }
 },
 {
@@ -267,30 +324,36 @@ const screens = [
     <div class="scr-step"><b>+₫200,000</b> credited to your wallet</div>
     <div class="kv"><span>Coupon</span><span>100% First Deposit Bonus · <b>+₫200,000 bonus</b></span></div>
     <div class="kv"><span>Total credited</span><span><b>₫400,000</b></span></div>
-    <div class="kv"><span>Transaction ID</span><span>8F3K-22A9 <b>⧉</b></span></div>
+    <div class="kv"><span>Reference</span><span>DNYYIB2108241690924 <b>⧉</b></span></div>
     ${CTA("Start playing")}
-    <div class="link"><b>View in History</b></div>`
+    <div class="link"><b>View this deposit in History ›</b></div>
+    <div class="link" style="margin-top:6px"><b>Make another deposit</b></div>`
   :s===2?`
     <div class="scr-title"><span class="x">←</span>Deposit</div>
-    <div class="err">We couldn't match your transfer yet (30 min). Upload proof or contact us.</div>
-    ${CTA("Upload proof")}
+    <div class="err">We couldn't match your transfer yet (30 min). Upload a receipt or contact us.</div>
+    <div class="kv"><span>Reference</span><span>DNYYIB2108241690924 <b>⧉</b></span></div>
+    <div class="grid3" style="margin:10px 0">${['＋','＋','＋'].map(x=>`<span class="g" style="height:56px;display:grid;place-items:center">${x}</span>`).join('')}</div>
+    <div class="hint" style="margin-top:0">Optional — a receipt gets your deposit processed faster. JPG · PNG · GIF · PDF</div>
+    ${CTA("Upload")}
     ${CTA("Contact Live Chat",'ghost')}
+    <div class="link"><b>View this deposit in History ›</b></div>
     <div class="hint">＊ Live Chat opens with this deposit's context pre-loaded.</div>`
   :`
     <div class="scr-title"><span class="x">←</span>Deposit</div>
     <div class="scr-step">We're matching your payment</div>
     <div class="prog3"><span class="p done">Paid</span><span class="p on">Matching</span><span class="p">Credited</span></div>
     <div class="kv"><span>Amount</span><span>₫200,000</span></div>
-    <div class="kv"><span>Usually within</span><span>3 minutes</span></div>
-    <div class="kv"><span>Transaction ID</span><span>8F3K-22A9</span></div>
+    <div class="kv"><span>Usually within</span><span>5 minutes</span></div>
+    <div class="kv"><span>Reference</span><span>DNYYIB2108241690924 <b>⧉</b></span></div>
     <div class="hint">＊ You can leave — we'll notify you when it's credited.</div>
+    ${CTA("Track in History")}
     ${CTA("Back to wallet",'ghost')}`,
   spec:{
-    goal:"Step 3: pending (Paid → Matching → Credited), credited summary incl. coupon bonus, failed / unmatched with proof + Live Chat.",
-    states:["pending","credited (+ coupon summary)","failed / unmatched → proof / Live Chat","push + inbox on credit"],
-    fields:["txn_id","status","credited_amount","bonus_amount?","total_credited"],
-    api:"GET /deposit/{id}/status (poll / websocket)",
-    notes:["Credited amount + bonus = the same numbers as Wallet and History 2 / 4.","Unmatched after SLA → auto-notify + Live Chat context handoff."]
+    goal:"Step 3: pending (Paid → Matching → Credited), credited summary incl. coupon bonus, failed / unmatched with optional receipt + Live Chat. Every state hands off to History, which is where the deposit is actually followed once the member leaves this screen.",
+    states:["pending → Track in History (primary)","credited (+ coupon summary) → View in History / Make another deposit","failed / unmatched → receipt upload + Live Chat + History","push + inbox on credit"],
+    fields:["txn_id","provider_ref","status","credited_amount","bonus_amount?","total_credited","receipt_images[]?"],
+    api:"GET /deposit/{id}/status (poll / websocket) · POST /deposit/{id}/receipt",
+    notes:["History link on EVERY state (08-30 request): a deposit is asynchronous, so this screen is a moment, not a place — the member closes it and the record keeps living in History › Deposits & withdrawals. Pending makes 'Track in History' the primary action for exactly that reason; the reference number is copyable in all three states.","Three ways to follow the same deposit, deliberately not merged: this screen while it's open, the Live Status Bubble while the member is elsewhere in the app, and History as the permanent record. All three read the same status field.","Receipt upload moved onto the unmatched state (design mockups): 3 slots, optional, framed as 'gets it processed faster' rather than a demand — most deposits auto-match and never need it.","Credited amount + bonus = the same numbers as Wallet and History 1 / 3.","Unmatched after SLA → auto-notify + Live Chat context handoff.","Reference number is the provider's, shown identically here, in History, and in Live Chat — one string the member can quote anywhere."]
   }
 },
 {
