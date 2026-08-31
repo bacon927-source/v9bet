@@ -256,6 +256,15 @@
     <p><b>後續追問「3 筆歷史記錄要放哪」（08-30）</b>：使用者確認乾脆<b>整組併進 Settings，History 拿掉「Login &amp; Devices」這個獨立分類</b>——登入/裝置記錄從此只存在於 Profile &amp; Settings › Security &amp; Sessions 一個地方，不再跟 History 重複。History 的 8 大分類變成 <b>7 類</b>，原本 2–8 類（Deposits/Withdrawals…Responsible Gaming）序號各 <b>-1</b>（現為 1–7）；所有引用舊分類編號的地方（promotion-flow、growth-support、verification-flow、profile-settings 的 spec notes，以及本記錄前面第 5 條）都已同步改號。</p>
   </div>
   <div class="card">
+    <h3><span class="n">X</span>signup-flow-wireframe.html 裡的孤兒畫面——刪掉（08-30）</h3>
+    <p>07-16 把 Login 和 Verification 拆成獨立檔案時，signup-flow-wireframe.html 裡原本的「D · Login」「E · Verification」三個畫面（Login、Security Verification、Add/Change Phone·Email）忘了刪掉，變成同一份東西有 3 份拷貝（正本在 login-flow-wireframe.html／verification-flow-wireframe.html，這裡是沒人記得的孤兒副本）。這也是「Change Email 打錯字還要先驗證舊聯絡方式」那個 bug 沒同步修到的原因之一。</p>
+    <ul>
+      <li>已刪除這 3 個畫面，signup-flow-wireframe.html 從 18 頁變 <b>15 頁</b>，只留 Sign-up + Setup 本身該管的內容。</li>
+      <li>頁面標題／H1 從「Sign Up / Login」改回「Sign Up」，反映實際範圍。</li>
+      <li>順便發現並修掉另一個獨立 bug：登入用 one-time code 時，login-flow-wireframe.html 的「One-time Code Login」畫面原本一開始會問「Select Verification Mode」（選 email 還是 SMS，還顯示遮罩過的聯絡方式）——但這是從 Unified OTP 那套「系統已認得你」的邏輯複製過來的，登入當下根本還沒識別身分，Login 主畫面已經自己打了 email/phone，打什麼就送到哪，不需要再選一次。已拿掉這個多餘步驟，直接進輸入驗證碼畫面。</li>
+    </ul>
+  </div>
+  <div class="card">
     <h3><span class="n">→</span>後續順序</h3>
     <p>產品頁、產品細項頁、Bet slip —— <b>最後處理</b>（使用者指示 07-16）。<b>首頁（Home Flow）08-30 已開工</b>：新增 <code>home-flow-wireframe.html</code>（登入前／登入後／新客空狀態／桌面版 top menu／模組對照表），接進 index.html ⑨ 區，跟既有的 <code>v9bet-home-composition.html</code>（10 模組）對齊、不重複。C 批（賽果/開獎、公告、語言切換頁、session 覆蓋層細節）視需要再做。</p>
   </div>

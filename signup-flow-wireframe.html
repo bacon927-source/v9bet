@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>V9Bet · Sign Up / Login — Wireframe</title>
+<title>V9Bet · Sign Up — Wireframe</title>
 <style>
   :root{
     --ink:#2b2b2b; --line:#c9c9c9; --line2:#9a9a9a; --muted:#8a8a8a;
@@ -119,7 +119,7 @@
 <div class="app">
   <!-- LEFT: flow nav -->
   <aside>
-    <h1>Sign Up / Login</h1>
+    <h1>Sign Up</h1>
     <p class="sub">Low-fidelity wireframe · Mobile / App first<br>Source: New customers sign up flow (Jun 10)<br>+ 3rd-party login & verify methods (auth-flow-analysis, Jul 8)</p>
     <div id="nav"></div>
     <div class="legend">
@@ -553,96 +553,6 @@ const screens = [
     fields:["customer_id","eligible_promotions[]"],
     api:"GET /promotions/eligible?segment=new_customer\n← { promotions:[{id,title,terms,churn,cta}] }",
     notes:["No Claim button here (Jul 16): the offer is informational — it is pre-selected as a coupon in the deposit flow (Go to deposit).","docx: 'Welcome customer and inform of the immediate promotions applicable to him as new sign up'.","Offers determined by promo module + audience segmentation, CMS / API driven.","BE: a random unique id is already assigned as the default username (editable in profile)."]
-  }
-},
-{
-  group:"D · Login", id:"login", title:"Login",
-  states:["Password","One-time code","Biometric / Passkey"],
-  render:(s)=>`
-    <div class="scr-title"><span class="x">✕</span>Login<span class="x" style="left:auto;right:0;font-size:13px;text-decoration:underline;color:#444">Sign Up</span></div>
-    <div class="ph" style="height:64px">[ V9 Logo ]</div>
-    <div class="socrow" style="margin-top:16px">
-      <div class="sic"><span class="lu">Last used</span><span class="c">G</span><small>Google</small></div>
-      <div class="sic"><span class="c" style="font-size:10px">LINE</span><small>LINE</small></div>
-      <div class="sic"><span class="c">X</span><small>X</small></div>
-    </div>
-    <div class="or">or login with</div>
-    <div class="mtabs"><span class="${s===1?'on':''}">One-time code</span><span class="${s===1?'':'on'}">Password</span></div>
-    ${s===1?F("Email / Phone number","Required"):F("Account ID / Email / Phone")}
-    ${s===0?F("Password","👁")
-      :s===1?`<div class="hint">＊ Enter the email or phone on your account — we'll send a 6-digit code (Email / SMS). Account ID can't receive a code.</div>`
-      :`<div class="ph" style="height:100px">👤 Face ID / Passkey (WebAuthn)</div>`}
-    <div class="opt"><span class="sq on"></span><span style="flex:1">Keep me logged in</span></div>
-    ${CTA(s===1?"Send code":"Login")}
-    <div class="link"><b>Forgot password?</b></div>`,
-  spec:{
-    goal:"Login: social icon row (Google / LINE / X) on top with the last-used badge; below it two tabs — one-time code (via chosen channel) / password — plus biometric-passkey.",
-    states:["password tab","one-time code tab (identifier = email / phone only; no password)","biometric / passkey (WebAuthn)","social icon tap → Google / LINE / X branch","lockout (too many failures)","risk trigger → step-up verification screen"],
-    fields:["identifier(account_id|email|phone, single field)","method(password|one_time_code|passkey|google|line|x)","secret? / otp_code? / webauthn_assertion?","remember(bool)"],
-    api:"POST /auth/login { identifier, method, ... }\n← { session, requires_stepup? }\nerr: LOCKED / RISK_STEPUP / INVALID_CREDENTIALS",
-    notes:["Passkey (WebAuthn) targets high InAppWebView traffic — biggest returning-user win (P0 per auth analysis).","How to log in with a password (Jul 16 Q&A, revised): a password only exists once the member sets it in Setup Step 2 or later in Profile & Settings. The Login screen deliberately does NOT reveal whether an account has a password before authentication — that would leak account existence / auth method, the same account-enumeration risk already excluded from Forgot Password's silent-mismatch handling. If Password is attempted with none set, treat it as a normal INVALID_CREDENTIALS failure (no special messaging); One-time code / passkey / social sign-in remain available regardless, and the member sets a password on their own via Settings whenever they choose.","One-time code tab swaps the identifier field to Email / Phone only — an Account ID has no inbox, so it cannot receive a code (Jul 16).","'Keep me logged in' made explicit (P1); high-frequency bettors feel session expiry the most.","Social row promoted to the top of the screen; 'Last used' badge above the provider icon reduces trial-and-error (P2).","'Forgot account' removed — link is password recovery only.","Sign Up entry moved to the top-RIGHT of the title bar (Jul 16); bottom 'No account?' link removed. Mirrors the Sign Up page (Login top-left).","Analytics: login event carries method param, mirrors sign_up."]
-  }
-},
-{
-  group:"E · Verification", id:"verify2", title:"Security Verification",
-  states:["Both verified → choose","Only one → auto","Code entry (shared OTP)"],
-  render:(s)=>s===2?`
-    <div class="scr-title"><span class="x">✕</span>Enter Code</div>
-    <div class="scr-step">We sent code verification to<br><b>091***233</b></div>
-    <div class="otpcells"><span class="f">_</span><span>_</span><span>_</span><span>_</span><span>_</span><span>_</span></div>
-    <div class="link">Resent code in <b>00:32</b></div>
-    ${CTA("Verify",'disabled')}
-    <div class="hint" style="text-align:center">— shared OTP component: 32s resend · Invalid OTP · 3rd resend → 03:00 —</div>`
-  :s===1?`
-    <div class="scr-title"><span class="x">✕</span>Security Verification</div>
-    <div class="scr-step">Only one contact verified — no picker, the code goes there automatically</div>
-    ${OPT("📱 &nbsp; SMS to 091***233 <small style='color:#b0b0b0'>verified</small>", true)}
-    ${CTA("Request OTP")}`
-  :`
-    <div class="scr-title"><span class="x">✕</span>Select Verification Mode</div>
-    <div class="scr-step">Please choose how you would like to receive your one-time password (OTP)</div>
-    ${OPT("✉️ &nbsp; Send via email to c***@gmail.com", false)}
-    ${OPT("📱 &nbsp; Send via SMS to 091***233", true)}
-    ${CTA("Request OTP")}`,
-  spec:{
-    goal:"Shared step-up verification (Unified OTP): both verified → select Email/SMS; one → auto; none → verify a new contact inline (serves as OTP). Full flow: verification-flow-wireframe.html.",
-    states:["both verified → radio picker + Request OTP","only one → auto, no picker","none verified → inline first-time verify (serves as OTP)","code entry (shared component states)","failed / locked → action stopped, Live Chat"],
-    fields:["mode(email|sms)","stepup_token","otp_code(6)"],
-    api:"POST /auth/otp/start { action, mode }\nPOST /auth/otp/verify { stepup_token, otp_code } ← { action_token }\nerr: OTP_WRONG / OTP_EXPIRED / RESEND_LIMIT",
-    notes:["How Login (14) connects here: ONLY on exceptions — POST /auth/login returns RISK_STEPUP (new device / abnormal geo) or LOCKED (self-unlock) → this screen → pass → session continues. Normal password / one-time-code / passkey / social logins never see it.","Main use is AFTER login: shared sheet for sensitive actions — change password (2FA) · add/change contact (screen 16 step 1) · first-time payout account withdrawal (incl. USDT) · promo claim (after Personal Details). Each returns 403 OTP_REQUIRED → opens this sheet → retries with action_token.","Note: the Login 'One-time code' tab is a LOGIN METHOD (passwordless), not this security step-up.","Same-type rule when changing a contact: OTP goes to the current contact of that type (no picker).","OTP modes this release = Email / SMS; Zalo ZNS / LINE / WhatsApp delivery = phase 2."]
-  }
-},
-{
-  group:"E · Verification", id:"contact-change", title:"Add / Change Phone·Email",
-  states:["Step 1 · Verify existing","Step 2 · Verify new","Done · both usable"],
-  render:(s)=>s===0?`
-    <div class="scr-title"><span class="x">←</span>Change Email</div>
-    <div class="scr-step">Step 1 of 2 · First verify a contact you already have</div>
-    ${OPT("📱 &nbsp; Code sent to Phone +84 90****123", true)}
-    <div class="otpcells"><span class="f">_</span><span>_</span><span>_</span><span>_</span><span>_</span><span>_</span></div>
-    <div class="hint">＊ Rule: to add or change a contact, you must first pass verification on one you already have.</div>
-    <div class="link">Didn't get it? <b>Resend (60s)</b></div>
-    ${CTA("Verify and continue")}`
-  :s===1?`
-    <div class="scr-title"><span class="x">←</span>Change Email</div>
-    <div class="scr-step">Step 2 of 2 · Now verify the NEW email</div>
-    ${F("New email address")}
-    ${CTA("Send code",'ghost')}
-    <div class="otpcells"><span class="f">_</span><span>_</span><span>_</span><span>_</span><span>_</span><span>_</span></div>
-    <div class="hint">＊ The new contact becomes usable for verification only after it passes its own code check. The old one stays valid until then.</div>
-    ${CTA("Verify and save")}`
-  :`
-    <div class="scr-title">✅ Contacts Updated</div>
-    <div class="scr-step">Both contacts verified — from now on, pick either one whenever verification is needed</div>
-    ${OPT("📱 &nbsp; Phone +84 90****123 <small style='color:#b0b0b0'>verified</small>", true)}
-    ${OPT("✉️ &nbsp; Email new***@gmail.com <small style='color:#b0b0b0'>verified · just added</small>", true)}
-    ${CTA("Done")}`,
-  spec:{
-    goal:"Add or change phone / Email with the two-step rule: verify what you have first, then verify the new one.",
-    states:["step 1 · verify existing contact (forced if only one)","step 2 · enter + verify new contact","done · both anchors usable","abandoned mid-way → nothing changes","new contact already used by another account → error"],
-    fields:["target(phone|email)","step1_token","new_contact","otp_code"],
-    api:"POST /account/contact/change/start { target }\n→ step-1 verify on existing anchor ← { step1_token }\nPOST /account/contact/change/commit\n→ { step1_token, new_contact, otp_code }\nerr: CONTACT_IN_USE / OTP_WRONG / STEP1_EXPIRED",
-    notes:["Same flow covers ADD (2nd contact missing) and CHANGE (replace existing).","During sign-up, adding Email right after phone-OTP is allowed because the phone was just verified (Rule ② already satisfied).","Forgot-password recovery uses these same two anchors — keeping both verified is the user's safety net.","Entry points: Profile → Contact details; also prompted when claiming a promotion / withdrawing without the needed verified contact."]
   }
 },
 ];
