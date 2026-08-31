@@ -286,7 +286,7 @@ const screens = [
     <div class="pbar"><i style="width:0%"></i></div>
     <div class="kv"><span>Expires</span><span>Jul 30 · 23:59</span></div>
     <div class="kv"><span>Eligible games</span><span>Slots · Live (excl. Baccarat)</span></div>
-    <div class="err" style="border-color:#c93;background:#fdf6ea;color:#a70">Your balance is now locked — the bonus and your own money — until turnover is met. You can forfeit the bonus in Wallet to free your own funds.</div>
+    <div class="hint">＊ Your own money stays withdrawable — only this bonus and what you win with it are locked. Withdrawing before turnover is met forfeits both.</div>
     ${CTA("Play eligible games")}
     <div class="link"><b>View in My rewards</b></div>`
   :s===1?`
@@ -300,9 +300,9 @@ const screens = [
     ${CTA("Try again")}
     ${CTA("Contact Live Chat",'ghost')}`,
   spec:{
-    goal:"Terminal states: bonus credited with turnover / expiry / eligible games and an explicit balance-locked notice; 'deposit first' redirect with coupon pre-selected; failure with retry.",
-    states:["success → bonus credited, balance locked, History 3 row","deposit-first → deposit flow with coupon","failed (OTP) → retry / Live Chat"],
-    fields:["reward{amount,turnover_required,expires_at,eligible_products}","balance_locked(bool)"],
+    goal:"Terminal states: bonus credited with turnover / expiry / eligible games, stating that the bonus is locked but the member's own money is not; 'deposit first' redirect with coupon pre-selected; failure with retry.",
+    states:["success → bonus credited (locked), own balance still withdrawable, History 3 row","deposit-first → deposit flow with coupon","failed (OTP) → retry / Live Chat"],
+    fields:["reward{amount,turnover_required,expires_at,eligible_products}"],
     api:"POST /promotions/{id}/claim { action_token } ← { reward }",
     notes:["Success screen numbers = same source as Wallet bonus wallets and History 4.","Analytics: promo_claim event with promo_id + result."]
   }
