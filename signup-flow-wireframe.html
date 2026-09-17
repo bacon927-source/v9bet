@@ -259,30 +259,22 @@ const screens = [
 },
 {
   group:"A · Sign Up", id:"social", title:"Social Sign Up / Bind",
-  states:["Google → has email","Zalo / LINE → no contact yet","Account Found → link?","Verify existing account (OTP)","Bound → logged in"],
+  states:["Welcome (every provider)","Account Found → link?","Verify existing account (OTP)","Bound → logged in"],
   render:(s)=>s===0?`
     <div class="scr-title">Welcome!</div>
     <div class="ph" style="height:110px">🎉<br><small>account created</small></div>
-    <div class="scr-step" style="font-size:15px;color:#333"><b>You're now a V9 customer</b><br>Signed up with Google — no OTP needed.</div>
-    <div class="hint">＊ Google supplied a verified email, so the account already has a contact we can reach and recover it with.</div>
-    ${CTA("Set up account · earn 100 points 🎁")}
-    <div class="hint" style="text-align:center">Step 1 has to be completed before you can deposit or play.</div>`
-  :s===1?`
-    <div class="scr-title">Welcome!</div>
-    <div class="ph" style="height:110px">🎉<br><small>account created</small></div>
     <div class="scr-step" style="font-size:15px;color:#333"><b>You're now a V9 customer</b><br>Signed up with Zalo — no OTP needed.</div>
-    <div class="err" style="border-color:#c93;background:#fdf6ea;color:#a70">Zalo only shares your account ID — no email or phone. Right now this Zalo login is the <b>only</b> way into your account.</div>
-    ${CTA("Add an email · 🎁 +10 points")}
-    ${CTA("Later",'ghost')}
-    <div class="hint">＊ Same for LINE. Adding an email (and later a phone) is what makes OTP, message delivery and account recovery possible — until then, losing the Zalo / LINE account means losing this one.</div>`
-  :s===2?`
+    ${CTA("Set up account · earn 100 points 🎁")}
+    <div class="hint" style="text-align:center">Step 1 has to be completed before you can deposit or play.</div>
+    <div class="hint">＊ ONE welcome for every provider (09-17). Whether a contact is still missing is settled in Setup Step 1, not here — see Setup Overview state 4.</div>`
+  :s===1?`
     <div class="scr-title"><span class="x">←</span>Account Found</div>
     <div class="err">This Google account already matches an existing account <b>v9_user***</b>.</div>
     <div class="scr-step">Verify it's you to link this Google account — for your protection, we can't link it on Google's word alone</div>
     ${CTA("Send code to existing account")}
     ${CTA("Use a different account",'ghost')}
     <div class="link"><b>Not you? Contact Live Chat</b></div>`
-  :s===3?`
+  :s===2?`
     <div class="scr-title"><span class="x">←</span>Verify It's You</div>
     <div class="scr-step">Code sent to the phone on file for v9_user*** &nbsp; 091***233</div>
     <div class="otpcells"><span class="f">_</span><span>_</span><span>_</span><span>_</span><span>_</span><span>_</span></div>
@@ -296,33 +288,38 @@ const screens = [
     <div class="scr-step" style="font-size:15px;color:#333"><b>You're logged in as v9_user***</b><br>Google is now a login option on this account.</div>
     ${CTA("Continue")}`,
   spec:{
-    goal:"Social sign-up (Google / LINE / Zalo icons) via the central verification domain — NO OTP for a brand-new account: provider consent → immediate 'You're now a customer' welcome, which pushes into the standard Setup Overview. Providers split into two kinds by what they hand over, and that difference decides what the member must do next. When the identity matches an EXISTING account, ownership of that account is re-proved before linking rather than logging straight in.",
-    states:["provider consent (Google One Tap / LINE / Zalo, no in-app redirect screen)","Google → welcome, account has a verified email from the start","Zalo / LINE → welcome, account ID only, NO contact on file → prompted to add an email","existing match → Account Found, offers to link","re-auth → OTP to the EXISTING account's contact (not the new provider)","OTP correct → bound & logged in as the existing account","cancelled / provider error → back to sign-up"],
+    goal:"Social sign-up (Google / LINE / Zalo icons) via the central verification domain — NO OTP for a brand-new account: provider consent → immediate 'You're now a customer' welcome, identical for every provider, which pushes into the standard Setup Overview. Providers still split into two kinds by what they hand over, but that difference is now resolved at Setup Step 1 (does the account have a verified contact?), not by branching this welcome. When the identity matches an EXISTING account, ownership of that account is re-proved before linking rather than logging straight in.",
+    states:["provider consent (Google One Tap / LINE / Zalo, no in-app redirect screen)","brand-new account → ONE welcome, identical for every provider","existing match → Account Found, offers to link","re-auth → OTP to the EXISTING account's contact (not the new provider)","OTP correct → bound & logged in as the existing account","cancelled / provider error → back to sign-up"],
     fields:["provider(google|line|zalo)","session_token","accept_terms(implicit — recorded at social tap on Sign Up)","existing_account_phone_masked","otp_code"],
     api:"GET auth.&lt;stable&gt;/oauth/{provider}\n← redirect back with session_token\nPOST /auth/social/exchange { session_token }\n← { customer_id, is_new, needs_bind, existing_account_phone_masked }\nPOST /auth/social/bind/otp/send { customer_id }\nPOST /auth/social/bind/otp/verify { customer_id, otp } → bind + login",
-    notes:["'Complete Setup (currency-only)' screen removed (Jul 16) — redundant with Setup Overview, which already collects currency as Step 1 · Required right after. Brand-new social members land on Welcome immediately, no OTP.","No 'Start playing' escape on Welcome (08-30): it let a social member walk past setup entirely, and Step 1 is not optional. The only way on is 'Set up account', with a line saying why. Removing the second button also stops the reward framing reading as a bribe for something that was never really a choice.","Account-linking rule (market standard — Auth0 account linking / Google Identity Platform 'account-exists-with-different-credential'): request authentication for BOTH sides before linking. Google proves the new identity; an OTP to the phone already on file proves the existing account. Binding straight off the provider's say-so alone (no re-auth) is the weaker 'automatic linking' mode both platforms flag as a security tradeoff — not used here.","Match only ever surfaces 'Account Found' against a VERIFIED email/phone on the existing account — an unverified stored contact never triggers it, or anyone could plant someone else's real email on a dormant account and hijack it the moment the real owner signs in with Google. Zalo / LINE match on their provider account ID instead, since that is all they give us.","TWO KINDS OF PROVIDER (08-30) — this is the important distinction on this screen. Google returns a verified email, so that account starts with a real contact. Zalo and LINE return ONLY their account ID: no email, no phone. A member who signs up that way has no address we can send an OTP to, no channel to message, and nothing to recover the account with — the social login IS the account. So their welcome screen leads with 'Add an email', and Setup item 5 asks for whatever contacts are still missing. X was dropped as a provider (08-30) — it sat awkwardly between the two kinds, returning an email only with elevated permissions and not reliably, so it would have needed the ID-only treatment anyway for little reach in these markets.","Re-auth on the bind path needs a contact to send the code to. If the EXISTING account is itself an ID-only social account with no email or phone, there is nothing to OTP — that case has to fall through to Live Chat rather than silently linking.","Outcome after the code passes is shared with email sign-up (08-30) — see Existing Account: dormant reactivates in place and signs in, active just signs in, restricted (self-exclusion / RG block) stops with Live Chat only. Social sign-up must not become a way around a block that email sign-up refuses.","Central verification domain: OAuth redirect URI binds ONLY to auth.&lt;stable&gt;, so public mirror rotation never breaks login.","Providers = Google / LINE / Zalo (Zalo added 08-30 for VN reach; Telegram removed 2026-07-15, still available as an OTP channel in TH / intl). Icon visibility is market-aware — Zalo is the VN default pairing, LINE the TH one; hide a provider where blocked.","Bind flow also lives in Profile for existing username/password users.","Google One Tap auto-hides if the consent app is blocked (degrade design)."]
+    notes:["'Complete Setup (currency-only)' screen removed (Jul 16) — redundant with Setup Overview, which already collects currency as Step 1 · Required right after. Brand-new social members land on Welcome immediately, no OTP.","No 'Start playing' escape on Welcome (08-30): it let a social member walk past setup entirely, and Step 1 is not optional. The only way on is 'Set up account', with a line saying why. Removing the second button also stops the reward framing reading as a bribe for something that was never really a choice.","Account-linking rule (market standard — Auth0 account linking / Google Identity Platform 'account-exists-with-different-credential'): request authentication for BOTH sides before linking. Google proves the new identity; an OTP to the phone already on file proves the existing account. Binding straight off the provider's say-so alone (no re-auth) is the weaker 'automatic linking' mode both platforms flag as a security tradeoff — not used here.","Match only ever surfaces 'Account Found' against a VERIFIED email/phone on the existing account — an unverified stored contact never triggers it, or anyone could plant someone else's real email on a dormant account and hijack it the moment the real owner signs in with Google. Zalo / LINE match on their provider account ID instead, since that is all they give us.","ONE WELCOME FOR EVERY PROVIDER (09-17). There used to be two: Google got a plain 'you're a customer' screen, Zalo / LINE got a warning panel and an 'Add an email' primary button. That split is gone. Reason: it made the welcome carry a job it could not finish — the Add-an-email button sat beside a 'Later' escape, so the member could walk past it and still end up with an account we cannot reach, and a Google member was reading a screen designed around a problem they did not have. The missing-contact requirement moved to where requirements are actually enforced: Setup Step 1 (see Setup Overview state 4). The welcome is now one screen that says the account exists and points at setup.",
+"The provider difference did NOT go away — it moved (09-17). Do not read the single welcome as 'every provider is the same'. What changed is WHERE the difference is handled: not by branching the welcome on which icon was tapped, but by checking one fact at Setup — does this account have a verified email or phone? That test is provider-agnostic, so it keeps working if LINE's email permission is granted later, or if a future provider behaves differently, without anyone having to remember to re-branch this screen.",
+"TWO KINDS OF PROVIDER (08-30, still true — it now drives Setup Step 1 rather than the welcome copy) — this is the important distinction behind this screen. Google returns a verified email, so that account starts with a real contact. Zalo and LINE return ONLY their account ID: no email, no phone. A member who signs up that way has no address we can send an OTP to, no channel to message, and nothing to recover the account with — the social login IS the account. So their welcome screen leads with 'Add an email', and Setup item 5 asks for whatever contacts are still missing. X was dropped as a provider (08-30) — it sat awkwardly between the two kinds, returning an email only with elevated permissions and not reliably, so it would have needed the ID-only treatment anyway for little reach in these markets.","Re-auth on the bind path needs a contact to send the code to. If the EXISTING account is itself an ID-only social account with no email or phone, there is nothing to OTP — that case has to fall through to Live Chat rather than silently linking.","Outcome after the code passes is shared with email sign-up (08-30) — see Existing Account: dormant reactivates in place and signs in, active just signs in, restricted (self-exclusion / RG block) stops with Live Chat only. Social sign-up must not become a way around a block that email sign-up refuses.","Central verification domain: OAuth redirect URI binds ONLY to auth.&lt;stable&gt;, so public mirror rotation never breaks login.","Providers = Google / LINE / Zalo (Zalo added 08-30 for VN reach; Telegram removed 2026-07-15, still available as an OTP channel in TH / intl). Icon visibility is market-aware — Zalo is the VN default pairing, LINE the TH one; hide a provider where blocked.","Bind flow also lives in Profile for existing username/password users.","Google One Tap auto-hides if the consent app is blocked (degrade design)."]
   }
 },
 {
   group:"B · Account Setup", id:"checklist", title:"Setup Overview",
-  states:["Step 1 · Required","Step 2 · Security","Step 3 · Preferences"],
-  render:(s)=>`
+  states:["Step 1 · Required","Step 2 · Security","Step 3 · Preferences","Step 1 · No contact on file"],
+  render:(s)=>{
+  const nc = s===3;                                  // account has no verified email or phone
+  return `
     <div class="scr-title">Set Up Your Account</div>
-    <div class="pbar-lbl"><span>🎁 Setup rewards</span><b>${[0,30,60][s]} / 100 points</b></div>
-    <div class="pbar"><i style="width:${[0,30,60][s]}%"></i></div>
-    <div class="hint" style="text-align:center;margin:2px 0 6px">${["Finish all 9 items to earn 100 points","30 earned · 70 to go","60 earned · 40 to go"][s]}</div>
-    <div class="scr-step">Step ${s+1} of 3 — required first, the rest can be skipped</div>
+    <div class="pbar-lbl"><span>🎁 Setup rewards</span><b>${[0,30,60,0][s]} / 100 points</b></div>
+    <div class="pbar"><i style="width:${[0,30,60,0][s]}%"></i></div>
+    <div class="hint" style="text-align:center;margin:2px 0 6px">${["Finish all 9 items to earn 100 points","30 earned · 70 to go","60 earned · 40 to go","Finish all 9 items to earn 100 points"][s]}</div>
+    <div class="scr-step">${nc?"Step 1 of 3 — this account has no email or phone yet, so a contact is required here":`Step ${s+1} of 3 — required first, the rest can be skipped`}</div>
     <div class="grp">Step 1 · Required <span class="badge req">cannot skip</span></div>
     <div class="checklist">
-      ${ci(1,"Choose account currency","mandatory · +10 pts",s>0)}
-      ${ci(2,"Personal information","mandatory · +10 pts",s>0)}
-      ${ci(3,"Bank account / USDT","mandatory · +10 pts",s>0)}
+      ${ci(1,"Choose account currency","mandatory · +10 pts",s>0&&!nc)}
+      ${ci(2,"Personal information","mandatory · +10 pts",s>0&&!nc)}
+      ${ci(3,"Bank account / USDT","mandatory · +10 pts",s>0&&!nc)}
+      ${nc?ci(5,"Add an email or phone","no contact on file · +10 pts",false):''}
     </div>
     <div class="grp">Step 2 · Security <span class="badge">can skip</span></div>
     <div class="checklist">
-      ${ci(4,"Face ID / biometric / passkey","app only · +10 pts",s>1)}
-      ${ci(5,"Add contact details","email / phone · +10 pts",s>1)}
-      ${ci(6,"Set a password","optional · +10 pts",s>1)}
+      ${ci(4,"Face ID / biometric / passkey","app only · +10 pts",s>1&&!nc)}
+      ${nc?'':ci(5,"Add contact details","email / phone · +10 pts",s>1)}
+      ${ci(6,"Set a password","optional · +10 pts",s>1&&!nc)}
     </div>
     <div class="grp">Step 3 · Preferences <span class="badge">can skip</span></div>
     <div class="checklist">
@@ -330,15 +327,20 @@ const screens = [
       ${ci(8,"Theme / language","+10 pts",false)}
       ${ci(9,"Message channel","how we contact you · +10 pts",false)}
     </div>
-    ${CTA(s===0?"Start Setup":"Continue")}
-    ${s>0?`<div class="link"><b>Skip this step</b></div>`:''}
-    <div class="hint">＊ 9 items × 10 pts + 10 bonus for finishing all = 100 points. Tutorial & app download are presented on the next page after setup — no longer part of this checklist.</div>`,
+    ${CTA(s===0||nc?"Start Setup":"Continue")}
+    ${s>0&&!nc?`<div class="link"><b>Skip this step</b></div>`:''}
+    <div class="hint">＊ 9 items × 10 pts + 10 bonus for finishing all = 100 points. Tutorial & app download are presented on the next page after setup — no longer part of this checklist.</div>`;
+  },
   spec:{
-    goal:"Post-sign-up settings screen: 3 grouped steps with a progress bar on top — Step 1 Required (currency, profile+bank/USDT) cannot be skipped; Step 2 Security and Step 3 Preferences can be skipped.",
-    states:["step 1 · required (cannot skip)","step 2 · security (skippable)","step 3 · preferences (skippable)","all done → tutorial & app download page"],
-    fields:["customer_id","setup_progress[{key,step(1|2|3),done,required,points}]","points_earned","points_total(100)"],
-    api:"GET /account/setup-status → { steps:[{key,step(1|2|3),done,required}] }",
-    notes:["docx: 'immediately run through account configuration settings'.","Item 9 = Message channel: Email / SMS / social messaging (WhatsApp · Zalo · Telegram · LINE) / opt-out. Default is EMAIL — sign-up is email-only (08-30), so a new member has no phone yet and SMS + social messaging stay gated behind adding one (item 5).","Cannot pass: account currency · personal information · bank/USDT (split into two items, Jul 16). Can pass: Face ID/passkey · add phone number · set-a-password (optional; no password at sign-up) · notifications · theme/language.","Step 1 genuinely cannot be skipped (08-30): the label said 'cannot skip' while Personal Info and Bank/USDT both carried a 'Later' link, and Bank/USDT even said 'can complete later' in its own subtitle. Those escapes are gone — the only way past a Step 1 screen is to complete it. Step 2 and 3 keep their Later links and the overview keeps 'Skip this step' for those two.","TOP bar is a REWARD progress bar (user ask Jul 16): 9 items × +10 pts, +10 bonus on full completion = 100 points; the bar shows points earned / 100 and repeats on every setup sub-screen. Points land in History 4 (Rewards); each item credits once.","Tutorial & app download moved out of the checklist — presented on the next page after Start setup completes."]
+    goal:"Post-sign-up settings screen: 3 grouped steps with a progress bar on top — Step 1 Required (currency, profile+bank/USDT) cannot be skipped; Step 2 Security and Step 3 Preferences can be skipped. An account that arrived with NO verified contact (Zalo / LINE) gets a fourth required item in Step 1 instead.",
+    states:["step 1 · required (cannot skip)","step 2 · security (skippable)","step 3 · preferences (skippable)","step 1 · account has no verified contact → 'Add an email or phone' joins Step 1 as required","all done → tutorial & app download page"],
+    fields:["customer_id","setup_progress[{key,step(1|2|3),done,required,points}]","points_earned","points_total(100)","has_verified_contact(bool) — drives whether item 5 sits in Step 1 or Step 2"],
+    api:"GET /account/setup-status → { steps:[{key,step(1|2|3),done,required}], has_verified_contact }",
+    notes:["CONTACT ITEM MOVES BY ACCOUNT STATE, NOT BY SIGN-UP METHOD (09-17). Item 5 normally sits in Step 2 and is skippable — that is right for an email sign-up, where the account already has a verified email and a phone is a genuine nice-to-have. But an account created through Zalo (or LINE without the email permission) has NO contact at all, and for that account item 5 is not a nice-to-have: without it we cannot send an OTP, which means the member cannot withdraw, and losing the social account loses this one. So when the account has no verified contact, item 5 joins Step 1 and becomes required. Server decides via has_verified_contact — the client must not infer it from which provider was used, because that stops being true the moment LINE's email permission is granted.",
+"This replaces the 'Add an email' button that used to live on the social welcome screen (09-17). That placement never actually required anything: it sat next to a 'Later' link, and Step 2 was skippable too, so a Zalo member could decline twice and finish setup with an account we had no way to reach. Putting the requirement in Step 1 is what makes it a requirement — Step 1 is the only part of setup with no escape.",
+"Item 5 keeps its canonical number in both positions, so Step 1 reads 1 · 2 · 3 · 5 in the no-contact variant. Deliberate: the API keys and the points ledger reference item 5, and renumbering per variant would make 'item 5' mean two different things depending on how the member signed up.",
+"Open (09-17, business): for a Zalo member, is the required contact an email or a phone? Phone may be the more natural ask in VN, but it carries SMS cost per OTP. The screen currently asks for an email; Contact Details would need a second required variant if this changes.",
+"docx: 'immediately run through account configuration settings'.","Item 9 = Message channel: Email / SMS / social messaging (WhatsApp · Zalo · Telegram · LINE) / opt-out. Default is EMAIL — sign-up is email-only (08-30), so a new member has no phone yet and SMS + social messaging stay gated behind adding one (item 5).","Cannot pass: account currency · personal information · bank/USDT (split into two items, Jul 16). Can pass: Face ID/passkey · add phone number · set-a-password (optional; no password at sign-up) · notifications · theme/language.","Step 1 genuinely cannot be skipped (08-30): the label said 'cannot skip' while Personal Info and Bank/USDT both carried a 'Later' link, and Bank/USDT even said 'can complete later' in its own subtitle. Those escapes are gone — the only way past a Step 1 screen is to complete it. Step 2 and 3 keep their Later links and the overview keeps 'Skip this step' for those two.","TOP bar is a REWARD progress bar (user ask Jul 16): 9 items × +10 pts, +10 bonus on full completion = 100 points; the bar shows points earned / 100 and repeats on every setup sub-screen. Points land in History 4 (Rewards); each item credits once.","Tutorial & app download moved out of the checklist — presented on the next page after Start setup completes."]
   }
 },
 {
@@ -442,32 +444,33 @@ const screens = [
   }
 },
 {
-  group:"B · Account Setup", id:"email", title:"Contact Details", step:"Step 2 · Security (can skip)",
-  states:["Add phone (email sign-up)","Enter code","Add email (Zalo / LINE sign-up)"],
+  group:"B · Account Setup", id:"email", title:"Contact Details", step:"Step 2 (can skip) · Step 1 Required when no contact",
+  states:["Add phone (email sign-up)","Enter code","Add email — REQUIRED (Zalo / LINE)"],
   render:(s)=>`
-    <div class="scr-title"><span class="x">←</span>${s===2?'Add Email':'Add Phone Number'}<span class="badge">Optional</span></div>
+    <div class="scr-title"><span class="x">←</span>${s===2?'Add Email':'Add Phone Number'}<span class="badge ${s===2?'req':''}">${s===2?'Required':'Optional'}</span></div>
     <div class="pbar-lbl"><span>🎁 Setup rewards</span><b>40 / 100 points</b></div>
     <div class="pbar"><i style="width:40%"></i></div>
-    <div class="scr-step" style="margin-top:8px">${s===2?'You signed up with Zalo — an email gives you a way back in if you lose it':'A verified phone adds a second way to log in and recover your account'}</div>
+    <div class="scr-step" style="margin-top:8px">${s===2?'Your Zalo login is the only way into this account — add a contact before you continue':'A verified phone adds a second way to log in and recover your account'}</div>
     ${s===1?`<div class="field" style="border-style:solid"><span><b>+84 ▾</b> &nbsp; 091***233</span><small>code sent</small></div>
     <div class="otpcells"><span class="f">_</span><span>_</span><span>_</span><span>_</span><span>_</span><span>_</span></div>
     <div class="link">Resent code in <b>00:32</b></div>
     ${CTA("Verify",'disabled')}
     <div class="hint" style="text-align:center">— iOS keyboard suggests the code (From Messages) —</div>`
     :s===2?`${F("Email address","Required")}
-    <div class="err" style="border-color:#c93;background:#fdf6ea;color:#a70">Your Zalo login is currently the only way into this account. An email means you can still get in — and get OTPs — if you ever lose it.</div>
+    <div class="err" style="border-color:#c93;background:#fdf6ea;color:#a70">Without an email or phone we cannot send you an OTP — which means no withdrawals — and losing your Zalo account would lose this one.</div>
     ${CTA("Send code")}
-    <div class="link"><b>Later</b></div>`
+    <div class="hint" style="text-align:center">No Later link here (09-17) — this sits in Step 1 for accounts with no contact.</div>`
     :`<div class="field" style="border-style:solid"><span><b>+84 ▾</b> &nbsp; Phone number</span><small>TH +66 · VN +84</small></div>
     <div class="hint">＊ Needed later for SMS notifications and as a payout-security anchor — but never required to sign up, deposit or play.</div>
     ${CTA("Send code")}
     <div class="link"><b>Later</b></div>`}`,
   spec:{
-    goal:"Fill in whichever contacts the account is missing. Email sign-up → add a phone. Zalo / LINE sign-up → add an email first (the account has none at all), then a phone. One checklist item, contents driven by what is actually absent.",
-    states:["enter phone (country-code picker TH +66 / VN +84)","code sent → shared OTP component","verified → +10 pts","number already used by another account → error","skipped → resurfaces in Settings"],
+    goal:"Fill in whichever contacts the account is missing. Email sign-up → add a phone, optional, Step 2. Zalo / LINE sign-up → add an email, REQUIRED, and the item sits in Step 1 because the account has no contact at all. One checklist item, contents and obligation both driven by what is actually absent.",
+    states:["enter phone (country-code picker TH +66 / VN +84) — optional, skippable","code sent → shared OTP component","no contact on file → add an email, REQUIRED, no Later link","verified → +10 pts","number already used by another account → error","skipped (optional variant only) → resurfaces in Settings"],
     fields:["phone","country_code(TH|VN)","phone_verified(bool)"],
     api:"POST /account/phone → { otp_sent }\nPOST /account/phone/verify { otp_code }\nerr: PHONE_IN_USE / INVALID_PHONE / OTP_WRONG",
-    notes:["This item is now contact-agnostic (08-30). It used to be 'Add Email' back when sign-up took a phone number; sign-up is email-only now, so for those members email arrives already verified and PHONE is what is missing. But Zalo / LINE sign-ups arrive with NEITHER — those providers hand over only an account ID — so for them this item asks for an email first, and that case is the urgent one: until they add a contact, the social login is the single key to the account and there is no recovery path if they lose it.","Adding a phone here needs no re-verification of the email — it was just verified at sign-up (the same reasoning that previously let email be added right after phone OTP). Later changes go through Add / Change Contact (verify existing → verify new).","Skippable, like the rest of Step 2. Nothing in sign-up, deposit or play requires a phone; it matters for SMS delivery and as a security anchor on payouts, which is why it earns points rather than blocking anything.","Once both contacts are verified, any later verification lets the member pick email OR phone (Rule ③)."]
+    notes:["This item is now contact-agnostic (08-30). It used to be 'Add Email' back when sign-up took a phone number; sign-up is email-only now, so for those members email arrives already verified and PHONE is what is missing. But Zalo / LINE sign-ups arrive with NEITHER — those providers hand over only an account ID — so for them this item asks for an email first, and that case is the urgent one: until they add a contact, the social login is the single key to the account and there is no recovery path if they lose it.","Adding a phone here needs no re-verification of the email — it was just verified at sign-up (the same reasoning that previously let email be added right after phone OTP). Later changes go through Add / Change Contact (verify existing → verify new).","Skippable ONLY in the phone variant (09-17). Nothing in sign-up, deposit or play requires a phone on an account that already has a verified email, so that variant earns points rather than blocking anything and keeps its Later link. The no-contact variant is the opposite: it is required, it has no Later link, and it is reached from Step 1 — an account with no contact at all cannot receive an OTP, and OTP is what gates withdrawal to a first-time payout account.",
+"Note the asymmetry is about the ACCOUNT, not the provider: a LINE member whose email came through the provider permission lands in the optional phone variant like any email sign-up. Drive it off has_verified_contact, never off which icon was tapped.","Once both contacts are verified, any later verification lets the member pick email OR phone (Rule ③)."]
   }
 },
 {
