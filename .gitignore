@@ -1,3 +1,9 @@
 .DS_Store
 .claude/settings.local.json
 node_modules/
+
+# Kept out of the repo on purpose — this repo is public and Pages publishes
+# every push, so anything listed here would go straight online.
+# docs/ holds the GA snapshot, which carries real account and property IDs.
+HANDOFF.md
+docs/
