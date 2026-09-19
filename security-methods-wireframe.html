@@ -1,0 +1,655 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>V9Bet · Passkey &amp; Authenticator — Wireframe</title>
+<style>
+  :root{
+    --ink:#2b2b2b; --line:#c9c9c9; --line2:#9a9a9a; --muted:#8a8a8a;
+    --paper:#ffffff; --bg:#ececed; --fill:#f3f3f4; --solid:#3a3a3a;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font:14px/1.5 -apple-system,"Noto Sans TC",Arial,sans-serif;color:var(--ink);background:var(--bg)}
+  /* ---- layout ---- */
+  .app{display:grid;grid-template-columns:260px 1fr 340px;min-height:100vh}
+  aside{background:var(--paper);border-right:1px solid var(--line);padding:16px;overflow:auto}
+  main{padding:24px;display:flex;flex-direction:column;align-items:center;gap:14px}
+  .spec{background:var(--paper);border-left:1px solid var(--line);padding:16px;overflow:auto}
+  h1{font-size:15px;margin:0 0 4px}
+  .sub{color:var(--muted);font-size:12px;margin:0 0 14px}
+  .navlist{display:flex;flex-direction:column;gap:2px}
+  .nav{display:flex;gap:8px;align-items:center;border:1px solid transparent;border-radius:6px;padding:7px 8px;cursor:pointer;font-size:13px}
+  .nav:hover{background:var(--fill)}
+  .nav.active{background:#e3e3e6;border-color:var(--line2);font-weight:600}
+  .nav .num{width:20px;height:20px;flex:0 0 20px;border:1px solid var(--line2);border-radius:50%;display:grid;place-items:center;font-size:11px;color:var(--muted)}
+  .nav.active .num{background:var(--solid);color:#fff;border-color:var(--solid)}
+  .group-title{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:14px 0 6px}
+  /* ---- phone ---- */
+  .stage{display:flex;flex-direction:column;align-items:center;gap:10px}
+  .toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:center}
+  .btn{border:1px solid var(--line2);background:#fff;border-radius:6px;padding:6px 12px;font-size:12px;cursor:pointer}
+  .btn:hover{background:var(--fill)}
+  .state-tabs{display:flex;gap:4px;border:1px solid var(--line);border-radius:8px;padding:3px;background:#fff}
+  .state-tabs button{border:0;background:none;padding:5px 10px;border-radius:6px;font-size:12px;cursor:pointer;color:var(--muted)}
+  .state-tabs button.on{background:var(--solid);color:#fff}
+  .phone{width:380px;border:2px solid var(--ink);border-radius:28px;background:var(--paper);padding:10px;box-shadow:0 6px 24px rgba(0,0,0,.12)}
+  .notch{height:20px;display:flex;justify-content:center}
+  .notch::after{content:"";width:120px;height:18px;background:var(--ink);border-radius:0 0 12px 12px}
+  .screen{height:680px;overflow:auto;border:1px solid var(--line);border-radius:18px;padding:18px;background:#fff;position:relative}
+  .scrim{position:absolute;inset:0;background:rgba(0,0,0,.45);display:grid;place-items:center;padding:20px;border-radius:17px;z-index:5}
+  .modal{background:#fff;border-radius:14px;padding:16px 18px;width:100%;box-shadow:0 12px 34px rgba(0,0,0,.3)}
+  .modal b{font-size:15px}
+  .screen::-webkit-scrollbar{width:6px}.screen::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px}
+  .scr-title{text-align:center;font-weight:700;font-size:16px;margin:2px 0 4px;position:relative}
+  .scr-title .x{position:absolute;left:0;top:0;color:var(--muted);font-weight:400}
+  .authsw{display:flex;align-items:center;justify-content:center;gap:14px}
+  .authsw .on{font-size:21px;font-weight:800;letter-spacing:-.2px}
+  .authsw .off{font-size:14px;font-weight:600;color:var(--muted);text-decoration:underline;cursor:pointer}
+  .authsw .div{width:1px;height:22px;background:var(--line2)}
+  .scr-step{text-align:center;color:var(--muted);font-size:12px;margin-bottom:14px}
+  /* wireframe primitives */
+  .field{border:1px dashed var(--line2);border-radius:10px;padding:13px 14px;color:var(--muted);margin:10px 0;display:flex;justify-content:space-between;align-items:center;background:var(--fill)}
+  .field small{color:#b0b0b0}
+  .row{display:flex;gap:10px}
+  .row>*{flex:1}
+  .opt{border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin:8px 0;display:flex;align-items:center;gap:12px}
+  .opt.sel{border-color:var(--solid);border-width:2px}
+  .dot{width:18px;height:18px;border:1px solid var(--line2);border-radius:50%;flex:0 0 18px}
+  .dot.on{border-color:var(--solid);border-width:5px}
+  .sq{width:18px;height:18px;border:1px solid var(--line2);border-radius:4px;flex:0 0 18px}
+  .sq.on{background:var(--solid)}
+  .ph{height:90px;border:1px dashed var(--line2);border-radius:10px;display:grid;place-items:center;color:#b6b6b6;background:var(--fill);margin:10px 0}
+  .cta{background:var(--solid);color:#fff;text-align:center;border-radius:24px;padding:14px;margin:16px 0 8px;font-weight:600}
+  .cta.ghost{background:#fff;color:var(--muted);border:1px solid var(--line2)}
+  .cta.disabled{background:#cfcfcf;color:#fff}
+  .link{text-align:center;color:#666;font-size:13px;margin-top:8px}
+  .link b{color:var(--ink);text-decoration:underline}
+  .hint{font-size:12px;color:var(--muted);margin:6px 2px}
+  .badge{display:inline-block;font-size:10px;border:1px solid var(--line2);border-radius:4px;padding:1px 6px;color:var(--muted);vertical-align:middle;margin-left:6px}
+  .badge.req{border-color:#b56;color:#b56}
+  .otpcells{display:flex;gap:8px;justify-content:center;margin:18px 0}
+  .otpcells span{width:42px;height:52px;border:1px solid var(--line2);border-radius:8px;display:grid;place-items:center;font-size:20px;color:var(--muted)}
+  .otpcells span.f{border-color:var(--solid);border-width:2px}
+  .err{border:1px solid #c98;background:#fbf2ef;color:#a55;border-radius:8px;padding:10px 12px;font-size:12px;margin:8px 0}
+  .checklist .ci{display:flex;align-items:center;gap:12px;border:1px solid var(--line);border-radius:10px;padding:12px;margin:8px 0}
+  .checklist .ci .num{width:22px;height:22px;border:1px solid var(--line2);border-radius:50%;display:grid;place-items:center;font-size:11px;color:var(--muted);flex:0 0 22px}
+  .checklist .ci.done .num{background:var(--solid);color:#fff;border-color:var(--solid)}
+  .checklist .ci .g{flex:1}
+  .checklist .ci .g small{color:var(--muted);font-size:11px;display:block}
+  .checklist .ci .pts{background:#fef6e0;border:1px solid #eccb7a;color:#8a6d1a;font-size:10.5px;font-weight:800;border-radius:12px;padding:3px 9px;margin-left:6px;white-space:nowrap;flex:0 0 auto}
+  .dots{display:flex;gap:6px;justify-content:center;margin:14px 0}
+  .dots i{width:7px;height:7px;border-radius:50%;background:var(--line2)}
+  .dots i.on{background:var(--solid);width:18px;border-radius:4px}
+  .promo{border:1px dashed var(--line2);border-radius:12px;padding:14px;margin:10px 0;background:var(--fill)}
+  .promo .tag{font-size:10px;border:1px solid var(--line2);border-radius:4px;padding:1px 6px;color:var(--muted)}
+  /* social login */
+  .or{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:11px;margin:14px 0 4px}
+  .or::before,.or::after{content:"";flex:1;height:1px;background:var(--line)}
+  .socbtn{display:flex;align-items:center;gap:10px;border:1px solid var(--line2);border-radius:10px;padding:11px 14px;margin:8px 0;font-size:13px;background:#fff;cursor:pointer}
+  .socbtn .ic{width:22px;height:22px;border:1px solid var(--line2);border-radius:50%;display:grid;place-items:center;font-size:11px;color:var(--muted);flex:0 0 22px}
+  .socbtn small{margin-left:auto;color:#b0b0b0;font-size:10px}
+  .socbtn .last{margin-left:auto;font-size:9px;border:1px solid var(--solid);border-radius:4px;padding:1px 5px;color:var(--solid)}
+  .ccpop{border:1px solid var(--line2);border-radius:10px;background:#fff;box-shadow:0 6px 18px rgba(0,0,0,.08);margin:-4px 0 10px;overflow:hidden}
+  .ccpop .cc{padding:11px 14px;font-size:13px;display:flex;align-items:center;gap:8px;color:#444}
+  .ccpop .cc.on{background:var(--fill);font-weight:700}
+  .ccpop .cc small{margin-left:auto;color:#b0b0b0}
+  .mtabs{display:flex;border:1px solid var(--line2);border-radius:10px;overflow:hidden;margin:10px 0;font-size:13px;text-align:center}
+  .mtabs span{flex:1;padding:9px 0;color:var(--muted);background:var(--fill)}
+  .mtabs span.on{background:#fff;color:#222;font-weight:700;box-shadow:inset 0 -2px 0 var(--solid)}
+  .socrow .sic{position:relative}
+  .socrow .lu{position:absolute;top:-9px;left:50%;transform:translateX(-50%);font-size:8px;border:1px solid var(--solid);color:var(--solid);background:#fff;border-radius:4px;padding:0 4px;white-space:nowrap}
+  .prog3{display:flex;gap:5px;margin:10px 0 2px}
+  .prog3 .p{flex:1;font-size:9.5px;text-align:center;padding:5px 0;border:1px solid var(--line2);border-radius:7px;color:var(--muted);background:var(--fill)}
+  .prog3 .p.on{background:var(--solid);border-color:var(--solid);color:#fff;font-weight:700}
+  .prog3 .p.done{border-color:var(--solid);color:var(--solid)}
+  .grp{font-size:11px;font-weight:700;color:#555;margin:12px 0 2px;display:flex;align-items:center;gap:6px}
+  .pbar{height:8px;background:#e5e5e5;border-radius:4px;overflow:hidden;margin:4px 0 2px}
+  .pbar i{display:block;height:100%;background:var(--solid)}
+  .pbar-lbl{display:flex;justify-content:space-between;font-size:10.5px;color:var(--muted);margin-bottom:4px}
+  .socrow{display:flex;justify-content:center;gap:24px;margin:12px 0 4px}
+  .socrow .sic{display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer}
+  .socrow .c{width:46px;height:46px;border:1px solid var(--line2);border-radius:50%;display:grid;place-items:center;font-size:14px;font-weight:700;color:var(--muted);background:#fff}
+  .socrow small{font-size:10px;color:var(--muted)}
+  /* spec panel */
+  .spec h2{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:18px 0 6px}
+  .spec h2:first-child{margin-top:0}
+  .spec ul{margin:0;padding-left:16px}
+  .spec li{margin:4px 0;font-size:12.5px}
+  .stlist{display:flex;flex-wrap:wrap;gap:6px}
+  .pill{font-size:11px;border:1px solid var(--line2);border-radius:12px;padding:2px 9px;background:var(--fill)}
+  .api{font-family:ui-monospace,Menlo,monospace;font-size:11px;background:var(--fill);border:1px solid var(--line);border-radius:6px;padding:8px;white-space:pre-wrap;color:#555}
+  .legend{font-size:11px;color:var(--muted);border-top:1px solid var(--line);margin-top:14px;padding-top:10px}
+</style>
+</head>
+<body>
+<div class="app">
+  <!-- LEFT: flow nav -->
+  <aside>
+    <h1>Passkey & Authenticator</h1>
+    <p class="sub">Low-fidelity wireframe · Mobile / App first<br>Passkey = how you sign IN. Authenticator = how you confirm money moving.<br>Market patterns noted per screen in Dev Notes (2026-09-20)</p>
+    <div id="nav"></div>
+    <div class="legend">
+      Grayscale wireframe only, no visual design.<br>
+      <span class="badge req">Required</span> = mandatory ·
+      <span class="badge">app only</span> = App only<br>
+      A · passkey (sign in) · B · authenticator (step-up) · C · recovery<br>
+      Right panel: spec / states / API fields for Dev.
+    </div>
+  </aside>
+
+  <!-- CENTER: phone -->
+  <main>
+    <div class="toolbar">
+      <button class="btn" id="prev">← Previous</button>
+      <div class="state-tabs" id="states"></div>
+      <button class="btn" id="next">Next →</button>
+    </div>
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="screen" id="screen"></div>
+    </div>
+    <div class="hint" id="bread"></div>
+  </main>
+
+  <!-- RIGHT: spec -->
+  <div class="spec" id="spec"></div>
+</div>
+
+<script>
+/* ---------- wireframe component helpers ---------- */
+const F = (label, sub='') => `<div class="field"><span>${label}</span>${sub?`<small>${sub}</small>`:''}</div>`;
+const CTA = (t, mod='') => `<div class="cta ${mod}">${t}</div>`;
+const OPT = (t, sel=false, kind='dot') => `<div class="opt ${sel?'sel':''}"><span class="${kind} ${sel?'on':''}"></span><span style="flex:1">${t}</span></div>`;
+const SOC = (ic, t, sub='', last=false) => `<div class="socbtn"><span class="ic">${ic}</span><span>${t}</span>${last?`<span class="last">Last used</span>`:sub?`<small>${sub}</small>`:''}</div>`;
+
+/* ---------- screen definitions ---------- */
+const screens = [
+{
+  group:"A · Passkey", id:"upsell", title:"Passkey Upsell", step:"After a successful login",
+  states:["Prompt","Dismissed","Device can't do it"],
+  render:(s)=>s===2?`
+    <div class="scr-title"><span class="x">✕</span>Faster Sign-in</div>
+    <div class="err">This device or browser can't store a passkey.</div>
+    <div class="scr-step">You can still add an authenticator app for stronger protection on withdrawals</div>
+    ${CTA("Add authenticator app")}
+    ${CTA("Not now",'ghost')}
+    <div class="hint">＊ Never dead-end on an unsupported device — offer the other method instead of just saying no.</div>`
+  :s===1?`
+    <div class="scr-title"><span class="x">←</span>Security</div>
+    <div class="scr-step">Dismissed — it does not ask again on the next login</div>
+    <div class="opt"><span style="flex:1">Faster sign-in with Face ID<small style="display:block;color:var(--muted);font-size:11px">Set up any time</small></span><span style="color:#888">›</span></div>
+    <div class="hint">＊ One decline = stop asking on login. It stays available in Settings › Security so it is never lost, just never nagged.</div>`
+  :`
+    <div class="scr-title"><span class="x">✕</span>You're signed in</div>
+    <div class="ph" style="height:110px">👤 ✨<br><small>Face ID illustration</small></div>
+    <div class="scr-step" style="font-size:15px;color:#333"><b>Sign in with Face ID next time</b><br>No code to wait for, no password to remember</div>
+    ${CTA("Set up · takes 5 seconds")}
+    ${CTA("Not now",'ghost')}
+    <div class="hint">＊ Offered AFTER a successful login, never during sign-up. Your phone stores the key; we only keep the public half.</div>`,
+  spec:{
+    goal:"Offer a passkey at the moment it makes sense — right after the member has proved who they are — so the system sheet arrives with context instead of interrupting registration.",
+    states:["prompt (first successful login on a device that supports it)","dismissed → never asked again on login, stays in Settings","device / browser unsupported → offer authenticator instead","already has a passkey on this device → not shown"],
+    fields:["customer_id","device_supports_webauthn(bool)","has_passkey_on_this_device(bool)","passkey_prompt_dismissed(bool)"],
+    api:"GET /account/security/passkey-eligibility → { supported, already_enrolled, prompt_dismissed }\nPUT /account/flags { passkey_prompt_dismissed:true }",
+    notes:["MARKET PRACTICE — post-login upsell, not sign-up. Google, Amazon, PayPal, Shopify and Microsoft all introduce passkeys after an authenticated session exists, not on the registration form. Two reasons: the OS sheet ('Create a passkey for v9bet?') is meaningless to someone who does not yet have an account, and registration conversion is the last place to add a system dialog that can be misread as a permission request.","This is why Setup item 4 (Face ID / passkey) is skippable and why this screen exists at all — the checklist offers it once, this offers it again at a better moment.","Ask ONCE per device, then stop. A declined passkey prompt that reappears every login is the most common complaint in passkey rollouts; the entry point moves permanently to Settings › Security.","Never say 'passkey' as the primary word in member-facing copy. Say what the member does: 'Sign in with Face ID'. Apple, Google and PayPal all lead with the biometric, not the standard's name. Keep 'passkey' for Settings, where the member is already looking for the technical control.","Unsupported devices get the authenticator offer instead of a dead end — see Add Authenticator."]
+  }
+},
+{
+  group:"A · Passkey", id:"pkcreate", title:"Create Passkey", step:"WebAuthn registration",
+  states:["System sheet","Creating","Done","Failed"],
+  render:(s)=>s===3?`
+    <div class="scr-title"><span class="x">←</span>Couldn't Set Up</div>
+    <div class="err">Face ID wasn't confirmed, so nothing was saved.</div>
+    <div class="scr-step">Your account is unchanged — you are still signed in</div>
+    ${CTA("Try again")}
+    ${CTA("Skip for now",'ghost')}
+    <div class="hint">＊ A cancelled or failed ceremony must change nothing. No half-enrolled state, no logout.</div>`
+  :s===2?`
+    <div class="scr-title">Done 🎉</div>
+    <div class="ph" style="height:100px">🔑 ✅<br><small>passkey saved</small></div>
+    <div class="scr-step" style="font-size:15px;color:#333"><b>Face ID is on for this device</b><br>iPhone 15 · added just now</div>
+    ${CTA("Continue")}
+    <div class="hint">＊ Name the device in the confirmation — it is what the member will look for later in the passkey list.</div>`
+  :s===1?`
+    <div class="scr-title">Setting up…</div>
+    <div class="ph" style="height:150px">⏳<br><small>waiting for the device</small></div>
+    <div class="hint" style="text-align:center">Confirm with Face ID on your phone</div>`
+  :`
+    <div class="scr-title">Set Up Face ID</div>
+    <div class="ph" style="height:170px">┌─────────────┐<br><small>[ OS sheet ]<br>"Create a passkey for v9bet?"<br>Save to iCloud Keychain<br><br>[ Cancel ]  [ Continue ]</small><br>└─────────────┘</div>
+    <div class="hint">＊ This sheet belongs to the operating system — we cannot restyle it, only decide when it appears.</div>
+    <div class="hint">＊ Where it saves (iCloud Keychain / Google Password Manager / a password manager) is the member's choice, not ours.</div>`,
+  spec:{
+    goal:"The WebAuthn registration ceremony. Almost none of this screen is ours — the job is to set it up correctly, hand off to the OS, and handle every way it can end.",
+    states:["OS sheet open (not restylable)","creating / waiting on the authenticator","success → device named and listed","cancelled by member → no change","failed / timeout → no change","device already has a passkey → offer to replace, not duplicate"],
+    fields:["challenge","rp_id","user_handle(opaque, NOT the email)","credential_id","public_key","device_label","created_at"],
+    api:"POST /webauthn/register/options → { challenge, rp{id,name}, user{id,name,displayName}, pubKeyCredParams, authenticatorSelection, excludeCredentials[] }\nPOST /webauthn/register/verify { credential } → { credential_id, device_label }\nerr: CHALLENGE_EXPIRED / ORIGIN_MISMATCH / DUPLICATE_CREDENTIAL",
+    notes:["rp_id must be the central verification domain (auth.&lt;stable&gt;), the same one OAuth binds to. A passkey is scoped to the domain that created it — enrol it on a public mirror and it stops working the moment that mirror rotates. This is the single most expensive mistake available on this screen.","user_handle must be an opaque, stable id — never the email address. It is stored on the member's device and shown in their password manager; putting an email there leaks it and breaks if they ever change it.","excludeCredentials stops a second passkey being created for a device that already has one. Without it members accumulate duplicates they cannot tell apart in the list.","Cancel and failure must be no-ops. The ceremony is not a transaction on our side until verify succeeds — no partial rows, and never sign the member out because a biometric prompt was dismissed.","MARKET PRACTICE — syncable by default. iCloud Keychain and Google Password Manager sync passkeys across a member's devices, so one enrolment can cover several. Do NOT design copy that promises 'one device, one key'; say the device it was added from and let the list show what actually exists.","Platform authenticator is the default (authenticatorSelection: platform, residentKey required) so the passkey is discoverable for autofill sign-in. Security keys still work but are not the case to design for in these markets."]
+  }
+},
+{
+  group:"A · Passkey", id:"pklogin", title:"Sign In with Passkey", step:"Login",
+  states:["Autofill prompt","Verifying","Signed in","Fallback"],
+  render:(s)=>s===3?`
+    <div class="scr-title"><span class="authsw"><span class="off">Sign up</span><span class="div"></span><span class="on">Login</span></span></div>
+    <div class="err">Face ID didn't work. Use another way to sign in.</div>
+    ${F("Account ID / email / phone")}
+    ${CTA("Send one-time code")}
+    <div class="link"><b>Use password instead</b></div>
+    <div class="hint">＊ Falling back is always one tap away. A member locked out of a biometric must never be locked out of the account.</div>`
+  :s===2?`
+    <div class="scr-title">Welcome back 👋</div>
+    <div class="ph" style="height:100px">✅<br><small>signed in</small></div>
+    <div class="scr-step" style="font-size:15px;color:#333"><b>Signed in as v9_user***</b></div>
+    ${CTA("Continue")}
+    <div class="hint">＊ Single-session rule still applies — this sign-in ends the session on any other device, and the event is written to History.</div>`
+  :s===1?`
+    <div class="scr-title">Verifying…</div>
+    <div class="ph" style="height:150px">⏳<br><small>confirm with Face ID</small></div>`
+  :`
+    <div class="scr-title"><span class="authsw"><span class="off">Sign up</span><span class="div"></span><span class="on">Login</span></span></div>
+    <div class="socrow" style="margin-top:14px">
+      <div class="sic"><span class="c">G</span><small>Google</small></div>
+      <div class="sic"><span class="c" style="font-size:10px">LINE</span><small>LINE</small></div>
+      <div class="sic"><span class="c" style="font-size:9px">Zalo</span><small>Zalo</small></div>
+    </div>
+    <div class="or">or</div>
+    <div class="field" style="border-style:solid"><span>Account ID / email / phone</span><small>▾</small></div>
+    <div class="ccpop">
+      <div class="cc">🔑 &nbsp;<b>Sign in as v9_user***</b> &nbsp;<small style="color:var(--muted)">Face ID</small></div>
+    </div>
+    <div class="hint">＊ The passkey appears inside the field's own autofill list — the member taps their account, not a separate "Passkey" button.</div>
+    ${CTA("Continue")}`,
+  spec:{
+    goal:"Sign in with a passkey in one step. The passkey is surfaced by the browser's autofill on the identifier field, not as a separate button competing with the other methods.",
+    states:["autofill suggestion shown (conditional UI)","verifying with the authenticator","signed in","no passkey on this device → normal login, no error","biometric failed / cancelled → fallback to one-time code or password"],
+    fields:["challenge","credential_id","session_token"],
+    api:"POST /webauthn/auth/options → { challenge, allowCredentials:[] }\nPOST /webauthn/auth/verify { assertion } → { session_token }\nerr: UNKNOWN_CREDENTIAL / SIGNATURE_INVALID / CHALLENGE_EXPIRED",
+    notes:["MARKET PRACTICE — conditional UI (autofill), not a button. Google, Apple and PayPal surface the passkey inside the username field's autofill dropdown. A dedicated 'Sign in with passkey' button is the older pattern and it performs worse: members do not know whether they have one, so the button is a guess. With autofill it only appears when a passkey actually exists for this site on this device.","allowCredentials is sent EMPTY for discoverable credentials — the device offers whichever accounts it holds. Sending a credential list requires knowing who the member is first, which defeats the one-step flow.","A failed or cancelled biometric is not a failed login attempt. It must not count toward lockout and must not reveal whether a passkey exists for that account.","The existing login rules are unchanged by this screen: still one active session (this sign-in ends the other device), still no disclosure of whether an account has a password.","Passkey sign-in does NOT satisfy a withdrawal step-up on its own — see Authenticator Challenge for the separate decision about sensitive actions."]
+  }
+},
+{
+  group:"A · Passkey", id:"pkqr", title:"Cross-device Sign In", step:"Hybrid transport (QR)",
+  states:["QR shown","Approving on phone","Signed in"],
+  render:(s)=>s===2?`
+    <div class="scr-title">Signed in ✅</div>
+    <div class="scr-step" style="font-size:15px;color:#333"><b>This computer is signed in</b><br>Your phone stays where it is — no passkey was copied</div>
+    ${CTA("Continue")}
+    <div class="hint">＊ Nothing is transferred. The phone signs the challenge and sends back the answer.</div>`
+  :s===1?`
+    <div class="scr-title">Check Your Phone</div>
+    <div class="ph" style="height:140px">📱 ⏳<br><small>waiting for approval</small></div>
+    <div class="scr-step">Confirm with Face ID on your phone</div>
+    <div class="hint">＊ Proximity is verified by Bluetooth — a QR screenshotted and sent to someone else will not work.</div>`
+  :`
+    <div class="scr-title"><span class="x">←</span>Sign In on This Computer</div>
+    <div class="ph" style="height:170px">▚▚▚▚▚<br><small>[ QR code ]</small><br>▚▚▚▚▚</div>
+    <div class="scr-step">Scan with the phone that has your passkey</div>
+    <div class="link"><b>Use a code instead</b></div>
+    <div class="hint">＊ Desktop only. Offer it when the member has a passkey but not on this machine.</div>`,
+  spec:{
+    goal:"Let a member sign in on a computer using the passkey held on their phone, without enrolling a second passkey on a shared or temporary machine.",
+    states:["QR displayed (desktop)","phone scanned → approving","approved → session on the computer","QR expired → regenerate","Bluetooth off / out of range → fall back to one-time code"],
+    fields:["challenge","linking_session","session_token"],
+    api:"Standard WebAuthn hybrid transport — the browser and platform handle the QR and BLE handshake; the server only issues and verifies the challenge.",
+    notes:["MARKET PRACTICE — this is how Google, Microsoft and PayPal solve 'my passkey is on my phone, I'm on a laptop'. It is built into the platform; there is nothing to implement beyond offering the entry point.","Nothing is copied to the computer. The phone signs the challenge and returns the assertion, which is why this is safe on a machine the member does not own — and why the copy must not imply the passkey moved.","Bluetooth proximity is part of the protocol, not an optional extra. It is what stops a QR being screenshotted into a phishing chat — worth saying plainly in the hint, because members do screenshot QR codes.","Do NOT offer to create a passkey on a shared computer as the alternative. That is the failure this screen exists to prevent.","Lower priority than the other passkey screens in these markets — app and mobile web dominate. Build it when desktop traffic justifies it; the entry point is a link, not a step."]
+  }
+},
+{
+  group:"A · Passkey", id:"pkmanage", title:"Passkeys", step:"Settings › Security",
+  states:["List","Revoke → OTP","Last method blocked"],
+  render:(s)=>s===2?`
+    <div class="scr-title"><span class="x">←</span>Passkeys</div>
+    <div class="err">This is the only way you can sign in. Add a password or another passkey before removing it.</div>
+    ${CTA("Set a password")}
+    ${CTA("Cancel",'ghost')}
+    <div class="hint">＊ Blocking here is the whole point: removing the last sign-in method is a self-inflicted lockout, and Live Chat is the only way back.</div>`
+  :s===1?`
+    <div class="scr-title"><span class="x">←</span>Remove Passkey</div>
+    <div class="scr-step">Enter the code sent to ba*****on@gmail.com</div>
+    <div class="otpcells"><span class="f">_</span><span>_</span><span>_</span><span>_</span><span>_</span><span>_</span></div>
+    <div class="hint" style="text-align:center">Resend in 32s</div>
+    ${CTA("Remove",'disabled')}
+    <div class="hint">＊ Removing a sign-in method is a sensitive action — it takes a code even though the member is already signed in.</div>`
+  :`
+    <div class="scr-title"><span class="x">←</span>Passkeys</div>
+    <div class="scr-step">Devices that can sign in with Face ID or fingerprint</div>
+    <div class="checklist">
+      ${ci("🔑","iPhone 15","this device · last used today",false)}
+      ${ci("🔑","MacBook Air","last used 3 days ago",false)}
+      ${ci("🔑","Old Pixel 6","last used 4 months ago",false)}
+    </div>
+    ${CTA("Add a passkey",'ghost')}
+    <div class="hint">＊ Several passkeys is normal and expected — one per device, and synced managers may add more. Do not limit it.</div>
+    <div class="hint">＊ Session and passkey are different things: one active session at a time, many passkeys. Ending a session does not revoke anything.</div>`,
+  spec:{
+    goal:"Show every passkey that can reach this account, with enough detail to recognise a device — and make removing one both possible and hard to do by accident.",
+    states:["list (device label, added date, last used, 'this device' marker)","revoke → OTP required","revoking the last sign-in method → blocked with a route out","no passkeys yet → empty state with Add","stale passkey (unused for months) → surfaced but never auto-removed"],
+    fields:["credentials[{credential_id,device_label,created_at,last_used_at,is_current_device}]"],
+    api:"GET /account/security/passkeys → { credentials:[] }\nDELETE /account/security/passkeys/{id} (OTP required)\nerr: LAST_AUTH_METHOD",
+    notes:["'Last used' is the field that makes this list usable. Device labels collide — two iPhones read identically — so the date is how a member tells which row is the phone they lost.","Revoking needs an OTP even inside an authenticated session. Someone with a borrowed unlocked phone should not be able to silently strip the real owner's other devices.","LAST_AUTH_METHOD is a real guard, not a warning: if this passkey is the only way in, the delete is refused and the member is routed to add a password or another method first. The alternative is an account only Live Chat can rescue.","This is the screen the 'lost my phone' path ends at: sign in on the new device with password or one-time code — which also ends the old session — then come here and revoke the old device's passkey. Session end and passkey revocation are deliberately separate.","Never auto-expire a passkey for being unused. It looks like tidiness and behaves like a lockout for anyone who keeps a backup device in a drawer.","MARKET PRACTICE — Google, Apple and Microsoft all show a list with device + last used and require re-authentication to remove. Nobody auto-prunes."]
+  }
+},
+{
+  group:"B · Authenticator", id:"methods", title:"Security Methods", step:"Settings › Security",
+  states:["Nothing on","Passkey on","Passkey + Authenticator"],
+  render:(s)=>`
+    <div class="scr-title"><span class="x">←</span>Security</div>
+    <div class="scr-step">How you sign in and confirm sensitive actions</div>
+    <div class="grp">Sign in</div>
+    <div class="checklist">
+      ${ci("🔑","Face ID / passkey",s>=1?"iPhone 15 · on":"not set up",s>=1)}
+      ${ci("🔒","Password","optional · one-time code always works",false)}
+    </div>
+    <div class="grp">Confirm sensitive actions</div>
+    <div class="checklist">
+      ${ci("📱","Authenticator app",s===2?"on · used for withdrawals":"not set up — code sent by email instead",s===2)}
+    </div>
+    ${s===2?`<div class="hint">＊ With an authenticator on, withdrawals ask for its code instead of an emailed one. No SMS, nothing to intercept.</div>`:`<div class="hint">＊ Without one, sensitive actions fall back to a code sent to your email or phone.</div>`}
+    <div class="hint">＊ Two different jobs on one screen — signing IN, and proving it is still you when money moves. Keep the grouping.</div>`,
+  spec:{
+    goal:"One place showing every security method and, crucially, WHICH JOB each one does — signing in versus confirming a sensitive action. They are not interchangeable and the screen should not imply they are.",
+    states:["nothing set up → one-time code is the only method","passkey on, no authenticator","passkey + authenticator","authenticator on but no passkey (valid combination)"],
+    fields:["has_passkey(bool)","passkey_count","has_password(bool)","has_totp(bool)","has_verified_contact(bool)"],
+    api:"GET /account/security → { passkeys:[], has_password, totp:{enrolled,enrolled_at}, verified_contacts }",
+    notes:["THE DISTINCTION THIS SCREEN EXISTS TO MAKE — a passkey REPLACES the password: possession plus a local biometric, phishing-resistant, one step. An authenticator code ADDS to whatever came before: it is a second factor, and it is still phishable, because a member can be talked into typing it into a convincing fake page. They solve different problems and the grouping should say so.","Which is why a member with a passkey still gains something from an authenticator: not a better login, but a better withdrawal step-up. And why 'you have a passkey, you don't need this' would be wrong advice.","MARKET PRACTICE — the industry is moving away from TOTP as a login second factor (it is phishable and it is friction on every sign-in) and toward passkeys for login plus step-up only where money or settings move. Banking apps have worked this way for years; consumer platforms arrived at it more recently.","For THIS product the authenticator's real value is replacing SMS on withdrawal step-up: SIM swap is a live threat in these markets, and every SMS OTP costs money per send. An authenticator is free after enrolment and cannot be SIM-swapped.","Do not let the count of methods become a score. No 'security level 2 of 3' bar — it pushes members toward enrolling things they will not keep and cannot recover."]
+  }
+},
+{
+  group:"B · Authenticator", id:"taintro", title:"Add Authenticator", step:"Step 1 of 4",
+  states:["Default","Blocked · no verified contact"],
+  render:(s)=>s===1?`
+    <div class="scr-title"><span class="x">←</span>Add Authenticator</div>
+    <div class="err">Add an email or phone first. Without one, losing your authenticator would lock you out permanently.</div>
+    ${CTA("Add an email")}
+    ${CTA("Cancel",'ghost')}
+    <div class="hint">＊ Hard requirement, not advice. A Zalo-only account plus a lost phone equals an account nobody can recover.</div>`
+  :`
+    <div class="scr-title"><span class="x">←</span>Add Authenticator</div>
+    <div class="scr-step">An app on your phone generates a 6-digit code that changes every 30 seconds</div>
+    <div class="checklist">
+      ${ci("1","Install an authenticator app","Google Authenticator, Authy, 1Password…",false)}
+      ${ci("2","Scan a QR code","links the app to your account",false)}
+      ${ci("3","Enter one code","proves it is working",false)}
+      ${ci("4","Save your recovery codes","your way back in if the phone is lost",false)}
+    </div>
+    ${CTA("Start")}
+    <div class="hint">＊ Withdrawals will ask for this code instead of emailing you one.</div>`,
+  spec:{
+    goal:"Set expectations before the QR appears: four steps, what the member needs, and what changes afterwards. Also the gate that stops an unrecoverable enrolment.",
+    states:["default (has a verified contact)","blocked — no verified email or phone on the account","already enrolled → manage / remove instead"],
+    fields:["has_verified_contact(bool)","totp_enrolled(bool)"],
+    api:"GET /account/security/totp/eligibility → { eligible, reason }",
+    notes:["THE GATE: enrolment requires a verified email or phone already on the account. Not a recommendation — a refusal. An account whose only contact is a Zalo login, plus an authenticator on a phone that is later lost, has no recovery path that does not end at Live Chat with no way to prove ownership. This is the same has_verified_contact flag Setup Step 1 uses.","Showing the four steps up front is what stops the classic abandonment: members who scan the QR, never reach the recovery codes, then lose the phone. The count sets the expectation that step 4 exists.","Name real apps. 'Use an authenticator app' means nothing to someone who has never installed one; Google Authenticator / Authy / 1Password / Microsoft Authenticator are the ones members in these markets will find.","Say what changes afterwards on THIS screen, before enrolment, not after: withdrawals stop emailing a code and start asking the app. A member who discovers that at the withdrawal screen experiences it as a bug.","MARKET PRACTICE — standard TOTP (RFC 6238), 6 digits, 30-second window. Every mainstream app implements the same thing; there is nothing proprietary to design."]
+  }
+},
+{
+  group:"B · Authenticator", id:"tascan", title:"Scan the QR", step:"Step 2 of 4",
+  states:["QR code","Manual key"],
+  render:(s)=>s===1?`
+    <div class="scr-title"><span class="x">←</span>Enter the Key</div>
+    <div class="scr-step">Type this into your authenticator app</div>
+    <div class="field" style="border-style:solid"><span style="letter-spacing:2px">JBSW Y3DP EHPK 3PXP</span><small style="border:1px solid var(--line2);border-radius:6px;padding:2px 8px;color:#666">Copy</small></div>
+    <div class="hint">Account: v9bet · v9_user***</div>
+    <div class="link"><b>Show QR code instead</b></div>
+    ${CTA("Next")}
+    <div class="hint">＊ Always offer the manual key. Scanning fails on the same phone the app is on, and on any device without a camera.</div>`
+  :`
+    <div class="scr-title"><span class="x">←</span>Scan This</div>
+    <div class="ph" style="height:180px">▚▚▚▚▚<br><small>[ QR code ]</small><br>▚▚▚▚▚</div>
+    <div class="scr-step">Open your authenticator app and scan</div>
+    <div class="link"><b>Can't scan? Enter the key manually</b></div>
+    ${CTA("Next")}
+    <div class="hint">＊ The QR is just a link the app reads — it is not a secret shown to anyone else, but it IS the secret, so never log it or put it in an email.</div>`,
+  spec:{
+    goal:"Hand the shared secret to the member's authenticator app, by camera or by typing, without a route where neither works.",
+    states:["QR displayed","manual key displayed with copy affordance","secret expired → regenerate (a QR left open for an hour must not still enrol)"],
+    fields:["totp_secret(base32, transient)","otpauth_uri","issuer","account_label"],
+    api:"POST /account/security/totp/init → { secret_base32, otpauth_uri, expires_at }\nThe secret is NOT active until Step 3 verifies a code.",
+    notes:["The QR encodes a standard otpauth URI: otpauth://totp/v9bet:v9_user***?secret=...&amp;issuer=v9bet&amp;algorithm=SHA1&amp;digits=6&amp;period=30. Keep SHA1/6/30 — they are the defaults every app assumes, and changing them silently breaks apps that ignore the parameters.","Set issuer and the account label properly. They are what the member sees in a list of a dozen entries; 'v9bet · v9_user***' is findable, a bare secret is not.","MANUAL ENTRY IS NOT OPTIONAL. The most common enrolment is on the SAME phone that holds the app — there is no second camera to scan with. Members switch apps, copy the key, switch back.","The secret is live from init, so give it an expiry and treat it as a credential: never write it to logs, never email it, never include it in analytics events or error reports.","Nothing is enabled yet. The account must behave exactly as before until Step 3 succeeds — a member who abandons here has changed nothing."]
+  }
+},
+{
+  group:"B · Authenticator", id:"taverify", title:"Verify the Code", step:"Step 3 of 4",
+  states:["Enter code","Wrong code","Clock out of sync"],
+  render:(s)=>s===2?`
+    <div class="scr-title"><span class="x">←</span>Check the Time</div>
+    <div class="err">The codes are arriving late. Turn on automatic date &amp; time on your phone, then try again.</div>
+    <div class="otpcells"><span class="f">_</span><span>_</span><span>_</span><span>_</span><span>_</span><span>_</span></div>
+    ${CTA("Verify",'disabled')}
+    <div class="hint">＊ Codes are generated from the clock. A phone set to the wrong time produces codes that never match, and 'wrong code' is a misleading way to say so.</div>`
+  :s===1?`
+    <div class="scr-title"><span class="x">←</span>Enter the Code</div>
+    <div class="err">That code didn't match. It changes every 30 seconds — try the current one.</div>
+    <div class="otpcells"><span class="f" style="border-color:#b56">_</span><span style="border-color:#b56">_</span><span style="border-color:#b56">_</span><span style="border-color:#b56">_</span><span style="border-color:#b56">_</span><span style="border-color:#b56">_</span></div>
+    ${CTA("Verify",'disabled')}
+    <div class="hint">＊ Do not lock the member out at this stage — nothing is enabled yet, so a wrong code costs nothing. Throttle instead.</div>`
+  :`
+    <div class="scr-title"><span class="x">←</span>Enter the Code</div>
+    <div class="scr-step">Type the 6-digit code from your authenticator app</div>
+    <div class="otpcells"><span class="f">_</span><span>_</span><span>_</span><span>_</span><span>_</span><span>_</span></div>
+    <div class="hint" style="text-align:center">The code changes every 30 seconds</div>
+    ${CTA("Verify",'disabled')}
+    <div class="hint">＊ Verifying before enabling is the step that catches a mis-scanned QR while the member still has the screen open.</div>`,
+  spec:{
+    goal:"Prove the app actually works before anything is switched on. This is the step that prevents enrolling a broken authenticator and discovering it at a withdrawal.",
+    states:["enter code","wrong code → retry, nothing enabled","repeated failures → throttle, still nothing enabled","clock drift detected → specific guidance, not a generic error","verified → proceed to recovery codes"],
+    fields:["totp_code(6)","totp_secret(transient)","drift_window"],
+    api:"POST /account/security/totp/verify { code } → { verified:true } (still not enabled)\nerr: TOTP_INVALID / TOTP_CLOCK_DRIFT / RATE_LIMITED",
+    notes:["Accept a ±1 step window (30s either side) — phone clocks drift by seconds routinely and rejecting those codes produces failures the member cannot understand or fix.","Beyond that window, detect the drift and SAY SO. If the submitted code matches a step several periods away, the clock is wrong — telling the member 'wrong code' sends them to re-scan a QR that was never the problem. This is the single highest-value error state on the screen.","A failure here must never lock the account. Nothing is enabled, so there is nothing to protect; throttle the endpoint and let them keep trying.","Enforce one-time use per step so a code cannot be replayed inside its own window.","MARKET PRACTICE — every mainstream implementation verifies a code before enabling. It is the difference between 'authenticator added' and 'authenticator added and known to work'."]
+  }
+},
+{
+  group:"B · Authenticator", id:"tacodes", title:"Recovery Codes", step:"Step 4 of 4",
+  states:["Codes shown","Confirm saved","Done"],
+  render:(s)=>s===2?`
+    <div class="scr-title">Authenticator On ✅</div>
+    <div class="ph" style="height:100px">📱 ✅<br><small>enabled</small></div>
+    <div class="scr-step" style="font-size:15px;color:#333"><b>Withdrawals will now ask for your app's code</b><br>Recovery codes saved · 10 remaining</div>
+    ${CTA("Done")}
+    <div class="hint">＊ Say what changed, in the member's terms. "TOTP enabled" means nothing.</div>`
+  :s===1?`
+    <div class="scr-title">One Last Thing</div>
+    <div class="scr-step">These are the only way back in if you lose your phone</div>
+    <div class="opt"><span class="sq on"></span><span style="flex:1">I've saved my recovery codes somewhere safe</span></div>
+    ${CTA("Turn on authenticator")}
+    <div class="link"><b>Show the codes again</b></div>
+    <div class="hint">＊ An explicit confirmation, not a passive "you may want to save these". This is the step members skip and later need.</div>`
+  :`
+    <div class="scr-title">Recovery Codes</div>
+    <div class="scr-step">Save these now — each one works once</div>
+    <div class="field" style="border-style:solid;display:block;line-height:2;letter-spacing:1px;font-size:13px">
+      4K7P-2QX9 &nbsp; 8MHT-3RB6<br>
+      P2WN-9LK4 &nbsp; ZC5D-7VYQ<br>
+      H3BJ-6NTR &nbsp; 9XQM-2DWF<br>
+      <small style="color:var(--muted);letter-spacing:0">…10 codes total</small>
+    </div>
+    <div class="row"><div>${CTA("Copy",'ghost')}</div><div>${CTA("Download",'ghost')}</div></div>
+    ${CTA("Next")}
+    <div class="hint">＊ Shown ONCE. We store hashes, so they cannot be displayed again — regenerating replaces the whole set.</div>`,
+  spec:{
+    goal:"Give the member a way back in that does not depend on the phone they just enrolled, and make sure they actually keep it.",
+    states:["codes displayed with copy / download","explicit confirm before enabling","enabled → summary of what changed","later: regenerate (invalidates the old set)","codes running low → prompt to regenerate"],
+    fields:["recovery_codes[10] (shown once, stored hashed)","codes_remaining"],
+    api:"POST /account/security/totp/enable { confirmed_saved:true } → { recovery_codes:[10] }\nPOST /account/security/totp/recovery-codes/regenerate → replaces all\nGET /account/security → { totp:{ codes_remaining } }",
+    notes:["THIS IS THE STEP THAT DECIDES WHETHER THE FEATURE IS A NET GAIN. An authenticator without saved recovery codes converts a lost phone into a support ticket, and support cannot verify identity over chat for a gambling account. Treat this screen as the point of the whole flow, not the last formality.","Hash them like passwords and show them once. Being able to re-display recovery codes makes them equivalent to a password stored in plaintext — anyone with a borrowed session could read them.","The confirmation checkbox is deliberate friction. Passive copy ('you may want to save these') is skipped; an explicit claim is what makes the member stop and act.","Offer copy AND download. Members in these markets screenshot — which lands the codes in a cloud photo library, next to the phone that was supposed to be the second factor. A file is not much better, but the prompt to choose makes the decision visible.","Surface codes_remaining in Settings and prompt to regenerate when it drops low. Silently running out is how a member discovers the problem at the worst moment.","Regeneration replaces the whole set — never top up. A partially rotated set means the member cannot tell which list is current."]
+  }
+},
+{
+  group:"B · Authenticator", id:"tachallenge", title:"Authenticator Challenge", step:"Login / step-up",
+  states:["At withdrawal","At login","Wrong code","Use a recovery code"],
+  render:(s)=>s===3?`
+    <div class="scr-title"><span class="x">←</span>Use a Recovery Code</div>
+    <div class="scr-step">Enter one of the codes you saved when you set this up</div>
+    ${F("XXXX-XXXX","one-time use")}
+    ${CTA("Continue",'disabled')}
+    <div class="hint">＊ Using one consumes it and tells the member how many are left.</div>
+    <div class="link"><b>Lost those too? Contact Live Chat</b></div>`
+  :s===2?`
+    <div class="scr-title"><span class="x">←</span>Confirm Withdrawal</div>
+    <div class="err">That code didn't match. It changes every 30 seconds.</div>
+    <div class="otpcells"><span class="f" style="border-color:#b56">_</span><span style="border-color:#b56">_</span><span style="border-color:#b56">_</span><span style="border-color:#b56">_</span><span style="border-color:#b56">_</span><span style="border-color:#b56">_</span></div>
+    ${CTA("Confirm",'disabled')}
+    <div class="link"><b>Use a recovery code</b></div>
+    <div class="hint">＊ The withdrawal request is held, not cancelled — a mistyped code must not throw away what they entered.</div>`
+  :s===1?`
+    <div class="scr-title">Confirm It's You</div>
+    <div class="scr-step">Enter the code from your authenticator app</div>
+    <div class="otpcells"><span class="f">_</span><span>_</span><span>_</span><span>_</span><span>_</span><span>_</span></div>
+    <div class="opt"><span class="sq on"></span><span style="flex:1">Trust this device for 30 days</span></div>
+    ${CTA("Sign in",'disabled')}
+    <div class="link"><b>Use a recovery code</b></div>
+    <div class="hint">＊ Only reached when the member has no passkey — otherwise the passkey already did this job in one step.</div>`
+  :`
+    <div class="scr-title"><span class="x">←</span>Confirm Withdrawal</div>
+    <div class="scr-step">Withdraw <b>2,500,000 ₫</b> to Vietcombank ***4821</div>
+    <div class="otpcells"><span class="f">_</span><span>_</span><span>_</span><span>_</span><span>_</span><span>_</span></div>
+    <div class="hint" style="text-align:center">From your authenticator app</div>
+    ${CTA("Confirm",'disabled')}
+    <div class="link"><b>Use a recovery code</b></div>
+    <div class="hint">＊ Show the amount and destination ON the confirmation screen. A code typed without seeing what it approves is a signature on a blank page.</div>`,
+  spec:{
+    goal:"Ask for the authenticator code where it actually buys something: confirming that money is moving. Logging in is a secondary use and only for members without a passkey.",
+    states:["withdrawal step-up (primary use)","login second factor (only when no passkey)","wrong code → retry, request held","recovery code path","too many failures → cooldown, request preserved","no authenticator enrolled → falls back to email / SMS OTP"],
+    fields:["totp_code(6)","recovery_code","action_context{type,amount,destination}","trust_device(bool)"],
+    api:"POST /auth/step-up/totp { code, action_ref } → { approved:true }\nPOST /auth/step-up/recovery { code, action_ref } → { approved:true, codes_remaining }\nerr: TOTP_INVALID / RECOVERY_CODE_USED / RATE_LIMITED",
+    notes:["TRANSACTION SIGNING — show the amount and the destination on the same screen as the code field. A step-up that only says 'enter your code' approves whatever the server decided to do; if the member's session were hijacked, they would be the ones approving it. Banking apps have shown the transaction details at the point of confirmation for years, and this is the pattern worth copying.","The request is HELD across a wrong code. Members mistype; re-entering an amount and re-picking a bank account after a typo is the kind of friction that sends them to Live Chat.","When an authenticator is enrolled it REPLACES the emailed code for this step — do not ask for both. Two factors stacked on one action is not twice the security, it is twice the abandonment.","When none is enrolled, this step falls back to the existing email / SMS OTP exactly as today. Nothing about the current withdrawal flow changes for members who never enrol.","'Trust this device for 30 days' belongs on LOGIN, never on withdrawal. A trusted device is a convenience for proving identity; it is not a reason to stop confirming that money is leaving.","Every use of a recovery code should notify the member on their verified contact — it is the clearest signal available that someone is working around the second factor."]
+  }
+},
+{
+  group:"C · Recovery", id:"talost", title:"Lost Your Device", step:"Recovery",
+  states:["Has recovery code","Codes used up","Everything lost"],
+  render:(s)=>s===2?`
+    <div class="scr-title"><span class="x">←</span>Contact Live Chat</div>
+    <div class="err">We can't remove an authenticator here. Our team will verify your identity with you.</div>
+    <div class="scr-step">Ref: v9_user*** · account unchanged</div>
+    ${CTA("Contact Live Chat")}
+    <div class="hint">＊ No self-service route once both the app and the codes are gone. Any automated path here is also the path an attacker takes.</div>
+    <div class="hint">＊ This is exactly why enrolment requires a verified contact and an explicit "I saved my codes" — both exist to keep members out of this screen.</div>`
+  :s===1?`
+    <div class="scr-title"><span class="x">←</span>No Codes Left</div>
+    <div class="err">All 10 recovery codes have been used.</div>
+    <div class="scr-step">Ref: v9_user***</div>
+    ${CTA("Contact Live Chat")}
+    <div class="hint">＊ Avoidable: prompt to regenerate once the count drops to 3, from Settings and from the challenge screen.</div>`
+  :`
+    <div class="scr-title"><span class="x">←</span>Lost Your Phone?</div>
+    <div class="scr-step">Use a recovery code to get in, then set up a new authenticator</div>
+    ${F("XXXX-XXXX","one-time use")}
+    ${CTA("Continue",'disabled')}
+    <div class="hint">＊ After this, walk them straight into re-enrolment — an account left with a dead authenticator will hit the same wall at the next withdrawal.</div>
+    <div class="link"><b>No recovery codes? Contact Live Chat</b></div>`,
+  spec:{
+    goal:"The path back for a member whose authenticator is gone — and an honest dead end where no safe automated path exists.",
+    states:["recovery code accepted → signed in → prompt to re-enrol","codes exhausted → Live Chat","no codes at all → Live Chat","identity confirmed by support → authenticator removed, account keeps everything else"],
+    fields:["recovery_code","codes_remaining","customer_id"],
+    api:"POST /auth/recovery/totp { code } → { session_token, codes_remaining }\nSupport-side removal is an audited manual action — no public endpoint.",
+    notes:["Re-enrolment must be the next step after a recovery code is accepted, not a suggestion. Otherwise the member is signed in with a second factor that no longer exists and meets the same wall at their next withdrawal.","Removal by support is deliberately manual and audited. An automated 'remove my authenticator' path, however well gated, is the path an attacker would use — and for a gambling account the thing being protected is withdrawable money.","Notify the verified contact on every recovery-code use and on any support-side removal. If it was not the member, that message is their only warning.","Live Chat here needs a real identity procedure — KYC documents, deposit history, payout account details. 'Contact Live Chat' with no process behind it is a dead end wearing a button.","The two guards upstream (a verified contact required to enrol, an explicit confirmation that codes were saved) exist entirely to keep the population of this screen small. If it still fills up, those guards are where to look, not here."]
+  }
+},
+];
+
+/* small components used inside screens */
+function ci(n,label,tag,done){
+  let pts='';
+  if(tag){ const m=tag.match(/\+(\d+)\s*pts$/); if(m){ pts=m[1]; tag=tag.replace(/\s*·?\s*\+\d+\s*pts$/,'').trim(); } }
+  return `<div class="ci ${done?'done':''}"><span class="num">${done?'✓':n}</span><span class="g">${label}${tag?`<small>${tag}</small>`:''}</span>${pts?`<span class="pts">🎁+${pts}</span>`:''}<span style="color:#bbb">›</span></div>`;
+}
+function tog(label,on){return `<div class="opt"><span style="flex:1">${label}</span><span style="width:40px;height:22px;border-radius:12px;border:1px solid var(--line2);background:${on?'var(--solid)':'#fff'};position:relative"><span style="position:absolute;top:2px;${on?'right:2px':'left:2px'};width:16px;height:16px;border-radius:50%;background:#fff;border:1px solid var(--line2)"></span></span></div>`}
+
+/* ---------- runtime ---------- */
+let idx=0, st=0;
+const navEl=document.getElementById('nav');
+function buildNav(){
+  let html='', lastG='';
+  screens.forEach((sc,i)=>{
+    if(sc.group!==lastG){html+=`<div class="group-title">${sc.group}</div>`;lastG=sc.group;}
+    html+=`<div class="nav ${i===idx?'active':''}" data-i="${i}"><span class="num">${i+1}</span>${sc.title}</div>`;
+  });
+  navEl.innerHTML=html;
+  navEl.querySelectorAll('.nav').forEach(n=>n.onclick=()=>{idx=+n.dataset.i;st=0;draw();});
+}
+function draw(){
+  const sc=screens[idx];
+  document.getElementById('screen').innerHTML=sc.render(st);
+  // states
+  const stWrap=document.getElementById('states');
+  stWrap.innerHTML=sc.states.map((s,i)=>`<button class="${i===st?'on':''}" data-s="${i}">${s}</button>`).join('');
+  stWrap.querySelectorAll('button').forEach(b=>b.onclick=()=>{st=+b.dataset.s;draw();});
+  document.getElementById('bread').textContent=`Screen ${idx+1} / ${screens.length} · ${sc.title}${sc.step?' · '+sc.step:''}`;
+  // spec
+  const sp=sc.spec;
+  document.getElementById('spec').innerHTML=`
+    <h2>Screen Goal</h2><p style="font-size:13px;margin:0">${sp.goal}</p>
+    <h2>States</h2><div class="stlist">${sp.states.map(x=>`<span class="pill">${x}</span>`).join('')}</div>
+    <h2>Fields</h2><div class="stlist">${sp.fields.map(x=>`<span class="pill">${x}</span>`).join('')}</div>
+    <h2>API / Data</h2><div class="api">${sp.api}</div>
+    <h2>Dev Notes</h2><ul>${sp.notes.map(x=>`<li>${x}</li>`).join('')}</ul>`;
+  buildNav();
+}
+document.getElementById('prev').onclick=()=>{if(idx>0){idx--;st=0;draw();}};
+document.getElementById('next').onclick=()=>{if(idx<screens.length-1){idx++;st=0;draw();}};
+draw();
+</script>
+<script>
+/* ---------- ✏️ 文字編輯模式：右下角開關，點字直接改；存 localStorage，重整 / 切畫面不會消失 ---------- */
+(function(){
+const FILE=location.pathname.split('/').pop()||'page';
+const KEY='wfTextEdits:'+FILE;
+const DYN=['screen','spec','bread'];                                   // draw() 重繪的區塊
+const STATIC=[['aside h1','h1'],['aside .sub','sub'],['aside .legend','legend']]; // 靜態區塊
+const dynKey=id=>id==='screen'?`d|${idx}|${st}|screen`:`d|${idx}|${id}`;
+const nodes=el=>{const w=document.createTreeWalker(el,NodeFilter.SHOW_TEXT),a=[];let n;while(n=w.nextNode())a.push(n);return a};
+const load=()=>{try{const d=JSON.parse(localStorage.getItem(KEY)||'{}');return{edits:d.edits||{},orig:d.orig||{}}}catch(e){return{edits:{},orig:{}}}};
+const persist=d=>localStorage.setItem(KEY,JSON.stringify(d));
+const fresh={};                                                        // 每個 key 的原始文字（重繪後快照）
+function applyKey(el,k){const v=load().edits[k];if(!v)return;const ns=nodes(el);for(let i=0;i<Math.min(ns.length,v.length);i++)ns[i].nodeValue=v[i]}
+function snapApply(el,k){if(!(k in fresh))fresh[k]=nodes(el).map(n=>n.nodeValue);applyKey(el,k)}
+function record(el,k){
+  const d=load(),cur=nodes(el).map(n=>n.nodeValue),o=fresh[k]||d.orig[k];
+  if(o&&cur.length===o.length&&cur.every((t,i)=>t===o[i])){delete d.edits[k];delete d.orig[k]}
+  else{d.edits[k]=cur;if(o&&!d.orig[k])d.orig[k]=o}
+  persist(d);flash('已儲存 ✓')}
+const _draw=draw;
+draw=function(){_draw();DYN.forEach(id=>{const el=document.getElementById(id);if(el)snapApply(el,dynKey(id))})};
+STATIC.forEach(([sel,k])=>{const el=document.querySelector(sel);if(el){snapApply(el,'s|'+k);el.addEventListener('input',()=>record(el,'s|'+k))}});
+DYN.forEach(id=>{const el=document.getElementById(id);if(el)el.addEventListener('input',()=>record(el,dynKey(id)))});
+draw();                                                                // 載入時套用已存的修改
+/* --- 編輯開關 --- */
+let editing=false;
+const plainOK=(()=>{const t=document.createElement('div');try{t.contentEditable='plaintext-only'}catch(e){return false}return t.contentEditable==='plaintext-only'})();
+const editables=()=>DYN.map(id=>document.getElementById(id)).concat(STATIC.map(([sel])=>document.querySelector(sel))).filter(Boolean);
+function setEditing(on){editing=on;
+  editables().forEach(el=>{if(on){el.setAttribute('contenteditable',plainOK?'plaintext-only':'true');el.setAttribute('spellcheck','false')}else{el.removeAttribute('contenteditable')}});
+  document.body.toggleAttribute('data-editing',on);
+  const b=document.getElementById('eb-toggle');b.textContent=on?'✅ 完成':'✏️ 編輯文字';b.classList.toggle('on',on);
+  flash(on?'點畫面上的字直接修改（自動儲存）':'')}
+document.addEventListener('beforeinput',e=>{if(editing&&!plainOK&&(e.inputType==='insertParagraph'||e.inputType==='insertLineBreak'))e.preventDefault()},true);
+/* --- 工具列 --- */
+const css=document.createElement('style');css.textContent=`
+#editbar{position:fixed;right:14px;bottom:14px;z-index:9999;display:flex;gap:6px;align-items:center;background:#fff;border:1px solid #d0d3d8;border-radius:10px;padding:6px 8px;box-shadow:0 4px 18px rgba(0,0,0,.14);font:12px/1.4 -apple-system,"Noto Sans TC",Arial,sans-serif}
+#editbar button{font:inherit;border:1px solid #d0d3d8;background:#fff;border-radius:7px;padding:4px 9px;cursor:pointer;color:#333}
+#editbar button:hover{border-color:#19c37d;color:#0f8a5f}
+#editbar #eb-toggle.on{background:#19c37d;border-color:#19c37d;color:#fff}
+#eb-msg{color:#0f8a5f;font-size:11px;max-width:170px}
+body[data-editing] [contenteditable]{outline:1.5px dashed #19c37d;outline-offset:3px;border-radius:3px;cursor:text}
+body[data-editing] [contenteditable]:focus{outline-style:solid}`;
+document.head.appendChild(css);
+const bar=document.createElement('div');bar.id='editbar';
+bar.innerHTML=`<button id="eb-toggle" title="開啟後直接點畫面文字修改，自動儲存在此瀏覽器">✏️ 編輯文字</button><button id="eb-copy" title="複製修改清單（原文 → 新文），可貼給 Claude 寫回 HTML">📋 複製修改</button><button id="eb-reset" title="清除此頁所有文字修改並還原">↺ 還原</button><span id="eb-msg"></span>`;
+document.body.appendChild(bar);
+document.getElementById('eb-toggle').onclick=()=>setEditing(!editing);
+document.getElementById('eb-reset').onclick=()=>{if(confirm('還原此頁所有文字修改？')){localStorage.removeItem(KEY);location.reload()}};
+document.getElementById('eb-copy').onclick=()=>{
+  const d=load();let out=`【文字修改】${FILE}\n`,cnt=0;
+  Object.keys(d.edits).forEach(k=>{const o=d.orig[k]||fresh[k]||[];(d.edits[k]||[]).forEach((t,i)=>{if(o[i]!==t){cnt++;out+=`\n${cnt}. 原：${(o[i]??'(?)').trim()}\n   改：${t.trim()}\n`}})});
+  if(!cnt)out+='（目前沒有修改）';
+  const done=()=>flash('已複製 ✓');
+  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(out).then(done,()=>fallbackCopy(out,done));else fallbackCopy(out,done)};
+function fallbackCopy(t,cb){const ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();cb()}
+let flTimer;function flash(m){const el=document.getElementById('eb-msg');if(!el)return;el.textContent=m;clearTimeout(flTimer);if(m&&m.includes('✓'))flTimer=setTimeout(()=>{el.textContent=editing?'編輯模式':''},1500)}
+})();
+</script>
+</body>
+</html>

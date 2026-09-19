@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Passkey 與 Authenticator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --ink:#22242A; --paper:#FFFFFF; --ground:#EDEDEF; --sunk:#E3E3E7;
+  --rule:#D3D4D9; --muted:#70737B; --muted2:#8A8D95;
+  --pk:#2B6A4B; --pk-fill:#E4F1E9;
+  --ta:#5A4A93; --ta-fill:#ECE8F6;
+  --alert:#A13636; --alert-fill:#FBEFEE;
+  --f-disp:"Archivo","Noto Sans TC",system-ui,sans-serif;
+  --f-body:"Noto Sans TC",-apple-system,system-ui,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ink:#E7E8EC; --paper:#1B1D22; --ground:#121317; --sunk:#16181D;
+    --rule:#343740; --muted:#979BA5; --muted2:#7E828C;
+    --pk:#6FBF92; --pk-fill:#15281E;
+    --ta:#A497DC; --ta-fill:#1E1A2E;
+    --alert:#E28C87; --alert-fill:#2C1D1D;
+  }
+}
+:root[data-theme="dark"]{
+  --ink:#E7E8EC; --paper:#1B1D22; --ground:#121317; --sunk:#16181D;
+  --rule:#343740; --muted:#979BA5; --muted2:#7E828C;
+  --pk:#6FBF92; --pk-fill:#15281E;
+  --ta:#A497DC; --ta-fill:#1E1A2E;
+  --alert:#E28C87; --alert-fill:#2C1D1D;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.72;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1120px;margin:0 auto;padding-inline:20px;padding-block:44px 72px}
+h1,h2,h3,h4{text-wrap:balance;margin:0}
+.en{font-family:var(--f-disp);font-weight:400;font-size:.9em;line-height:1.6;color:var(--muted2);margin-top:5px}
+.en-h{font-family:var(--f-disp);font-weight:500;font-size:.82em;line-height:1.45;color:var(--muted2);margin-top:3px}
+.eyebrow{font-family:var(--f-disp);font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+
+.mast{border-bottom:2px solid var(--ink);padding-bottom:22px;margin-bottom:30px}
+h1{font-size:clamp(27px,4.4vw,40px);font-weight:700;line-height:1.18;margin:10px 0 0}
+.mast .en-h{font-size:clamp(14px,2vw,18px);color:var(--muted)}
+.dek{max-width:64ch;margin:14px 0 0}
+
+figure{margin:0;background:var(--paper);border:1px solid var(--rule);border-radius:3px;padding:20px 18px 16px}
+.scroller{overflow-x:auto}
+svg{max-width:100%;height:auto;display:block;min-width:820px}
+figcaption{margin-top:14px;padding-top:12px;border-top:1px solid var(--rule);font-size:13px;color:var(--muted);line-height:1.6}
+figcaption b{color:var(--ink);font-weight:500}
+
+section{margin-top:40px}
+.sec-head{margin-bottom:16px}
+h2{font-size:19px;font-weight:700;letter-spacing:-.01em}
+
+.two{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media (max-width:860px){.two{grid-template-columns:1fr}}
+.col{background:var(--paper);border:1px solid var(--rule);border-top:3px solid var(--accent);border-radius:3px;padding:20px}
+.col.pk{--accent:var(--pk)}
+.col.ta{--accent:var(--ta)}
+.col .tag{font-family:var(--f-disp);font-size:11px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--accent)}
+.col h3{font-size:17px;font-weight:700;margin:6px 0 0}
+.col dl{margin:16px 0 0;display:grid;grid-template-columns:auto 1fr;gap:9px 12px;font-size:13px;line-height:1.55}
+.col dt{font-family:var(--f-mono);font-size:10.5px;color:var(--muted2);text-transform:uppercase;letter-spacing:.05em;white-space:nowrap;padding-top:2px}
+.col dd{margin:0}
+.col dd .en{margin-top:3px;font-size:.88em}
+
+.market{border:1px solid var(--rule);border-radius:3px;overflow:hidden;background:var(--paper)}
+.mrow{display:grid;grid-template-columns:200px 1fr;border-bottom:1px solid var(--rule)}
+.mrow:last-child{border-bottom:none}
+.mrow>div{padding:15px 18px}
+.mrow .k{font-weight:700;font-size:14px;background:var(--sunk)}
+.mrow .k .en-h{font-weight:400}
+.mrow .v{font-size:13.5px;line-height:1.66}
+@media (max-width:760px){.mrow{grid-template-columns:1fr}.mrow .k{border-bottom:1px dashed var(--rule)}}
+
+.rec{margin-top:22px;background:var(--paper);border:1px solid var(--rule);border-left:3px solid var(--pk);border-radius:0 3px 3px 0;padding:18px 20px}
+.rec h3{font-size:16px;font-weight:700}
+.rec ol{margin:12px 0 0;padding-left:20px;font-size:14px;line-height:1.7}
+.rec li{margin-bottom:12px}
+.rec b{font-weight:700}
+
+.warn{margin-top:20px;background:var(--alert-fill);border-left:3px solid var(--alert);border-radius:0 3px 3px 0;padding:15px 18px}
+.warn h3{font-size:14.5px;font-weight:700;color:var(--alert)}
+.warn .body{margin-top:7px;font-size:13.5px;line-height:1.66}
+
+footer{margin-top:48px;padding-top:16px;border-top:1px solid var(--rule);font-family:var(--f-mono);font-size:11.5px;color:var(--muted);display:flex;flex-wrap:wrap;gap:6px 20px}
+</style>
+</head>
+<body>
+
+
+<div class="wrap">
+
+  <header class="mast">
+    <div class="eyebrow">V9Bet · Security Methods</div>
+    <h1>Passkey 與 Authenticator</h1>
+    <div class="en-h">Passkeys and Authenticator Apps</div>
+    <div class="dek">
+      兩件常被混為一談的事。<b>Passkey 取代密碼</b>——一步完成、擋得住釣魚。<b>Authenticator 疊加在密碼之後</b>——第二道關卡，但本身仍然可能被釣。市場走的路是：用 passkey 登入，用 authenticator 確認金流。
+      <div class="en">Two things routinely conflated. <b>A passkey replaces the password</b> — one step, phishing-resistant. <b>An authenticator code adds to it</b> — a second factor, still phishable in itself. Where the market has landed: passkeys for signing in, authenticators for confirming money moving.</div>
+    </div>
+  </header>
+
+  <figure>
+    <div class="scroller">
+      <svg viewBox="0 0 1060 330" role="img" aria-label="Passkey 在登入時一步完成且擋得住釣魚；Authenticator 是密碼之後的第二道關卡，仍可能被釣魚。">
+        <defs>
+          <marker id="g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><polygon points="0,1 10,5 0,9" fill="var(--pk)"/></marker>
+          <marker id="p" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><polygon points="0,1 10,5 0,9" fill="var(--ta)"/></marker>
+          <marker id="r" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><polygon points="0,1 10,5 0,9" fill="var(--alert)"/></marker>
+        </defs>
+
+        <!-- PASSKEY ROW -->
+        <text x="16" y="44" font-size="11" font-weight="700" fill="var(--pk)" letter-spacing="1.2">PASSKEY · 取代密碼</text>
+        <text x="16" y="60" font-size="9" fill="var(--muted)">replaces the password</text>
+
+        <rect x="16" y="76" width="150" height="56" rx="4" fill="var(--paper)" stroke="currentColor" stroke-width="1.2"/>
+        <text x="91" y="100" text-anchor="middle" font-size="12" fill="currentColor">點帳號欄位</text>
+        <text x="91" y="116" text-anchor="middle" font-size="8.5" fill="var(--muted)">tap the field</text>
+
+        <rect x="216" y="76" width="150" height="56" rx="4" fill="var(--pk-fill)" stroke="var(--pk)" stroke-width="2"/>
+        <text x="291" y="100" text-anchor="middle" font-size="12" font-weight="700" fill="var(--pk)">Face ID</text>
+        <text x="291" y="116" text-anchor="middle" font-size="8.5" fill="var(--pk)">one step</text>
+
+        <rect x="416" y="76" width="150" height="56" rx="4" fill="var(--paper)" stroke="currentColor" stroke-width="1.2"/>
+        <text x="491" y="100" text-anchor="middle" font-size="12" fill="currentColor">登入完成</text>
+        <text x="491" y="116" text-anchor="middle" font-size="8.5" fill="var(--muted)">signed in</text>
+
+        <g fill="none" stroke="var(--pk)" stroke-width="1.6">
+          <path d="M166,104 H210" marker-end="url(#g)"/>
+          <path d="M366,104 H410" marker-end="url(#g)"/>
+        </g>
+
+        <rect x="616" y="70" width="428" height="68" rx="4" fill="var(--pk-fill)" stroke="var(--pk)" stroke-width="1.2" stroke-dasharray="5 4"/>
+        <text x="636" y="94" font-size="11.5" font-weight="700" fill="var(--pk)">✓ 釣魚網站拿不到</text>
+        <text x="636" y="112" font-size="10" fill="var(--pk)">金鑰綁定網域，假網站連提示都叫不出來</text>
+        <text x="636" y="128" font-size="8.5" fill="var(--muted)">bound to the domain — a fake site cannot even trigger the prompt</text>
+
+        <!-- divider -->
+        <line x1="16" y1="168" x2="1044" y2="168" stroke="currentColor" stroke-width="1" opacity="0.25"/>
+
+        <!-- AUTHENTICATOR ROW -->
+        <text x="16" y="200" font-size="11" font-weight="700" fill="var(--ta)" letter-spacing="1.2">AUTHENTICATOR · 疊加在密碼之後</text>
+        <text x="16" y="216" font-size="9" fill="var(--muted)">adds to the password</text>
+
+        <rect x="16" y="232" width="150" height="56" rx="4" fill="var(--paper)" stroke="currentColor" stroke-width="1.2"/>
+        <text x="91" y="256" text-anchor="middle" font-size="12" fill="currentColor">輸入密碼</text>
+        <text x="91" y="272" text-anchor="middle" font-size="8.5" fill="var(--muted)">password</text>
+
+        <rect x="216" y="232" width="150" height="56" rx="4" fill="var(--ta-fill)" stroke="var(--ta)" stroke-width="2"/>
+        <text x="291" y="256" text-anchor="middle" font-size="12" font-weight="700" fill="var(--ta)">再打 6 位數</text>
+        <text x="291" y="272" text-anchor="middle" font-size="8.5" fill="var(--ta)">second step</text>
+
+        <rect x="416" y="232" width="150" height="56" rx="4" fill="var(--paper)" stroke="currentColor" stroke-width="1.2"/>
+        <text x="491" y="256" text-anchor="middle" font-size="12" fill="currentColor">登入完成</text>
+        <text x="491" y="272" text-anchor="middle" font-size="8.5" fill="var(--muted)">signed in</text>
+
+        <g fill="none" stroke="var(--ta)" stroke-width="1.6">
+          <path d="M166,260 H210" marker-end="url(#p)"/>
+          <path d="M366,260 H410" marker-end="url(#p)"/>
+        </g>
+
+        <rect x="616" y="226" width="428" height="68" rx="4" fill="var(--alert-fill)" stroke="var(--alert)" stroke-width="1.2" stroke-dasharray="5 4"/>
+        <text x="636" y="250" font-size="11.5" font-weight="700" fill="var(--alert)">✕ 還是會被釣</text>
+        <text x="636" y="268" font-size="10" fill="var(--alert)">會員可能被騙，把那 6 位數打進假網站</text>
+        <text x="636" y="284" font-size="8.5" fill="var(--muted)">the member can be talked into typing it into a fake page</text>
+      </svg>
+    </div>
+    <figcaption>
+      同樣是「多一層保護」，但機制不同。Passkey 的金鑰<b>綁定網域</b>，假網站根本叫不出那個提示，所以擋得住釣魚；authenticator 的 6 位數是會員自己讀出來、自己打進去的，<b>打進哪個網站由人決定</b>，所以擋不住。這就是為什麼「有了 passkey 還要不要 authenticator」的答案不是「不用」——而是「不用在登入，要用在提款」。
+      <div class="en">Both add protection, by different mechanisms. A passkey's key is <b>bound to the domain</b>, so a fake site cannot even raise the prompt. An authenticator's six digits are read and typed by the member, and <b>which site they land in is a human decision</b>. That is why the answer to "do I still need an authenticator if I have a passkey" is not "no" — it is "not for login, but yes for withdrawal".</div>
+    </figcaption>
+  </figure>
+
+  <!-- ============ TWO METHODS ============ -->
+  <section>
+    <div class="sec-head">
+      <h2>市場上兩邊各自怎麼做</h2>
+      <div class="en-h">What the market has settled on for each</div>
+    </div>
+
+    <div class="two">
+      <div class="col pk">
+        <div class="tag">Method A</div>
+        <h3>Passkey（WebAuthn / FIDO2）</h3>
+        <div class="en-h">Google · Apple · Microsoft · Amazon · PayPal · Shopify</div>
+        <dl>
+          <dt>何時問</dt>
+          <dd>登入成功之後才問，<b>不在註冊時問</b>。註冊時會員還沒有帳號，作業系統彈出「要為 v9bet 建立 passkey 嗎」對他毫無意義，而且會傷註冊轉換。
+            <div class="en">Offered after a successful login, never during registration — the OS sheet is meaningless before an account exists, and it costs conversion.</div></dd>
+          <dt>怎麼登入</dt>
+          <dd>不做「用 passkey 登入」按鈕，而是讓它出現在<b>帳號欄位的自動填入清單</b>裡。按鈕是猜測，自動填入只在真的有 passkey 時才出現。
+            <div class="en">No dedicated button — it surfaces in the identifier field's autofill. A button is a guess; autofill appears only when one actually exists.</div></dd>
+          <dt>文案</dt>
+          <dd>對會員說「用 Face ID 登入」，不說 passkey。Apple、Google、PayPal 都主打生物辨識，把 passkey 這個詞留在設定頁。
+            <div class="en">Say "sign in with Face ID", not "passkey". The standard's name belongs in Settings, where the member is already looking for a control.</div></dd>
+          <dt>數量</dt>
+          <dd>一台裝置一把，而且 iCloud 鑰匙圈與 Google 密碼管理工具<b>會自動同步</b>，所以一個人有好幾把是常態。不要限制數量，也不要因為久沒用就自動刪。
+            <div class="en">One per device, and iCloud Keychain / Google Password Manager sync them — several is normal. Never cap the count, never auto-expire for disuse.</div></dd>
+          <dt>底線</dt>
+          <dd><b>永遠保留退路</b>。沒有任何一家做成只能用 passkey。生物辨識失敗、換手機、裝置不支援，都必須有另一條路。
+            <div class="en">Always keep a fallback. Nobody ships passkey-only — biometrics fail, phones change, devices vary.</div></dd>
+        </dl>
+      </div>
+
+      <div class="col ta">
+        <div class="tag">Method B</div>
+        <h3>Authenticator（TOTP）</h3>
+        <div class="en-h">Google Authenticator · Authy · 1Password · Microsoft</div>
+        <dl>
+          <dt>標準</dt>
+          <dd>RFC 6238，<b>6 位數、30 秒</b>，所有 app 都一樣，沒有專屬規格要設計。QR 內容是標準的 <code>otpauth://</code> 連結。
+            <div class="en">RFC 6238 — six digits, 30-second window, identical across every app. The QR is a standard otpauth:// URI.</div></dd>
+          <dt>一定要有</dt>
+          <dd><b>手動輸入金鑰</b>。最常見的情境是 app 就裝在同一支手機上，根本沒有第二個鏡頭能掃。
+            <div class="en">Manual key entry is not optional — the most common enrolment is on the same phone that holds the app, with no second camera.</div></dd>
+          <dt>一定要有</dt>
+          <dd><b>啟用前先驗一次碼</b>。這一步會在會員還沒離開畫面時，抓到掃錯或時間不同步。
+            <div class="en">Verify one code before enabling — it catches a mis-scan or a wrong clock while the member is still on the screen.</div></dd>
+          <dt>一定要有</dt>
+          <dd><b>備援碼</b>，只顯示一次、雜湊儲存，而且要求會員明確勾選「我已經存好了」。這是整段流程真正的重點。
+            <div class="en">Recovery codes — shown once, stored hashed, with an explicit "I've saved these". This is the actual point of the flow.</div></dd>
+          <dt>趨勢</dt>
+          <dd>市場正在把 TOTP 從「每次登入都要」退回「<b>只在動到錢或設定時要</b>」。它是每次登入的摩擦，而且本身擋不住釣魚。
+            <div class="en">The direction of travel is away from TOTP on every login and toward step-up only — it is friction each time and phishable anyway.</div></dd>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FOR THIS PRODUCT ============ -->
+  <section>
+    <div class="sec-head">
+      <h2>放到 v9bet 身上</h2>
+      <div class="en-h">What this means for this product specifically</div>
+    </div>
+
+    <div class="market">
+      <div class="mrow">
+        <div class="k">Passkey 已經有了<div class="en-h">Passkey already exists</div></div>
+        <div class="v">登入頁的生物辨識分頁、Setup 項目 4、Settings 的 Passkeys 管理都已經在規格裡。新的 wireframe 補的是<b>登入後的推薦時機、自動填入登入、跨裝置 QR，以及「不能移除最後一種登入方式」的擋關</b>。
+          <div class="en">The biometric login tab, Setup item 4 and the Passkeys list are already specified. The new wireframe adds the post-login upsell, autofill sign-in, cross-device QR, and the guard that refuses to remove the last sign-in method.</div></div>
+      </div>
+      <div class="mrow">
+        <div class="k">Authenticator 的價值在提款<div class="en-h">The authenticator earns its place at withdrawal</div></div>
+        <div class="v">目前提款 step-up 走 email／SMS OTP。改用 authenticator 有兩個實際好處：<b>擋得住 SIM swap</b>（這在越南泰國是真實威脅），而且<b>啟用後每次都免費</b>，不像簡訊每則都要成本。
+          <div class="en">Withdrawal step-up currently uses email/SMS OTP. An authenticator is SIM-swap proof — a live threat in these markets — and costs nothing per use, unlike SMS.</div></div>
+      </div>
+      <div class="mrow">
+        <div class="k">不要兩個一起問<div class="en-h">Never stack both</div></div>
+        <div class="v">有 authenticator 的人，提款就<b>只問 app 的碼</b>，不要同時再寄一封 email。兩道關卡疊在同一個動作上，不是雙倍安全，是雙倍放棄率。沒啟用的人完全照現在走，流程不變。
+          <div class="en">With one enrolled, the withdrawal asks for the app's code and nothing else. Two factors on one action is not twice the security, it is twice the drop-off. Members without one see no change at all.</div></div>
+      </div>
+      <div class="mrow">
+        <div class="k">金額要顯示在確認頁<div class="en-h">Show the amount on the confirmation</div></div>
+        <div class="v">step-up 畫面上必須同時看得到<b>金額和收款帳戶</b>。只寫「請輸入驗證碼」等於叫會員在空白紙上簽名——真的被盜用時，是他自己按下核准的。
+          <div class="en">The step-up screen must show the amount and destination. "Enter your code" alone is a signature on a blank page — if the session were hijacked, the member approves it themselves.</div></div>
+      </div>
+    </div>
+
+    <div class="warn">
+      <h3>一個這個產品特有的硬性限制 · A hard constraint specific to this product</h3>
+      <div class="body">
+        <b>沒有已驗證聯絡方式的帳號，不能啟用 authenticator。</b>用 Zalo 註冊、沒有 email 也沒有電話的會員，如果再啟用 authenticator 然後手機掉了——沒有任何管道可以證明身分，備援碼是唯一的路，而備援碼也在那支手機上的機率很高。這不是建議，是要在畫面上直接擋下來，沿用 Setup Step 1 那個 <code>has_verified_contact</code> 判斷。
+        <div class="en"><b>An account with no verified contact must not be allowed to enrol.</b> A Zalo sign-up with no email and no phone, plus an authenticator on a phone that is later lost, has no way to prove ownership — recovery codes are the only route, and they are most likely on that same phone. This is a block on the screen, not advice, reusing the <code>has_verified_contact</code> test from Setup Step 1.</div>
+      </div>
+    </div>
+
+    <div class="rec">
+      <h3>建議的順序</h3>
+      <div class="en-h">Suggested order of work</div>
+      <ol>
+        <li><b>先把 passkey 補完。</b>它已經有基礎，而且是純粹的體驗改善——登入從「等驗證碼」變成一秒，沒有人需要學新東西。登入後推薦的時機是最大的一塊。
+          <div class="en">Finish passkeys first. The groundwork exists, and it is pure experience gain — login drops from waiting for a code to one second, with nothing new to learn. The post-login upsell is the biggest piece.</div></li>
+        <li><b>Authenticator 當成提款的選配強化。</b>不要放進 Setup——那裡已經九項了，而且新會員還沒有錢可以提，這時候叫他裝一個 app 是最糟的時機。入口放 Settings › Security。
+          <div class="en">Treat the authenticator as optional hardening for withdrawal. Keep it out of Setup — nine items is enough, and a brand-new member with no money to withdraw is the worst possible moment to ask them to install an app. Entry point: Settings › Security.</div></li>
+        <li><b>備援碼那一步不能省。</b>沒有存下備援碼的 authenticator，等於把「手機掉了」變成一張客服單，而博弈帳號的身分驗證沒辦法在聊天室裡完成。
+          <div class="en">Do not cut the recovery-code step. An authenticator without saved codes converts a lost phone into a support ticket, and identity for a gambling account cannot be verified over chat.</div></li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span>Wireframe: security-methods-wireframe.html · 12 screens / 37 states</span>
+    <span>2026-09-20</span>
+  </footer>
+
+</div>
+
+</body>
+</html>
