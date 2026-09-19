@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Setup 九項</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --ink:#22242A; --paper:#FFFFFF; --ground:#EDEDEF; --sunk:#E3E3E7;
+  --rule:#D3D4D9; --muted:#70737B; --muted2:#8A8D95;
+  --must:#A13636; --must-fill:#FBEFEE;
+  --may:#4A6FA5; --may-fill:#E8EEF7;
+  --cond:#7A5210; --cond-fill:#F8F0E0;
+  --f-disp:"Archivo","Noto Sans TC",system-ui,sans-serif;
+  --f-body:"Noto Sans TC",-apple-system,system-ui,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ink:#E7E8EC; --paper:#1B1D22; --ground:#121317; --sunk:#16181D;
+    --rule:#343740; --muted:#979BA5; --muted2:#7E828C;
+    --must:#E28C87; --must-fill:#2C1D1D;
+    --may:#8FB0DE; --may-fill:#182230;
+    --cond:#D7A94F; --cond-fill:#2A2317;
+  }
+}
+:root[data-theme="dark"]{
+  --ink:#E7E8EC; --paper:#1B1D22; --ground:#121317; --sunk:#16181D;
+  --rule:#343740; --muted:#979BA5; --muted2:#7E828C;
+  --must:#E28C87; --must-fill:#2C1D1D;
+  --may:#8FB0DE; --may-fill:#182230;
+  --cond:#D7A94F; --cond-fill:#2A2317;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.72;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1120px;margin:0 auto;padding-inline:20px;padding-block:44px 72px}
+h1,h2,h3{text-wrap:balance;margin:0}
+.en{font-family:var(--f-disp);font-weight:400;font-size:.9em;line-height:1.6;color:var(--muted2);margin-top:5px}
+.en-h{font-family:var(--f-disp);font-weight:500;font-size:.82em;line-height:1.45;color:var(--muted2);margin-top:3px}
+.eyebrow{font-family:var(--f-disp);font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+
+.mast{border-bottom:2px solid var(--ink);padding-bottom:22px;margin-bottom:30px}
+h1{font-size:clamp(27px,4.4vw,40px);font-weight:700;line-height:1.18;margin:10px 0 0}
+.mast .en-h{font-size:clamp(14px,2vw,18px);color:var(--muted)}
+.dek{max-width:64ch;margin:14px 0 0}
+
+figure{margin:0;background:var(--paper);border:1px solid var(--rule);border-radius:3px;padding:20px 18px 16px}
+.scroller{overflow-x:auto}
+svg{max-width:100%;height:auto;display:block;min-width:840px}
+figcaption{margin-top:14px;padding-top:12px;border-top:1px solid var(--rule);font-size:13px;color:var(--muted);line-height:1.6}
+figcaption b{color:var(--ink);font-weight:500}
+
+section{margin-top:40px}
+.sec-head{margin-bottom:16px}
+h2{font-size:19px;font-weight:700;letter-spacing:-.01em}
+
+.items{border:1px solid var(--rule);border-radius:3px;overflow:hidden;background:var(--paper)}
+.ihead{display:grid;grid-template-columns:44px 1.15fr 108px 1.55fr;background:var(--sunk);border-bottom:1px solid var(--rule)}
+.ihead div{padding:10px 14px;font-family:var(--f-disp);font-size:10.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.irow{display:grid;grid-template-columns:44px 1.15fr 108px 1.55fr;border-bottom:1px solid var(--rule)}
+.irow:last-child{border-bottom:none}
+.irow>div{padding:14px}
+.inum{font-family:var(--f-mono);font-size:13px;color:var(--muted2);text-align:center;font-variant-numeric:tabular-nums}
+.iname{font-weight:700;font-size:14.5px}
+.iname .en-h{font-weight:400}
+.iflag{font-size:11px}
+.pill{display:inline-block;font-family:var(--f-disp);font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:2px 8px;border-radius:2px;border:1px solid currentColor;white-space:nowrap}
+.pill.must{color:var(--must)}
+.pill.may{color:var(--may)}
+.pill.cond{color:var(--cond)}
+.icost{font-size:13px;line-height:1.6;color:var(--muted);border-left:1px solid var(--rule)}
+.icost b{color:var(--ink);font-weight:500}
+@media (max-width:820px){
+  .ihead{display:none}
+  .irow{grid-template-columns:40px 1fr}
+  .irow .iflag{grid-column:2;padding-top:0}
+  .irow .icost{grid-column:1 / -1;border-left:none;border-top:1px dashed var(--rule)}
+}
+
+.note{margin-top:20px;background:var(--paper);border:1px solid var(--rule);border-left:3px solid var(--cond);border-radius:0 3px 3px 0;padding:16px 18px}
+.note h3{font-size:14.5px;font-weight:700;color:var(--cond)}
+.note .body{margin-top:7px;font-size:13.5px;line-height:1.66}
+
+.truth{margin-top:20px;background:var(--sunk);border:1px solid var(--rule);border-radius:3px;padding:18px 20px}
+.truth h3{font-size:15px;font-weight:700}
+.truth .body{margin-top:8px;font-size:14px;line-height:1.7;max-width:66ch}
+
+footer{margin-top:48px;padding-top:16px;border-top:1px solid var(--rule);font-family:var(--f-mono);font-size:11.5px;color:var(--muted);display:flex;flex-wrap:wrap;gap:6px 20px}
+</style>
+</head>
+<body>
+
+
+<div class="wrap">
+
+  <header class="mast">
+    <div class="eyebrow">V9Bet · Account Setup</div>
+    <h1>Setup 九項</h1>
+    <div class="en-h">The Nine Setup Items</div>
+    <div class="dek">
+      註冊完成後的基本設定。九個項目分三步，但<b>只有第一步真的擋人</b>——後面兩步可以整段跳過。跳過的直接代價只是少拿點數；真正的代價是之後會在某個地方被擋下來，下面逐項列出被擋在哪。
+      <div class="en">The basic settings after registration. Nine items in three steps, but <b>only the first step actually blocks</b> — the other two can be skipped wholesale. Skipping costs points up front; the real cost arrives later, at the point each item is finally demanded. Every one of those points is listed below.</div>
+    </div>
+  </header>
+
+  <figure>
+    <div class="scroller">
+      <svg viewBox="0 0 1060 400" role="img" aria-label="Setup 流程：建立帳號後必須通過 Step 1，Step 2 與 Step 3 可以整段跳過，直接到歡迎與優惠頁。">
+        <defs>
+          <marker id="a1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <polygon points="0,1 10,5 0,9" fill="currentColor"/>
+          </marker>
+          <marker id="a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <polygon points="0,1 10,5 0,9" fill="var(--may)"/>
+          </marker>
+        </defs>
+
+        <!-- account created -->
+        <rect x="16" y="172" width="104" height="66" rx="4" fill="var(--sunk)" stroke="currentColor" stroke-width="1.5"/>
+        <text x="68" y="200" text-anchor="middle" font-size="12" font-weight="700" fill="currentColor">建立帳號</text>
+        <text x="68" y="218" text-anchor="middle" font-size="8.5" fill="var(--muted)">account created</text>
+
+        <!-- STEP 1 -->
+        <rect x="160" y="130" width="190" height="150" rx="4" fill="var(--must-fill)" stroke="var(--must)" stroke-width="2.2"/>
+        <text x="176" y="156" font-size="12.5" font-weight="700" fill="var(--must)">Step 1</text>
+        <text x="334" y="156" text-anchor="end" font-size="9.5" font-weight="700" fill="var(--must)">不能跳過</text>
+        <line x1="176" y1="166" x2="334" y2="166" stroke="var(--must)" stroke-width="0.8" opacity="0.5"/>
+        <text x="176" y="188" font-size="11.5" fill="currentColor">① 幣別 <tspan font-size="8.5" fill="var(--muted)">設定後鎖定</tspan></text>
+        <text x="176" y="212" font-size="11.5" fill="currentColor">② 個人資料</text>
+        <text x="176" y="240" font-size="11.5" fill="var(--cond)">⑤ 聯絡方式</text>
+        <text x="176" y="256" font-size="8.5" fill="var(--cond)">只在帳號沒有聯絡方式時出現</text>
+        <text x="176" y="270" font-size="8.5" fill="var(--muted)">conditional — see note below</text>
+
+        <!-- STEP 2 -->
+        <rect x="420" y="130" width="190" height="150" rx="4" fill="var(--paper)" stroke="var(--may)" stroke-width="1.6" stroke-dasharray="6 4"/>
+        <text x="436" y="156" font-size="12.5" font-weight="700" fill="var(--may)">Step 2</text>
+        <text x="594" y="156" text-anchor="end" font-size="9.5" font-weight="700" fill="var(--may)">可跳過</text>
+        <line x1="436" y1="166" x2="594" y2="166" stroke="var(--may)" stroke-width="0.8" opacity="0.5"/>
+        <text x="436" y="188" font-size="11.5" fill="currentColor">③ 收款帳戶</text>
+        <text x="436" y="210" font-size="11.5" fill="currentColor">④ Face ID / Passkey</text>
+        <text x="436" y="232" font-size="11.5" fill="currentColor">⑤ 聯絡方式 <tspan font-size="8.5" fill="var(--muted)">補電話</tspan></text>
+        <text x="436" y="254" font-size="11.5" fill="currentColor">⑥ 設定密碼</text>
+        <text x="436" y="270" font-size="8.5" fill="var(--muted)">security &amp; payout</text>
+
+        <!-- STEP 3 -->
+        <rect x="680" y="130" width="190" height="150" rx="4" fill="var(--paper)" stroke="var(--may)" stroke-width="1.6" stroke-dasharray="6 4"/>
+        <text x="696" y="156" font-size="12.5" font-weight="700" fill="var(--may)">Step 3</text>
+        <text x="854" y="156" text-anchor="end" font-size="9.5" font-weight="700" fill="var(--may)">可跳過</text>
+        <line x1="696" y1="166" x2="854" y2="166" stroke="var(--may)" stroke-width="0.8" opacity="0.5"/>
+        <text x="696" y="190" font-size="11.5" fill="currentColor">⑦ 通知</text>
+        <text x="696" y="214" font-size="11.5" fill="currentColor">⑧ 主題 <tspan font-size="8.5" fill="var(--muted)">語言不在這</tspan></text>
+        <text x="696" y="238" font-size="11.5" fill="currentColor">⑨ 訊息管道</text>
+        <text x="696" y="270" font-size="8.5" fill="var(--muted)">preferences</text>
+
+        <!-- welcome -->
+        <rect x="940" y="172" width="104" height="66" rx="4" fill="var(--sunk)" stroke="currentColor" stroke-width="1.5"/>
+        <text x="992" y="200" text-anchor="middle" font-size="12" font-weight="700" fill="currentColor">Welcome</text>
+        <text x="992" y="218" text-anchor="middle" font-size="8.5" fill="var(--muted)">＋ 優惠</text>
+
+        <!-- main flow arrows -->
+        <g fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M120,205 H154" marker-end="url(#a1)"/>
+          <path d="M350,205 H414" marker-end="url(#a1)"/>
+          <path d="M610,205 H674" marker-end="url(#a1)"/>
+          <path d="M870,205 H934" marker-end="url(#a1)"/>
+        </g>
+
+        <!-- bypass -->
+        <path d="M385,205 V72 H992 V166" fill="none" stroke="var(--may)" stroke-width="1.8" stroke-dasharray="7 5" marker-end="url(#a2)"/>
+        <text x="688" y="62" text-anchor="middle" font-size="11" font-weight="700" fill="var(--may)">Step 2 和 3 可以整段跳過，直接到這裡</text>
+        <text x="688" y="76" text-anchor="middle" font-size="8.5" fill="var(--muted)">both steps can be skipped outright</text>
+
+        <!-- wall marker on step 1 -->
+        <text x="255" y="306" text-anchor="middle" font-size="10.5" font-weight="700" fill="var(--must)">沒有繞過去的路</text>
+        <text x="255" y="320" text-anchor="middle" font-size="8.5" fill="var(--muted)">no way around this one</text>
+      </svg>
+    </div>
+    <figcaption>
+      Step 1 是整個 setup 裡唯一沒有出口的地方——所以任何「一定要拿到」的東西都必須放在這裡，放在 Step 2 就等於選填。<b>這也是為什麼沒有聯絡方式的帳號，補聯絡方式會被拉進 Step 1</b>：放在 Step 2 的話，Zalo 會員可以一路跳過，最後拿到一個我們永遠聯絡不到的帳號。
+      <div class="en">Step 1 is the only part of setup with no exit — so anything that must actually be collected has to live there; putting it in Step 2 makes it optional in practice. <b>That is why an account with no contact gets the contact item pulled into Step 1</b>: left in Step 2, a Zalo member could skip past it and finish with an account we can never reach.</div>
+    </figcaption>
+  </figure>
+
+  <!-- ============ ITEMS ============ -->
+  <section>
+    <div class="sec-head">
+      <h2>九個項目，以及跳過之後會在哪裡被擋</h2>
+      <div class="en-h">The nine items, and where skipping each one catches up with you</div>
+    </div>
+
+    <div class="items">
+      <div class="ihead">
+        <div>#</div><div>項目 · Item</div><div>狀態</div><div>跳過的代價 · What skipping costs</div>
+      </div>
+
+      <div class="irow">
+        <div class="inum">1</div>
+        <div class="iname">幣別<div class="en-h">Account currency</div></div>
+        <div class="iflag"><span class="pill must">必填</span></div>
+        <div class="icost">只有 VND / THB，<b>設定後鎖定</b>，要改只能找客服。所有存提款、餘額、優惠都掛在它上面，所以不可能延後。
+          <div class="en">VND or THB only, <b>locked once set</b> — changing it means Live Chat. Every deposit, balance and promotion hangs off it, so it cannot be deferred.</div></div>
+      </div>
+
+      <div class="irow">
+        <div class="inum">2</div>
+        <div class="iname">個人資料<div class="en-h">Personal information</div></div>
+        <div class="iflag"><span class="pill must">必填</span></div>
+        <div class="icost">姓名、生日、性別、國籍。<b>收款帳戶的戶名會鎖定成這裡的姓名</b>，所以它必須先存在。KYC 通過後姓名／生日／國籍就不能自己改了。
+          <div class="en">Name, birthday, gender, nationality. <b>The payout account's holder name is locked to the name here</b>, so this has to exist first. Once KYC passes, name, birthday and nationality can no longer be self-edited.</div></div>
+      </div>
+
+      <div class="irow">
+        <div class="inum">3</div>
+        <div class="iname">收款帳戶<div class="en-h">Bank account / USDT</div></div>
+        <div class="iflag"><span class="pill may">可跳過</span></div>
+        <div class="icost"><b>提款時會被擋</b>，而且必須擋在輸入金額之前、直接導回這頁，不能讓人打完金額才失敗。就算當場補，<b>第一次提款到任何帳戶仍要 OTP</b>——等於連過兩關。
+          <div class="en"><b>Blocked at withdrawal</b> — and the block has to land before the amount is entered, routing back here, never as a failure after typing an amount. Even when added on the spot, <b>a first withdrawal to any account still triggers OTP</b>, so it is two gates in a row.</div></div>
+      </div>
+
+      <div class="irow">
+        <div class="inum">4</div>
+        <div class="iname">Face ID / Passkey<div class="en-h">Biometric / passkey</div></div>
+        <div class="iflag"><span class="pill may">可跳過</span></div>
+        <div class="icost">純粹少一種登入方式，不擋任何功能。之後在 Settings › Security 隨時可以開。App 限定，網頁版這一步會自動跳過。
+          <div class="en">Simply one fewer way to log in; nothing is blocked. It can be switched on any time in Settings › Security. App only — the web auto-skips this step.</div></div>
+      </div>
+
+      <div class="irow">
+        <div class="inum">5</div>
+        <div class="iname">聯絡方式<div class="en-h">Contact details</div></div>
+        <div class="iflag"><span class="pill cond">看情況</span></div>
+        <div class="icost"><b>帳號已有聯絡方式</b>（Email 註冊、Google）→ 這裡是補電話，可跳過。跳過的話 SMS 與社群訊息管道用不了，少一種登入與救回帳號的方式。<br><b>帳號沒有聯絡方式</b>（Zalo、沒權限的 LINE）→ 移到 Step 1 必填，<b>沒有 Later</b>。
+          <div class="en"><b>Account already has a contact</b> (email sign-up, Google) → this adds a phone and is skippable; skipping locks out SMS and social messaging and removes one login and recovery route.<br><b>Account has none</b> (Zalo, LINE without the permission) → it moves into Step 1 as required, <b>with no Later link</b>.</div></div>
+      </div>
+
+      <div class="irow">
+        <div class="inum">6</div>
+        <div class="iname">設定密碼<div class="en-h">Set a password</div></div>
+        <div class="iflag"><span class="pill may">可跳過</span></div>
+        <div class="icost">不設就不能用密碼登入，但一次性碼、Passkey、社群照常。<b>系統不會透露某個帳號有沒有設密碼</b>——沒設的人用密碼登入一律回 <code>INVALID_CREDENTIALS</code>。沒有 4 位數 PIN，強度不夠。
+          <div class="en">Without one, password login is unavailable, but one-time code, passkey and social all still work. <b>Whether an account has a password is never revealed</b> — trying one returns a plain <code>INVALID_CREDENTIALS</code>. No 4-digit PIN: not strong enough for an account password.</div></div>
+      </div>
+
+      <div class="irow">
+        <div class="inum">7</div>
+        <div class="iname">通知<div class="en-h">Notification permission</div></div>
+        <div class="iflag"><span class="pill may">可跳過</span></div>
+        <div class="icost">系統層權限被拒也沒關係，<b>站內偏好仍然會記錄</b>，之後開權限就會生效。
+          <div class="en">A denied OS-level permission is fine — <b>in-app preferences are still recorded</b> and take effect if permission is granted later.</div></div>
+      </div>
+
+      <div class="irow">
+        <div class="inum">8</div>
+        <div class="iname">主題<div class="en-h">Theme</div></div>
+        <div class="iflag"><span class="pill may">可跳過</span></div>
+        <div class="icost">dark / light / 跟隨系統，預設跟隨系統。<b>語言不在這裡</b>——語言跟著註冊 IP 解析，在到達註冊頁之前就套用好了，之後在 header 切換器或 Settings › Preferences 改。
+          <div class="en">Dark, light or follow-system, defaulting to follow-system. <b>Language is not here</b> — it is resolved from the registration IP and applied before sign-up is even reached, then changed via the header switcher or Settings › Preferences.</div></div>
+      </div>
+
+      <div class="irow">
+        <div class="inum">9</div>
+        <div class="iname">訊息管道<div class="en-h">Message channel</div></div>
+        <div class="iflag"><span class="pill may">可跳過</span></div>
+        <div class="icost">預設 Email（新會員還沒有電話）。SMS 和社群訊息<b>需要先有已驗證的電話</b>，所以跳過項目 5 就等於鎖住這裡的選項。退訂只停行銷訊息——<b>OTP、安全通知、存提款狀態一律照發</b>。
+          <div class="en">Email by default (a new member has no phone yet). SMS and social messaging <b>require a verified phone</b>, so skipping item 5 locks the options here. Opting out stops marketing only — <b>OTP, security alerts and payment status always send</b>.</div></div>
+      </div>
+    </div>
+
+    <div class="note">
+      <h3>項目 5 為什麼會換位置 · Why item 5 moves</h3>
+      <div class="body">
+        判斷依據是 <code>has_verified_contact</code>，<b>不是看用哪種方式註冊</b>。Google 會給已驗證的 email，那種會員不該被再問一次；真正需要補的是 Zalo 和沒拿到 email 權限的 LINE。用帳號狀態判斷，之後 LINE 若申請到 email 權限，會自動換到可跳過那邊，<b>不用改任何畫面</b>。編號維持 5，因為 API 和點數帳本都是用這個編號。
+        <div class="en">The test is <code>has_verified_contact</code>, <b>not which method was used</b>. Google returns a verified email, so those members should not be asked twice; the ones who genuinely need it are Zalo and LINE without the email permission. Because it keys off account state, LINE moves to the skippable side on its own if the permission is granted — <b>with no screen changes</b>. It keeps the number 5, since the API and the points ledger reference it.</div>
+      </div>
+    </div>
+
+    <div class="truth">
+      <h3>跳過的代價其實不是點數</h3>
+      <div class="en-h">Points are not what skipping actually costs</div>
+      <div class="body">
+        每項 +10 點，九項全做完再加 10 點，共 100 點。跳過的<b>直接</b>後果只是少拿那 10 點，沒有別的懲罰，也不會被催。但真正的代價在後面：跳過項目 3 的人會在提款時撞牆，跳過項目 5 的人連帶失去項目 9 的選項。設計這份清單時要記得——<b>放進 Step 2 就等於這件事可以永遠不做</b>。
+        <div class="en">Each item is +10, with a 10-point bonus for finishing all nine — 100 total. The <b>immediate</b> consequence of skipping is only those 10 points; nothing else is withheld and nobody is nagged. The real cost lands later: skipping item 3 means hitting a wall at withdrawal, and skipping item 5 takes item 9's options with it. Worth remembering when deciding where an item goes — <b>anything placed in Step 2 is something a member may simply never do</b>.</div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span>來源 · Source: signup-flow-wireframe.html · profile-settings-flow-wireframe.html</span>
+    <span>2026-09-20</span>
+  </footer>
+
+</div>
+
+</body>
+</html>
