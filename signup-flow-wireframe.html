@@ -294,7 +294,7 @@ const screens = [
     api:"GET auth.&lt;stable&gt;/oauth/{provider}\n← redirect back with session_token\nPOST /auth/social/exchange { session_token }\n← { customer_id, is_new, needs_bind, existing_account_phone_masked }\nPOST /auth/social/bind/otp/send { customer_id }\nPOST /auth/social/bind/otp/verify { customer_id, otp } → bind + login",
     notes:["'Complete Setup (currency-only)' screen removed (Jul 16) — redundant with Setup Overview, which already collects currency as Step 1 · Required right after. Brand-new social members land on Welcome immediately, no OTP.","No 'Start playing' escape on Welcome (08-30): it let a social member walk past setup entirely, and Step 1 is not optional. The only way on is 'Set up account', with a line saying why. Removing the second button also stops the reward framing reading as a bribe for something that was never really a choice.","Account-linking rule (market standard — Auth0 account linking / Google Identity Platform 'account-exists-with-different-credential'): request authentication for BOTH sides before linking. Google proves the new identity; an OTP to the phone already on file proves the existing account. Binding straight off the provider's say-so alone (no re-auth) is the weaker 'automatic linking' mode both platforms flag as a security tradeoff — not used here.","Match only ever surfaces 'Account Found' against a VERIFIED email/phone on the existing account — an unverified stored contact never triggers it, or anyone could plant someone else's real email on a dormant account and hijack it the moment the real owner signs in with Google. Zalo / LINE match on their provider account ID instead, since that is all they give us.","ONE WELCOME FOR EVERY PROVIDER (09-17). There used to be two: Google got a plain 'you're a customer' screen, Zalo / LINE got a warning panel and an 'Add an email' primary button. That split is gone. Reason: it made the welcome carry a job it could not finish — the Add-an-email button sat beside a 'Later' escape, so the member could walk past it and still end up with an account we cannot reach, and a Google member was reading a screen designed around a problem they did not have. The missing-contact requirement moved to where requirements are actually enforced: Setup Step 1 (see Setup Overview state 4). The welcome is now one screen that says the account exists and points at setup.",
 "The provider difference did NOT go away — it moved (09-17). Do not read the single welcome as 'every provider is the same'. What changed is WHERE the difference is handled: not by branching the welcome on which icon was tapped, but by checking one fact at Setup — does this account have a verified email or phone? That test is provider-agnostic, so it keeps working if LINE's email permission is granted later, or if a future provider behaves differently, without anyone having to remember to re-branch this screen.",
-"TWO KINDS OF PROVIDER (08-30, still true — it now drives Setup Step 1 rather than the welcome copy) — this is the important distinction behind this screen. Google returns a verified email, so that account starts with a real contact. Zalo and LINE return ONLY their account ID: no email, no phone. A member who signs up that way has no address we can send an OTP to, no channel to message, and nothing to recover the account with — the social login IS the account. So their welcome screen leads with 'Add an email', and Setup item 5 asks for whatever contacts are still missing. X was dropped as a provider (08-30) — it sat awkwardly between the two kinds, returning an email only with elevated permissions and not reliably, so it would have needed the ID-only treatment anyway for little reach in these markets.","Re-auth on the bind path needs a contact to send the code to. If the EXISTING account is itself an ID-only social account with no email or phone, there is nothing to OTP — that case has to fall through to Live Chat rather than silently linking.","Outcome after the code passes is shared with email sign-up (08-30) — see Existing Account: dormant reactivates in place and signs in, active just signs in, restricted (self-exclusion / RG block) stops with Live Chat only. Social sign-up must not become a way around a block that email sign-up refuses.","Central verification domain: OAuth redirect URI binds ONLY to auth.&lt;stable&gt;, so public mirror rotation never breaks login.","Providers = Google / LINE / Zalo (Zalo added 08-30 for VN reach; Telegram removed 2026-07-15, still available as an OTP channel in TH / intl). Icon visibility is market-aware — Zalo is the VN default pairing, LINE the TH one; hide a provider where blocked.","Bind flow also lives in Profile for existing username/password users.","Google One Tap auto-hides if the consent app is blocked (degrade design)."]
+"TWO KINDS OF PROVIDER (08-30, still true — it now drives Setup Step 1 rather than the welcome copy) — this is the important distinction behind this screen. Google returns a verified email, so that account starts with a real contact. Zalo and LINE return ONLY their account ID: no email, no phone. A member who signs up that way has no address we can send an OTP to, no channel to message, and nothing to recover the account with — the social login IS the account. Setup item 4 asks for whatever contacts are still missing, and becomes required in Step 1 when there are none. X was dropped as a provider (08-30) — it sat awkwardly between the two kinds, returning an email only with elevated permissions and not reliably, so it would have needed the ID-only treatment anyway for little reach in these markets.","Re-auth on the bind path needs a contact to send the code to. If the EXISTING account is itself an ID-only social account with no email or phone, there is nothing to OTP — that case has to fall through to Live Chat rather than silently linking.","Outcome after the code passes is shared with email sign-up (08-30) — see Existing Account: dormant reactivates in place and signs in, active just signs in, restricted (self-exclusion / RG block) stops with Live Chat only. Social sign-up must not become a way around a block that email sign-up refuses.","Central verification domain: OAuth redirect URI binds ONLY to auth.&lt;stable&gt;, so public mirror rotation never breaks login.","Providers = Google / LINE / Zalo (Zalo added 08-30 for VN reach; Telegram removed 2026-07-15, still available as an OTP channel in TH / intl). Icon visibility is market-aware — Zalo is the VN default pairing, LINE the TH one; hide a provider where blocked.","Bind flow also lives in Profile for existing username/password users.","Google One Tap auto-hides if the consent app is blocked (degrade design)."]
   }
 },
 {
@@ -304,45 +304,44 @@ const screens = [
   const nc = s===3;                                  // account has no verified email or phone
   return `
     <div class="scr-title">Set Up Your Account</div>
-    <div class="pbar-lbl"><span>🎁 Setup rewards</span><b>${[0,20,60,0][s]} / 100 points</b></div>
-    <div class="pbar"><i style="width:${[0,20,60,0][s]}%"></i></div>
-    <div class="hint" style="text-align:center;margin:2px 0 6px">${["Finish all 9 items to earn 100 points","20 earned · 80 to go","60 earned · 40 to go","Finish all 9 items to earn 100 points"][s]}</div>
+    <div class="pbar-lbl"><span>🎁 Setup rewards</span><b>${[0,20,50,0][s]} / 100 points</b></div>
+    <div class="pbar"><i style="width:${[0,20,50,0][s]}%"></i></div>
+    <div class="hint" style="text-align:center;margin:2px 0 6px">${["Finish all 8 items to earn 100 points","20 earned · 80 to go","50 earned · 50 to go","Finish all 8 items to earn 100 points"][s]}</div>
     <div class="scr-step">${nc?"Step 1 of 3 — this account has no email or phone yet, so a contact is required here":`Step ${s+1} of 3 — required first, the rest can be skipped`}</div>
     <div class="grp">Step 1 · Required <span class="badge req">cannot skip</span></div>
     <div class="checklist">
       ${ci(1,"Choose account currency","mandatory · +10 pts",s>0&&!nc)}
       ${ci(2,"Personal information","mandatory · +10 pts",s>0&&!nc)}
-      ${nc?ci(5,"Add an email or phone","no contact on file · +10 pts",false):''}
+      ${nc?ci(4,"Add an email or phone","no contact on file · +10 pts",false):''}
     </div>
     <div class="grp">Step 2 · Security &amp; payout <span class="badge">can skip</span></div>
     <div class="checklist">
       ${ci(3,"Bank account / USDT","needed before withdrawal · +10 pts",s>1&&!nc)}
-      ${ci(4,"Face ID / biometric / passkey","app only · +10 pts",s>1&&!nc)}
-      ${nc?'':ci(5,"Add contact details","email / phone · +10 pts",s>1)}
-      ${ci(6,"Set a password","optional · +10 pts",s>1&&!nc)}
+      ${nc?'':ci(4,"Add contact details","email / phone · +10 pts",s>1)}
+      ${ci(5,"Set a password","optional · +10 pts",s>1&&!nc)}
     </div>
     <div class="grp">Step 3 · Preferences <span class="badge">can skip</span></div>
     <div class="checklist">
-      ${ci(7,"Notification permission","+10 pts",false)}
-      ${ci(8,"Theme","dark / light / system · +10 pts",false)}
-      ${ci(9,"Message channel","how we contact you · +10 pts",false)}
+      ${ci(6,"Notification permission","+10 pts",false)}
+      ${ci(7,"Theme","dark / light / system · +10 pts",false)}
+      ${ci(8,"Message channel","how we contact you · +10 pts",false)}
     </div>
     ${CTA(s===0||nc?"Start Setup":"Continue")}
     ${s>0&&!nc?`<div class="link"><b>Skip this step</b></div>`:''}
-    <div class="hint">＊ 9 items × 10 pts + 10 bonus for finishing all = 100 points. Setup ends on Welcome + Offers; the tutorial and app download follow after that — neither is part of this checklist.</div>`;
+    <div class="hint">＊ 8 items × 10 pts + 20 bonus for finishing all = 100 points. Setup ends on Welcome + Offers; the tutorial and app download follow after that — neither is part of this checklist.</div>`;
   },
   spec:{
     goal:"Post-sign-up settings screen: 3 grouped steps with a progress bar on top — Step 1 Required (currency, profile+bank/USDT) cannot be skipped; Step 2 Security and Step 3 Preferences can be skipped. An account that arrived with NO verified contact (Zalo / LINE) gets a fourth required item in Step 1 instead.",
     states:["step 1 · required (cannot skip)","step 2 · security (skippable)","step 3 · preferences (skippable)","step 1 · account has no verified contact → 'Add an email or phone' joins Step 1 as required","all done → tutorial & app download page"],
-    fields:["customer_id","setup_progress[{key,step(1|2|3),done,required,points}]","points_earned","points_total(100)","has_verified_contact(bool) — drives whether item 5 sits in Step 1 or Step 2"],
+    fields:["customer_id","setup_progress[{key,step(1|2|3),done,required,points}]","points_earned","points_total(100)","has_verified_contact(bool) — drives whether item 4 sits in Step 1 or Step 2"],
     api:"GET /account/setup-status → { steps:[{key,step(1|2|3),done,required}], has_verified_contact }",
-    notes:["CONTACT ITEM MOVES BY ACCOUNT STATE, NOT BY SIGN-UP METHOD (09-17). Item 5 normally sits in Step 2 and is skippable — that is right for an email sign-up, where the account already has a verified email and a phone is a genuine nice-to-have. But an account created through Zalo (or LINE without the email permission) has NO contact at all, and for that account item 5 is not a nice-to-have: without it we cannot send an OTP, which means the member cannot withdraw, and losing the social account loses this one. So when the account has no verified contact, item 5 joins Step 1 and becomes required. Server decides via has_verified_contact — the client must not infer it from which provider was used, because that stops being true the moment LINE's email permission is granted.",
+    notes:["FACE ID / PASSKEY REMOVED FROM SETUP (09-20, business). Security methods — passkey and authenticator app — now live in Settings › Security only. Reason: setup is where we collect what the account needs to function, and neither of these is that; a brand-new member has nothing to protect yet, and the passkey lands far better right after a successful login, when the member has just experienced the thing it speeds up. See security-methods-wireframe.html › Passkey Upsell.","Setup is now 8 items, not 9. Points keep the round 100: 8 × 10 plus a 20-point completion bonus. Every 'earn 100 points' string in the kit stays true, which is why the bonus absorbed the change rather than the total.","Items renumbered 1-8 (09-20) — the old 4 (Face ID) is gone and everything after it shifted down. This is a removal, not a move: leaving a permanent gap at 4 would read as a bug rather than a decision. The conditional contact item is now 4, and the message channel is 8.","CONTACT ITEM MOVES BY ACCOUNT STATE, NOT BY SIGN-UP METHOD (09-17). Item 4 normally sits in Step 2 and is skippable — that is right for an email sign-up, where the account already has a verified email and a phone is a genuine nice-to-have. But an account created through Zalo (or LINE without the email permission) has NO contact at all, and for that account item 4 is not a nice-to-have: without it we cannot send an OTP, which means the member cannot withdraw, and losing the social account loses this one. So when the account has no verified contact, item 4 joins Step 1 and becomes required. Server decides via has_verified_contact — the client must not infer it from which provider was used, because that stops being true the moment LINE's email permission is granted.",
 "This replaces the 'Add an email' button that used to live on the social welcome screen (09-17). That placement never actually required anything: it sat next to a 'Later' link, and Step 2 was skippable too, so a Zalo member could decline twice and finish setup with an account we had no way to reach. Putting the requirement in Step 1 is what makes it a requirement — Step 1 is the only part of setup with no escape.",
-"Item 5 keeps its canonical number in both positions, so Step 1 reads 1 · 2 · 3 · 5 in the no-contact variant. Deliberate: the API keys and the points ledger reference item 5, and renumbering per variant would make 'item 5' mean two different things depending on how the member signed up.",
+"Item 4 keeps its number in both positions, so Step 1 reads 1 · 2 · 4 in the no-contact variant. Deliberate: the API keys and the points ledger reference it, and renumbering per variant would make 'item 4' mean two different things depending on how the member signed up.",
 "Open (09-17, business): for a Zalo member, is the required contact an email or a phone? Phone may be the more natural ask in VN, but it carries SMS cost per OTP. The screen currently asks for an email; Contact Details would need a second required variant if this changes.",
-"docx: 'immediately run through account configuration settings'.","Item 9 = Message channel: Email / SMS / social messaging (WhatsApp · Zalo · Telegram · LINE) / opt-out. Default is EMAIL — sign-up is email-only (08-30), so a new member has no phone yet and SMS + social messaging stay gated behind adding one (item 5).","Cannot pass: account currency · personal information · bank/USDT (split into two items, Jul 16). Can pass: Face ID/passkey · add phone number · set-a-password (optional; no password at sign-up) · notifications · theme/language.","Step 1 genuinely cannot be skipped (08-30, still the rule): the label said 'cannot skip' while Personal Info and Bank/USDT both carried a 'Later' link, and Bank/USDT even said 'can complete later' in its own subtitle. Those escapes are gone — the only way past a Step 1 screen is to complete it. Step 2 and 3 keep their Later links and the overview keeps 'Skip this step' for those two.",
+"docx: 'immediately run through account configuration settings'.","Item 8 = Message channel: Email / SMS / social messaging (WhatsApp · Zalo · Telegram · LINE) / opt-out. Default is EMAIL — sign-up is email-only (08-30), so a new member has no phone yet and SMS + social messaging stay gated behind adding one (item 4).","Cannot pass: account currency · personal information · bank/USDT (split into two items, Jul 16). Can pass: bank/USDT · add contact details · set-a-password (optional; no password at sign-up) · notifications · theme · message channel.","Step 1 genuinely cannot be skipped (08-30, still the rule): the label said 'cannot skip' while Personal Info and Bank/USDT both carried a 'Later' link, and Bank/USDT even said 'can complete later' in its own subtitle. Those escapes are gone — the only way past a Step 1 screen is to complete it. Step 2 and 3 keep their Later links and the overview keeps 'Skip this step' for those two.",
 "BANK / USDT LEFT STEP 1 (09-17, business). Step 1 is now currency + personal information only. The payout account did not get a Later link inside Step 1 — it moved to Step 2 — precisely so the 08-30 rule above stays true: 'cannot skip' has to mean it. What changed is which items are mandatory, not whether mandatory means mandatory. Step 2 renamed 'Security & payout' to match what it now holds. See Bank / USDT for why it stopped being mandatory and where it is enforced instead.",
-"Points redistribute, total does not: Step 1 is 2 items (20 pts), Step 2 is 4 (40), Step 3 is 3 (30), plus the 10-point completion bonus — still 9 items and still 100.","TOP bar is a REWARD progress bar (user ask Jul 16): 9 items × +10 pts, +10 bonus on full completion = 100 points; the bar shows points earned / 100 and repeats on every setup sub-screen. Points land in History 4 (Rewards); each item credits once.","Tutorial & app download moved out of the checklist — presented on the next page after Start setup completes."]
+"Points redistribute, total does not: Step 1 is 2 items (20 pts), Step 2 is 3 (30), Step 3 is 3 (30), plus a 20-point completion bonus — 8 items, still 100.","TOP bar is a REWARD progress bar (user ask Jul 16): 8 items × +10 pts, +20 bonus on full completion = 100 points; the bar shows points earned / 100 and repeats on every setup sub-screen. Points land in History 4 (Rewards); each item credits once.","Tutorial & app download moved out of the checklist — presented on the next page after Start setup completes."]
   }
 },
 {
@@ -366,32 +365,12 @@ const screens = [
   }
 },
 {
-  group:"B · Account Setup", id:"biometric", title:"Face ID", step:"Step 2 · Security (can skip)",
-  states:["Prompt","Enabled"],
-  render:(s)=>`
-    <div class="scr-title"><span class="x">←</span>Face ID / Biometrics / Passkey<span class="badge">app only</span></div>
-    <div class="pbar-lbl"><span>🎁 Setup rewards</span><b>30 / 100 points</b></div>
-    <div class="pbar"><i style="width:30%"></i></div>
-    <div class="ph" style="height:140px">[ Face ID icon ]</div>
-    <div class="scr-step">Enable for quick login with face/fingerprint</div>
-    ${s===1?`<div class="opt sel"><span class="dot on"></span><span>Face ID enabled</span></div>`:''}
-    ${CTA(s===1?"Enabled, continue":"Enable Face ID")}
-    <div class="link"><b>Later</b></div>`,
-  spec:{
-    goal:"Enable biometric login / passkey on the app — skippable, +10 pts (docx's original 'mandatory' does not survive the Jul 16 reward-based Setup redesign, where Step 2 · Security is all skippable).",
-    states:["prompt","system permission denied → guide to settings","enabled","skipped → +0 pts, resurfaces in Settings","Web: this step auto-skipped"],
-    fields:["biometric_enabled(bool)","device_id"],
-    api:"Device-side keychain/biometric API; backend only stores enabled flag + device binding.",
-    notes:["docx originally said 'mandatory' — superseded (Jul 16): Setup Step 2 items are all can-skip, this one included, and it counts toward the 9×10pt reward like the rest.","Not shown on Web/Mobile Web.","Naming note: this toggle covers app-side biometric unlock; if a true WebAuthn passkey (server-registered credential, works on a fresh device via platform keychain sync) is ever split out as its own item, it wouldn't share a flag with plain biometric — worth revisiting if passkey cross-device login becomes a real feature, not just a label."]
-  }
-},
-{
   group:"B · Account Setup", id:"notif", title:"Notifications", step:"Step 3 · Preferences (can skip)",
   states:["Prompt"],
   render:()=>`
     <div class="scr-title"><span class="x">←</span>Notification Settings</div>
-    <div class="pbar-lbl"><span>🎁 Setup rewards</span><b>60 / 100 points</b></div>
-    <div class="pbar"><i style="width:60%"></i></div>
+    <div class="pbar-lbl"><span>🎁 Setup rewards</span><b>50 / 100 points</b></div>
+    <div class="pbar"><i style="width:50%"></i></div>
     <div class="scr-step" style="margin-top:8px">Choose which notifications you want to receive</div>
     ${tog("Deposit / withdrawal status",true)}
     ${tog("Bet settlement notice",true)}
@@ -443,7 +422,7 @@ const screens = [
     states:["bank tab","usdt tab","verifying","format error","NAME_MISMATCH","linked (KYC may trigger before withdrawal)","skipped → resurfaces in Settings and is demanded at withdrawal"],
     fields:["payout:{type, bank/usdt fields}"],
     api:"POST /account/payout-method\nerr: NAME_MISMATCH",
-    notes:["MOVED OUT OF STEP 1 AND MADE SKIPPABLE (09-17, business). It was mandatory, and on 08-30 its 'Later' link was deliberately removed to make Step 1 honestly unskippable. That is now reversed. Reason: this is the heaviest thing we ask for in the whole of setup — bank account numbers — and we were demanding it before the member had any money to withdraw. Deposit and play need nothing from this screen, so the cost was paid up front by everyone while the benefit only ever landed on members who actually withdraw.","Moved to Step 2 rather than left in Step 1 with a Later link (09-17). Step 1 is labelled 'cannot skip', and an item with an escape hatch sitting under that label is exactly the inconsistency the 08-30 change was cleaning up — re-creating it would undo that work. Step 2 was renamed 'Security & payout' to stay accurate now that it holds this.","Enforcement moves to withdrawal, and that gate now has to be real: with the setup requirement gone, a member can reach the withdrawal screen with no payout account at all. Block BEFORE the amount is entered and route here — the same shape as the Personal Information gate, not a failure after they have typed an amount.","Still requires Personal Information first (holder name is pre-filled and locked), so skipping Personal Information — which is still Step 1 and still mandatory — keeps this screen unusable anyway.","First withdrawal to any account still triggers OTP (first-time-account rule). A member who skipped setup and adds the account at withdrawal therefore meets two gates in a row: add the account, then OTP it.","Points are unchanged: this is still one of the 9 items and still +10, it just no longer blocks. Step 1 is now 2 items (20 pts) and Step 2 is 4 (40 pts)."]
+    notes:["MOVED OUT OF STEP 1 AND MADE SKIPPABLE (09-17, business). It was mandatory, and on 08-30 its 'Later' link was deliberately removed to make Step 1 honestly unskippable. That is now reversed. Reason: this is the heaviest thing we ask for in the whole of setup — bank account numbers — and we were demanding it before the member had any money to withdraw. Deposit and play need nothing from this screen, so the cost was paid up front by everyone while the benefit only ever landed on members who actually withdraw.","Moved to Step 2 rather than left in Step 1 with a Later link (09-17). Step 1 is labelled 'cannot skip', and an item with an escape hatch sitting under that label is exactly the inconsistency the 08-30 change was cleaning up — re-creating it would undo that work. Step 2 was renamed 'Security & payout' to stay accurate now that it holds this.","Enforcement moves to withdrawal, and that gate now has to be real: with the setup requirement gone, a member can reach the withdrawal screen with no payout account at all. Block BEFORE the amount is entered and route here — the same shape as the Personal Information gate, not a failure after they have typed an amount.","Still requires Personal Information first (holder name is pre-filled and locked), so skipping Personal Information — which is still Step 1 and still mandatory — keeps this screen unusable anyway.","First withdrawal to any account still triggers OTP (first-time-account rule). A member who skipped setup and adds the account at withdrawal therefore meets two gates in a row: add the account, then OTP it.","Points are unchanged: this is still one of the items and still +10, it just no longer blocks. Step 1 is now 2 items (20 pts) and Step 2 is 3 (30 pts)."]
   }
 },
 {
@@ -451,8 +430,8 @@ const screens = [
   states:["Add phone (email sign-up)","Enter code","Add email — REQUIRED (Zalo / LINE)"],
   render:(s)=>`
     <div class="scr-title"><span class="x">←</span>${s===2?'Add Email':'Add Phone Number'}<span class="badge ${s===2?'req':''}">${s===2?'Required':'Optional'}</span></div>
-    <div class="pbar-lbl"><span>🎁 Setup rewards</span><b>40 / 100 points</b></div>
-    <div class="pbar"><i style="width:40%"></i></div>
+    <div class="pbar-lbl"><span>🎁 Setup rewards</span><b>30 / 100 points</b></div>
+    <div class="pbar"><i style="width:30%"></i></div>
     <div class="scr-step" style="margin-top:8px">${s===2?'Your Zalo login is the only way into this account — add a contact before you continue':'A verified phone adds a second way to log in and recover your account'}</div>
     ${s===1?`<div class="field" style="border-style:solid"><span><b>+84 ▾</b> &nbsp; 091***233</span><small>code sent</small></div>
     <div class="otpcells"><span class="f">_</span><span>_</span><span>_</span><span>_</span><span>_</span><span>_</span></div>
@@ -481,8 +460,8 @@ const screens = [
   states:["Set password","Too weak / mismatch"],
   render:(s)=>`
     <div class="scr-title"><span class="x">←</span>Set Login Security</div>
-    <div class="pbar-lbl"><span>🎁 Setup rewards</span><b>50 / 100 points</b></div>
-    <div class="pbar"><i style="width:50%"></i></div>
+    <div class="pbar-lbl"><span>🎁 Setup rewards</span><b>40 / 100 points</b></div>
+    <div class="pbar"><i style="width:40%"></i></div>
     ${F("Password","8+ chars")}
     ${F("Re-enter password")}
     ${s===1?`<div class="err">Passwords must match and be at least 8 characters.</div>`:''}
@@ -501,8 +480,8 @@ const screens = [
   states:["Theme"],
   render:(s)=>`
     <div class="scr-title"><span class="x">←</span>Appearance</div>
-    <div class="pbar-lbl"><span>🎁 Setup rewards</span><b>70 / 100 points</b></div>
-    <div class="pbar"><i style="width:70%"></i></div>
+    <div class="pbar-lbl"><span>🎁 Setup rewards</span><b>60 / 100 points</b></div>
+    <div class="pbar"><i style="width:60%"></i></div>
     <div class="scr-step">Choose theme</div>${OPT("🌙 Dark",true)}${OPT("☀️ Light",false)}${OPT("⚙️ Follow system settings",false)}
     <div class="hint">＊ No language picker here (09-17) — the interface is already in the right language by the time this screen is reached.</div>
     ${CTA("Continue")}`,
@@ -511,7 +490,7 @@ const screens = [
     states:["theme select","live preview after applying"],
     fields:["theme(dark|light|system)"],
     api:"PUT /account/preferences",
-    notes:["LANGUAGE REMOVED FROM SETUP (09-17, business). It is resolved from the registration IP / geo and applied before the member ever reaches sign-up, so by this screen the whole interface is already in that language — asking them to pick it again is asking a question they have already answered by being here. The docx line 'Set language' is satisfied by the header switcher plus Settings, not by a setup step.","Where it lives instead: the always-visible header switcher (Foundations) for an immediate change, and Settings › Preferences → Theme & Language for the stored account preference. Both already exist — see profile-settings-flow-wireframe.html, D · Preferences.","The screen keeps its +10 points as a THEME item, so the checklist is still 9 items / 100 points. Nothing renumbers.","Watch the IP assumption: a VN member travelling, or anyone on a VPN, gets the wrong language on first load and has to find the switcher. That is why the header switcher must stay visible on the pre-login pages, not only inside Settings.","docx: 'Set black or white theme or based on phone settings' — the theme half of the original item is unchanged.","Language list is still shared with the CMS translation module, it is just no longer surfaced during setup."]
+    notes:["LANGUAGE REMOVED FROM SETUP (09-17, business). It is resolved from the registration IP / geo and applied before the member ever reaches sign-up, so by this screen the whole interface is already in that language — asking them to pick it again is asking a question they have already answered by being here. The docx line 'Set language' is satisfied by the header switcher plus Settings, not by a setup step.","Where it lives instead: the always-visible header switcher (Foundations) for an immediate change, and Settings › Preferences → Theme & Language for the stored account preference. Both already exist — see profile-settings-flow-wireframe.html, D · Preferences.","The screen keeps its +10 points as a THEME item. (It became item 7 of 8 on 09-20 when Face ID left setup.)","Watch the IP assumption: a VN member travelling, or anyone on a VPN, gets the wrong language on first load and has to find the switcher. That is why the header switcher must stay visible on the pre-login pages, not only inside Settings.","docx: 'Set black or white theme or based on phone settings' — the theme half of the original item is unchanged.","Language list is still shared with the CMS translation module, it is just no longer surfaced during setup."]
   }
 },
 {
@@ -538,8 +517,8 @@ const screens = [
     ${CTA("Continue")}`
   :`
     <div class="scr-title"><span class="x">←</span>Message Channel<span class="badge">+10 pts</span></div>
-    <div class="pbar-lbl"><span>🎁 Setup rewards</span><b>80 / 100 points</b></div>
-    <div class="pbar"><i style="width:80%"></i></div>
+    <div class="pbar-lbl"><span>🎁 Setup rewards</span><b>70 / 100 points</b></div>
+    <div class="pbar"><i style="width:70%"></i></div>
     <div class="scr-step" style="margin-top:8px">How should we send you promotions and updates?</div>
     ${OPT("✉️ &nbsp; Email <small style='color:#b0b0b0'>default · ba*****on@gmail.com</small>", s===0)}
     ${OPT("📨 &nbsp; SMS <small style='color:#b0b0b0'>needs a phone number</small>", false)}
