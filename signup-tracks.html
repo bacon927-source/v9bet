@@ -30,7 +30,7 @@
 :root[data-theme="dark"]{
   --ink:#E7E8EC; --paper:#1B1D22; --ground:#121317; --sunk:#16181D;
   --rule:#343740; --rule-soft:#262931; --muted:#979BA5; --muted2:#7E828C;
-  --email:#63BCB6; --social:#D69B57;
+  --email:#63BCB6; --social:#D69B57; --return:#C49AD2;
   --alert:#E28C87; --alert-soft:#2C1D1D;
   --ok:#7FBF97;
 }
@@ -383,11 +383,11 @@ footer{
       <!-- RETURNING -->
       <div class="track back">
         <div class="track-tag">Track C</div>
-        <div class="track-name">一年後回來</div>
-        <div class="en-h" style="font-size:14px">Coming back after a year</div>
+        <div class="track-name">一年後回來（登入）</div>
+        <div class="en-h" style="font-size:14px">Coming back after a year — a login</div>
         <div class="track-sub">
-          休眠帳號重新啟用，不是重新註冊
-          <div class="en">Reactivating a dormant account — not registering again</div>
+          休眠帳號重新啟用。<b>這是登入，不是註冊</b>——沒有建立任何帳號。
+          <div class="en">Reactivating a dormant account. <b>This is a login, not a registration</b> — nothing is created.</div>
         </div>
 
         <div class="step">
@@ -421,8 +421,8 @@ footer{
             <div class="en-h">Only then does it branch three ways</div>
             <ul class="branch">
               <li>
-                <b>休眠且無違規</b> → <b>原地重新啟用</b>。餘額、紀錄、等級、收款帳戶全部保留，什麼都不會被重設。
-                <div class="en"><b>Dormant and clean</b> → <b>reactivated in place</b>. Balance, history, tier and payout accounts all carry over; nothing is reset.</div>
+                <b>休眠且無違規</b> → <b>原地重新啟用</b>。餘額、紀錄、等級、收款帳戶全部保留，什麼都不會被重設。埋點送 <code>login</code> 並帶 <code>reactivated</code>，<b>不是 sign_up</b>。
+                <div class="en"><b>Dormant and clean</b> → <b>reactivated in place</b>. Balance, history, tier and payout accounts all carry over; nothing is reset. The event is <code>login</code> with <code>reactivated</code>, <b>never sign_up</b>.</div>
               </li>
               <li>
                 <b>其實一直是正常帳號</b> → 直接登入，不會建立第二個帳號。

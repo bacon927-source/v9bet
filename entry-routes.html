@@ -92,14 +92,14 @@ footer{margin-top:48px;padding-top:16px;border-top:1px solid var(--rule);font-fa
     <h1>進站三條路</h1>
     <div class="en-h">Three Ways In</div>
     <div class="dek">
-      註冊和登入是同一個畫面的兩個分頁，出口也是同一個。但三條路裡<b>只有一條會建立帳號，也只有那一條會經過 Setup</b>。
-      <div class="en">Sign up and Login are two tabs on one screen, and they share one destination. But of the three routes, <b>only one creates an account — and only that one goes through Setup</b>.</div>
+      註冊和登入是同一個畫面的兩個分頁，出口也是同一個。但三條路裡<b>只有第一條是真的註冊</b>——另外兩條都是登入，只是其中一條從註冊頁走進來。只有註冊那條會建立帳號、會經過 Setup。
+      <div class="en">Sign up and Login are two tabs on one screen, and they share one destination. But <b>only the first route is actually a registration</b> — the other two are logins, one of which happens to start at the sign-up door. Only the registration creates an account and only it runs Setup.</div>
     </div>
   </header>
 
   <figure>
     <div class="scroller">
-      <svg viewBox="0 0 1060 500" role="img" aria-label="三條進站路徑：全新 email 註冊會建立帳號並經過 Setup；email 已存在的註冊與一般登入都直接進站，不經過 Setup。">
+      <svg viewBox="0 0 1060 500" role="img" aria-label="三條進站路徑：只有第一條是註冊，會建立帳號並經過 Setup；另外兩條都是登入，直接進站，不經過 Setup。">
         <defs>
           <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
             <polygon points="0,1 10,5 0,9" fill="currentColor"/>
@@ -116,9 +116,9 @@ footer{margin-top:48px;padding-top:16px;border-top:1px solid var(--rule);font-fa
         <text x="70" y="276" text-anchor="middle" font-size="9" fill="var(--muted)">one screen</text>
 
         <!-- LANE LABELS -->
-        <text x="154" y="52" font-size="10.5" font-weight="700" fill="var(--setup)" letter-spacing="1">① 註冊 · 全新 EMAIL</text>
-        <text x="154" y="212" font-size="10.5" font-weight="700" fill="var(--muted)" letter-spacing="1">② 註冊 · EMAIL 已存在</text>
-        <text x="154" y="362" font-size="10.5" font-weight="700" fill="var(--muted)" letter-spacing="1">③ 登入</text>
+        <text x="154" y="52" font-size="10.5" font-weight="700" fill="var(--setup)" letter-spacing="1">① 註冊 · 建立新帳號</text>
+        <text x="154" y="212" font-size="10.5" font-weight="700" fill="var(--muted)" letter-spacing="1">② 登入 · 從註冊頁進來</text>
+        <text x="154" y="362" font-size="10.5" font-weight="700" fill="var(--muted)" letter-spacing="1">③ 登入 · 從登入頁進來</text>
 
         <!-- fan-out arrows from door -->
         <g fill="none" stroke="currentColor" stroke-width="1.4">
@@ -225,7 +225,7 @@ footer{margin-top:48px;padding-top:16px;border-top:1px solid var(--rule);font-fa
     <div class="lanes">
       <div class="lane one">
         <div class="tag">Route ①</div>
-        <h3>註冊 · 全新 email</h3>
+        <h3>註冊 · 建立新帳號</h3>
         <div class="en-h">Sign up with a new email</div>
         <div class="body">
           唯一會建立帳號的路。Email 送出後寄 6 位數碼，通過就建立帳號並自動產生 Account ID，接著<b>強制進 Setup</b>。
@@ -241,8 +241,8 @@ footer{margin-top:48px;padding-top:16px;border-top:1px solid var(--rule);font-fa
 
       <div class="lane two">
         <div class="tag">Route ②</div>
-        <h3>註冊 · email 已存在</h3>
-        <div class="en-h">Sign up with an email that already has an account</div>
+        <h3>登入 · 從註冊頁進來</h3>
+        <div class="en-h">A login that started at the sign-up door</div>
         <div class="body">
           同一個欄位、同一組驗證碼，只是結果不同：跳出置中 modal，碼在 modal 裡輸入，通過就登入。<b>不會建立第二個帳號，也不重跑 Setup。</b>
           <div class="en">Same field, same code — only the outcome differs. A centred modal appears, the code is entered inside it, and passing it signs them in. <b>No second account, and no repeat of Setup.</b></div>
@@ -257,7 +257,7 @@ footer{margin-top:48px;padding-top:16px;border-top:1px solid var(--rule);font-fa
 
       <div class="lane three">
         <div class="tag">Route ③</div>
-        <h3>登入</h3>
+        <h3>登入 · 從登入頁進來</h3>
         <div class="en-h">Login</div>
         <div class="body">
           帳號欄位吃 Account ID、email 或電話。一次性碼那個分頁只收 email 或電話，因為得有地方寄。
@@ -286,6 +286,13 @@ footer{margin-top:48px;padding-top:16px;border-top:1px solid var(--rule);font-fa
         <div class="v">
           帳號存不存在、是休眠還是被限制，在驗證碼通過之前一律看不出來。註冊頁是唯一的例外——那裡會明講 email 已註冊，是業務決定，所以必須靠限流補上。
           <div class="en">Whether an account exists, and whether it is dormant or restricted, is invisible until the code passes. The sign-up screen is the deliberate exception — it says the address is taken, which is why rate limiting carries the weight there.</div>
+        </div>
+      </div>
+      <div class="rrow">
+        <div class="k">算註冊還是算登入<div class="en-h">Counted as which</div></div>
+        <div class="v">
+          <b>看結果，不看從哪個畫面進來。</b>只有真的建立了帳號（<code>outcome:'created'</code>）才算註冊；<code>signed_in</code> 和 <code>reactivated</code> 都是登入，帶 <code>entry_point:'signup_screen'</code>。從註冊頁走完驗證碼就送 <code>sign_up</code>，會把本來就有帳號的人算進新客數——而這些人正是最容易走這條路的：忘記自己註冊過的人，會把 email 打進眼前看得到的那個表單，不會先去點登入分頁。<code>reactivated</code> 要另外帶參數，否則休眠喚回的成效會被混進一般登入裡看不到。
+          <div class="en"><b>The outcome decides, not the screen.</b> Only a genuine creation (<code>outcome:'created'</code>) counts as registration; <code>signed_in</code> and <code>reactivated</code> are logins carrying <code>entry_point:'signup_screen'</code>. Firing <code>sign_up</code> for everyone who completes a code on that form inflates new customers with people who already had accounts — and those are exactly the people who take this route, since someone who forgot they had signed up types their address into the form in front of them rather than switching tabs. Keep <code>reactivated</code> as its own param, or dormant win-back disappears into ordinary logins.</div>
         </div>
       </div>
       <div class="rrow">
