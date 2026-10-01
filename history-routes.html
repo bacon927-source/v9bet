@@ -1,0 +1,377 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>一條時間軸，七個類別</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --ink:#22242A; --paper:#FFFFFF; --ground:#EDEDEF; --sunk:#E3E3E7;
+  --rule:#D3D4D9; --muted:#70737B; --muted2:#8A8D95;
+  --new:#1F6F6B; --new-fill:#E2F0EF;
+  --back:#6E4079; --back-fill:#F1E9F4;
+  --alert:#A13636; --alert-fill:#FBEFEE;
+  --f-disp:"Archivo","Noto Sans TC",system-ui,sans-serif;
+  --f-body:"Noto Sans TC",-apple-system,system-ui,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ink:#E7E8EC; --paper:#1B1D22; --ground:#121317; --sunk:#16181D;
+    --rule:#343740; --muted:#979BA5; --muted2:#7E828C;
+    --new:#63BCB6; --new-fill:#15302E;
+    --back:#C49AD2; --back-fill:#241A29;
+    --alert:#E28C87; --alert-fill:#2C1D1D;
+  }
+}
+:root[data-theme="dark"]{
+  --ink:#E7E8EC; --paper:#1B1D22; --ground:#121317; --sunk:#16181D;
+  --rule:#343740; --muted:#979BA5; --muted2:#7E828C;
+  --new:#63BCB6; --new-fill:#15302E;
+  --back:#C49AD2; --back-fill:#241A29;
+  --alert:#E28C87; --alert-fill:#2C1D1D;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.72;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1140px;margin:0 auto;padding-inline:20px;padding-block:44px 72px}
+h1,h2,h3{text-wrap:balance;margin:0}
+.en{font-family:var(--f-disp);font-weight:400;font-size:.9em;line-height:1.6;color:var(--muted2);margin-top:5px}
+.en-h{font-family:var(--f-disp);font-weight:500;font-size:.82em;line-height:1.45;color:var(--muted2);margin-top:3px}
+.eyebrow{font-family:var(--f-disp);font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+
+.mast{border-bottom:2px solid var(--ink);padding-bottom:22px;margin-bottom:30px}
+h1{font-size:clamp(27px,4.4vw,40px);font-weight:700;line-height:1.18;margin:10px 0 0}
+.mast .en-h{font-size:clamp(14px,2vw,18px);color:var(--muted)}
+.dek{max-width:66ch;margin:14px 0 0}
+
+figure{margin:0;background:var(--paper);border:1px solid var(--rule);border-radius:3px;padding:20px 18px 16px}
+.scroller{overflow-x:auto}
+svg{max-width:100%;height:auto;display:block;min-width:860px}
+figcaption{margin-top:14px;padding-top:12px;border-top:1px solid var(--rule);font-size:13px;color:var(--muted);line-height:1.6}
+figcaption b{color:var(--ink);font-weight:500}
+
+section{margin-top:40px}
+.sec-head{margin-bottom:16px}
+h2{font-size:19px;font-weight:700;letter-spacing:-.01em}
+
+.lanes{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+@media (max-width:900px){.lanes{grid-template-columns:1fr}}
+.lane{background:var(--paper);border:1px solid var(--rule);border-top:3px solid var(--accent);border-radius:3px;padding:18px}
+.lane.one{--accent:var(--new)}
+.lane.two{--accent:var(--muted)}
+.lane.three{--accent:var(--back)}
+.lane .tag{font-family:var(--f-disp);font-size:11px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--accent)}
+.lane h3{font-size:16px;font-weight:700;margin:6px 0 0}
+.lane .ev{font-family:var(--f-mono);font-size:11px;color:var(--accent);margin-top:8px;border:1px solid currentColor;border-radius:2px;padding:1px 7px;display:inline-block}
+.lane .body{margin-top:12px;font-size:13.5px;color:var(--muted);line-height:1.65}
+.lane dl{margin:14px 0 0;display:grid;grid-template-columns:auto 1fr;gap:7px 10px;font-size:12.5px;line-height:1.5}
+.lane dt{font-family:var(--f-mono);font-size:11px;color:var(--muted2);white-space:nowrap}
+.lane dd{margin:0;color:var(--muted)}
+
+.rules{background:var(--paper);border:1px solid var(--rule);border-radius:3px;overflow:hidden}
+.rrow{display:grid;grid-template-columns:200px 1fr;border-bottom:1px solid var(--rule)}
+.rrow:last-child{border-bottom:none}
+.rrow>div{padding:15px 18px}
+.rrow .k{font-weight:700;font-size:14px;background:var(--sunk)}
+.rrow .k .en-h{font-weight:400}
+.rrow .v{font-size:13.5px;line-height:1.65}
+@media (max-width:760px){.rrow{grid-template-columns:1fr}.rrow .k{border-bottom:1px dashed var(--rule)}}
+
+code{font-family:var(--f-mono);font-size:12px;background:var(--sunk);padding:1px 5px;border-radius:2px;color:var(--ink)}
+
+.open{margin-top:22px;border-left:3px solid var(--alert);background:var(--alert-fill);padding:16px 18px;border-radius:0 3px 3px 0}
+.open h3{font-size:14.5px;font-weight:700;color:var(--alert)}
+.open ol{margin:10px 0 0;padding-left:20px;font-size:13.5px;line-height:1.65}
+.open li{margin-bottom:11px}
+.open li:last-child{margin-bottom:0}
+
+footer{margin-top:48px;padding-top:16px;border-top:1px solid var(--rule);font-family:var(--f-mono);font-size:11.5px;color:var(--muted);display:flex;flex-wrap:wrap;gap:6px 20px}
+</style>
+</head>
+<body>
+
+
+<div class="wrap">
+
+  <header class="mast">
+    <div class="eyebrow">V9Bet · History</div>
+    <h1>一條時間軸，七個類別</h1>
+    <div class="en-h">One Timeline, Seven Categories</div>
+    <div class="dek">
+      History 不是日誌，是「我的錢去哪了」的答案頁。所有事件進同一條時間軸，用七個類別篩；<b>前端永遠只載入 30 天</b>，更舊的走匯出；而每一列壞消息都必須說出為什麼，並把人送去能修好它的地方。
+      <div class="en">History is not a log — it is the answer page for "where did my money go". Everything lands on one timeline filtered by seven categories; <b>the front end only ever loads 30 days</b>, export covers the rest; and every row of bad news has to say why, then route to the place that fixes it.</div>
+    </div>
+  </header>
+
+  <figure>
+    <div class="scroller">
+      <svg viewBox="0 0 1060 600" role="img" aria-label="三個入口進入一條時間軸，分成七個類別，右側通往四個出口：修復動作、Live Chat、Settings、匯出。Ask AI 在下方形成一個引用迴圈。Login & Devices 不在 History 裡。">
+        <defs>
+          <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><polygon points="0,1 10,5 0,9" fill="currentColor"/></marker>
+          <marker id="an" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><polygon points="0,1 10,5 0,9" fill="var(--new)"/></marker>
+          <marker id="ab" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><polygon points="0,1 10,5 0,9" fill="var(--back)"/></marker>
+        </defs>
+
+        <!-- ENTRIES -->
+        <rect x="14" y="54" width="136" height="58" rx="4" fill="var(--new-fill)" stroke="var(--new)" stroke-width="1.6"/>
+        <text x="82" y="78" text-anchor="middle" font-size="11.5" font-weight="700" fill="var(--new)">Wallet</text>
+        <text x="82" y="94" text-anchor="middle" font-size="8.5" fill="var(--new)">「View all」深連結</text>
+
+        <rect x="14" y="170" width="136" height="58" rx="4" fill="var(--back-fill)" stroke="var(--back)" stroke-width="1.6"/>
+        <text x="82" y="194" text-anchor="middle" font-size="11.5" font-weight="700" fill="var(--back)">Promotions</text>
+        <text x="82" y="210" text-anchor="middle" font-size="8.5" fill="var(--back)">「My rewards」深連結</text>
+
+        <rect x="14" y="286" width="136" height="58" rx="4" fill="var(--sunk)" stroke="currentColor" stroke-width="1.5"/>
+        <text x="82" y="310" text-anchor="middle" font-size="11.5" font-weight="700" fill="currentColor">Profile</text>
+        <text x="82" y="326" text-anchor="middle" font-size="8.5" fill="var(--muted)">主入口 · main entry</text>
+
+        <!-- deep links -->
+        <path d="M150,83 H464" fill="none" stroke="var(--new)" stroke-width="1.5" marker-end="url(#an)"/>
+        <text x="180" y="76" font-size="8.5" font-family="monospace" fill="var(--new)">→ 直接開類別 1</text>
+        <path d="M150,199 H464" fill="none" stroke="var(--back)" stroke-width="1.5" marker-end="url(#ab)"/>
+        <text x="180" y="192" font-size="8.5" font-family="monospace" fill="var(--back)">→ 直接開類別 3</text>
+
+        <!-- HOME -->
+        <rect x="210" y="230" width="190" height="170" rx="4" fill="var(--paper)" stroke="currentColor" stroke-width="1.8"/>
+        <text x="305" y="258" text-anchor="middle" font-size="12.5" font-weight="700" fill="currentColor">History Home</text>
+        <text x="305" y="276" text-anchor="middle" font-size="9.5" fill="var(--muted)">一條時間軸 · 按日分組</text>
+        <text x="305" y="296" text-anchor="middle" font-size="9" fill="var(--muted)">七類晶片 · 搜尋 ID</text>
+        <text x="305" y="312" text-anchor="middle" font-size="9" fill="var(--muted)">7d ／ 30d ／ 自訂 ≤30d</text>
+        <text x="305" y="336" text-anchor="middle" font-size="9.5" font-weight="700" fill="currentColor">只載入最近 30 天</text>
+        <text x="305" y="351" text-anchor="middle" font-size="8.5" fill="var(--muted2)">rolling window</text>
+        <text x="305" y="382" text-anchor="middle" font-size="9" fill="var(--back)">🤖 Ask AI</text>
+        <path d="M150,315 H204" fill="none" stroke="currentColor" stroke-width="1.5" marker-end="url(#a)"/>
+
+        <!-- fan-out to categories -->
+        <g fill="none" stroke="currentColor" stroke-width="1.3">
+          <path d="M400,315 H430 V141 H458" marker-end="url(#a)"/>
+          <path d="M400,315 H430 V257 H458" marker-end="url(#a)"/>
+          <path d="M400,315 H458" marker-end="url(#a)"/>
+          <path d="M400,315 H430 V373 H458" marker-end="url(#a)"/>
+          <path d="M400,315 H430 V431 H458" marker-end="url(#a)"/>
+        </g>
+        <text x="408" y="304" font-size="8.5" font-family="monospace" fill="var(--muted)">chips 篩選</text>
+
+        <!-- CATEGORIES -->
+        <g font-family="var(--f-body)">
+          <rect x="464" y="60" width="186" height="46" rx="4" fill="var(--paper)" stroke="currentColor" stroke-width="1.2"/>
+          <text x="478" y="88" font-size="11" font-weight="700" fill="currentColor">1 存提款</text>
+          <text x="636" y="88" text-anchor="end" font-size="8" fill="var(--muted2)">most visited</text>
+
+          <rect x="464" y="118" width="186" height="46" rx="4" fill="var(--paper)" stroke="currentColor" stroke-width="1.2"/>
+          <text x="478" y="146" font-size="11" font-weight="700" fill="currentColor">2 投注與結果</text>
+          <text x="636" y="146" text-anchor="end" font-size="8" fill="var(--muted2)">＋ P&amp;L</text>
+
+          <rect x="464" y="176" width="186" height="46" rx="4" fill="var(--paper)" stroke="currentColor" stroke-width="1.2"/>
+          <text x="478" y="204" font-size="11" font-weight="700" fill="currentColor">3 獎勵與優惠</text>
+          <text x="636" y="204" text-anchor="end" font-size="8" fill="var(--muted2)">churn 進度</text>
+
+          <rect x="464" y="234" width="186" height="46" rx="4" fill="var(--paper)" stroke="currentColor" stroke-width="1.2"/>
+          <text x="478" y="262" font-size="11" font-weight="700" fill="currentColor">4 帳號與安全</text>
+          <text x="636" y="262" text-anchor="end" font-size="8" fill="var(--muted2)">OTP 稽核</text>
+
+          <rect x="464" y="292" width="186" height="46" rx="4" fill="var(--paper)" stroke="currentColor" stroke-width="1.2"/>
+          <text x="478" y="320" font-size="11" font-weight="700" fill="currentColor">5 推薦</text>
+          <text x="636" y="320" text-anchor="end" font-size="8" fill="var(--muted2)">?ref= 的下半場</text>
+
+          <rect x="464" y="350" width="186" height="46" rx="4" fill="var(--paper)" stroke="currentColor" stroke-width="1.2"/>
+          <text x="478" y="378" font-size="11" font-weight="700" fill="currentColor">6 KYC 與資料</text>
+          <text x="636" y="378" text-anchor="end" font-size="8" fill="var(--muted2)">提款被擋的原因</text>
+
+          <rect x="464" y="408" width="186" height="46" rx="4" fill="var(--paper)" stroke="currentColor" stroke-width="1.2"/>
+          <text x="478" y="436" font-size="11" font-weight="700" fill="currentColor">7 負責任博弈</text>
+          <text x="636" y="436" text-anchor="end" font-size="8" fill="var(--muted2)">限額 · 停權紀錄</text>
+        </g>
+
+        <!-- collector -->
+        <g fill="none" stroke="currentColor" stroke-width="1.1">
+          <path d="M650,83 H690"/><path d="M650,141 H690"/><path d="M650,199 H690"/>
+          <path d="M650,257 H690"/><path d="M650,315 H690"/><path d="M650,373 H690"/><path d="M650,431 H690"/>
+          <path d="M690,83 V431"/>
+        </g>
+
+        <!-- OUTCOMES -->
+        <g fill="none" stroke-width="1.4">
+          <path d="M690,92 H754" stroke="var(--new)" marker-end="url(#an)"/>
+          <path d="M690,202 H754" stroke="currentColor" marker-end="url(#a)"/>
+          <path d="M690,312 H754" stroke="currentColor" marker-end="url(#a)"/>
+          <path d="M690,422 H754" stroke="currentColor" stroke-dasharray="5 4" marker-end="url(#a)"/>
+        </g>
+        <text x="700" y="80" font-size="8" font-family="monospace" fill="var(--new)">1 · 3 · 6</text>
+        <text x="700" y="190" font-size="8" font-family="monospace" fill="var(--muted2)">2 · 4</text>
+        <text x="700" y="300" font-size="8" font-family="monospace" fill="var(--muted2)">4 · 7</text>
+        <text x="700" y="410" font-size="8" font-family="monospace" fill="var(--muted2)">1 · 2</text>
+
+        <rect x="760" y="60" width="170" height="64" rx="4" fill="var(--new-fill)" stroke="var(--new)" stroke-width="2"/>
+        <text x="845" y="86" text-anchor="middle" font-size="11.5" font-weight="700" fill="var(--new)">去修好它</text>
+        <text x="845" y="102" text-anchor="middle" font-size="8.5" fill="var(--new)">補 churn · 重交 KYC · 再試一次</text>
+
+        <rect x="760" y="170" width="170" height="64" rx="4" fill="var(--paper)" stroke="currentColor" stroke-width="1.4"/>
+        <text x="845" y="196" text-anchor="middle" font-size="11.5" font-weight="700" fill="currentColor">Live Chat</text>
+        <text x="845" y="212" text-anchor="middle" font-size="8.5" fill="var(--muted)">爭議投注 · 「不是我」· 帶上下文</text>
+
+        <rect x="760" y="280" width="170" height="64" rx="4" fill="var(--paper)" stroke="currentColor" stroke-width="1.4"/>
+        <text x="845" y="306" text-anchor="middle" font-size="11.5" font-weight="700" fill="currentColor">Settings</text>
+        <text x="845" y="322" text-anchor="middle" font-size="8.5" fill="var(--muted)">管理限額 · 安全方式</text>
+
+        <rect x="760" y="390" width="170" height="64" rx="4" fill="var(--sunk)" stroke="currentColor" stroke-width="1.4" stroke-dasharray="5 4"/>
+        <text x="845" y="416" text-anchor="middle" font-size="11.5" font-weight="700" fill="currentColor">Export CSV ／ PDF</text>
+        <text x="845" y="432" text-anchor="middle" font-size="8.5" fill="var(--muted)">30 天之外的唯一出路</text>
+
+        <!-- ASK AI LOOP -->
+        <rect x="210" y="470" width="190" height="84" rx="4" fill="var(--back-fill)" stroke="var(--back)" stroke-width="2"/>
+        <text x="305" y="496" text-anchor="middle" font-size="11.5" font-weight="700" fill="var(--back)">🤖 Ask AI</text>
+        <text x="305" y="512" text-anchor="middle" font-size="8.5" fill="var(--back)">只讀自己的 History · 不能動作</text>
+        <text x="305" y="527" text-anchor="middle" font-size="8.5" fill="var(--back)">每個答案附上引用的紀錄</text>
+        <path d="M305,400 V464" fill="none" stroke="var(--back)" stroke-width="1.5" marker-end="url(#ab)"/>
+        <path d="M210,512 H178 V350 H204" fill="none" stroke="var(--back)" stroke-width="1.5" stroke-dasharray="5 4" marker-end="url(#ab)"/>
+        <text x="60" y="440" font-size="8.5" font-family="monospace" fill="var(--back)">View these N ›</text>
+        <text x="60" y="453" font-size="8.5" font-family="monospace" fill="var(--back)">重跑同一個篩選</text>
+
+        <!-- NOT HERE -->
+        <rect x="464" y="490" width="186" height="64" rx="4" fill="var(--alert-fill)" stroke="var(--alert)" stroke-width="1.4" stroke-dasharray="5 4"/>
+        <text x="557" y="514" text-anchor="middle" font-size="11" font-weight="700" fill="var(--alert)">✕ Login &amp; Devices</text>
+        <text x="557" y="530" text-anchor="middle" font-size="8.5" fill="var(--alert)">不是第八類（08-30 移出）</text>
+        <text x="557" y="544" text-anchor="middle" font-size="8.5" fill="var(--muted2)">只住在 Settings › Security &amp; Sessions</text>
+      </svg>
+    </div>
+    <figcaption>
+      三個入口、一條時間軸、七個類別、四個出口。<b>History 的每一列壞消息都連到解法</b>——被拒的提款連到 churn 進度，退件的證件連到重交，可疑的安全事件連到 Live Chat。30 天是載入視窗，不是保留期；Ask AI 的每個數字都能點回產生它的那一批紀錄。
+      <div class="en">Three ways in, one timeline, seven categories, four ways out. <b>Every row of bad news links to its fix</b> — a rejected withdrawal to churn progress, a bounced document to re-submission, a suspicious security event to Live Chat. Thirty days is the loading window, not the retention period; every number Ask AI gives can be tapped back into the exact records that produced it.</div>
+    </figcaption>
+  </figure>
+
+  <!-- ============ THREE ENTRIES ============ -->
+  <section>
+    <div class="sec-head">
+      <h2>三個入口各自帶著什麼問題來</h2>
+      <div class="en-h">What question each entry arrives with</div>
+    </div>
+
+    <div class="lanes">
+      <div class="lane two">
+        <div class="tag">Entry · main</div>
+        <h3>Profile → History</h3>
+        <div class="en-h">The front door — browsing, not searching</div>
+        <div class="ev">history_view</div>
+        <div class="body">
+          主入口。沒有特定問題，預設給最近 7 天、全部類別的時間軸。晶片、日期、搜尋、Ask AI 都從這裡長出來。
+          <div class="en">The main entrance. No specific question — defaults to the last 7 days, all categories. Chips, date range, search and Ask AI all hang off this screen.</div>
+        </div>
+        <dl>
+          <dt>預設</dt><dd>7 天 · 全類別 · 按日分組</dd>
+          <dt>空狀態</dt><dd>新會員 → 導去首次存款</dd>
+          <dt>埋點</dt><dd>history_view 帶 category 與 range</dd>
+        </dl>
+      </div>
+
+      <div class="lane one">
+        <div class="tag">Entry · deep link</div>
+        <h3>Wallet「View all」</h3>
+        <div class="en-h">Arrives asking "where is my money"</div>
+        <div class="ev">→ 類別 1</div>
+        <div class="body">
+          帶著最急的問題來：錢進來了沒、提款卡在哪。直接落在類別 1——整個 History 被看最多次的一頁，存款的每個狀態都連回這裡。
+          <div class="en">Arrives with the most urgent question: did the deposit land, where is the withdrawal stuck. Lands straight on category 1 — the single most-visited page in History; every deposit state links back here.</div>
+        </div>
+        <dl>
+          <dt>必答</dt><dd>被拒必說為什麼＋下一步</dd>
+          <dt>USDT</dt><dd>兩邊金額＋匯率都留著，為了爭議</dd>
+          <dt>匯出</dt><dd>CSV ／ PDF 對帳單從這裡走</dd>
+        </dl>
+      </div>
+
+      <div class="lane three">
+        <div class="tag">Entry · deep link</div>
+        <h3>Promotions「My rewards」</h3>
+        <div class="en-h">Arrives asking "where is my bonus"</div>
+        <div class="ev">→ 類別 3</div>
+        <div class="body">
+          帶著第二急的問題來：紅利去哪了。直接落在類別 3。沒收與過期的每一列都寫明原因——「紅利不見了」是第一名的客服單，這頁的工作就是讓它不用開。
+          <div class="en">Arrives with the second question: where did the bonus go. Lands on category 3. Every forfeit and expiry row states its reason — "my bonus disappeared" is the #1 support ticket, and this page exists so it never gets opened.</div>
+        </div>
+        <dl>
+          <dt>進度</dt><dd>churn 與提款擋板讀同一來源</dd>
+          <dt>兩視圖</dt><dd>推薦獎勵同列類別 3 與 5，不重計</dd>
+          <dt>出口</dt><dd>Active → 去玩合格遊戲</dd>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ RULES ============ -->
+  <section>
+    <div class="sec-head">
+      <h2>整條時間軸共用的規則</h2>
+      <div class="en-h">Rules that hold across the whole timeline</div>
+    </div>
+
+    <div class="rules">
+      <div class="rrow">
+        <div class="k">30 天是視窗，不是保留期<div class="en-h">A window, not retention</div></div>
+        <div class="v">
+          前端一律只載入最近 30 天（08-30 決定），所以日期篩選只有 7d／30d／自訂 ≤30d。保留期是另一個數字：按類別、由法規決定（金流與投注 5–7 年）。<b>過了 30 天，紀錄離開的是 app 的清單，不是系統</b>——爭議、退款、AML 全靠它還在。
+          <div class="en">The front end loads a uniform rolling 30 days (08-30), so the date filter offers 7d / 30d / custom ≤30d. Retention is a different number: per category, set by regulation (money and bets 5–7 years). <b>Past 30 days a record leaves the app's list, not the system</b> — disputes, chargebacks and AML all depend on that.</div>
+        </div>
+      </div>
+      <div class="rrow">
+        <div class="k">P&L 是唯一例外<div class="en-h">The one deliberate exception</div></div>
+        <div class="v">
+          投注 P&L 保留 7d／30d／90d／All——因為那是伺服器算好的<b>聚合數字</b>，不是載入舊紀錄。負責任博弈就靠它回答「我今年輸了多少」；把這頁「修正」成 30 天等於拆掉 RG 的地基。規則管的是紀錄清單，不是統計。
+          <div class="en">Bet P&amp;L keeps 7d / 30d / 90d / All — those are server-computed <b>aggregates</b>, not old rows loaded into the app. Responsible Gaming depends on it to answer "how much have I lost this year"; "fixing" this screen to 30 days would pull the floor out from under RG. The rule governs record lists, not statistics.</div>
+        </div>
+      </div>
+      <div class="rrow">
+        <div class="k">壞消息必附原因與下一步<div class="en-h">Bad news carries why + next</div></div>
+        <div class="v">
+          被拒的提款寫明 churn 還差多少、連到進度頁；退件的 KYC 給一鍵重交；沒收的紅利說是提早提款還是過期。<b>History 的工作是取代客服單</b>，做不到這點它就只是一份日誌。
+          <div class="en">A rejected withdrawal states how much churn remains and links to the progress page; a bounced KYC document gets one-tap re-submission; a forfeited bonus says whether it was early withdrawal or expiry. <b>History's job is to replace the support ticket</b> — without this it is just a log.</div>
+        </div>
+      </div>
+      <div class="rrow">
+        <div class="k">Ask AI 只讀自己、答案必附紀錄<div class="en-h">Own data only, and it cites</div></div>
+        <div class="v">
+          只能查<b>自己的</b> History，不能動作（不能用聊天取消提款）。每個答案附上它引用的篩選，<code>View these N transactions</code> 重跑一模一樣的查詢——沒有驗證不了的黑盒數字。它跟 AI Live Chat 是兩個入口：那邊是找客服，這邊是查自己，不要合併。
+          <div class="en">It reads only the member's <b>own</b> History and takes no actions (no cancelling a withdrawal via chat). Every answer carries the filter behind it, and <code>View these N transactions</code> re-runs the identical query — no unverifiable black-box numbers. It is a separate surface from AI Live Chat: that one talks to support, this one queries your own data. Keep the entries apart.</div>
+        </div>
+      </div>
+      <div class="rrow">
+        <div class="k">會員看到的是子集<div class="en-h">The member sees a subset</div></div>
+        <div class="v">
+          安全事件給會員看動作、時間、驗證通道與遮罩後的聯絡方式；IP、失敗明細、OTP 內部細節只在後台稽核庫。同一筆推薦獎勵在類別 3 和 5 各出現一次——<b>同一紀錄、兩個視圖，永不重複計</b>。
+          <div class="en">Security events show the member the action, time, channel and masked contact; raw IP, failure forensics and OTP internals stay in the back-office audit store. The same referral reward appears in both category 3 and 5 — <b>one record, two views, never double-counted</b>.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="open">
+      <h3>這條流程還缺三件事 · Three things this flow still does not specify</h3>
+      <ol>
+        <li>
+          <b>捲到 30 天盡頭的畫面沒畫。</b>無限捲動總會到底，但「到底了——更舊的請匯出」這個狀態不存在。沒有它，會員只會以為紀錄不見了，而這正是 30 天視窗最容易被誤讀成「刪掉了」的地方。
+          <div class="en"><b>The end of the 30-day scroll is not drawn.</b> Infinite scroll eventually hits bottom, but the "that's everything — older records via export" state doesn't exist. Without it a member just assumes records vanished — exactly where the 30-day window gets misread as deletion.</div>
+        </li>
+        <li>
+          <b>匯出的安全沒定義。</b>CSV 裝著多年的金流，異步寄進收件匣：要不要 OTP step-up？下載連結效期多長？Message Center 只留 30 天，連結過期後走哪裡？匯出是整套 30 天視窗的洩壓閥，它的門檻不能是空白。
+          <div class="en"><b>Export security is undefined.</b> The CSV holds years of money movement and arrives async via the inbox: does requesting it need an OTP step-up? How long does the link live? Message Center keeps 30 days — what happens after the link expires? Export is the pressure valve of the whole 30-day window; its gate cannot be blank.</div>
+        </li>
+        <li>
+          <b>保留年限全是提案。</b>5–7 年、2 年+、「帳號存續期」都標著待法務確認——VN 與 TH 各自確認之前，後端的 TTL 與歸檔排程一個都不能上。這是整張矩陣裡唯一擋 Dev 的格子。
+          <div class="en"><b>Every retention figure is a proposal.</b> The 5–7 years, 2 years+, "account life" all carry "confirm with legal per market" — until VN and TH each confirm, none of the backend TTL / archival jobs can ship. It is the one cell in the matrix that actually blocks Dev.</div>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span>來源 · Source: history-flow-wireframe.html</span>
+    <span>2026-10-01</span>
+  </footer>
+
+</div>
+
+</body>
+</html>
