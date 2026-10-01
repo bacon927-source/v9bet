@@ -260,7 +260,7 @@ const screens = [
     states:["overview","benefits table (per tier)","progress detail","tier up / down notification"],
     fields:["tier","tier_progress{done,required,period_end}","benefits[]","next_tier"],
     api:"GET /loyalty → { tier, progress, benefits[] }",
-    notes:["Extends the existing 'Loyalty program' screen in the full wireframe (9 · Statement/Plans).","Lifetime rewards (docx116) surface here and in History 4."]
+    notes:["Extends the existing 'Loyalty program' screen in the full wireframe (9 · Statement/Plans).","Lifetime rewards (docx116) surface here and in History 3."]
   }
 },
 {
@@ -286,7 +286,7 @@ const screens = [
     <div class="link"><b>My referrals (History)</b> · <b>How it works</b></div>`,
   spec:{
     goal:"Referral hub: code / link / QR share, earnings summary, rules, and the guest landing page that carries ?ref= into sign-up.",
-    states:["share (copy / share sheet / QR)","how it works","guest invite landing (?ref=)","pending → History 6"],
+    states:["share (copy / share sheet / QR)","how it works","guest invite landing (?ref=)","pending → History 5"],
     fields:["ref_code","ref_link","stats{friends,earned,pending}"],
     api:"GET /referrals/me · GET /r/{code} (landing)",
     notes:["Closes the loop on the sign-up decision: referral code moved out of the form, auto-captured from the link.","Records live in History category 5."]

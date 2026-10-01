@@ -130,7 +130,7 @@
   <!-- LEFT: flow nav -->
   <aside>
     <h1>History Flow</h1>
-    <p class="sub">Low-fidelity wireframe · Mobile / App first<br>What the member did — 7 record categories<br>Decided Jul 16 (see meeting notes); Login &amp; Devices moved to Settings 08-30</p>
+    <p class="sub">Low-fidelity wireframe · Mobile / App first<br>What the member did — 7 record categories<br>Decided Jul 16 (see meeting notes); Login &amp; Devices moved to Settings 08-30<br>Flow map: <a href="history-routes.html" style="color:inherit">history-routes.html</a> — entries, exits &amp; shared rules in one diagram</p>
     <div id="nav"></div>
     <div class="legend">
       Grayscale wireframe only, no visual design.<br>
@@ -210,7 +210,7 @@ const screens = [
     states:["default (all categories, last 7 days)","empty (new member) → CTA to first deposit","filter panel open (date range)","Ask AI (natural-language query over the member's own History)","category chip selected → filtered list","search by txn / bet / promo ID","load more (infinite scroll, 20 per page)"],
     fields:["category(all|money|bets|rewards|security|referral|kyc|rg)","date_range(7d|30d|custom≤30d)","query","cursor","ai_query","ai_answer{text,cited_filter}"],
     api:"GET /history?category=&from=&to=&q=&cursor=\n← { items:[{id,type,ts,title,subtitle,amount?,status,detail_ref}], next_cursor }\nGET /history/export?…  → CSV (async, link via inbox)\nPOST /history/ask { query } → { answer_text, cited_filter:{category,date_range,ids[]} }",
-    notes:["Entry: Profile → History (also deep-linked from Wallet 'View all', Promotions 'My rewards').","Ask AI (08-30): scoped to read-only retrieval over the member's OWN History records only — never back-office data, never other members' data, and it cannot take actions (no 'cancel my withdrawal' via chat). Every answer must cite the underlying filter/records so 'View these N transactions' reopens the exact same query as a normal filtered list — no unverifiable black-box numbers.","This is a different surface from the shared AI Live Chat FAB (support conversations, see growth-support-wireframe.html) — that one is for talking to support; this one is for querying your own data. Distinct entry points, don't merge them.","No 'Login & Devices' category (08-30, moved out): login/session records live solely in Profile & Settings › Security & Sessions, not duplicated here — single active session policy means there's no multi-device log worth a whole History category, and Security changes (password/contact changes) already have their own category below.","Member-visible vs back-office: this page shows the member-facing subset; audit-grade detail (IP, failed attempts, OTP internals) is back-office only.","Front end shows a rolling 30 days (08-30 decision) — the date filter therefore offers 7d / 30d / custom-within-30d, and the previous '90 days' option was removed since it could never return anything. Older records are not deleted, just not loaded into the app: Export CSV is the route to them. Retention itself stays per-category and regulatory (money & bets 5–7 yrs) — see the Retention & Visibility Matrix.","Amounts always in account currency (VND / THB); USDT rows show both (100 USDT ≈ ₫2.4M).","Analytics: history_view carries category + range; ai_query event logged separately (no PII beyond the member's own query text)."]
+    notes:["Companion diagram (10-01): history-routes.html draws this whole flow as one map — three entries, the 30-day timeline, seven categories, four exits, the Ask AI loop, the shared rules and the three open gaps. This page is the screen-level source; that page is the map. Keep the two in step, the same way login-flow keeps step with security-methods-wireframe.html.","Entry: Profile → History (also deep-linked from Wallet 'View all' → category 1, Promotions 'My rewards' → category 3 — wallet-flow-wireframe.html / promotion-flow-wireframe.html).","Ask AI (08-30): scoped to read-only retrieval over the member's OWN History records only — never back-office data, never other members' data, and it cannot take actions (no 'cancel my withdrawal' via chat). Every answer must cite the underlying filter/records so 'View these N transactions' reopens the exact same query as a normal filtered list — no unverifiable black-box numbers.","This is a different surface from the shared AI Live Chat FAB (support conversations, see growth-support-wireframe.html) — that one is for talking to support; this one is for querying your own data. Distinct entry points, don't merge them.","No 'Login & Devices' category (08-30, moved out): login/session records live solely in Profile & Settings › Security & Sessions (profile-settings-flow-wireframe.html), not duplicated here — single active session policy means there's no multi-device log worth a whole History category, and Security changes (password/contact changes) already have their own category below.","Member-visible vs back-office: this page shows the member-facing subset; audit-grade detail (IP, failed attempts, OTP internals) is back-office only.","Front end shows a rolling 30 days (08-30 decision) — the date filter therefore offers 7d / 30d / custom-within-30d, and the previous '90 days' option was removed since it could never return anything. Older records are not deleted, just not loaded into the app: Export CSV is the route to them. Retention itself stays per-category and regulatory (money & bets 5–7 yrs) — see the Retention & Visibility Matrix.","Amounts always in account currency (VND / THB); USDT rows show both (100 USDT ≈ ₫2.4M).","Analytics: history_view carries category + range; ai_query event logged separately (no PII beyond the member's own query text)."]
   }
 },
 {
@@ -256,7 +256,7 @@ const screens = [
     states:["list (filter deposits / withdrawals / USDT)","deposit detail","withdrawal processing (Requested → Review → Paid out) + delay notice","withdrawal rejected (reason + next action)","export CSV / PDF statement"],
     fields:["type(deposit|withdrawal)","amount","currency","usdt_amount?","rate?","channel(bank|usdt|qr|ewallet)","account_masked","status(requested|review|completed|rejected|failed)","status_history[{status,ts}]","txn_id","coupon_id?","balance_after","otp_verified?","reject_reason?"],
     api:"GET /history/transactions?type=&from=&to=\nGET /transactions/{id}\nGET /transactions/export?format=csv|pdf",
-    notes:["The single most-visited history page — surface it also from Wallet 'View all'.","Rejected withdrawals must say WHY and link to the fix (churn progress / KYC / payout account).","USDT rows keep both amounts + rate for disputes.","Retention 5–7 years (regulatory); export is the customer's own copy for tax / disputes."]
+    notes:["The single most-visited history page — surface it also from Wallet 'View all' (wallet-flow-wireframe.html, which deep-links here with category 1 pre-filtered).","Rejected withdrawals must say WHY and link to the fix (churn progress / KYC / payout account).","USDT rows keep both amounts + rate for disputes.","Retention 5–7 years (regulatory); export is the customer's own copy for tax / disputes."]
   }
 },
 {
@@ -339,7 +339,7 @@ const screens = [
     states:["list (active / completed / expired)","active bonus detail (churn progress, expiry, eligible games)","expired / forfeited with reason","completed → released to balance"],
     fields:["promo_id","type(deposit_match|free_bet|free_spins|mission|checkin|wheel|red_packet|referral|lifetime|cash)","amount|form","granted_at","status(active|completed|expired|forfeited|pending)","turnover_required","turnover_done","expires_at","eligible_products[]","claim_otp?","forfeit_reason?"],
     api:"GET /history/rewards?status=\nGET /rewards/{id}",
-    notes:["Every non-credit outcome carries a reason (expired unclaimed / forfeited on early withdrawal / ineligible).","Turnover progress here = same source as withdrawal 'churn unmet' rejections — never disagree.","Referral rewards appear here AND in Referrals (category 6) — same record, two views."]
+    notes:["Every non-credit outcome carries a reason (expired unclaimed / forfeited on early withdrawal / ineligible).","Turnover progress here = same source as withdrawal 'churn unmet' rejections — never disagree.","Referral rewards appear here AND in Referrals (category 5) — same record, two views.","Promotions' 'My rewards' chip opens this category filtered — same records, promotion-flow-wireframe.html."]
   }
 },
 {
@@ -396,7 +396,7 @@ const screens = [
     states:["list (code + friends + earnings)","friend detail (milestones)","reward pending → reason (no deposit / KYC)"],
     fields:["ref_code","friend_masked","signed_up_at","first_deposit_at?","friend_status(signed_up|deposited|kyc_pending|churned)","my_reward","friend_reward","next_milestone?"],
     api:"GET /history/referrals\nGET /referrals/{id}",
-    notes:["Same reward record as category 4 — do not double-count.","Pending rows must say what's missing (deposit / KYC) so the referrer can nudge.","Fraud flags (self-referral, same device) are back-office only; member sees 'under review'."]
+    notes:["Same reward record as category 3 — do not double-count.","Pending rows must say what's missing (deposit / KYC) so the referrer can nudge.","Fraud flags (self-referral, same device) are back-office only; member sees 'under review'."]
   }
 },
 {
@@ -422,7 +422,7 @@ const screens = [
     states:["list","rejected document (reason + re-submit)","approved","payout account added / removed"],
     fields:["event(kyc_submit|kyc_result|profile_update|bank_add|bank_remove|usdt_add|usdt_remove)","ts","status(pending|approved|rejected)","reason?","impact?"],
     api:"GET /history/kyc\nPOST /kyc/resubmit",
-    notes:["Rejections carry a human reason and a one-tap re-submit.","Payout account rows link to first-time-account withdrawal OTP (category 5)."]
+    notes:["Rejections carry a human reason and a one-tap re-submit.","Payout account rows link to first-time-account withdrawal OTP (category 4).","Re-submit opens the KYC upload flow in growth-support-wireframe.html; in-flight review is surfaced by the Live Status Bubble."]
   }
 },
 {
@@ -448,7 +448,7 @@ const screens = [
     states:["list","limit change (decrease now / increase after 24h)","cooling-off active / ended","self-exclusion (locked account view)","reminder shown"],
     fields:["event(limit_set|limit_change|cooloff|self_exclude|reminder|warning)","limit_type(deposit|loss|time)","old","new","period","requested_at","effective_at","status"],
     api:"GET /history/rg\nPOST /rg/limits · POST /rg/cooloff · POST /rg/self-exclude",
-    notes:["Foundations lists Responsible Gaming as a legal item — this is its member-facing history.","Loss-limit warnings read from category 3 P&L; deposit limits from category 2.","Self-exclusion cannot be undone from the app during the period (Live Chat only)."]
+    notes:["Foundations lists Responsible Gaming as a legal item — this is its member-facing history.","Loss-limit warnings read from category 2 P&L; deposit limits govern category 1 deposits.","'Manage limits' / 'Take a break' / 'Self-exclude' open the RG centre in growth-support-wireframe.html — this category is its record view.","Self-exclusion cannot be undone from the app during the period (Live Chat only)."]
   }
 },
 {
