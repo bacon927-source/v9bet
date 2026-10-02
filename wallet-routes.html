@@ -1,0 +1,362 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>錢的三條路</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --ink:#22242A; --paper:#FFFFFF; --ground:#EDEDEF; --sunk:#E3E3E7;
+  --rule:#D3D4D9; --muted:#70737B; --muted2:#8A8D95;
+  --new:#1F6F6B; --new-fill:#E2F0EF;
+  --back:#6E4079; --back-fill:#F1E9F4;
+  --alert:#A13636; --alert-fill:#FBEFEE;
+  --f-disp:"Archivo","Noto Sans TC",system-ui,sans-serif;
+  --f-body:"Noto Sans TC",-apple-system,system-ui,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ink:#E7E8EC; --paper:#1B1D22; --ground:#121317; --sunk:#16181D;
+    --rule:#343740; --muted:#979BA5; --muted2:#7E828C;
+    --new:#63BCB6; --new-fill:#15302E;
+    --back:#C49AD2; --back-fill:#241A29;
+    --alert:#E28C87; --alert-fill:#2C1D1D;
+  }
+}
+:root[data-theme="dark"]{
+  --ink:#E7E8EC; --paper:#1B1D22; --ground:#121317; --sunk:#16181D;
+  --rule:#343740; --muted:#979BA5; --muted2:#7E828C;
+  --new:#63BCB6; --new-fill:#15302E;
+  --back:#C49AD2; --back-fill:#241A29;
+  --alert:#E28C87; --alert-fill:#2C1D1D;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.72;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1140px;margin:0 auto;padding-inline:20px;padding-block:44px 72px}
+h1,h2,h3{text-wrap:balance;margin:0}
+.en{font-family:var(--f-disp);font-weight:400;font-size:.9em;line-height:1.6;color:var(--muted2);margin-top:5px}
+.en-h{font-family:var(--f-disp);font-weight:500;font-size:.82em;line-height:1.45;color:var(--muted2);margin-top:3px}
+.eyebrow{font-family:var(--f-disp);font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+
+.mast{border-bottom:2px solid var(--ink);padding-bottom:22px;margin-bottom:30px}
+h1{font-size:clamp(27px,4.4vw,40px);font-weight:700;line-height:1.18;margin:10px 0 0}
+.mast .en-h{font-size:clamp(14px,2vw,18px);color:var(--muted)}
+.dek{max-width:66ch;margin:14px 0 0}
+
+figure{margin:0;background:var(--paper);border:1px solid var(--rule);border-radius:3px;padding:20px 18px 16px}
+.scroller{overflow-x:auto}
+svg{max-width:100%;height:auto;display:block;min-width:860px}
+figcaption{margin-top:14px;padding-top:12px;border-top:1px solid var(--rule);font-size:13px;color:var(--muted);line-height:1.6}
+figcaption b{color:var(--ink);font-weight:500}
+
+section{margin-top:40px}
+.sec-head{margin-bottom:16px}
+h2{font-size:19px;font-weight:700;letter-spacing:-.01em}
+
+.lanes{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+@media (max-width:900px){.lanes{grid-template-columns:1fr}}
+.lane{background:var(--paper);border:1px solid var(--rule);border-top:3px solid var(--accent);border-radius:3px;padding:18px}
+.lane.one{--accent:var(--new)}
+.lane.two{--accent:var(--muted)}
+.lane.three{--accent:var(--back)}
+.lane .tag{font-family:var(--f-disp);font-size:11px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--accent)}
+.lane h3{font-size:16px;font-weight:700;margin:6px 0 0}
+.lane .ev{font-family:var(--f-mono);font-size:11px;color:var(--accent);margin-top:8px;border:1px solid currentColor;border-radius:2px;padding:1px 7px;display:inline-block}
+.lane .body{margin-top:12px;font-size:13.5px;color:var(--muted);line-height:1.65}
+.lane dl{margin:14px 0 0;display:grid;grid-template-columns:auto 1fr;gap:7px 10px;font-size:12.5px;line-height:1.5}
+.lane dt{font-family:var(--f-mono);font-size:11px;color:var(--muted2);white-space:nowrap}
+.lane dd{margin:0;color:var(--muted)}
+
+.rules{background:var(--paper);border:1px solid var(--rule);border-radius:3px;overflow:hidden}
+.rrow{display:grid;grid-template-columns:200px 1fr;border-bottom:1px solid var(--rule)}
+.rrow:last-child{border-bottom:none}
+.rrow>div{padding:15px 18px}
+.rrow .k{font-weight:700;font-size:14px;background:var(--sunk)}
+.rrow .k .en-h{font-weight:400}
+.rrow .v{font-size:13.5px;line-height:1.65}
+@media (max-width:760px){.rrow{grid-template-columns:1fr}.rrow .k{border-bottom:1px dashed var(--rule)}}
+
+code{font-family:var(--f-mono);font-size:12px;background:var(--sunk);padding:1px 5px;border-radius:2px;color:var(--ink)}
+
+.open{margin-top:22px;border-left:3px solid var(--alert);background:var(--alert-fill);padding:16px 18px;border-radius:0 3px 3px 0}
+.open h3{font-size:14.5px;font-weight:700;color:var(--alert)}
+.open ol{margin:10px 0 0;padding-left:20px;font-size:13.5px;line-height:1.65}
+.open li{margin-bottom:11px}
+.open li:last-child{margin-bottom:0}
+
+footer{margin-top:48px;padding-top:16px;border-top:1px solid var(--rule);font-family:var(--f-mono);font-size:11.5px;color:var(--muted);display:flex;flex-wrap:wrap;gap:6px 20px}
+</style>
+</head>
+<body>
+
+
+<div class="wrap">
+
+  <header class="mast">
+    <div class="eyebrow">V9Bet · Wallet / Banking</div>
+    <h1>錢的三條路</h1>
+    <div class="en-h">Three Roads for the Money</div>
+    <div class="dek">
+      一個 Banking 畫面、兩條存款路、一條提款路。整套流程只有一個真相來源——<b>金流商的 server callback</b>，前端永遠只是在等；而錢包模型只有一條鐵律：<b>存進來的錢永不上鎖</b>，被鎖的只有紅利。
+      <div class="en">One Banking screen, two deposit roads, one withdrawal road. The whole flow has a single source of truth — <b>the provider's server callback</b>; the front end only ever waits. And the wallet model has one iron rule: <b>deposited money is never locked</b> — only the bonus is.</div>
+    </div>
+  </header>
+
+  <figure>
+    <div class="scroller">
+      <svg viewBox="0 0 1060 640" role="img" aria-label="Banking 單一畫面分出存款與提款。存款在送出後分成手動轉帳路與金流商路，兩路都在 Status 會合，成功只來自 webhook。提款經過帳戶與金額、首次帳戶 OTP、到狀態畫面。右側三個出口：History、Live Status Bubble、Live Chat。">
+        <defs>
+          <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><polygon points="0,1 10,5 0,9" fill="currentColor"/></marker>
+          <marker id="an" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><polygon points="0,1 10,5 0,9" fill="var(--new)"/></marker>
+          <marker id="ab" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><polygon points="0,1 10,5 0,9" fill="var(--back)"/></marker>
+          <marker id="ax" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><polygon points="0,1 10,5 0,9" fill="var(--alert)"/></marker>
+        </defs>
+
+        <!-- BANKING -->
+        <rect x="14" y="240" width="150" height="120" rx="4" fill="var(--sunk)" stroke="currentColor" stroke-width="1.8"/>
+        <text x="89" y="268" text-anchor="middle" font-size="12.5" font-weight="700" fill="currentColor">Banking</text>
+        <text x="89" y="286" text-anchor="middle" font-size="9" fill="var(--muted)">Deposit｜Withdrawal 分頁</text>
+        <text x="89" y="302" text-anchor="middle" font-size="9" fill="var(--muted)">自己的錢 ＋ 紅利（鎖）</text>
+        <text x="89" y="318" text-anchor="middle" font-size="9" fill="var(--muted)">方法格 · 每格標 min</text>
+        <text x="89" y="340" text-anchor="middle" font-size="8.5" fill="var(--muted2)">前面沒有 My Wallet（08-30 併掉）</text>
+
+        <!-- DEPOSIT AMOUNT -->
+        <rect x="210" y="80" width="160" height="90" rx="4" fill="var(--paper)" stroke="currentColor" stroke-width="1.6"/>
+        <text x="290" y="106" text-anchor="middle" font-size="12" font-weight="700" fill="currentColor">存款 · 金額</text>
+        <text x="290" y="123" text-anchor="middle" font-size="9" fill="var(--muted)">方法已在 Banking 選好</text>
+        <text x="290" y="139" text-anchor="middle" font-size="9" fill="var(--muted)">coupon 勾選 → 確認單</text>
+        <text x="290" y="155" text-anchor="middle" font-size="8.5" fill="var(--muted2)">「存款不會被鎖」寫在單上</text>
+        <path d="M100,234 V125 H204" fill="none" stroke="currentColor" stroke-width="1.5" marker-end="url(#a)"/>
+        <text x="110" y="210" font-size="8.5" font-family="monospace" fill="var(--muted)">點方法直接進表單</text>
+
+        <!-- fork -->
+        <g fill="none" stroke-width="1.5">
+          <path d="M370,125 H400 V62 H424" stroke="var(--new)" marker-end="url(#an)"/>
+          <path d="M370,125 H400 V182 H424" stroke="currentColor" marker-end="url(#a)"/>
+        </g>
+        <text x="378" y="50" font-size="8.5" font-family="monospace" fill="var(--new)">bank / USDT</text>
+        <text x="378" y="216" font-size="8.5" font-family="monospace" fill="var(--muted2)">direct bank / QR / e-wallet</text>
+
+        <!-- MANUAL ROAD -->
+        <rect x="430" y="30" width="160" height="64" rx="4" fill="var(--new-fill)" stroke="var(--new)" stroke-width="2"/>
+        <text x="510" y="54" text-anchor="middle" font-size="11.5" font-weight="700" fill="var(--new)">Pay &amp; Proof</text>
+        <text x="510" y="70" text-anchor="middle" font-size="8.5" fill="var(--new)">轉帳備註＝對帳鍵 · 不可取消</text>
+        <text x="510" y="84" text-anchor="middle" font-size="8.5" fill="var(--new)">USDT：鎖匯 15 分 · 網路警告</text>
+
+        <!-- GATEWAY ROAD -->
+        <rect x="430" y="150" width="160" height="64" rx="4" fill="var(--paper)" stroke="currentColor" stroke-width="1.6"/>
+        <text x="510" y="174" text-anchor="middle" font-size="11.5" font-weight="700" fill="currentColor">Gateway 交棒</text>
+        <text x="510" y="190" text-anchor="middle" font-size="8.5" fill="var(--muted)">redirect ｜ iframe（拒框就退回）</text>
+        <text x="510" y="204" text-anchor="middle" font-size="8.5" fill="var(--muted)">回來＝confirming，等 callback</text>
+
+        <!-- retry line -->
+        <path d="M610,20 V228" fill="none" stroke="var(--alert)" stroke-width="1.2" stroke-dasharray="5 4"/>
+        <text x="604" y="14" text-anchor="end" font-size="8.5" font-family="monospace" fill="var(--alert)">交棒前：可重試（新 reference）</text>
+        <text x="618" y="14" font-size="8.5" font-family="monospace" fill="var(--alert)">交棒後：只能查狀態，絕不重試</text>
+
+        <!-- DEPOSIT STATUS -->
+        <rect x="650" y="80" width="170" height="94" rx="4" fill="var(--paper)" stroke="currentColor" stroke-width="1.8"/>
+        <text x="735" y="104" text-anchor="middle" font-size="11.5" font-weight="700" fill="currentColor">存款 · Status</text>
+        <text x="735" y="121" text-anchor="middle" font-size="8.5" fill="var(--muted)">Paid → Matching → Credited</text>
+        <text x="735" y="136" text-anchor="middle" font-size="8.5" fill="var(--muted)">對不上 → 收據（只在這裡）＋ Chat</text>
+        <text x="735" y="152" text-anchor="middle" font-size="8.5" fill="var(--muted)">reference 全程同一字串 ⧉</text>
+        <text x="735" y="166" text-anchor="middle" font-size="8.5" fill="var(--muted2)">這是 moment，不是 place</text>
+        <g fill="none" stroke-width="1.5">
+          <path d="M590,62 H630 V112 H644" stroke="var(--new)" marker-end="url(#an)"/>
+          <path d="M590,182 H630 V142 H644" stroke="currentColor" marker-end="url(#a)"/>
+        </g>
+
+        <!-- webhook -->
+        <path d="M735,236 V180" fill="none" stroke="var(--alert)" stroke-width="1.5" marker-end="url(#ax)"/>
+        <rect x="655" y="240" width="160" height="40" rx="4" fill="var(--alert-fill)" stroke="var(--alert)" stroke-width="1.4"/>
+        <text x="735" y="257" text-anchor="middle" font-size="10" font-weight="700" fill="var(--alert)">⚡ provider webhook</text>
+        <text x="735" y="272" text-anchor="middle" font-size="8.5" fill="var(--alert)">成功的唯一來源 · 前端讀不到</text>
+
+        <!-- WITHDRAWAL ROAD -->
+        <rect x="210" y="420" width="160" height="94" rx="4" fill="var(--back-fill)" stroke="var(--back)" stroke-width="2"/>
+        <text x="290" y="444" text-anchor="middle" font-size="11.5" font-weight="700" fill="var(--back)">提款 · 帳戶與金額</text>
+        <text x="290" y="461" text-anchor="middle" font-size="8.5" fill="var(--back)">可提 ＝ 自己的錢 − pending</text>
+        <text x="290" y="476" text-anchor="middle" font-size="8.5" fill="var(--back)">戶名鎖定本人 · Add New</text>
+        <text x="290" y="492" text-anchor="middle" font-size="8.5" fill="var(--back)">有紅利 → 警告沒收，非阻擋</text>
+        <path d="M100,366 V467 H204" fill="none" stroke="var(--back)" stroke-width="1.5" marker-end="url(#ab)"/>
+
+        <rect x="430" y="420" width="160" height="94" rx="4" fill="var(--paper)" stroke="var(--back)" stroke-width="1.4" stroke-dasharray="6 4"/>
+        <text x="510" y="448" text-anchor="middle" font-size="11.5" font-weight="700" fill="var(--back)">OTP</text>
+        <text x="510" y="465" text-anchor="middle" font-size="8.5" fill="var(--muted)">只有首次使用的收款帳戶</text>
+        <text x="510" y="480" text-anchor="middle" font-size="8.5" fill="var(--muted)">用過的直接確認</text>
+        <text x="510" y="496" text-anchor="middle" font-size="8.5" fill="var(--muted2)">共用元件 · verification-flow</text>
+        <path d="M370,467 H424" fill="none" stroke="var(--back)" stroke-width="1.5" marker-end="url(#ab)"/>
+
+        <rect x="650" y="420" width="170" height="94" rx="4" fill="var(--paper)" stroke="var(--back)" stroke-width="1.8"/>
+        <text x="735" y="444" text-anchor="middle" font-size="11.5" font-weight="700" fill="var(--back)">提款 · Status</text>
+        <text x="735" y="461" text-anchor="middle" font-size="8.5" fill="var(--muted)">Requested → Review → Paid out</text>
+        <text x="735" y="476" text-anchor="middle" font-size="8.5" fill="var(--muted)">駁回＝理由＋退回餘額＋修法</text>
+        <text x="735" y="492" text-anchor="middle" font-size="8.5" fill="var(--muted)">超過 SLA → 延遲通知 ＋ Chat</text>
+        <path d="M590,467 H644" fill="none" stroke="var(--back)" stroke-width="1.5" marker-end="url(#ab)"/>
+
+        <!-- EXITS -->
+        <rect x="880" y="90" width="166" height="74" rx="4" fill="var(--sunk)" stroke="currentColor" stroke-width="1.5"/>
+        <text x="963" y="118" text-anchor="middle" font-size="11.5" font-weight="700" fill="currentColor">History · 類別 1</text>
+        <text x="963" y="135" text-anchor="middle" font-size="8.5" fill="var(--muted)">每一個狀態都連過去</text>
+        <text x="963" y="150" text-anchor="middle" font-size="8.5" fill="var(--muted)">永久紀錄 · View all 的家</text>
+
+        <rect x="880" y="280" width="166" height="64" rx="4" fill="var(--paper)" stroke="currentColor" stroke-width="1.2"/>
+        <text x="963" y="306" text-anchor="middle" font-size="11" font-weight="700" fill="currentColor">Live Status Bubble</text>
+        <text x="963" y="322" text-anchor="middle" font-size="8.5" fill="var(--muted)">離開畫面後的第三隻眼</text>
+
+        <rect x="880" y="440" width="166" height="64" rx="4" fill="var(--paper)" stroke="currentColor" stroke-width="1.2"/>
+        <text x="963" y="466" text-anchor="middle" font-size="11" font-weight="700" fill="currentColor">Live Chat</text>
+        <text x="963" y="482" text-anchor="middle" font-size="8.5" fill="var(--muted)">帶著這筆交易的上下文開場</text>
+
+        <g fill="none" stroke="currentColor" stroke-width="1.2">
+          <path d="M820,112 H874" marker-end="url(#a)"/>
+          <path d="M820,467 H850 V140 H874" stroke="var(--back)" marker-end="url(#ab)"/>
+          <path d="M820,150 H846 V306 H874" stroke-dasharray="4 4" marker-end="url(#a)"/>
+          <path d="M820,490 H856 V330 H874" stroke-dasharray="4 4" stroke="var(--back)" marker-end="url(#ab)"/>
+          <path d="M820,160 H838 V472 H874" stroke-dasharray="2 4" marker-end="url(#a)"/>
+        </g>
+        <text x="828" y="100" font-size="8" font-family="monospace" fill="var(--muted2)">同一個 status 欄位，三個視圖</text>
+      </svg>
+    </div>
+    <figcaption>
+      一個 Banking、三條路、三個出口。<b>兩條存款路在 Status 會合，而 Status 只聽 webhook 的</b>——iframe 跨域讀不到，redirect 回來可以偽造，所以前端的工作是等，不是猜。紅色虛線是整張圖最貴的一條線：交棒給銀行之前失敗可以重試，交棒之後重試就可能付兩次。
+      <div class="en">One Banking screen, three roads, three exits. <b>Both deposit roads converge on Status, and Status listens only to the webhook</b> — an iframe is cross-origin and a redirect return can be faked, so the front end's job is to wait, not to guess. The red dashed line is the most expensive line in the diagram: before the bank handoff a failure is safe to retry; after it, a retry can pay twice.</div>
+    </figcaption>
+  </figure>
+
+  <!-- ============ THREE ROADS ============ -->
+  <section>
+    <div class="sec-head">
+      <h2>三條路各自的規矩</h2>
+      <div class="en-h">What each road runs on</div>
+    </div>
+
+    <div class="lanes">
+      <div class="lane one">
+        <div class="tag">Road ① · deposit</div>
+        <h3>手動轉帳路</h3>
+        <div class="en-h">Manual — bank transfer / USDT</div>
+        <div class="ev">pay → reconcile by note</div>
+        <div class="body">
+          我們給資料，會員在自己的銀行或錢包 app 付款，靠<b>唯一的轉帳備註</b>對帳。所以這條路<b>沒有「取消存款」</b>——資料已經在會員手上，他隨時可以照著付，遲到的款項照樣被對上。
+          <div class="en">We hand over the details, the member pays in their own bank or wallet app, and we reconcile by the <b>unique transfer note</b>. Which is why this road has <b>no "cancel deposit"</b> — the member already holds the details and can still pay; a late payment still gets matched.</div>
+        </div>
+        <dl>
+          <dt>USDT</dt><dd>鎖匯 15 分 · 選錯網路＝資金消失，警告是必要文案</dd>
+          <dt>收據</dt><dd>只住在 Status：pending 時低調可選，對不上才放大</dd>
+          <dt>結束</dt><dd>Paid → Matching → Credited，全程可離開</dd>
+        </dl>
+      </div>
+
+      <div class="lane two">
+        <div class="tag">Road ② · deposit</div>
+        <h3>金流商路</h3>
+        <div class="en-h">Gateway — direct bank / QR / e-wallet</div>
+        <div class="ev">handoff → webhook</div>
+        <div class="body">
+          交棒給第三方：redirect 整頁離開，或 iframe 留在我們的框裡（銀行拒框就自動退回 redirect，不准顯示空箱子）。<b>結果只來自 server-to-server webhook</b>；會員沒回來不等於取消，單子留在 pending 等 callback。
+          <div class="en">Hand off to a third party: a full redirect, or an iframe inside our chrome (if the bank refuses framing, fall back to redirect — never render an empty box). <b>The outcome comes only from the server-to-server webhook</b>; not returning is not a cancel — the deposit stays pending until the callback lands.</div>
+        </div>
+        <dl>
+          <dt>交棒前</dt><dd>session 建立失敗 → 可重試，換新 reference</dd>
+          <dt>交棒後</dt><dd>失聯只給「查狀態」＋ Chat，絕不給 Try again</dd>
+          <dt>憑據</dt><dd>reference 每個狀態都在、可複製</dd>
+        </dl>
+      </div>
+
+      <div class="lane three">
+        <div class="tag">Road ③ · withdrawal</div>
+        <h3>提款路</h3>
+        <div class="en-h">Withdrawal — the only gated road</div>
+        <div class="ev">account → OTP? → review</div>
+        <div class="body">
+          唯一有關卡的一條，而且每道關卡都講理：<b>可提＝自己的錢 − pending</b>；戶名鎖定本人；首次使用的收款帳戶才出 OTP；有紅利時<b>警告沒收、不阻擋</b>；駁回必附理由、退回餘額、連到修法。
+          <div class="en">The only road with gates, and every gate explains itself: <b>withdrawable = own money − pending</b>; the holder name is locked to the profile; OTP appears only for a first-time payout account; an active bonus <b>warns about forfeiture, never blocks</b>; a rejection carries the reason, the refund, and the fix.</div>
+        </div>
+        <dl>
+          <dt>無 KYC 關</dt><dd>08-30 應要求移除——驗證自願，提款不分級</dd>
+          <dt>修法</dt><dd>churn 進度 · 名字不符 · 限額，各有去處</dd>
+          <dt>紀錄</dt><dd>與 History 類別 1 同一條狀態軌</dd>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ RULES ============ -->
+  <section>
+    <div class="sec-head">
+      <h2>整個錢包共用的規則</h2>
+      <div class="en-h">Rules that hold across the whole wallet</div>
+    </div>
+
+    <div class="rules">
+      <div class="rrow">
+        <div class="k">存款永不上鎖<div class="en-h">The deposit is never locked</div></div>
+        <div class="v">
+          被鎖的只有紅利和紅利贏來的錢。餘額因此拆成<b>自己的（隨時可提）＋ 紅利（鎖到 turnover 達標）</b>兩個數字分開顯示。提早提款是「沒收紅利」的交易，不是被拒絕的請求——畫面警告、要求確認，但不阻擋。每個能領紅利的地方都要講清楚鎖的是什麼：說過頭跟說不足一樣糟，以為本金被凍結的會員會停止存款。
+          <div class="en">Only the bonus and what it wins are locked. The balance therefore splits into <b>own money (always withdrawable) + bonus (locked until turnover)</b>, shown as two numbers. Withdrawing early is a forfeit-the-bonus trade, not a refused request — the screen warns and asks to confirm, never blocks. Everywhere a bonus can be accepted must say exactly what locks: overstating is as bad as understating, because members who think their deposit froze stop depositing.</div>
+        </div>
+      </div>
+      <div class="rrow">
+        <div class="k">Turnover 只管提款<div class="en-h">Turnover is withdrawal-side only</div></div>
+        <div class="v">
+          churn 管的是能拿出去多少，永遠不管能放進來多少。未達標、紅利進行中、紅利快過期——都不准擋存款、不准加步驟、不准跳警告。唯一能擋住一筆存款的是<b>方法層</b>：維護中、min/max、市場開放。維護中的方法畫成虛線不可點、寫明結束時間，絕不無聲消失。
+          <div class="en">Churn governs what can leave, never what can enter. Unmet turnover, an active bonus, an expiring bonus — none may block, warn on, or add a step to a deposit. The only thing that stops one is the <b>method layer</b>: maintenance, min/max, market availability. A method under maintenance renders dashed and un-tappable with its end time stated — never silently missing.</div>
+        </div>
+      </div>
+      <div class="rrow">
+        <div class="k">成功只來自 callback<div class="en-h">Success comes only from the callback</div></div>
+        <div class="v">
+          前端永遠讀不到結果：iframe 跨域、redirect 回程可被偽造或中斷。<code>POST /webhooks/deposit</code> 是唯一的真相來源，UI 的工作是說「我們在等」，不是猜。所以回到站上的畫面叫 <b>confirming</b>，它自己會變成 Credited 或留在 Pending——等的是 callback，不是會員。
+          <div class="en">The front end can never read the outcome: the iframe is cross-origin, and a redirect return can be faked or interrupted. <code>POST /webhooks/deposit</code> is the only source of truth; the UI's job is to say "we're waiting", not to guess. That's why the return screen is called <b>confirming</b> — it resolves into Credited or stays Pending on its own, waiting for the callback, not the member.</div>
+        </div>
+      </div>
+      <div class="rrow">
+        <div class="k">重試安全看階段<div class="en-h">Retry safety depends on the stage</div></div>
+        <div class="v">
+          交棒<b>前</b>失敗（session 建不起來）＝沒有錢在路上，可以重試，但要換<b>新的 reference</b>。交棒<b>後</b>失聯＝付款可能已經成功，重試就是付兩次——只給「查狀態」和 Live Chat。兩種狀態絕不能共用一顆通用的 Try again。會員沒回來也不是失敗：他可能只是關了分頁，單子照常在 callback 完成。
+          <div class="en">A failure <b>before</b> handoff (the session never got created) means no money is in flight — retry is safe, with a <b>new reference</b>. Losing contact <b>after</b> handoff means the payment may have succeeded — a retry risks paying twice, so that state offers only "check status" and Live Chat. The two states must never share one generic Try again. And not returning is not a failure: the member may have just closed the tab; the deposit completes on the callback.</div>
+        </div>
+      </div>
+      <div class="rrow">
+        <div class="k">一筆交易，三個視圖，一個字串<div class="en-h">One transaction, three views, one string</div></div>
+        <div class="v">
+          同一筆存款有三個追蹤處，刻意不合併：開著的 Status 畫面、離開後的 Live Status Bubble（status-bubble-wireframe.html）、永久的 History 類別 1（history-flow-wireframe.html）——三者讀同一個 status 欄位。reference 在這裡、History、Live Chat 顯示同一個字串，會員在哪裡都能引用。Status 的每一個狀態都連 History：<b>這個畫面是 moment，不是 place</b>。
+          <div class="en">One deposit has three places to follow it, deliberately unmerged: the open Status screen, the Live Status Bubble after leaving (status-bubble-wireframe.html), and the permanent History category 1 (history-flow-wireframe.html) — all reading the same status field. The reference renders as the same string here, in History and in Live Chat, quotable anywhere. Every Status state links into History: <b>this screen is a moment, not a place</b>.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="open">
+      <h3>這條流程還缺三件事 · Three things this flow still does not specify</h3>
+      <ol>
+        <li>
+          <b>會員取消提款的入口沒畫。</b>spec 裡有「cancelled by member (while in Review)」狀態和 <code>DELETE /withdrawal/{id}</code>，但 Status 畫面上沒有任何取消按鈕或確認步驟——狀態存在，路卻不存在。要嘛畫出來（只在 Review 階段出現），要嘛把狀態和 API 拿掉。
+          <div class="en"><b>The member-cancel entry point is not drawn.</b> The spec lists a "cancelled by member (while in Review)" state and <code>DELETE /withdrawal/{id}</code>, but the Status screen has no cancel control or confirm step — the state exists, the path doesn't. Either draw it (visible only during Review) or remove the state and the API.</div>
+        </li>
+        <li>
+          <b>USDT 匯率過期之後的事沒定義。</b>鎖匯 15 分鐘、quote expired → re-quote 都有，但 re-quote 的畫面沒畫；更麻煩的是「I'll do this later」之後遲到的 USDT——spec 說落入 unmatched 人工對帳，那用哪個匯率入帳？匯率爭議是 USDT 通道最可預期的客服單，不能留白。
+          <div class="en"><b>What happens after the USDT rate expires is undefined.</b> The 15-minute lock and the quote-expired → re-quote state exist, but the re-quote screen is not drawn; worse, a late USDT payment after "I'll do this later" falls to unmatched manual reconciliation — at which rate does it credit? Rate disputes are the most predictable support ticket on the USDT rail; this cannot stay blank.</div>
+        </li>
+        <li>
+          <b>手續費規則整套缺席。</b>提款確認畫面寫死「Fee ₫0」。哪些方法收費、超過幾次免費、誰吸收、VN 與 TH 是否同規——規格裡沒有任何一處回答。如果永遠免費，就該寫成規則而不是一個寫死的數字；如果不是，費率表要在送出前讓會員看到。
+          <div class="en"><b>The fee schedule is entirely absent.</b> The withdrawal confirm screen hardcodes "Fee ₫0". Which methods charge, how many free withdrawals, who absorbs it, whether VN and TH differ — nothing in the kit answers any of it. If it's free forever, write that as a rule rather than a hardcoded number; if not, the schedule must be visible before submit.</div>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>
+    <span>來源 · Source: wallet-flow-wireframe.html</span>
+    <span>配合 · In step with: history-flow-wireframe.html · history-routes.html · promotion-flow-wireframe.html · verification-flow-wireframe.html · status-bubble-wireframe.html · growth-support-wireframe.html</span>
+    <span>2026-10-02</span>
+  </footer>
+
+</div>
+
+</body>
+</html>
