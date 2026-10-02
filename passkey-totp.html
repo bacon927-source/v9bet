@@ -243,8 +243,8 @@ footer{margin-top:48px;padding-top:16px;border-top:1px solid var(--rule);font-fa
     <div class="market">
       <div class="mrow">
         <div class="k">Passkey 已經有了<div class="en-h">Passkey already exists</div></div>
-        <div class="v">登入頁的生物辨識分頁、Setup 項目 4、Settings 的 Passkeys 管理都已經在規格裡。新的 wireframe 補的是<b>登入後的推薦時機、自動填入登入、跨裝置 QR，以及「不能移除最後一種登入方式」的擋關</b>。
-          <div class="en">The biometric login tab, Setup item 4 and the Passkeys list are already specified. The new wireframe adds the post-login upsell, autofill sign-in, cross-device QR, and the guard that refuses to remove the last sign-in method.</div></div>
+        <div class="v">寫這頁時，登入頁的生物辨識分頁、Setup 項目 4（Face ID）、Settings 的 Passkeys 管理都已經在規格裡。新的 wireframe（security-methods-wireframe.html）補的是<b>登入後的推薦時機、自動填入登入、跨裝置 QR，以及「不能移除最後一種登入方式」的擋關</b>。（09-20 落地時再動了兩刀：登入不再是分頁，改由帳號欄位的 autofill 浮出；Setup 項目 4 整項移出，報名入口只剩登入後推薦與 Settings。）
+          <div class="en">When this page was written, the biometric login tab, Setup item 4 (Face ID) and the Passkeys list were already specified. The new wireframe (security-methods-wireframe.html) adds the post-login upsell, autofill sign-in, cross-device QR, and the guard that refuses to remove the last sign-in method. (Implementation on 09-20 went two steps further: login is no longer a tab — the passkey surfaces through the identifier field's autofill — and Setup item 4 was removed outright, leaving the post-login prompt and Settings as the only entry points.)</div></div>
       </div>
       <div class="mrow">
         <div class="k">Authenticator 的價值在提款<div class="en-h">The authenticator earns its place at withdrawal</div></div>
@@ -277,8 +277,8 @@ footer{margin-top:48px;padding-top:16px;border-top:1px solid var(--rule);font-fa
       <ol>
         <li><b>先把 passkey 補完。</b>它已經有基礎，而且是純粹的體驗改善——登入從「等驗證碼」變成一秒，沒有人需要學新東西。登入後推薦的時機是最大的一塊。
           <div class="en">Finish passkeys first. The groundwork exists, and it is pure experience gain — login drops from waiting for a code to one second, with nothing new to learn. The post-login upsell is the biggest piece.</div></li>
-        <li><b>Authenticator 當成提款的選配強化。</b>不要放進 Setup——那裡已經九項了，而且新會員還沒有錢可以提，這時候叫他裝一個 app 是最糟的時機。入口放 Settings › Security。
-          <div class="en">Treat the authenticator as optional hardening for withdrawal. Keep it out of Setup — nine items is enough, and a brand-new member with no money to withdraw is the worst possible moment to ask them to install an app. Entry point: Settings › Security.</div></li>
+        <li><b>Authenticator 當成提款的選配強化。</b>不要放進 Setup——那份清單已經夠長了（寫此頁時九項；09-20 起為八項），而且新會員還沒有錢可以提，這時候叫他裝一個 app 是最糟的時機。入口放 Settings › Security。
+          <div class="en">Treat the authenticator as optional hardening for withdrawal. Keep it out of Setup — that list is long enough (nine items when this was written; eight since 09-20), and a brand-new member with no money to withdraw is the worst possible moment to ask them to install an app. Entry point: Settings › Security.</div></li>
         <li><b>備援碼那一步不能省。</b>沒有存下備援碼的 authenticator，等於把「手機掉了」變成一張客服單，而博弈帳號的身分驗證沒辦法在聊天室裡完成。
           <div class="en">Do not cut the recovery-code step. An authenticator without saved codes converts a lost phone into a support ticket, and identity for a gambling account cannot be verified over chat.</div></li>
       </ol>

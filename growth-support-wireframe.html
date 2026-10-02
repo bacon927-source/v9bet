@@ -289,7 +289,7 @@ const screens = [
     states:["share (copy / share sheet / QR)","how it works","guest invite landing (?ref=)","pending → History 5"],
     fields:["ref_code","ref_link","stats{friends,earned,pending}"],
     api:"GET /referrals/me · GET /r/{code} (landing)",
-    notes:["Closes the loop on the sign-up decision: referral code moved out of the form, auto-captured from the link.","Records live in History category 5."]
+    notes:["Closes the loop on the sign-up referral decision: ?ref= auto-capture prefills the optional code field that returned to the form 09-17 (signup-flow-wireframe.html) — either way the capture lands here as records.","Records live in History category 5."]
   }
 },
 {

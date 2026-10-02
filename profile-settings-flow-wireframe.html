@@ -179,13 +179,13 @@ const screens = [
     <div class="grp">Account related</div>
     <div class="li"><span class="ic">🪪</span><span class="g">Personal information</span><span class="rt">${s===0?'<span class="st bad">Not added</span>':'Complete'} ›</span></div>
     <div class="li"><span class="ic">🆔</span><span class="g">Identity verification<small>${s===0?'Higher withdrawal limits':'Name / DOB locked'}</small></span><span class="rt">${s===0?'Level 1 <span class="st wait">Verify</span>':'Level 2 <span class="st ok">✓</span>'} ›</span></div>
-    <div class="li"><span class="ic">🏦</span><span class="g">Manage bank account / USDT</span><span class="rt">${s===0?'<span class="st bad">Not added</span>':'2 accounts'} ›</span></div>
+    <div class="li"><span class="ic">🏦</span><span class="g">Manage bank account / USDT</span><span class="rt">${s===0?'<span class="st bad">Not added</span><span class="pts">🎁+10</span>':'2 accounts'} ›</span></div>
     <div class="li"><span class="ic">📱</span><span class="g">Phone number</span><span class="rt">091***233 <span class="st ok">✓</span> ›</span></div>
     <div class="li"><span class="ic">✉️</span><span class="g">Email<small>${s===0?'Also usable as Account ID':''}</small></span><span class="rt">${s===0?'<span class="st wait">Add</span><span class="pts">🎁+10</span>':'ba*****on@… <span class="st ok">✓</span>'} ›</span></div>
     <div class="li"><span class="ic">🔑</span><span class="g">${s===0?'Set a password<small>Not set — signed up with OTP only</small>':'Change password'}</span><span class="rt">${s===0?'<span class="pts">🎁+10</span>':''} ›</span></div>
     <div class="grp">Security</div>
     <div class="hint" style="margin:0 2px 4px">Verify both your phone number and email address to protect against unnecessary access and easy account recovery.</div>
-    ${s===0?`<div class="li"><span class="ic">👤</span><span class="g">Face ID / biometric / passkey</span><span class="rt"><span class="pts">🎁+10</span> <b>Set up ›</b></span></div>`:tog("Enable Face ID / biometrics", true)}
+    ${s===0?`<div class="li"><span class="ic">👤</span><span class="g">Face ID / biometric / passkey<small>No points — not a setup item since 09-20</small></span><span class="rt"><b>Set up ›</b></span></div>`:tog("Enable Face ID / biometrics", true)}
     <div class="li"><span class="ic">💻</span><span class="g">Active session<small>Only one device at a time</small></span><span class="rt">This device ›</span></div>
     ${tog("Auto log out <small>after 30 min inactivity</small>", false)}
     <div class="grp">Preferences</div>
@@ -200,11 +200,11 @@ const screens = [
     <div class="li"><span class="ic">🟢</span><span class="g">Account status</span><span class="rt">Active ›</span></div>
     <div class="link"><b>Log out</b></div>`,
   spec:{
-    goal:"One Settings home (mirrors the design mockup's setting page). Skipped Setup Step 2/3 items are NOT a separate promo card — each one's prompt + 🎁+10 chip lives inline on its own row (Email, Password, Push notifications, Theme, Message channel), deep-linking to the SAME screens used during setup. Utility rows people actually came here for stay right at the top, not pushed below a big nudge card.",
+    goal:"One Settings home (mirrors the design mockup's setting page). Skipped Setup Step 2/3 items are NOT a separate promo card — each one's prompt + 🎁+10 chip lives inline on its own row (Bank/USDT, Email, Password, Push notifications, Theme, Message channel), deep-linking to the SAME screens used during setup. Utility rows people actually came here for stay right at the top, not pushed below a big nudge card.",
     states:["setup incomplete → progress banner + 🎁 chips on the unfinished rows","all done → banner and chips gone, rows show normal state","row status badges (Not added / ✓ / Add)"],
     fields:["setup_progress[{key,step,done,required}]","contacts{phone,email,status}","security{biometric,auto_logout,sessions}","prefs{push,theme,language,message_channel}"],
     api:"GET /account/settings → { setup_progress, contacts, security, prefs, status }",
-    notes:["08-30 redesign: originally a 'Complete your setup' card up top listed all 6 skippable items again, pushing the actual settings list (what people come to this page to find) below the fold — a promo/nudge pattern fighting a utility/findability page. Folded each item's prompt into its own real row instead; only a compact 2-line progress banner remains at the top.","Reuse, don't rebuild: each 🎁 row opens the exact Setup screen (Face ID / Email / Notifications / Theme / Message channel) — one component, multiple entry points.","Chips disappear once all skippable items are done; required items (currency, profile+bank) can't be skipped so they never carry a 🎁 chip — but 'Not added' rows still show if the member abandoned mid-setup.","Sensitive rows (phone / email / password / bank) go through the Verification Flow (shared OTP).","Section order & copy follow the Jul 16 design mockup (Account Related / Security / Preferences)."]
+    notes:["08-30 redesign: originally a 'Complete your setup' card up top listed all 6 skippable items again, pushing the actual settings list (what people come to this page to find) below the fold — a promo/nudge pattern fighting a utility/findability page. Folded each item's prompt into its own real row instead; only a compact 2-line progress banner remains at the top.","Reuse, don't rebuild: each 🎁 row opens the exact Setup screen (Bank/USDT / Email / Password / Notifications / Theme / Message channel) — one component, multiple entry points. (Face ID left this list 09-20 when it left Setup — its row now opens security-methods-wireframe.html's enrolment and earns no points.)","Chips disappear once all skippable items are done; required items (currency, personal info) can't be skipped so they never carry a 🎁 chip — Bank/USDT DOES carry one since 09-20, when it moved to Step 2 and became skippable — but 'Not added' rows still show if the member abandoned mid-setup.","Sensitive rows (phone / email / password / bank) go through the Verification Flow (shared OTP).","Section order & copy follow the Jul 16 design mockup (Account Related / Security / Preferences)."]
   }
 },
 {
@@ -310,7 +310,7 @@ const screens = [
     <div class="li"><span class="ic">🔑</span><span class="g">Passkeys<small>Sign in with Face ID / fingerprint</small></span><span class="rt">2 devices ›</span></div>
     <div class="li"><span class="ic">💻</span><span class="g">Active session<small>Only one device at a time</small></span><span class="rt">This device ›</span></div>
     ${tog("Auto log out <small>after 30 min inactivity</small>", false)}
-    <div class="li"><span class="ic">🔗</span><span class="g">Linked accounts<small>Google · LINE · X</small></span><span class="rt">1 linked ›</span></div>
+    <div class="li"><span class="ic">🔗</span><span class="g">Linked accounts<small>Google · LINE · Zalo</small></span><span class="rt">1 linked ›</span></div>
     <div class="li"><span class="ic">🔐</span><span class="g">Change password</span><span class="rt">›</span></div>
     <div class="link"><b>Security history</b></div>`,
   spec:{
