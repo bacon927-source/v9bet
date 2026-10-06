@@ -13,6 +13,7 @@
   --rule:#D3D4D9; --muted:#70737B; --muted2:#8A8D95;
   --new:#1F6F6B; --new-fill:#E2F0EF;
   --back:#6E4079; --back-fill:#F1E9F4;
+  --limit:#8A5620; --limit-fill:#F6EDE1;
   --alert:#A13636; --alert-fill:#FBEFEE;
   --f-disp:"Archivo","Noto Sans TC",system-ui,sans-serif;
   --f-body:"Noto Sans TC",-apple-system,system-ui,sans-serif;
@@ -24,6 +25,7 @@
     --rule:#343740; --muted:#979BA5; --muted2:#7E828C;
     --new:#63BCB6; --new-fill:#15302E;
     --back:#C49AD2; --back-fill:#241A29;
+    --limit:#D69B57; --limit-fill:#2E2417;
     --alert:#E28C87; --alert-fill:#2C1D1D;
   }
 }
@@ -32,6 +34,7 @@
   --rule:#343740; --muted:#979BA5; --muted2:#7E828C;
   --new:#63BCB6; --new-fill:#15302E;
   --back:#C49AD2; --back-fill:#241A29;
+  --limit:#D69B57; --limit-fill:#2E2417;
   --alert:#E28C87; --alert-fill:#2C1D1D;
 }
 *{box-sizing:border-box}
@@ -57,12 +60,13 @@ section{margin-top:40px}
 .sec-head{margin-bottom:16px}
 h2{font-size:19px;font-weight:700;letter-spacing:-.01em}
 
-.lanes{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
-@media (max-width:900px){.lanes{grid-template-columns:1fr}}
+.lanes{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+@media (max-width:760px){.lanes{grid-template-columns:1fr}}
 .lane{background:var(--paper);border:1px solid var(--rule);border-top:3px solid var(--accent);border-radius:3px;padding:18px}
 .lane.one{--accent:var(--new)}
 .lane.two{--accent:var(--muted)}
 .lane.three{--accent:var(--back)}
+.lane.four{--accent:var(--limit)}
 .lane .tag{font-family:var(--f-disp);font-size:11px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--accent)}
 .lane h3{font-size:16px;font-weight:700;margin:6px 0 0}
 .lane .ev{font-family:var(--f-mono);font-size:11px;color:var(--accent);margin-top:8px;border:1px solid currentColor;border-radius:2px;padding:1px 7px;display:inline-block}
@@ -94,6 +98,7 @@ footer{margin-top:48px;padding-top:16px;border-top:1px solid var(--rule);font-fa
 <body>
 
 
+
 <div class="wrap">
 
   <header class="mast">
@@ -101,117 +106,124 @@ footer{margin-top:48px;padding-top:16px;border-top:1px solid var(--rule);font-fa
     <h1>進站三條路</h1>
     <div class="en-h">Three Ways In</div>
     <div class="dek">
-      註冊和登入是同一個畫面的兩個分頁，而且<b>在驗證碼通過之前，根本分不出是哪一條路</b>。分岔點不是會員按了哪個分頁，而是驗證通過後帳號是什麼狀態：新建、正常、休眠、還是受限。
-      <div class="en">Sign up and Login are two tabs on one screen, and <b>until the code passes there is no way to tell which route this is</b>. The fork is not which tab was tapped — it is what state the account turns out to be in: new, active, dormant, or restricted.</div>
+      註冊和登入是同一個畫面的兩個分頁，而且<b>在驗證碼通過之前，根本分不出是哪一條路</b>。分岔點不是會員按了哪個分頁，而是驗證通過後帳號是什麼狀態：新建、正常、休眠、黑名單、還是受限。
+      <div class="en">Sign up and Login are two tabs on one screen, and <b>until the code passes there is no way to tell which route this is</b>. The fork is not which tab was tapped — it is what state the account turns out to be in: new, active, dormant, blacklisted, or restricted.</div>
     </div>
   </header>
 
   <figure>
     <div class="scroller">
-      <svg viewBox="0 0 1060 540" role="img" aria-label="一個入口與一次驗證，通過後分成四種結果：新帳號會經過 Setup；正常帳號直接進站；休眠帳號解凍後進站；受限帳號只到 Live Chat。">
+      <svg viewBox="0 0 1100 620" role="img" aria-label="一個入口與一次驗證，通過後分成五種結果：新帳號經過 Setup 與 Welcome 後到首頁；正常帳號直接進站；休眠帳號解凍後進站；黑名單帳號照樣進站但功能受限；受限帳號只到 Live Chat。教學在首頁之後出現，新舊會員都可能看到。">
         <defs>
           <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><polygon points="0,1 10,5 0,9" fill="currentColor"/></marker>
           <marker id="an" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><polygon points="0,1 10,5 0,9" fill="var(--new)"/></marker>
           <marker id="ab" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><polygon points="0,1 10,5 0,9" fill="var(--back)"/></marker>
+          <marker id="al" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><polygon points="0,1 10,5 0,9" fill="var(--limit)"/></marker>
           <marker id="ax" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><polygon points="0,1 10,5 0,9" fill="var(--alert)"/></marker>
         </defs>
 
-        <!-- DOOR -->
-        <rect x="14" y="222" width="104" height="76" rx="4" fill="var(--sunk)" stroke="currentColor" stroke-width="1.5"/>
-        <text x="66" y="250" text-anchor="middle" font-size="12" font-weight="700" fill="currentColor">Sign up</text>
-        <text x="66" y="267" text-anchor="middle" font-size="12" font-weight="700" fill="currentColor">｜ Login</text>
-        <text x="66" y="284" text-anchor="middle" font-size="8.5" fill="var(--muted)">one screen</text>
+        <rect x="10" y="252" width="100" height="76" rx="4" fill="var(--sunk)" stroke="currentColor" stroke-width="1.5"/>
+        <text x="60" y="280" text-anchor="middle" font-size="12" font-weight="700" fill="currentColor">Sign up</text>
+        <text x="60" y="297" text-anchor="middle" font-size="12" font-weight="700" fill="currentColor">｜ Login</text>
+        <text x="60" y="314" text-anchor="middle" font-size="8.5" fill="var(--muted)">one screen</text>
 
-        <!-- VERIFY -->
-        <rect x="150" y="222" width="150" height="76" rx="4" fill="var(--paper)" stroke="currentColor" stroke-width="1.8"/>
-        <text x="225" y="248" text-anchor="middle" font-size="12.5" font-weight="700" fill="currentColor">驗證</text>
-        <text x="225" y="266" text-anchor="middle" font-size="9" fill="var(--muted)">6 位數碼 · 密碼</text>
-        <text x="225" y="281" text-anchor="middle" font-size="9" fill="var(--muted)">Passkey · 社群</text>
-        <path d="M118,260 H144" fill="none" stroke="currentColor" stroke-width="1.5" marker-end="url(#a)"/>
+        <rect x="140" y="252" width="140" height="76" rx="4" fill="var(--paper)" stroke="currentColor" stroke-width="1.8"/>
+        <text x="210" y="278" text-anchor="middle" font-size="12.5" font-weight="700" fill="currentColor">驗證</text>
+        <text x="210" y="296" text-anchor="middle" font-size="9" fill="var(--muted)">6 位數碼 · 密碼</text>
+        <text x="210" y="311" text-anchor="middle" font-size="9" fill="var(--muted)">Passkey · 社群</text>
+        <path d="M110,290 H134" fill="none" stroke="currentColor" stroke-width="1.5" marker-end="url(#a)"/>
+        <text x="210" y="348" text-anchor="middle" font-size="9.5" font-weight="700" fill="var(--muted)">通過之前分不出是哪一種</text>
+        <text x="210" y="362" text-anchor="middle" font-size="8.5" fill="var(--muted2)">indistinguishable until it passes</text>
 
-        <text x="225" y="318" text-anchor="middle" font-size="9.5" font-weight="700" fill="var(--muted)">通過之前分不出是哪一條</text>
-        <text x="225" y="332" text-anchor="middle" font-size="8.5" fill="var(--muted2)">indistinguishable until it passes</text>
-
-        <!-- fan-out -->
         <g fill="none" stroke-width="1.5">
-          <path d="M300,260 H322 V83 H339" stroke="var(--new)" marker-end="url(#an)"/>
-          <path d="M300,260 H322 V203 H339" stroke="currentColor" marker-end="url(#a)"/>
-          <path d="M300,260 H322 V323 H339" stroke="var(--back)" marker-end="url(#ab)"/>
-          <path d="M300,260 H322 V443 H339" stroke="var(--alert)" marker-end="url(#ax)"/>
+          <path d="M280,290 H300 V60 H317" stroke="var(--new)" marker-end="url(#an)"/>
+          <path d="M280,290 H300 V180 H317" stroke="currentColor" marker-end="url(#a)"/>
+          <path d="M280,290 H300 V300 H317" stroke="var(--back)" marker-end="url(#ab)"/>
+          <path d="M280,290 H300 V420 H317" stroke="var(--limit)" marker-end="url(#al)"/>
+          <path d="M280,290 H300 V540 H317" stroke="var(--alert)" marker-end="url(#ax)"/>
         </g>
-        <text x="332" y="72" font-size="8.5" font-family="monospace" fill="var(--new)">created</text>
-        <text x="332" y="192" font-size="8.5" font-family="monospace" fill="var(--muted)">signed_in</text>
-        <text x="332" y="312" font-size="8.5" font-family="monospace" fill="var(--back)">reactivated</text>
-        <text x="332" y="432" font-size="8.5" font-family="monospace" fill="var(--alert)">restricted</text>
+        <text x="310" y="50" font-size="8.5" font-family="monospace" fill="var(--new)">created</text>
+        <text x="310" y="170" font-size="8.5" font-family="monospace" fill="var(--muted)">signed_in</text>
+        <text x="310" y="290" font-size="8.5" font-family="monospace" fill="var(--back)">reactivated</text>
+        <text x="310" y="410" font-size="8.5" font-family="monospace" fill="var(--limit)">blacklisted</text>
+        <text x="310" y="530" font-size="8.5" font-family="monospace" fill="var(--alert)">restricted</text>
 
-        <!-- ROW A · new -->
-        <rect x="345" y="56" width="150" height="54" rx="4" fill="var(--new-fill)" stroke="var(--new)" stroke-width="2"/>
-        <text x="420" y="80" text-anchor="middle" font-size="12" font-weight="700" fill="var(--new)">① 註冊</text>
-        <text x="420" y="96" text-anchor="middle" font-size="9" fill="var(--new)">建立新帳號</text>
-
-        <rect x="540" y="56" width="140" height="54" rx="4" fill="var(--paper)" stroke="currentColor" stroke-width="1.2"/>
-        <text x="610" y="80" text-anchor="middle" font-size="12" fill="currentColor">Setup 8 項</text>
-        <text x="610" y="96" text-anchor="middle" font-size="9" fill="var(--muted)">Step 1 必填</text>
-
-        <rect x="725" y="56" width="140" height="54" rx="4" fill="var(--paper)" stroke="currentColor" stroke-width="1.2"/>
-        <text x="795" y="80" text-anchor="middle" font-size="12" fill="currentColor">Welcome</text>
-        <text x="795" y="96" text-anchor="middle" font-size="9" fill="var(--muted)">＋ 優惠</text>
-
+        <rect x="323" y="33" width="140" height="54" rx="4" fill="var(--new-fill)" stroke="var(--new)" stroke-width="2"/>
+        <text x="393" y="57" text-anchor="middle" font-size="12" font-weight="700" fill="var(--new)">① 註冊</text>
+        <text x="393" y="73" text-anchor="middle" font-size="9" fill="var(--new)">建立新帳號</text>
+        <rect x="503" y="33" width="130" height="54" rx="4" fill="var(--paper)" stroke="currentColor" stroke-width="1.2"/>
+        <text x="568" y="57" text-anchor="middle" font-size="12" fill="currentColor">Setup 8 項</text>
+        <text x="568" y="73" text-anchor="middle" font-size="9" fill="var(--muted)">Step 1 必填</text>
+        <rect x="673" y="33" width="130" height="54" rx="4" fill="var(--paper)" stroke="currentColor" stroke-width="1.2"/>
+        <text x="738" y="57" text-anchor="middle" font-size="12" fill="currentColor">Welcome</text>
+        <text x="738" y="73" text-anchor="middle" font-size="9" fill="var(--muted)">＋ 優惠</text>
         <g fill="none" stroke="var(--new)" stroke-width="1.5">
-          <path d="M495,83 H534" marker-end="url(#an)"/>
-          <path d="M680,83 H719" marker-end="url(#an)"/>
-          <path d="M865,83 H890 V236 H909" marker-end="url(#an)"/>
+          <path d="M463,60 H497" marker-end="url(#an)"/>
+          <path d="M633,60 H667" marker-end="url(#an)"/>
+          <path d="M803,60 H838 V262 H855" marker-end="url(#an)"/>
         </g>
 
-        <!-- ROW B · active -->
-        <rect x="345" y="176" width="150" height="54" rx="4" fill="var(--paper)" stroke="currentColor" stroke-width="1.6"/>
-        <text x="420" y="200" text-anchor="middle" font-size="12" font-weight="700" fill="currentColor">② 登入</text>
-        <text x="420" y="216" text-anchor="middle" font-size="9" fill="var(--muted)">帳號正常，直接進站</text>
-        <path d="M495,203 H900 V250 H909" fill="none" stroke="currentColor" stroke-width="1.4" stroke-dasharray="5 4" marker-end="url(#a)"/>
+        <rect x="323" y="153" width="140" height="54" rx="4" fill="var(--paper)" stroke="currentColor" stroke-width="1.6"/>
+        <text x="393" y="177" text-anchor="middle" font-size="12" font-weight="700" fill="currentColor">② 登入</text>
+        <text x="393" y="193" text-anchor="middle" font-size="9" fill="var(--muted)">帳號正常</text>
+        <path d="M463,180 H840 V276 H855" fill="none" stroke="currentColor" stroke-width="1.4" stroke-dasharray="5 4" marker-end="url(#a)"/>
 
-        <!-- ROW C · reactivate -->
-        <rect x="345" y="296" width="150" height="54" rx="4" fill="var(--back-fill)" stroke="var(--back)" stroke-width="2"/>
-        <text x="420" y="320" text-anchor="middle" font-size="12" font-weight="700" fill="var(--back)">③ 重新啟用</text>
-        <text x="420" y="336" text-anchor="middle" font-size="9" fill="var(--back)">帳號已休眠</text>
-
-        <rect x="540" y="296" width="140" height="54" rx="4" fill="var(--paper)" stroke="var(--back)" stroke-width="1.4"/>
-        <text x="610" y="320" text-anchor="middle" font-size="12" fill="currentColor">解凍 · 原地重啟</text>
-        <text x="610" y="336" text-anchor="middle" font-size="9" fill="var(--muted)">餘額與紀錄保留</text>
-
+        <rect x="323" y="273" width="140" height="54" rx="4" fill="var(--back-fill)" stroke="var(--back)" stroke-width="2"/>
+        <text x="393" y="297" text-anchor="middle" font-size="12" font-weight="700" fill="var(--back)">③ 重新啟用</text>
+        <text x="393" y="313" text-anchor="middle" font-size="9" fill="var(--back)">帳號已休眠</text>
+        <rect x="503" y="273" width="130" height="54" rx="4" fill="var(--paper)" stroke="var(--back)" stroke-width="1.4"/>
+        <text x="568" y="297" text-anchor="middle" font-size="11.5" fill="currentColor">解凍 · 原地重啟</text>
+        <text x="568" y="313" text-anchor="middle" font-size="9" fill="var(--muted)">餘額與紀錄保留</text>
         <g fill="none" stroke="var(--back)" stroke-width="1.5">
-          <path d="M495,323 H534" marker-end="url(#ab)"/>
-          <path d="M680,323 H900 V272 H909" marker-end="url(#ab)"/>
+          <path d="M463,300 H497" marker-end="url(#ab)"/>
+          <path d="M633,300 H840 V290 H855" marker-end="url(#ab)"/>
         </g>
 
-        <!-- ROW D · restricted -->
-        <rect x="345" y="416" width="150" height="54" rx="4" fill="var(--alert-fill)" stroke="var(--alert)" stroke-width="1.6" stroke-dasharray="5 4"/>
-        <text x="420" y="440" text-anchor="middle" font-size="12" font-weight="700" fill="var(--alert)">受限</text>
-        <text x="420" y="456" text-anchor="middle" font-size="9" fill="var(--alert)">自我排除 · RG · 合規</text>
+        <rect x="323" y="393" width="140" height="54" rx="4" fill="var(--limit-fill)" stroke="var(--limit)" stroke-width="2"/>
+        <text x="393" y="417" text-anchor="middle" font-size="12" font-weight="700" fill="var(--limit)">④ 黑名單</text>
+        <text x="393" y="433" text-anchor="middle" font-size="9" fill="var(--limit)">進得來，但功能受限</text>
+        <rect x="503" y="393" width="130" height="54" rx="4" fill="var(--paper)" stroke="var(--limit)" stroke-width="1.4"/>
+        <text x="568" y="417" text-anchor="middle" font-size="11.5" fill="currentColor">部分功能停用</text>
+        <text x="568" y="433" text-anchor="middle" font-size="9" fill="var(--muted)">不說是哪些、不說原因</text>
+        <g fill="none" stroke="var(--limit)" stroke-width="1.5">
+          <path d="M463,420 H497" marker-end="url(#al)"/>
+          <path d="M633,420 H840 V304 H855" marker-end="url(#al)"/>
+        </g>
 
-        <rect x="540" y="416" width="140" height="54" rx="4" fill="var(--paper)" stroke="var(--alert)" stroke-width="1.4"/>
-        <text x="610" y="440" text-anchor="middle" font-size="12" fill="var(--alert)">只給 Live Chat</text>
-        <text x="610" y="456" text-anchor="middle" font-size="9" fill="var(--muted)">不說原因</text>
-        <path d="M495,443 H534" fill="none" stroke="var(--alert)" stroke-width="1.5" marker-end="url(#ax)"/>
-        <text x="760" y="440" font-size="10" font-weight="700" fill="var(--alert)">✕ 到此為止</text>
-        <text x="760" y="454" font-size="8.5" fill="var(--muted2)">dead end by design</text>
+        <rect x="323" y="513" width="140" height="54" rx="4" fill="var(--alert-fill)" stroke="var(--alert)" stroke-width="1.6" stroke-dasharray="5 4"/>
+        <text x="393" y="537" text-anchor="middle" font-size="12" font-weight="700" fill="var(--alert)">受限</text>
+        <text x="393" y="553" text-anchor="middle" font-size="9" fill="var(--alert)">自我排除 · RG · 合規</text>
+        <rect x="503" y="513" width="130" height="54" rx="4" fill="var(--paper)" stroke="var(--alert)" stroke-width="1.4"/>
+        <text x="568" y="537" text-anchor="middle" font-size="11.5" fill="var(--alert)">只給 Live Chat</text>
+        <text x="568" y="553" text-anchor="middle" font-size="9" fill="var(--muted)">不說原因</text>
+        <path d="M463,540 H497" fill="none" stroke="var(--alert)" stroke-width="1.5" marker-end="url(#ax)"/>
+        <text x="700" y="537" font-size="10" font-weight="700" fill="var(--alert)">✕ 到此為止</text>
+        <text x="700" y="551" font-size="8.5" fill="var(--muted2)">dead end by design</text>
 
-        <!-- HOME -->
-        <rect x="915" y="222" width="110" height="76" rx="4" fill="var(--sunk)" stroke="currentColor" stroke-width="1.5"/>
-        <text x="970" y="256" text-anchor="middle" font-size="13" font-weight="700" fill="currentColor">首頁</text>
-        <text x="970" y="274" text-anchor="middle" font-size="8.5" fill="var(--muted)">Home · signed in</text>
+        <rect x="860" y="248" width="100" height="84" rx="4" fill="var(--sunk)" stroke="currentColor" stroke-width="2"/>
+        <text x="910" y="278" text-anchor="middle" font-size="13" font-weight="700" fill="currentColor">首頁</text>
+        <text x="910" y="295" text-anchor="middle" font-size="8.5" fill="var(--muted)">Home</text>
+        <text x="910" y="312" text-anchor="middle" font-size="8.5" fill="var(--muted)">signed in</text>
+
+        <path d="M960,290 H990" fill="none" stroke="currentColor" stroke-width="1.5" marker-end="url(#a)"/>
+        <rect x="996" y="248" width="96" height="84" rx="4" fill="var(--paper)" stroke="currentColor" stroke-width="1.4" stroke-dasharray="5 4"/>
+        <text x="1044" y="274" text-anchor="middle" font-size="11.5" font-weight="700" fill="currentColor">教學</text>
+        <text x="1044" y="290" text-anchor="middle" font-size="8.5" fill="var(--muted)">新功能公告</text>
+        <text x="1044" y="306" text-anchor="middle" font-size="8.5" fill="var(--muted)">新舊會員</text>
+        <text x="1044" y="320" text-anchor="middle" font-size="8" fill="var(--muted2)">都可能看到</text>
       </svg>
     </div>
     <figcaption>
-      一個入口、一次驗證、四種結果。<b>只有 ① 是註冊</b>——它是唯一會建立帳號、也是唯一會跑 Setup 的。② 和 ③ 都是回來的人，但兩者不一樣：<b>② 只是登入，③ 還要先解凍</b>。④ 受限是刻意的死路，因為自我排除的人最先會試的就是從註冊頁重新進來。
-      <div class="en">One door, one verification, four outcomes. <b>Only ① is a registration</b> — the only one that creates an account and the only one that runs Setup. ② and ③ are both returning members, but they are not the same thing: <b>② is simply a login, ③ has to be unfrozen first</b>. The restricted branch is a deliberate dead end, because re-entering through sign-up is the first thing a self-excluded member tries.</div>
+      一個入口、一次驗證、五種結果。<b>只有 ① 是註冊</b>——唯一會建立帳號、也唯一會跑 Setup。②③④ 都是回來的人，但三者不同：② 只是登入，③ 要先解凍，<b>④ 黑名單照樣進得來，只是有些功能用不了</b>。只有「受限」是真的擋在門外。注意終點：<b>Welcome 之後先到首頁</b>，教學是從首頁才出現的，而且新舊會員都可能看到。
+      <div class="en">One door, one verification, five outcomes. <b>Only ① is a registration</b> — the only one that creates an account and the only one that runs Setup. ②③④ are all returning members and all different: ② simply signs in, ③ has to be unfrozen first, and <b>④ gets in like anyone else but with features withheld</b>. Only "restricted" is actually kept out. Note the tail: <b>Welcome leads to Home</b>, and the tour appears from there — for returning members as well as new ones.</div>
     </figcaption>
   </figure>
 
   <!-- ============ THREE ROUTES ============ -->
   <section>
     <div class="sec-head">
-      <h2>三條路各自是什麼</h2>
-      <div class="en-h">What each route actually is</div>
+      <h2>四條路各自是什麼</h2>
+      <div class="en-h">What each route actually is — plus the one that is kept out</div>
     </div>
 
     <div class="lanes">
@@ -262,13 +274,28 @@ footer{margin-top:48px;padding-top:16px;border-top:1px solid var(--rule);font-fa
           <dt>埋點</dt><dd>必須獨立標記，否則喚回成效看不見</dd>
         </dl>
       </div>
+      <div class="lane four">
+        <div class="tag">Route ④</div>
+        <h3>黑名單</h3>
+        <div class="en-h">Blacklisted — in, but limited</div>
+        <div class="ev">login · blacklisted</div>
+        <div class="body">
+          <b>進得來，不是被擋在門外。</b>照常登入、照常用站，但有一組被定義好的功能不給用。受限管的是「能不能進來」，黑名單管的是「進來之後能做什麼」。
+          <div class="en"><b>They get in — this is not a block.</b> Normal sign-in, normal use, with a defined set of features withheld. Restricted is about access; blacklisted is about capability.</div>
+        </div>
+        <dl>
+          <dt>文案</dt><dd>只說「部分功能無法使用」，不列是哪些、不說原因</dd>
+          <dt>待補</dt><dd>停用哪些功能是風控的決定，規格還沒有這份清單</dd>
+          <dt>待決</dt><dd>功能是隱藏，還是顯示但停用並說明</dd>
+        </dl>
+      </div>
     </div>
   </section>
 
   <!-- ============ SHARED RULES ============ -->
   <section>
     <div class="sec-head">
-      <h2>四種結果共用的規則</h2>
+      <h2>五種結果共用的規則</h2>
       <div class="en-h">Rules that hold across every outcome</div>
     </div>
 
@@ -290,8 +317,15 @@ footer{margin-top:48px;padding-top:16px;border-top:1px solid var(--rule);font-fa
       <div class="rrow">
         <div class="k">Setup 只跑一次<div class="en-h">Setup runs once</div></div>
         <div class="v">
-          只有新建立的帳號會被推進 Setup。② 和 ③ 都直接進站。唯一例外是當年沒做完 Step 1 就離開的人，回來仍要補完才能存款或遊戲。
-          <div class="en">Only a newly created account is pushed into Setup. Routes ② and ③ go straight in. The one exception is someone who abandoned before finishing Step 1 — they still have to complete it before depositing or playing.</div>
+          只有新建立的帳號會被推進 Setup。②③④ 都直接進站。唯一例外是當年沒做完 Step 1 就離開的人，回來仍要補完才能存款或遊戲。
+          <div class="en">Only a newly created account is pushed into Setup. Routes ②, ③ and ④ go straight in. The one exception is someone who abandoned before finishing Step 1 — they still have to complete it before depositing or playing.</div>
+        </div>
+      </div>
+      <div class="rrow">
+        <div class="k">終點是首頁，不是教學<div class="en-h">The flow ends on Home</div></div>
+        <div class="v">
+          Welcome 之後<b>先到首頁</b>，教學從首頁才出現。註冊應該結束在產品上，不是結束在一段導覽。而且<b>教學不是只給新會員的</b>——功能一直在上新的，舊會員也需要被告知。同一個元件、不同觸發：新會員看基本操作，回來的人看「上次之後多了什麼」，兩邊都不會看到已經看過的東西。
+          <div class="en">Welcome leads to <b>Home first</b>, and the tour appears from there. Registration should finish on the product, not on a walkthrough. And <b>the tour is not only for new members</b> — the product keeps shipping, and existing customers need telling. One component, two triggers: newcomers see the basics, returning members see what has landed since, and neither sees anything twice.</div>
         </div>
       </div>
       <div class="rrow">
@@ -304,8 +338,16 @@ footer{margin-top:48px;padding-top:16px;border-top:1px solid var(--rule);font-fa
     </div>
 
     <div class="open">
-      <h3>休眠這條路，規格還缺三件事 · Three things the dormant route still does not specify</h3>
+      <h3>規格還缺的五件事 · Five things still unspecified</h3>
       <ol>
+        <li>
+          <b>黑名單停用哪些功能？</b>規格現在只知道「有一組功能不給用」，<b>清單本身還沒有</b>。這是風控的決定，但不拿到清單就畫不出畫面——提款？優惠？特定遊戲？每一種的擋法和文案都不一樣。
+          <div class="en"><b>Which features does a blacklist withhold?</b> The spec knows there is a withheld set but <b>not what is in it</b>. That call belongs to risk control, and without the list the screens cannot be drawn — withdrawal, promotions, certain games all block differently and read differently.</div>
+        </li>
+        <li>
+          <b>被停用的功能是隱藏還是停用？</b>隱藏比較乾淨，但客服會很難處理——會員講不出自己少了什麼。<b>這要一次決定、全站一致</b>，不要一個功能一種做法。
+          <div class="en"><b>Hide the feature, or show it disabled?</b> Hiding is cleaner but makes support harder, since the member cannot point at what is missing. <b>Decide once and apply it everywhere</b>, rather than per feature.</div>
+        </li>
         <li>
           <b>多久算休眠？</b>整套規格從頭到尾用「dormant」，但<b>沒有任何一處定義門檻</b>。一年？半年？這是後端要跑排程的數字，也決定 Route ③ 會有多少人。
           <div class="en"><b>After how long?</b> The whole kit says "dormant" without <b>ever defining the threshold</b>. A year? Six months? The backend needs a number to schedule against, and it decides how many members Route ③ actually has.</div>
@@ -328,6 +370,7 @@ footer{margin-top:48px;padding-top:16px;border-top:1px solid var(--rule);font-fa
   </footer>
 
 </div>
+
 
 </body>
 </html>
