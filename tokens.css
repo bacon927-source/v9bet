@@ -1,0 +1,120 @@
+/* ──────────────────────────────────────────────────────────────
+   V9Bet design tokens — generated from the Figma UI Kit
+   Figma: https://www.figma.com/design/0stLHADYWKuf32S0e48UX1
+   Dark is the default. Light overrides only the semantic layer.
+   Never use a primitive directly in a component — use the semantic token.
+   ────────────────────────────────────────────────────────────── */
+
+:root {
+  /* ---- primitives (do not use directly) ---- */
+  --neutral-0:#FFFFFF;  --neutral-50:#F6F7F9; --neutral-100:#E9EBEF; --neutral-200:#D3D7DD;
+  --neutral-300:#AEB4BE;--neutral-400:#8A919E;--neutral-500:#6B7280; --neutral-600:#4A515C;
+  --neutral-700:#333945;--neutral-800:#22262E;--neutral-900:#15181E; --neutral-950:#0B0D11;
+  --gold-200:#F7E7BC; --gold-300:#F0D694; --gold-400:#E3BE68;
+  --gold-500:#D4A843; --gold-600:#B2862F; --gold-700:#8A661F;
+  --green-400:#4CBE7C; --green-500:#2E9E5B; --green-600:#1F7A44;
+  --red-400:#EC6B66;   --red-500:#D64541;   --red-600:#B02F2C;
+  --amber-400:#EFA94A; --amber-500:#E08E27;
+  --blue-400:#5BA3DC;  --blue-500:#3B82C4;
+
+  /* ---- semantic · dark (default) ---- */
+  --color-bg-app:var(--neutral-950);
+  --color-bg-surface:var(--neutral-900);
+  --color-bg-raised:var(--neutral-800);
+  --color-bg-input:var(--neutral-800);
+  --color-bg-hover:var(--neutral-700);
+  --color-bg-scrim:rgba(0,0,0,.62);
+
+  --color-text-primary:var(--neutral-50);
+  --color-text-secondary:var(--neutral-300);
+  --color-text-muted:var(--neutral-500);
+  --color-text-on-brand:var(--neutral-950);
+  --color-text-inverse:var(--neutral-950);
+
+  --color-border-subtle:var(--neutral-800);
+  --color-border-default:var(--neutral-700);
+  --color-border-strong:var(--neutral-600);
+  --color-border-focus:var(--gold-500);
+
+  --color-brand-primary:var(--gold-500);
+  --color-brand-hover:var(--gold-400);
+  --color-brand-pressed:var(--gold-600);
+  --color-brand-subtle:rgba(212,168,67,.14);
+
+  --color-status-success:var(--green-400);
+  --color-status-warning:var(--amber-400);
+  --color-status-error:var(--red-400);
+  --color-status-info:var(--blue-400);
+  --color-status-success-subtle:rgba(46,158,91,.16);
+  --color-status-warning-subtle:rgba(224,142,39,.16);
+  --color-status-error-subtle:rgba(214,69,65,.16);
+  --color-status-info-subtle:rgba(59,130,196,.16);
+
+  --color-money-up:var(--green-400);
+  --color-money-down:var(--red-400);
+
+  /* ---- spacing ---- */
+  --spacing-0:0px;    --spacing-2xs:2px;  --spacing-xs:4px;   --spacing-sm:8px;
+  --spacing-md:12px;  --spacing-base:16px;--spacing-lg:20px;  --spacing-xl:24px;
+  --spacing-2xl:32px; --spacing-3xl:40px; --spacing-4xl:48px; --spacing-5xl:64px;
+
+  /* ---- radius ---- */
+  --radius-none:0px; --radius-sm:6px; --radius-md:10px;
+  --radius-lg:14px;  --radius-xl:20px; --radius-full:999px;
+
+  /* ---- type ----
+     Inter covers Latin + Vietnamese stacked diacritics.
+     Noto Sans Thai is listed first for Thai so it wins for Thai glyphs. */
+  --font-latin:"Inter","Noto Sans Thai",-apple-system,system-ui,sans-serif;
+  --font-thai:"Noto Sans Thai","Inter",system-ui,sans-serif;
+
+  --font-size-display:28px; --leading-display:36px;
+  --font-size-h1:24px;      --leading-h1:32px;
+  --font-size-h2:20px;      --leading-h2:28px;
+  --font-size-h3:17px;      --leading-h3:25px;
+  --font-size-body-lg:16px; --leading-body-lg:24px;
+  --font-size-body:15px;    --leading-body:23px;
+  --font-size-body-sm:13px; --leading-body-sm:20px;
+  --font-size-caption:11px; --leading-caption:16px;
+  --font-size-num-lg:26px;  --leading-num-lg:32px;
+  --font-size-num:17px;     --leading-num:24px;
+}
+
+/* ---- semantic · light ---- */
+:root[data-theme="light"] {
+  --color-bg-app:var(--neutral-50);
+  --color-bg-surface:var(--neutral-0);
+  --color-bg-raised:var(--neutral-0);
+  --color-bg-input:var(--neutral-100);
+  --color-bg-hover:var(--neutral-100);
+  --color-bg-scrim:rgba(11,13,17,.45);
+
+  --color-text-primary:var(--neutral-900);
+  --color-text-secondary:var(--neutral-600);
+  --color-text-muted:var(--neutral-500);
+  --color-text-on-brand:var(--neutral-950);
+  --color-text-inverse:var(--neutral-0);
+
+  --color-border-subtle:var(--neutral-200);
+  --color-border-default:var(--neutral-300);
+  --color-border-strong:var(--neutral-400);
+
+  --color-brand-hover:var(--gold-600);
+  --color-brand-pressed:var(--gold-700);
+  --color-brand-subtle:rgba(212,168,67,.16);
+
+  --color-status-success:var(--green-600);
+  --color-status-warning:var(--amber-500);
+  --color-status-error:var(--red-500);
+  --color-status-info:var(--blue-500);
+  --color-status-success-subtle:rgba(46,158,91,.12);
+  --color-status-warning-subtle:rgba(224,142,39,.12);
+  --color-status-error-subtle:rgba(214,69,65,.12);
+  --color-status-info-subtle:rgba(59,130,196,.12);
+
+  --color-money-up:var(--green-600);
+  --color-money-down:var(--red-500);
+}
+
+/* Money always lines up in columns. */
+.num, [data-num] { font-variant-numeric: tabular-nums; }
