@@ -47,6 +47,17 @@ module.exports = {
         /* win / loss read as money, not as validation state — keep them apart */
         up:   v('color-money-up'),
         down: v('color-money-down'),
+
+        /* Sheets and modals only. A flat card must not carry a backdrop blur:
+           Flutter's BackdropFilter drops frames on the mid-range Android that
+           most of VN / TH is actually holding. */
+        glass: {
+          DEFAULT:   v('color-glass-fill'),
+          strong:    v('color-glass-fill-strong'),
+          edge:      v('color-glass-border'),
+          highlight: v('color-glass-highlight'),
+          tint:      v('color-glass-tint'),
+        },
       },
 
       spacing: {
@@ -62,6 +73,9 @@ module.exports = {
       },
 
       fontFamily: {
+        /* Be Vietnam Pro was drawn for Vietnamese diacritics — it is the display
+           face because Vietnam is the first market, not because it looks nice. */
+        display: ['Be Vietnam Pro', 'Noto Sans Thai', 'system-ui', 'sans-serif'],
         sans: ['Inter', 'Noto Sans Thai', 'system-ui', 'sans-serif'],
         thai: ['Noto Sans Thai', 'Inter', 'system-ui', 'sans-serif'],
       },

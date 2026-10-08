@@ -7,3 +7,6 @@ node_modules/
 # docs/ holds the GA snapshot, which carries real account and property IDs.
 HANDOFF.md
 docs/
+
+# Third-party skill with no licence file — do not redistribute from a public repo
+.claude/skills/mobile-app-ui-design/
