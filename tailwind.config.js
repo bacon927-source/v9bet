@@ -33,11 +33,19 @@ module.exports = {
           strong:  v('color-border-strong'),
           focus:   v('color-border-focus'),
         },
+        /* Yellow acts, green fills. `brand` is the one button on a screen;
+           `brand-2` is the table it sits on — banners, fields, secondary
+           buttons — and it never carries a number. */
         brand: {
           DEFAULT: v('color-brand-primary'),
           hover:   v('color-brand-hover'),
           pressed: v('color-brand-pressed'),
           subtle:  v('color-brand-subtle'),
+        },
+        'brand-2': {
+          DEFAULT: v('color-brand-secondary'),
+          hover:   v('color-brand-secondary-hover'),
+          subtle:  v('color-brand-secondary-subtle'),
         },
         success: v('color-status-success'),
         warning: v('color-status-warning'),
@@ -70,6 +78,12 @@ module.exports = {
       borderRadius: {
         sm: v('radius-sm'), md: v('radius-md'), lg: v('radius-lg'),
         xl: v('radius-xl'), full: v('radius-full'),
+      },
+
+      /* One green field per screen, behind the mark and the headline:
+         `bg-felt`. It is the table — never put a second one on a page. */
+      backgroundImage: {
+        felt: v('gradient-felt'),
       },
 
       fontFamily: {

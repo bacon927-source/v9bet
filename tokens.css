@@ -8,38 +8,45 @@
    Never use a primitive directly in a component — use the semantic token.
 
    ── The colour rule ──────────────────────────────────────────
-   V9Bet has been yellow and green for ten years. Both colours stay.
-   What changes is how much of them there is, and what each one is for:
+   V9Bet has been yellow and green for ten years. Both carry their weight.
+   What separates them is the job: green is the table, yellow is the chip.
 
-     YELLOW is the brand and the action. The logo, and one button per
-     screen. Nothing else. It is loud because it is rare — the moment a
-     second yellow thing appears, neither one is the action any more.
+     GREEN is the environment. It is in the ground, in every surface, and
+     in one field per screen behind the mark and the headline. Green
+     fills; it never acts.
 
-     GREEN is a state, never decoration. Live, up, won, settled, success.
-     In a betting product green and red carry money meaning; spending
-     green on chrome and borders spends the one colour the member needs
-     to read at a glance.
+     YELLOW is the one thing that acts. The logo, and one button per
+     screen. Nothing else is yellow. It reads as the action because it is
+     rare — the moment a second yellow element appears, neither one is
+     the action any more.
 
-   Everything else is a warm neutral. The dark is warm on purpose: a cold
-   blue-black under a saturated yellow looks like a tech product, and a
-   warm near-black looks like the room this game is played in.
+   There are three greens and they are separated by LIGHTNESS so they can
+   never be read as each other:
+
+     the ground   darkest, a near-black with the brand green in it
+     brand green  mid, always a fill — banners, fields, secondary buttons
+     money green  brightest, always text — live, up, won, settled
+
+   That separation is the whole reason a two-colour brand works here. Put
+   the brand green on a numeral or the money green on a panel and both
+   stop meaning anything.
    ────────────────────────────────────────────────────────────── */
 
 :root {
   /* ---- primitives (do not use directly) ----
-     Warm grey ramp: the darks carry a little yellow so gold sits in them
-     instead of on top of them. */
-  --neutral-0:#FFFFFF;  --neutral-50:#F8F7F4; --neutral-100:#ECEAE5; --neutral-200:#D8D6D0;
-  --neutral-300:#BAB8B1;--neutral-400:#95938C;--neutral-500:#6F6D67; --neutral-600:#4C4A45;
-  --neutral-700:#302E2A;--neutral-800:#201F1C;--neutral-900:#141311; --neutral-950:#0A0A09;
+     The "neutral" ramp is not neutral: it carries the brand green, so the app
+     sits on the table rather than on a generic black. */
+  --neutral-0:#FFFFFF;  --neutral-50:#F5FAF7; --neutral-100:#E9F0EC; --neutral-200:#D5E2DA;
+  --neutral-300:#B4C9BC;--neutral-400:#8AA697;--neutral-500:#59826F; --neutral-600:#356352;
+  --neutral-700:#1F4435;--neutral-800:#143026;--neutral-900:#0B1F16; --neutral-950:#04100B;
 
   /* The logo's yellow, verbatim. Ten years of recognition lives in this value. */
   --gold-200:#FFF3A8; --gold-300:#FFE766; --gold-400:#FFDB2E;
   --gold-500:#F9D000; --gold-600:#D4AF00; --gold-700:#A88A00;
 
-  /* Cooled and deepened so it never vibrates against the yellow. */
-  --green-300:#6EE7A0; --green-400:#35D07F; --green-500:#14B55F;
-  --green-600:#0E8C49; --green-700:#0A6837;
+  /* Three greens, separated by lightness. 500 fills, 400 is text. */
+  --green-300:#7DEBAE; --green-400:#35D07F; --green-500:#0FA85A;
+  --green-600:#0A7D42; --green-700:#06512B;
 
   --red-400:#FF6B61;   --red-500:#E8453A;   --red-600:#BE2D24;
   /* Warning is pushed to orange — an amber this close to the brand gold
@@ -53,7 +60,7 @@
   --color-bg-raised:var(--neutral-800);
   --color-bg-input:var(--neutral-800);
   --color-bg-hover:var(--neutral-700);
-  --color-bg-scrim:rgba(10,10,9,.66);
+  --color-bg-scrim:rgba(4,16,11,.70);
 
   --color-text-primary:var(--neutral-50);
   --color-text-secondary:var(--neutral-300);
@@ -70,6 +77,19 @@
   --color-brand-hover:var(--gold-400);
   --color-brand-pressed:var(--gold-600);
   --color-brand-subtle:rgba(249,208,0,.14);
+
+  /* The second brand colour. It fills — banners, fields, secondary buttons —
+     and it never carries a number. */
+  --color-brand-secondary:var(--green-500);
+  --color-brand-secondary-hover:var(--green-400);
+  --color-brand-secondary-subtle:rgba(15,168,90,.16);
+
+  /* One green field per screen, behind the mark and the headline. */
+  --gradient-felt:linear-gradient(
+      to bottom,
+      rgba(21,200,107,.34) 0%,
+      rgba(10,125,66,.14) 45%,
+      rgba(10,125,66,0) 100%);
 
   --color-status-success:var(--green-400);
   --color-status-warning:var(--orange-400);
@@ -89,7 +109,7 @@
   --color-glass-fill-strong:rgba(255,255,255,.07);
   --color-glass-border:rgba(255,255,255,.10);
   --color-glass-highlight:rgba(255,255,255,.22);
-  --color-glass-tint:rgba(249,208,0,.06);
+  --color-glass-tint:rgba(15,168,90,.08);
 
   /* ---- spacing · 8-point grid ----
      Every value is a multiple of 4. Nothing off this scale goes into a layout. */
@@ -131,7 +151,7 @@
   --color-bg-raised:var(--neutral-0);
   --color-bg-input:var(--neutral-100);
   --color-bg-hover:var(--neutral-100);
-  --color-bg-scrim:rgba(10,10,9,.45);
+  --color-bg-scrim:rgba(4,16,11,.48);
 
   --color-text-primary:var(--neutral-900);
   --color-text-secondary:var(--neutral-600);
@@ -150,6 +170,10 @@
   --color-brand-pressed:var(--gold-700);
   --color-brand-subtle:rgba(249,208,0,.18);
 
+  --color-brand-secondary:var(--green-600);
+  --color-brand-secondary-hover:var(--green-500);
+  --color-brand-secondary-subtle:rgba(15,168,90,.12);
+
   --color-status-success:var(--green-600);
   --color-status-warning:var(--orange-500);
   --color-status-error:var(--red-500);
@@ -162,11 +186,11 @@
   --color-money-up:var(--green-600);
   --color-money-down:var(--red-500);
 
-  --color-glass-fill:rgba(10,10,9,.04);
-  --color-glass-fill-strong:rgba(10,10,9,.07);
-  --color-glass-border:rgba(10,10,9,.10);
+  --color-glass-fill:rgba(4,16,11,.04);
+  --color-glass-fill-strong:rgba(4,16,11,.07);
+  --color-glass-border:rgba(4,16,11,.10);
   --color-glass-highlight:rgba(255,255,255,.80);
-  --color-glass-tint:rgba(249,208,0,.08);
+  --color-glass-tint:rgba(15,168,90,.08);
 }
 
 /* Money always lines up in columns. */
