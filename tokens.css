@@ -36,17 +36,19 @@
   /* ---- primitives (do not use directly) ----
      The "neutral" ramp is not neutral: it carries the brand green, so the app
      sits on the table rather than on a generic black. */
-  --neutral-0:#FFFFFF;  --neutral-50:#F5FAF7; --neutral-100:#E9F0EC; --neutral-200:#D5E2DA;
-  --neutral-300:#B4C9BC;--neutral-400:#8AA697;--neutral-500:#59826F; --neutral-600:#356352;
-  --neutral-700:#1F4435;--neutral-800:#143026;--neutral-900:#0B1F16; --neutral-950:#04100B;
+  --neutral-0:#FFFFFF;  --neutral-50:#F3F9F5; --neutral-100:#E6EEE9; --neutral-200:#CFDED5;
+  --neutral-300:#A9C0B2;--neutral-400:#7C9A88;--neutral-500:#6B9480; --neutral-600:#28543C;
+  --neutral-700:#143826;--neutral-800:#0C2619;--neutral-900:#061710; --neutral-950:#020B07;
 
   /* The logo's yellow, verbatim. Ten years of recognition lives in this value. */
   --gold-200:#FFF3A8; --gold-300:#FFE766; --gold-400:#FFDB2E;
   --gold-500:#F9D000; --gold-600:#D4AF00; --gold-700:#A88A00;
 
-  /* Three greens, separated by lightness. 500 fills, 400 is text. */
-  --green-300:#7DEBAE; --green-400:#35D07F; --green-500:#0FA85A;
-  --green-600:#0A7D42; --green-700:#06512B;
+  /* Three greens, separated by lightness. 500 fills, 400 is text.
+     500 and below deepen with the ground; 400 stays bright because it has to
+     stay legible as a numeral. */
+  --green-300:#7DEBAE; --green-400:#35D07F; --green-500:#0C8F4A;
+  --green-600:#076834; --green-700:#044520;
 
   --red-400:#FF6B61;   --red-500:#E8453A;   --red-600:#BE2D24;
   /* Warning is pushed to orange — an amber this close to the brand gold
@@ -60,7 +62,7 @@
   --color-bg-raised:var(--neutral-800);
   --color-bg-input:var(--neutral-800);
   --color-bg-hover:var(--neutral-700);
-  --color-bg-scrim:rgba(4,16,11,.70);
+  --color-bg-scrim:rgba(2,11,7,.72);
 
   --color-text-primary:var(--neutral-50);
   --color-text-secondary:var(--neutral-300);
@@ -82,20 +84,20 @@
      and it never carries a number. */
   --color-brand-secondary:var(--green-500);
   --color-brand-secondary-hover:var(--green-400);
-  --color-brand-secondary-subtle:rgba(15,168,90,.16);
+  --color-brand-secondary-subtle:rgba(12,143,74,.18);
 
   /* One green field per screen, behind the mark and the headline. */
   --gradient-felt:linear-gradient(
       to bottom,
-      rgba(21,200,107,.34) 0%,
-      rgba(10,125,66,.14) 45%,
-      rgba(10,125,66,0) 100%);
+      rgba(14,143,79,.46) 0%,
+      rgba(6,92,49,.20) 45%,
+      rgba(4,69,32,0) 100%);
 
   --color-status-success:var(--green-400);
   --color-status-warning:var(--orange-400);
   --color-status-error:var(--red-400);
   --color-status-info:var(--blue-400);
-  --color-status-success-subtle:rgba(20,181,95,.16);
+  --color-status-success-subtle:rgba(53,208,127,.16);
   --color-status-warning-subtle:rgba(232,111,28,.16);
   --color-status-error-subtle:rgba(232,69,58,.16);
   --color-status-info-subtle:rgba(47,127,212,.16);
@@ -109,7 +111,7 @@
   --color-glass-fill-strong:rgba(255,255,255,.07);
   --color-glass-border:rgba(255,255,255,.10);
   --color-glass-highlight:rgba(255,255,255,.22);
-  --color-glass-tint:rgba(15,168,90,.08);
+  --color-glass-tint:rgba(12,143,74,.08);
 
   /* ---- spacing · 8-point grid ----
      Every value is a multiple of 4. Nothing off this scale goes into a layout. */
@@ -151,11 +153,14 @@
   --color-bg-raised:var(--neutral-0);
   --color-bg-input:var(--neutral-100);
   --color-bg-hover:var(--neutral-100);
-  --color-bg-scrim:rgba(4,16,11,.48);
+  --color-bg-scrim:rgba(2,11,7,.50);
 
   --color-text-primary:var(--neutral-900);
-  --color-text-secondary:var(--neutral-600);
-  --color-text-muted:var(--neutral-500);
+  /* Light mode cannot reuse the dark mode's steps. neutral-500 is tuned to sit
+     on a near-black; on #F3F9F5 it drops to 3.19:1 and fails AA, so the light
+     theme walks one step further down the ramp for both. */
+  --color-text-secondary:var(--neutral-700);
+  --color-text-muted:var(--neutral-600);
   --color-text-on-brand:var(--neutral-950);
   --color-text-inverse:var(--neutral-0);
 
@@ -172,13 +177,13 @@
 
   --color-brand-secondary:var(--green-600);
   --color-brand-secondary-hover:var(--green-500);
-  --color-brand-secondary-subtle:rgba(15,168,90,.12);
+  --color-brand-secondary-subtle:rgba(12,143,74,.12);
 
   --color-status-success:var(--green-600);
   --color-status-warning:var(--orange-500);
   --color-status-error:var(--red-500);
   --color-status-info:var(--blue-500);
-  --color-status-success-subtle:rgba(20,181,95,.12);
+  --color-status-success-subtle:rgba(53,208,127,.12);
   --color-status-warning-subtle:rgba(232,111,28,.12);
   --color-status-error-subtle:rgba(232,69,58,.12);
   --color-status-info-subtle:rgba(47,127,212,.12);
@@ -186,11 +191,11 @@
   --color-money-up:var(--green-600);
   --color-money-down:var(--red-500);
 
-  --color-glass-fill:rgba(4,16,11,.04);
-  --color-glass-fill-strong:rgba(4,16,11,.07);
-  --color-glass-border:rgba(4,16,11,.10);
+  --color-glass-fill:rgba(2,11,7,.04);
+  --color-glass-fill-strong:rgba(2,11,7,.07);
+  --color-glass-border:rgba(2,11,7,.10);
   --color-glass-highlight:rgba(255,255,255,.80);
-  --color-glass-tint:rgba(15,168,90,.08);
+  --color-glass-tint:rgba(12,143,74,.08);
 }
 
 /* Money always lines up in columns. */
