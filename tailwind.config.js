@@ -234,6 +234,10 @@ module.exports = {
             fontSize: type('body').fontSize, lineHeight: 'normal', color: c('ink.muted'),
             pointerEvents: 'none', transition: 'top .12s ease, left .12s ease, font-size .12s ease, transform .12s ease',
           },
+          /* Focus lights the label with the outline, so the two read as one
+             state (user, 2026-10-20: "focus 時，字也要一併 focus"). An invalid
+             field keeps its red label even while focused. */
+          '& > input:focus:not([aria-invalid="true"]) + label': { color: c('ink.DEFAULT') },
           '& > input:focus + label, & > input:not(:placeholder-shown) + label': {
             top: '8px', left: '8px', height: 'auto', padding: '2px 4px', transform: 'translateY(-50%)', backgroundColor: c('app'),
             fontSize: v('font-size-field-label'),
@@ -280,6 +284,13 @@ module.exports = {
           '&::before, &::after': { content: '""', flex: '1 1 0%', height: '1px', backgroundColor: c('edge.DEFAULT'), opacity: '.5' },
         },
 
+        /* Divider without a label — one plain rule between two groups that need
+           no name. Same 32 from what is above and below as .divider-label.
+           Use <div class="divider" role="separator"></div>. */
+        '.divider': {
+          display: 'flex', paddingBlock: `calc(${theme('spacing.8')} - ${theme('spacing.4')})`,
+          '&::before': { content: '""', flex: '1 1 0%', height: '1px', backgroundColor: c('edge.DEFAULT'), opacity: '.5' },
+        },
         /* Social sign-in — a 48 circle carrying the provider's official icon,
            name underneath. data-last-used adds the ring; the badge says why. */
         /* The row the social buttons sit in. The page body already gives the

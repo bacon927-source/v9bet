@@ -57,7 +57,7 @@ fileKey `RQEyZIgfkCKHdzYmOwprvR`，在 v9 團隊下。跟網頁版是同一套�
 
 | 頁 | id | 內容 |
 |---|---|---|
-| 🧩 Components | `0:1` | 一個 auto-layout 的板子 `4:2`，每個元件一節 |
+| 🧩 Components | `0:1` | 一個 auto-layout 的板子 `4:2`，每個元件一節（各節間距 16）。**2026-10-20 元件重畫**：元件內所有落在六格上的間距都綁了 `spacing/N`（補綁 60 處，數值沒變）；不在六格上的（Toggle 內距 2、徽章 2/6、欄位尾端 6、面板標題左右 56、兩個分頁之間 28）跟程式一樣，是元件內部尺寸，刻意不綁。預設寬度：內容元件和頂列 358、滿版的 Action bar 和 Sheet header 390（原本是 v1 的 330/360；畫面上都是 FILL，不受影響）。各節說明照程式重寫，說明文字 940 寬換行 |
 | 📱 Screens | `2:2` | **一個流程一個 Section、由上往下，畫面是 Section 裡最上層的 frame**（2026-10-14 使用者嫌外框太多層、點不到畫面，拿掉了原本的 auto-layout 畫布 `8:29`、每列的 row 和每張的說明外框）：Login `127:2308` / Sign Up `127:2309` / Sign Up · existing account `127:2310` / Sign Up · social `127:2311` / Setup · guided `127:2312` / Tutorial & App `127:2313` / Forgot Password `127:2314` / Settings `127:2315` / Profile `127:2316`，共 54 張。間距標註不放這頁，放在 **📏 Spacing** 頁 `134:46`（使用者 2026-10-15：「在左邊 page 加一個來放，裡面都會放 space」）；第一個 Section 是 **Login & Sign Up** `190:286`（2026-10-15 使用者要求把頂列、圖示、間距表標在 Login／Sign Up 畫面上）：兩張畫面的複本，疊上量出來的標註（粉紅＝間距和 token 名、藍＝尺寸、橘＝圖示和點擊範圍）。標註是當下量的快照，畫面或間距改了要重跑，不會自己更新。同流程的新畫面放進那個 Section、接在最後一張右邊（間距 40）；新流程開一個新 Section。**不要再把畫面包進 auto-layout 外框**。腳本找畫面用 `section.children` |
 | 📏 Spacing | `134:46` | 間距標註專用頁。一個流程一個 Section，裡面是畫面的複本加上量出來的標註（粉紅＝間距和 token、藍＝尺寸、橘＝圖示）。目前有 Login & Sign Up `190:286`（Login · Password／Sign Up · Default／Login · Enter code · typing）、Setup · guided `188:154`（Start／1 Currency／Before Step 2）。2026-10-19 全部重新產生：標註從量到的節點算出來，標籤兩兩、標籤和畫面都檢查過不重疊。**2026-10-20 整頁更新**：標籤改成 `spacing/N`；6 張規格畫面改成 page 結構；頂列那一排的標註框（header 外框、✕／返回的 44 點擊範圍、24 圖示、兩個分頁之間的間隔）從實際節點重量，連到它們的引線按標籤重新接（圖示接中心、header 接右緣、分頁間隔接右緣）。左右邊距條本來就從頂列畫到底，不用動。之後畫面再改，這頁要再量一次 |
 
@@ -75,9 +75,10 @@ fileKey `RQEyZIgfkCKHdzYmOwprvR`，在 v9 團隊下。跟網頁版是同一套�
 | Link row | `4:48` | TEXT `Prompt`、`Action` |
 | Tab · Tabs | `4:60` `4:77` | Tab：Selected = True / False。Tabs：Active = First / Second（One-time code ｜ Password） |
 | Tick | `4:87` | State = Off / On |
-| Divider label | `4:95` | TEXT `Label`；上下各多 10（加上頁面間距 20 = 30），把社群登入和手動填寫分成兩區 |
+| Divider | set `223:50`：`Label=Yes` `4:95`（原本的 Divider label，instance 都還連著它）、`Label=No` `223:46` | **2026-10-20 改成兩個變體**（使用者：「加一個沒有文字只有線的」）。Yes：兩條線中間一段短字，TEXT `Label`，把社群登入和手動填寫分成兩區；No：一條完整的線，給不需要名字的兩組之間。兩種都是上下 padding `spacing/4` 加上頁面間距 16 = 32。沒用「隱藏文字」做，因為藏掉字以後兩條線中間還會留 12 的缺口。程式 `.divider-label` · `.divider` |
 | Code cell | `4:111` | State = Empty / Focus / Filled / Error；TEXT `Digit` |
-| Field | `5:65` | State = Empty / Focus / Filled / Error × Trailing = None / Icon / Note（共 7 個）；TEXT `Label` `Value` `Note` `Error` |
+| Code input | set `226:77`：`State=Default` `226:46`、`State=Invalid` `226:59` | 2026-10-20 新增。六個 Code cell、間距 `spacing/3`、置中；Invalid 六格全紅，下面一行 TEXT `Error`。取代畫面裡手排的 `code` 框（11 處，第 3 步換）。程式 `.otp` · `.otp[data-invalid]` ＋ `.error-text` |
+| Field | `5:65` | State = Empty / Focus / Filled / Error × Trailing = None / Icon / Note（共 7 個）；TEXT `Label` `Value` `Note` `Error`。**2026-10-20**：加 BOOLEAN `Hint`（預設關）＋ TEXT `Hint text`，說明字是每個非 Error 變體的最後一行（13、`text/secondary`、框下 4），打開才佔高度——規則是說明放在欄位裡，不要在欄位外另放一行。Focus 變體的浮起標籤改綁 `text/primary`，跟白框線一起亮（使用者：「focus 時，字也要一併 focus」）；程式 `.field > input:focus:not([aria-invalid="true"]) + label` |
 | Social button | `5:121` | Provider = Google / LINE / Zalo × Last used = No / Yes。標誌是 `social/google|line|zalo`（`5:76` `5:78` `5:80`），LINE、Zalo 是上傳的官方圖檔 |
 | Action bar | `14:38` | BOOLEAN `Skip link`；裡面是 Button（`button`）和 Link row（`skip link`）。內容比畫面高的頁面把按鈕釘在底部用的。網頁版是 `.action-bar`（2026-10-16 補上） |
 | Option card | `16:78` | State = Default / Selected；TEXT `Title` `Sub`；INSTANCE_SWAP `Icon`（預設 `flag/vn`）。v1 的「radio button with icon」加寬成兩行 |
@@ -85,11 +86,13 @@ fileKey `RQEyZIgfkCKHdzYmOwprvR`，在 v9 團隊下。跟網頁版是同一套�
 | Sheet header | `22:63` | TEXT `Title`；把手、置中標題、右上關閉（`icon/sheet-close` `22:51`）。v1 的彈窗是從底部上來的面板（AnchoredSheet）：底 `bg/sheet` #1C1C1E、上方圓角 12、後面一層 `bg/scrim` 黑 60% |
 | Status mark | `22:73` | 48 的綠圈加勾，結果頁用，取代 wireframe 的 emoji |
 | List row | `36:83` | Trailing = Chevron / Toggle on / Toggle off；TEXT `Title` `Value`。v1 設定頁的 search/list：50 高、卡片底 `bg/card` #212326、圓角 12，同一張卡裡用一條頁面底色的細線隔開，上面一行 15px 白 30% 的分組標題（`text/tertiary`） |
+| Card | `227:58` | 2026-10-20 新增。List row 疊在 `bg/card`、`radius/xl` 12，列之間 1px `bg/app` 的線。第 1–3 列固定，BOOLEAN `Row 4` `Row 5` `Row 6` 開關（藏一列會連它上面的線一起藏）。取代畫面裡手拼的 `list` 框（8 處，第 3 步換）。程式 `.card` ＋ `.list-row` |
 | Toggle | `36:63` | State = On / Off；開的時候是綠色（v1 是紫色，2026-10-13 改） |
 | Step top bar | `55:58` | TEXT `Progress`、BOOLEAN `Back`。引導式 Setup 的頂列：返回（只有 24 的 icon/back，不寫「Back」，點擊範圍 44 × 44；使用者 2026-10-14）＋「n of 8」灰色 13 置中（2026-10-15 從右邊移到中間；頂列不放標題）。開場頁 Guided · Start（`57:1137`）不用它，改用 Nav top「Account Setup」＋✕（2026-10-14 使用者：「每頁應該都有 header」） |
 | Step hero | `55:69` | TEXT `Title` `Why` `Points`、BOOLEAN `Show points`。18 標題、一句為什麼、點數小標，置中。2026-10-15 拿掉 56 綠圈數字（`Number` 屬性已刪），標題從 28 改 18：進度只在 Step top bar 出現一次 |
 | Auth tabs | `72:1466` | Current = Sign Up / Log In。Login、Sign Up 的頂列：✕ 在左，中間兩個文字分頁「Sign Up　Log In」，目前這頁白色粗體＋16×3 綠線、另一頁灰色，都是 18。取代了 Nav top；按鈕下面沒有連結列；Login 的 Forgot Password? 在按鈕下面置中 |
 | Checklist row | `7:45` | State = Todo / Done；TEXT `Number` `Title` `Sub`。v1 沒有，照 v1 的語言畫的；網頁版是 `.checklist` ＋ `.checklist-row`（2026-10-16 補上） |
+| Checklist | `227:103` | 2026-10-20 新增。Checklist row 包在 1px `border/default` 外框、`radius/xl` 12，列之間是 `border/subtle` 8% 的細線；外框線算進排版，所以列寬 356。第 1–3 列固定，BOOLEAN `Row 4` `Row 5`。取代畫面裡手拼的 `items` 框（14 處，第 3 步換）。程式 `.checklist` ＋ `.checklist-row` |
 
 | 畫面 | id | 尺寸 |
 |---|---|---|

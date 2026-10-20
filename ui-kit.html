@@ -131,7 +131,7 @@ npx tailwindcss -c tailwind.config.js -i app.css -o dist/app.css --minify</pre>
         </article>
         <article id="field" class="flex flex-col gap-[15px] scroll-mt-[20px]">
           <div class="flex flex-wrap items-baseline gap-x-[10px] gap-y-[5px]"><h3 class="text-body font-semibold">Field</h3><span class="font-mono text-micro text-ink text-ink-secondary">.field</span></div>
-          <p class="text-body text-ink-secondary">Outlined text input. The label sits inside as the placeholder and lifts onto the outline on focus or once there is a value — click into the first one.</p>
+          <p class="text-body text-ink-secondary">Outlined text input. The label sits inside as the placeholder and lifts onto the outline on focus or once there is a value — click into the first one. On focus the label turns white together with the outline, so they read as one state; an invalid field keeps its red label.</p>
           <div class="grid gap-[20px] md:grid-cols-[360px_1fr] items-start">
             <div class="rounded-xl border border-edge-subtle p-[15px] flex flex-col gap-2">
               <div class="field"><input id="k1" type="text" placeholder=" "><label for="k1">Account ID / Email</label></div>
@@ -263,15 +263,17 @@ npx tailwindcss -c tailwind.config.js -i app.css -o dist/app.css --minify</pre>
 &lt;/label&gt;</pre>
         </article>
         <article id="divider-label" class="flex flex-col gap-[15px] scroll-mt-[20px]">
-          <div class="flex flex-wrap items-baseline gap-x-[10px] gap-y-[5px]"><h3 class="text-body font-semibold">Divider label</h3><span class="font-mono text-micro text-ink text-ink-secondary">.divider-label</span></div>
-          <p class="text-body text-ink-secondary">A rule with a short label in the middle.</p>
+          <div class="flex flex-wrap items-baseline gap-x-[10px] gap-y-[5px]"><h3 class="text-body font-semibold">Divider</h3><span class="font-mono text-micro text-ink text-ink-secondary">.divider-label · .divider</span></div>
+          <p class="text-body text-ink-secondary">A rule across the page, with a short label in the middle (<code class="font-mono text-micro text-ink">.divider-label</code>, Figma Divider · Label=Yes) or on its own (<code class="font-mono text-micro text-ink">.divider</code>, Label=No). Either way it sits 32 from what is above and below: the page gap 16 plus its own 16.</p>
           <div class="grid gap-[20px] md:grid-cols-[360px_1fr] items-start">
             <div class="rounded-xl border border-edge-subtle p-[15px] flex flex-col gap-3">
               <div class="divider-label">or log in with</div>
+              <div class="divider" role="separator"></div>
             </div>
-            <div class="flex flex-col gap-[15px] min-w-0"><div class="overflow-x-auto"><table class="w-full text-body-sm text-ink-secondary"><thead><tr><th class="text-left font-semibold text-ink py-[8px] pr-[15px] whitespace-nowrap">Class / attribute</th><th class="text-left font-semibold text-ink py-[8px] pr-[15px] whitespace-nowrap">What it does</th></tr></thead><tbody><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top"><code class="font-mono text-micro text-ink">.divider-label</code></td><td class="py-[8px] pr-[15px] align-top">The two rules are pseudo-elements; the element holds only the text.</td></tr></tbody></table></div></div>
+            <div class="flex flex-col gap-[15px] min-w-0"><div class="overflow-x-auto"><table class="w-full text-body-sm text-ink-secondary"><thead><tr><th class="text-left font-semibold text-ink py-[8px] pr-[15px] whitespace-nowrap">Class / attribute</th><th class="text-left font-semibold text-ink py-[8px] pr-[15px] whitespace-nowrap">What it does</th></tr></thead><tbody><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top"><code class="font-mono text-micro text-ink">.divider-label</code></td><td class="py-[8px] pr-[15px] align-top">The two rules are pseudo-elements; the element holds only the text.</td></tr><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top"><code class="font-mono text-micro text-ink">.divider</code></td><td class="py-[8px] pr-[15px] align-top">One plain rule, no text. Give it <code class="font-mono text-micro text-ink">role=&quot;separator&quot;</code>.</td></tr></tbody></table></div></div>
           </div>
-          <pre class="overflow-x-auto rounded-xl border border-edge-subtle p-[10px] font-mono text-micro text-ink-secondary whitespace-pre">&lt;div class=&quot;divider-label&quot;&gt;or log in with&lt;/div&gt;</pre>
+          <pre class="overflow-x-auto rounded-xl border border-edge-subtle p-[10px] font-mono text-micro text-ink-secondary whitespace-pre">&lt;div class=&quot;divider-label&quot;&gt;or log in with&lt;/div&gt;
+&lt;div class=&quot;divider&quot; role=&quot;separator&quot;&gt;&lt;/div&gt;</pre>
         </article>
         <article id="social" class="flex flex-col gap-[15px] scroll-mt-[20px]">
           <div class="flex flex-wrap items-baseline gap-x-[10px] gap-y-[5px]"><h3 class="text-body font-semibold">Social buttons</h3><span class="font-mono text-micro text-ink text-ink-secondary">.social-row · .social-btn</span></div>
