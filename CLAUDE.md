@@ -1,5 +1,7 @@
 # v9bet — 做 mockup 與實作前必讀
 
+> **這個 repo 在兩台電腦之間來回做。** 開工前先讀 [`MACHINES.md`](MACHINES.md)：現在在哪一台、有沒有還沒推的 commit、換手前後要做什麼。
+
 兩個交付目標，**同一套設計 token**：
 
 | 平台 | 實作 | 取用 token |
