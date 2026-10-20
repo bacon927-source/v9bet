@@ -100,7 +100,8 @@
 
   /* Spacing — named exactly as Tailwind's numeric scale (2026-10-20, user chose
      "all Tailwind numbers"): --space-4 is p-4 is Figma's spacing/4, all 16px.
-     Only these steps are used for spacing; the numbers are Tailwind keys, not px. */
+     Any Tailwind step is allowed; only a value off Tailwind's scale is an exception.
+     These are the steps in use; the numbers are Tailwind keys, not px. */
   --space-1:4px;   /* a field to its own hint or error */
   --space-2:8px;   /* tight pairs: tick or icon to its label, field to field */
   --space-3:12px;  /* inside a group: items in a card, a list, a result */

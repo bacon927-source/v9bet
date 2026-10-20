@@ -67,7 +67,7 @@ module.exports = {
 
       /* Spacing: Tailwind's own numeric keys (gap-2, p-4, pt-5, mt-8), pointed at
          variables.css so Figma's spacing/N, --space-N and the class are one name.
-         Spacing uses only 1 2 3 4 5 8; the other keys stay for sizes (w-6, h-11). */
+         Any Tailwind step is allowed; only a value off Tailwind's scale is an exception. */
       spacing: {
         1: v('space-1'), 2: v('space-2'), 3: v('space-3'), 4: v('space-4'),
         5: v('space-5'), 8: v('space-8'),
