@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>V9Bet · Mobile web UI guideline</title>
+
+<!-- Every example on this page is the real component class from
+     tailwind.config.js, so the guideline cannot drift from the product. -->
+<link rel="stylesheet" href="variables.css">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>var module = {};</script>
+<script src="tailwind.config.js"></script>
+<script>tailwind.config = module.exports;</script>
+</head>
+
+<body class="bg-app text-ink font-sans antialiased">
+  <div class="mx-auto w-full max-w-[960px] px-[15px] py-[30px] flex flex-col gap-[40px] safe-top">
+
+      <header class="flex flex-col gap-group">
+        <h1 class="text-title font-semibold">V9Bet Mobile web UI guideline</h1>
+        <p class="text-body text-ink-secondary">Mobile web 的畫面怎麼做。這一版是現有產品（APP-V9Bet-v1）的<b class="text-ink">升級</b>：保留 V9Bet 讓人認得的樣子，可用性和一致性照這份規範。設計稿在 Figma <a href="https://www.figma.com/design/RQEyZIgfkCKHdzYmOwprvR" class="text-brand-2">V9Bet Mobile Web — UI</a>，實作是 Tailwind CSS 的元件 class。元件一節的範例是真的元件 class；設定、引導與面板那一節放的是 Figma 的圖，可以操作的範例和寫法在 <a href="ui-kit.html" class="text-brand-2">UI kit</a>。</p>
+        <p class="text-body-sm text-ink-secondary"><a href="#principles" class="text-brand-2">原則</a> · <a href="#foundations" class="text-brand-2">基礎</a> · <a href="#layout" class="text-brand-2">頁面結構</a> · <a href="#patterns" class="text-brand-2">頁面模式</a> · <a href="#components" class="text-brand-2">元件</a> · <a href="#figma-components" class="text-brand-2">新元件（Figma）</a> · <a href="#copy" class="text-brand-2">文案</a> · <a href="#adding" class="text-brand-2">加新元件</a> · <a href="#dont" class="text-brand-2">不要做的事</a></p>
+        <p class="text-body-sm text-ink-secondary">做好的頁面：<a href="login-flow-tailwind.html" class="text-brand-2">Login</a> · <a href="signup-flow-tailwind.html" class="text-brand-2">Sign Up</a> 　工程師用的參考：<a href="ui-kit.html" class="text-brand-2">UI kit</a></p>
+      </header>
+
+      <section id="principles" class="flex flex-col gap-[20px] scroll-mt-[20px]">
+        <h2 class="text-title font-semibold border-b border-edge-subtle pb-[10px]">原則</h2>
+<ul class="flex flex-col gap-[5px] list-disc pl-[20px] text-body text-ink-secondary"><li><b class="text-ink">以 v1 為基礎的升級版。</b>保留讓人認得的部分：黃色主按鈕、外框輸入框和浮起來的標籤、深色、系統字體。可用性和一致性的問題直接改，不用為了跟 v1 一樣而保留——改過哪些列在「基礎」最後。v1 沒有的東西照這份規範做，不必去 v1 找先例。</li><li><b class="text-ink">內容和流程照 wireframe。</b>這份規範決定長相，wireframe 決定有哪些欄位、順序和文案。</li><li><b class="text-ink">頁面只組合元件。</b>按鈕、輸入框、分頁這些都是定義好的 class（<code class="font-mono text-micro text-ink">.btn</code>、<code class="font-mono text-micro text-ink">.field</code>、<code class="font-mono text-micro text-ink">.tab</code>…），頁面用 utilities 排版，不在頁面裡重新刻一顆。</li><li><b class="text-ink">值只有一個來源。</b>顏色、字級、圓角寫在 <code class="font-mono text-micro text-ink">variables.css</code>；<code class="font-mono text-micro text-ink">tailwind.config.js</code> 把它們變成 theme 和元件。頁面裡不寫色碼。</li><li><b class="text-ink">先看 360。</b>越南和泰國最常見的手機寬度是 360，每一頁都要在這個寬度檢查過才算完成。</li></ul>
+      </section>
+      <section id="foundations" class="flex flex-col gap-[20px] scroll-mt-[20px]">
+        <h2 class="text-title font-semibold border-b border-edge-subtle pb-[10px]">基礎</h2>
+
+        <h3 class="text-body font-semibold">顏色</h3>
+        <div class="overflow-x-auto"><table class="w-full text-body-sm text-ink-secondary"><thead><tr><th class="text-left font-semibold text-ink py-[8px] pr-[15px] whitespace-nowrap"></th><th class="text-left font-semibold text-ink py-[8px] pr-[15px] whitespace-nowrap">變數 / class</th><th class="text-left font-semibold text-ink py-[8px] pr-[15px] whitespace-nowrap">值</th><th class="text-left font-semibold text-ink py-[8px] pr-[15px] whitespace-nowrap">用在哪</th></tr></thead><tbody><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top"><span class="inline-block w-[22px] h-[22px] rounded-full align-middle bg-app border border-edge"></span></td><td class="py-[8px] pr-[15px] align-top"><code class="font-mono text-micro text-ink">bg-app</code></td><td class="py-[8px] pr-[15px] align-top">#1A1C1F</td><td class="py-[8px] pr-[15px] align-top">頁面底色</td></tr><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top"><span class="inline-block w-[22px] h-[22px] rounded-full align-middle bg-card"></span></td><td class="py-[8px] pr-[15px] align-top"><code class="font-mono text-micro text-ink">bg-card</code></td><td class="py-[8px] pr-[15px] align-top">#23262B</td><td class="py-[8px] pr-[15px] align-top">卡片、設定清單（第一層）</td></tr><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top"><span class="inline-block w-[22px] h-[22px] rounded-full align-middle bg-sheet"></span></td><td class="py-[8px] pr-[15px] align-top"><code class="font-mono text-micro text-ink">bg-sheet</code></td><td class="py-[8px] pr-[15px] align-top">#282C31</td><td class="py-[8px] pr-[15px] align-top">從底部上來的面板（第二層），後面一層 60% 黑</td></tr><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top"><span class="inline-block w-[22px] h-[22px] rounded-full align-middle bg-white"></span></td><td class="py-[8px] pr-[15px] align-top"><code class="font-mono text-micro text-ink">text-ink</code></td><td class="py-[8px] pr-[15px] align-top">#FFFFFF</td><td class="py-[8px] pr-[15px] align-top">標題、輸入的值、主要文字</td></tr><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top"><span class="inline-block w-[22px] h-[22px] rounded-full align-middle bg-white opacity-60"></span></td><td class="py-[8px] pr-[15px] align-top"><code class="font-mono text-micro text-ink">text-ink-secondary</code></td><td class="py-[8px] pr-[15px] align-top">白 60%</td><td class="py-[8px] pr-[15px] align-top">說明文字</td></tr><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top"><span class="inline-block w-[22px] h-[22px] rounded-full align-middle bg-[#8A93A0]"></span></td><td class="py-[8px] pr-[15px] align-top"><code class="font-mono text-micro text-ink">text-ink-muted</code></td><td class="py-[8px] pr-[15px] align-top">#8A93A0</td><td class="py-[8px] pr-[15px] align-top">欄位標籤、提示、分組標題。在深色底上過 4.5:1</td></tr><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top"><span class="inline-block w-[22px] h-[22px] rounded-full align-middle bg-edge"></span></td><td class="py-[8px] pr-[15px] align-top"><code class="font-mono text-micro text-ink">border-edge</code></td><td class="py-[8px] pr-[15px] align-top">#5C6570</td><td class="py-[8px] pr-[15px] align-top">外框、圖示、沒選中的圈。<b class="text-ink">不拿來當文字</b>，太暗</td></tr><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top"><span class="inline-block w-[22px] h-[22px] rounded-full align-middle bg-disabled"></span></td><td class="py-[8px] pr-[15px] align-top"><code class="font-mono text-micro text-ink">bg-disabled</code> · <code class="font-mono text-micro text-ink">text-disabled-ink</code></td><td class="py-[8px] pr-[15px] align-top">#5C6570 / #9BA7B7</td><td class="py-[8px] pr-[15px] align-top">還不能按的主按鈕</td></tr><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top"><span class="inline-block w-[22px] h-[22px] rounded-full align-middle bg-brand"></span></td><td class="py-[8px] pr-[15px] align-top"><code class="font-mono text-micro text-ink">bg-brand</code></td><td class="py-[8px] pr-[15px] align-top">#FFBC00</td><td class="py-[8px] pr-[15px] align-top">主按鈕，一頁一顆</td></tr><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top"><span class="inline-block w-[22px] h-[22px] rounded-full align-middle bg-brand-2"></span></td><td class="py-[8px] pr-[15px] align-top"><code class="font-mono text-micro text-ink">text-brand-2</code></td><td class="py-[8px] pr-[15px] align-top">#00DA87</td><td class="py-[8px] pr-[15px] align-top">連結、已選中、開關打開、完成</td></tr><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top"><span class="inline-block w-[22px] h-[22px] rounded-full align-middle bg-error"></span></td><td class="py-[8px] pr-[15px] align-top"><code class="font-mono text-micro text-ink">text-error</code></td><td class="py-[8px] pr-[15px] align-top">#FF4D4D</td><td class="py-[8px] pr-[15px] align-top">出錯的地方：外框、驗證碼格、錯誤訊息</td></tr><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top"><span class="inline-block w-[22px] h-[22px] rounded-full align-middle bg-promo"></span></td><td class="py-[8px] pr-[15px] align-top"><code class="font-mono text-micro text-ink">promo</code></td><td class="py-[8px] pr-[15px] align-top">#9B5BF5</td><td class="py-[8px] pr-[15px] align-top">只給優惠類</td></tr><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top"><span class="inline-block w-[22px] h-[22px] rounded-full align-middle border border-edge-empty"></span></td><td class="py-[8px] pr-[15px] align-top"><code class="font-mono text-micro text-ink">border-edge-empty</code></td><td class="py-[8px] pr-[15px] align-top">#4B4B4B</td><td class="py-[8px] pr-[15px] align-top">還沒填數字的驗證碼格</td></tr></tbody></table></div>
+        <ul class="flex flex-col gap-[5px] list-disc pl-[20px] text-body text-ink-secondary"><li><b class="text-ink">黃色只給主按鈕。</b>一頁一顆，第二個黃色一出現就分不出哪個是主要動作。</li><li><b class="text-ink">綠色是「可以點的文字」和「已選中」。</b>連結、選中的分頁和選項、打開的開關、完成的項目都是綠色。不拿來鋪大面積。</li><li><b class="text-ink">紅色只標在出錯的地方。</b>按鈕不會變紅。</li><li><b class="text-ink">紫色只給優惠類。</b>不拿來當開關或連結。</li><li>底色分三層：頁面、卡片、面板，一層比一層亮一點。不要再多一層。</li><li>第三方的品牌色（Google、LINE、Zalo、銀行）只出現在它們自己的標誌裡。</li></ul>
+        <h3 class="text-body font-semibold">字</h3>
+        <p class="text-body text-ink-secondary">產品用系統字體（iOS 是 SF Pro、Android 是 Roboto），不另外載入網頁字型；泰文會落到 Noto Sans Thai。Figma 檔用 Roboto（Figma 的 API 量不到 SF Pro 的字寬）。<b class="text-ink">字級只有 13、15、17、18 四階，加一個 28 給餘額和引導頁標題。</b></p>
+        <div class="overflow-x-auto"><table class="w-full text-body-sm text-ink-secondary"><thead><tr><th class="text-left font-semibold text-ink py-[8px] pr-[15px] whitespace-nowrap">樣本</th><th class="text-left font-semibold text-ink py-[8px] pr-[15px] whitespace-nowrap">Class</th><th class="text-left font-semibold text-ink py-[8px] pr-[15px] whitespace-nowrap">大小 / 行高</th><th class="text-left font-semibold text-ink py-[8px] pr-[15px] whitespace-nowrap">用在哪</th></tr></thead><tbody><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top"><span class="text-[28px] leading-[34px] font-semibold text-ink">312,444,000</span></td><td class="py-[8px] pr-[15px] align-top">Display</td><td class="py-[8px] pr-[15px] align-top">28 / 34 semibold</td><td class="py-[8px] pr-[15px] align-top">餘額、引導頁的大標題</td></tr><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top"><span class="text-title font-semibold text-ink">Login</span></td><td class="py-[8px] pr-[15px] align-top"><code class="font-mono text-micro text-ink">text-title</code></td><td class="py-[8px] pr-[15px] align-top">18 / 24</td><td class="py-[8px] pr-[15px] align-top">頂列標題、區塊標題</td></tr><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top"><span class="text-button text-ink">Log In</span></td><td class="py-[8px] pr-[15px] align-top"><code class="font-mono text-micro text-ink">text-button</code> · <code class="font-mono text-micro text-ink">text-field</code></td><td class="py-[8px] pr-[15px] align-top">17 / 22</td><td class="py-[8px] pr-[15px] align-top">主按鈕、輸入框的值、驗證碼。輸入框小於 16 的話 iPhone 點進去會放大畫面</td></tr><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top"><span class="text-body text-ink">Personal information</span></td><td class="py-[8px] pr-[15px] align-top"><code class="font-mono text-micro text-ink">text-body</code></td><td class="py-[8px] pr-[15px] align-top">15 / 23</td><td class="py-[8px] pr-[15px] align-top">內文、清單列、框內的欄位標籤</td></tr><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top"><span class="text-body-sm text-ink-secondary">Must match the name…</span></td><td class="py-[8px] pr-[15px] align-top"><code class="font-mono text-micro text-ink">text-body-sm</code> · <code class="font-mono text-micro text-ink">text-micro</code></td><td class="py-[8px] pr-[15px] align-top">13 / 20 · 13 / 18</td><td class="py-[8px] pr-[15px] align-top">說明、提示、錯誤訊息、浮起來的欄位標籤、小標</td></tr></tbody></table></div>
+        <h3 class="text-body font-semibold">間距和圓角</h3>
+        <div class="overflow-x-auto"><table class="w-full text-body-sm text-ink-secondary"><thead><tr><th class="text-left font-semibold text-ink py-[8px] pr-[15px] whitespace-nowrap"></th><th class="text-left font-semibold text-ink py-[8px] pr-[15px] whitespace-nowrap">值</th><th class="text-left font-semibold text-ink py-[8px] pr-[15px] whitespace-nowrap">說明</th></tr></thead><tbody><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top">左右邊距</td><td class="py-[8px] pr-[15px] align-top">16</td><td class="py-[8px] pr-[15px] align-top"><code class="font-mono text-micro text-ink">.page-body</code> 已經帶了</td></tr><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top">頂列到內容</td><td class="py-[8px] pr-[15px] align-top">20</td><td class="py-[8px] pr-[15px] align-top">每一頁都一樣，不要各自調<code class="font-mono text-micro text-ink">.page-body</code> 已經帶了</td></tr><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top">區塊之間</td><td class="py-[8px] pr-[15px] align-top">16</td><td class="py-[8px] pr-[15px] align-top">社群登入、分隔線、分頁、表單、按鈕之間</td></tr><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top">主按鈕上方</td><td class="py-[8px] pr-[15px] align-top">16</td><td class="py-[8px] pr-[15px] align-top">跟其他區塊一樣，用 page body 的 gap，不另外加</td></tr><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top">分隔線上下</td><td class="py-[8px] pr-[15px] align-top">32</td><td class="py-[8px] pr-[15px] align-top">社群登入和自己填寫的兩區之間</td></tr><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top">同一組欄位之間</td><td class="py-[8px] pr-[15px] align-top">8</td><td class="py-[8px] pr-[15px] align-top">輸入框和輸入框：<code class="font-mono text-micro text-ink">gap-inline</code>。輸入框上方本來就有 8 給浮起的標籤，所以框到框看起來是 16</td></tr><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top">欄位和它的說明</td><td class="py-[8px] pr-[15px] align-top">4</td><td class="py-[8px] pr-[15px] align-top">說明（<code class="font-mono text-micro text-ink">.hint</code>）和錯誤（<code class="font-mono text-micro text-ink">.error-text</code>）放在 <code class="font-mono text-micro text-ink">.field</code> 裡面最後，自動貼在框下 4。不要放成欄位之間的獨立一行——那樣它跟上下兩個欄位一樣遠，看不出是誰的說明</td></tr><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top">框的圓角</td><td class="py-[8px] pr-[15px] align-top">12</td><td class="py-[8px] pr-[15px] align-top">輸入框、驗證碼格、卡片、面板上方：<code class="font-mono text-micro text-ink">rounded-xl</code></td></tr><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top">按鈕、勾選、標記</td><td class="py-[8px] pr-[15px] align-top">全圓</td><td class="py-[8px] pr-[15px] align-top"><code class="font-mono text-micro text-ink">rounded-full</code></td></tr></tbody></table></div>
+        <h3 class="text-body font-semibold">圖示</h3>
+        <ul class="flex flex-col gap-[5px] list-disc pl-[20px] text-body text-ink-secondary"><li><b class="text-ink">只用一套：v1 的 Flaticon UIcons Bold Rounded（fi-br）。</b>不要混用 Regular、iOS 或自己畫的；缺的圖示先去 v1 的 Icon 頁找同一套的。</li><li><b class="text-ink">兩種尺寸：</b>單獨出現 24（關閉、返回、清單箭頭），放在輸入框裡 16（眼睛、勾、下拉箭頭）。</li><li><b class="text-ink">顏色跟著文字：</b>頂列和輸入框裡是白色，清單箭頭是外框灰 #5C6570，已完成的勾是綠色。</li><li><b class="text-ink">只有圖示、沒有字。</b>返回就是一個箭頭，不寫「Back」；按鈕本身至少 44 × 44。</li></ul>
+        <div class="overflow-x-auto"><table class="w-full text-body-sm text-ink-secondary"><thead><tr><th class="text-left font-semibold text-ink py-[8px] pr-[15px] whitespace-nowrap">圖示</th><th class="text-left font-semibold text-ink py-[8px] pr-[15px] whitespace-nowrap">Class</th><th class="text-left font-semibold text-ink py-[8px] pr-[15px] whitespace-nowrap">v1 原檔</th><th class="text-left font-semibold text-ink py-[8px] pr-[15px] whitespace-nowrap">用在哪</th></tr></thead><tbody><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top"><span class="icon icon-back" aria-hidden="true"></span></td><td class="py-[8px] pr-[15px] align-top"><code class="font-mono text-micro text-ink">icon-back</code></td><td class="py-[8px] pr-[15px] align-top"><code class="font-mono text-micro text-ink">fi-br-angle-small-left</code></td><td class="py-[8px] pr-[15px] align-top">返回</td></tr><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top"><span class="icon icon-close" aria-hidden="true"></span></td><td class="py-[8px] pr-[15px] align-top"><code class="font-mono text-micro text-ink">icon-close</code></td><td class="py-[8px] pr-[15px] align-top"><code class="font-mono text-micro text-ink">fi-br-cross-small</code></td><td class="py-[8px] pr-[15px] align-top">關閉頁面、面板</td></tr><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top"><span class="icon icon-chevron-right" aria-hidden="true"></span></td><td class="py-[8px] pr-[15px] align-top"><code class="font-mono text-micro text-ink">icon-chevron-right</code></td><td class="py-[8px] pr-[15px] align-top"><code class="font-mono text-micro text-ink">fi-br-angle-small-right</code></td><td class="py-[8px] pr-[15px] align-top">清單列：點了開新頁</td></tr><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top"><span class="icon icon-chevron-down" aria-hidden="true"></span></td><td class="py-[8px] pr-[15px] align-top"><code class="font-mono text-micro text-ink">icon-chevron-down</code></td><td class="py-[8px] pr-[15px] align-top"><code class="font-mono text-micro text-ink">fi-br-angle-small-down</code></td><td class="py-[8px] pr-[15px] align-top">下拉選單</td></tr><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top"><span class="icon icon-eye icon-sm" aria-hidden="true"></span></td><td class="py-[8px] pr-[15px] align-top"><code class="font-mono text-micro text-ink">icon-eye</code></td><td class="py-[8px] pr-[15px] align-top"><code class="font-mono text-micro text-ink">fi-bs-eye</code></td><td class="py-[8px] pr-[15px] align-top">密碼正在顯示</td></tr><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top"><span class="icon icon-eye-crossed icon-sm" aria-hidden="true"></span></td><td class="py-[8px] pr-[15px] align-top"><code class="font-mono text-micro text-ink">icon-eye-crossed</code></td><td class="py-[8px] pr-[15px] align-top"><code class="font-mono text-micro text-ink">fi-bs-eye-crossed</code></td><td class="py-[8px] pr-[15px] align-top">密碼隱藏中</td></tr><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top"><span class="icon icon-check icon-sm" aria-hidden="true"></span></td><td class="py-[8px] pr-[15px] align-top"><code class="font-mono text-micro text-ink">icon-check</code></td><td class="py-[8px] pr-[15px] align-top"><code class="font-mono text-micro text-ink">fi-br-check</code></td><td class="py-[8px] pr-[15px] align-top">已完成、已帶入</td></tr></tbody></table></div>
+        <p class="text-body text-ink-secondary">間距跟 Tailwind 一樣走 4 的倍數（4、8、12、16、20、32）。可點的範圍至少 44：字和圖示可以小，點的地方不行。</p><p class="text-body text-ink-secondary">程式裡這些間距都是 Tailwind 的設定值，用名字引用：<code class="font-mono text-micro text-ink">gap-inline</code>（8）、<code class="font-mono text-micro text-ink">gap-group</code>（12）、<code class="font-mono text-micro text-ink">px-gutter</code>（16）、<code class="font-mono text-micro text-ink">gap-block</code>（16）、<code class="font-mono text-micro text-ink">pt-header</code>（20）、<code class="font-mono text-micro text-ink">gap-action</code>（32）、<code class="font-mono text-micro text-ink">mt-note</code>（4）。值在 <code class="font-mono text-micro text-ink">variables.css</code>，不要寫 <code class="font-mono text-micro text-ink">gap-[10px]</code>。</p>
+        <h3 class="text-body font-semibold">在 v1 之上改了什麼</h3><div class="overflow-x-auto"><table class="w-full text-body-sm text-ink-secondary"><thead><tr><th class="text-left font-semibold text-ink py-[8px] pr-[15px] whitespace-nowrap"></th><th class="text-left font-semibold text-ink py-[8px] pr-[15px] whitespace-nowrap">改了什麼</th><th class="text-left font-semibold text-ink py-[8px] pr-[15px] whitespace-nowrap">為什麼</th></tr></thead><tbody><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top">1</td><td class="py-[8px] pr-[15px] align-top">輸入框的值 14 → 17，標籤框內 15、浮起來 13</td><td class="py-[8px] pr-[15px] align-top">小於 16 的話 iPhone 點進去會放大整個畫面</td></tr><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top">2</td><td class="py-[8px] pr-[15px] align-top">文字用的灰改成 #8A93A0；#5C6570 只留給外框</td><td class="py-[8px] pr-[15px] align-top">原本的灰當文字只有 2.9:1</td></tr><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top">3</td><td class="py-[8px] pr-[15px] align-top">出錯時按鈕不變紅，訊息放在出錯的地方</td><td class="py-[8px] pr-[15px] align-top">紅色大按鈕會被讀成危險動作，錯的也不是按鈕</td></tr><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top">4</td><td class="py-[8px] pr-[15px] align-top">可點範圍至少 44</td><td class="py-[8px] pr-[15px] align-top">勾選圈、小連結、圖示原本太小</td></tr><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top">5</td><td class="py-[8px] pr-[15px] align-top">開關打開是綠色，紫色只給優惠</td><td class="py-[8px] pr-[15px] align-top">一個顏色一個意思</td></tr><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top">6</td><td class="py-[8px] pr-[15px] align-top">三層底色拉開：#1A1C1F／#23262B／#282C31</td><td class="py-[8px] pr-[15px] align-top">原本三層幾乎分不出來</td></tr><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top">7</td><td class="py-[8px] pr-[15px] align-top">字級收成 13／15／17／18（＋28）</td><td class="py-[8px] pr-[15px] align-top">原本六個字級擠在 6px 之內</td></tr><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top">8</td><td class="py-[8px] pr-[15px] align-top">Profile 把餘額和待處理事項放最前面</td><td class="py-[8px] pr-[15px] align-top">原本十個區塊一樣重</td></tr></tbody></table></div>
+
+      </section>
+      <section id="layout" class="flex flex-col gap-[20px] scroll-mt-[20px]">
+        <h2 class="text-title font-semibold border-b border-edge-subtle pb-[10px]">頁面結構</h2>
+
+        <p class="text-body text-ink-secondary">每一頁都是同一個骨架：頂列，然後內容從上往下排。按鈕緊接在表單後面，最後是通往另一頁的連結列。</p>
+        <pre class="overflow-x-auto rounded-xl border border-edge-subtle p-[10px] font-mono text-micro text-ink-secondary whitespace-pre">&lt;body class=&quot;bg-app text-ink font-sans antialiased&quot;&gt;
+  &lt;div class=&quot;min-h-[100dvh] flex justify-center bg-app&quot;&gt;
+    &lt;div class=&quot;w-full md:max-w-[440px] md:border-x md:border-edge-subtle min-h-[100dvh] flex flex-col safe-top&quot;&gt;
+
+      &lt;div class=&quot;nav-top&quot;&gt; … &lt;/div&gt;
+
+      &lt;div class=&quot;page-body&quot;&gt;
+        &lt;!-- 區塊由上往下，彼此間距 15 --&gt;
+        &lt;div class=&quot;flex flex-col gap-group&quot;&gt; 欄位 … &lt;/div&gt;
+        &lt;button class=&quot;btn&quot;&gt; … &lt;/button&gt;
+        &lt;p class=&quot;link-row&quot;&gt; … &lt;/p&gt;
+      &lt;/div&gt;
+
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/body&gt;</pre>
+        <ul class="flex flex-col gap-[5px] list-disc pl-[20px] text-body text-ink-secondary"><li><b class="text-ink">不預留上下的安全區。</b>Mobile web 外面已經有瀏覽器的網址列和工具列。裝置自己回報的 inset 由 <code class="font-mono text-micro text-ink">.safe-top</code> 和 <code class="font-mono text-micro text-ink">.page-body</code> 處理，不要寫死數字。</li><li><b class="text-ink">不放 logo。</b>這些頁面嵌在網站裡，網站的 header 已經有 logo。</li><li>寬度 600 以上時內容置中、最寬 440，其他寬度都是同一套版面，不另外做平板版。</li><li>一頁的區塊順序：其他登入方式 → 分隔線 →（分頁）→ 欄位 → 勾選或輔助連結 → 主按鈕 → 連結列。</li></ul>
+
+      </section>
+      <p class="text-body-sm text-ink-secondary -mb-[20px]">元件：<a href="#nav-top" class="text-brand-2">頂列</a> · <a href="#btn" class="text-brand-2">主按鈕</a> · <a href="#link-row" class="text-brand-2">連結列</a> · <a href="#field" class="text-brand-2">輸入框</a> · <a href="#tabs" class="text-brand-2">分頁</a> · <a href="#tick" class="text-brand-2">勾選</a> · <a href="#divider-label" class="text-brand-2">分隔線</a> · <a href="#social" class="text-brand-2">社群登入</a></p>
+      <section id="patterns" class="flex flex-col gap-[20px] scroll-mt-[20px]">
+        <h2 class="text-title font-semibold border-b border-edge-subtle pb-[10px]">頁面模式</h2>
+        <p class="text-body text-ink-secondary">Figma 的畫面是 iPhone 390 × 844，上下套了 v1 的 Safari 外框（狀態列＋網址列、工具列），那只是讓畫面看起來像在手機的瀏覽器裡。網頁不畫這兩條，也不替它們留空間——瀏覽器自己有網址列和工具列，頁面只加裝置回報的 <code class="font-mono text-micro text-ink">env(safe-area-inset-*)</code>。</p>
+        <p class="text-body text-ink-secondary">同一類的頁面用同一個骨架。先決定這一頁是哪一種，再放元件。</p>
+        <article id="pattern-short" class="flex flex-col gap-[15px] scroll-mt-[20px]">
+          <h3 class="text-body font-semibold">短頁：按鈕跟在表單後面</h3>
+          <p class="text-body text-ink-secondary">內容一屏放得下的頁面（Login、Sign Up、選幣別）。</p>
+          <div class="grid gap-[20px] md:grid-cols-[290px_1fr] items-start"><div></div><ul class="flex flex-col gap-[5px] list-disc pl-[20px] text-body text-ink-secondary"><li>主按鈕緊接在最後一個欄位後面，不釘底。</li><li>按鈕下面一行連結列，帶去相關的另一頁。</li></ul></div>
+        </article>
+        <article id="pattern-long" class="flex flex-col gap-[15px] scroll-mt-[20px]">
+          <h3 class="text-body font-semibold">長頁：按鈕釘在底部</h3>
+          <p class="text-body text-ink-secondary">內容比畫面高、而且整頁只有一個動作的頁面（Account Setup 總覽）。</p>
+          <div class="grid gap-[20px] md:grid-cols-[290px_1fr] items-start"><img src="assets/guideline/page-long.png" alt="" width="270" class="max-w-full h-auto rounded-xl border border-edge-subtle"><ul class="flex flex-col gap-[5px] list-disc pl-[20px] text-body text-ink-secondary"><li>按鈕放在底部的按鈕列裡，內容在它後面捲動。</li><li>按鈕列是實心底色加上一條細線，捲動的內容會被乾淨切掉。</li><li>可以跳過的頁面，按鈕下面多一行文字連結（Skip this step）。</li><li>底部要再加上手機回報的安全區（<code class="font-mono text-micro text-ink">env(safe-area-inset-bottom)</code>）。</li></ul></div>
+        </article>
+        <article id="pattern-guided" class="flex flex-col gap-[15px] scroll-mt-[20px]">
+          <h3 class="text-body font-semibold">引導式：一頁一件事</h3>
+          <p class="text-body text-ink-secondary">新會員的 Setup，像剛拿到手機時的開機設定。內容照 wireframe，只是一項一頁。</p>
+          <div class="grid gap-[20px] md:grid-cols-[290px_1fr] items-start"><img src="assets/guideline/page-guided.png" alt="" width="270" class="max-w-full h-auto rounded-xl border border-edge-subtle"><ul class="flex flex-col gap-[5px] list-disc pl-[20px] text-body text-ink-secondary"><li>上方：左邊返回，中間是灰色小字的「2 of 8」。頂列不放標題，第幾步只在這裡出現一次。</li><li>每一頁都有頂列，不能空著。頂列下面不放麵包屑：回上一層靠頂列左邊的 ✕ 或返回。</li><li>開場頁（Set Up Your Account）還沒進到第幾項，用一般的頂列：左邊 ✕、標題「Account Setup」；按 ✕ 先離開，Step 1 沒做完就不能存款或下注。</li><li>中間：18 的標題（跟其他頁的標題同一個字級）、一句為什麼、「+10 points」。不放編號圈，進度已經在頂列。下面才是要填的東西。</li><li>下方：按鈕釘在底部。可以跳過的項目多一個「Set up later」；必填的沒有。</li><li>Step 2、Step 3 開始前各有一個岔路頁，列出這一段的項目，可以整段跳過。</li><li>之後從 Settings 回來補做，打開的是同一張頁面，只是返回回到 Account Setup、不顯示進度、沒有「Set up later」。</li></ul></div>
+        </article>
+        <article id="pattern-result" class="flex flex-col gap-[15px] scroll-mt-[20px]">
+          <h3 class="text-body font-semibold">結果頁</h3>
+          <p class="text-body text-ink-secondary">一件事做完之後告訴使用者發生了什麼（帳號建立、登入、綁定完成）。</p>
+          <div class="grid gap-[20px] md:grid-cols-[290px_1fr] items-start"><img src="assets/guideline/page-result.png" alt="" width="270" class="max-w-full h-auto rounded-xl border border-edge-subtle"><ul class="flex flex-col gap-[5px] list-disc pl-[20px] text-body text-ink-secondary"><li>綠圈加勾、一行綠色小標說發生什麼、大字說你是誰、一句補充、一顆 Continue。</li><li>沒有 ✕，只能往下走。</li><li>壞消息（帳號受限）不放綠圈，只有文字和下一步。</li></ul></div>
+        </article>
+        <article id="pattern-sheet" class="flex flex-col gap-[15px] scroll-mt-[20px]">
+          <h3 class="text-body font-semibold">面板（從底部上來）</h3>
+          <p class="text-body text-ink-secondary">要使用者先處理一件事、但不離開目前的頁面時（例如帳號已存在，直接輸入驗證碼登入）。</p>
+          <div class="grid gap-[20px] md:grid-cols-[290px_1fr] items-start"><img src="assets/guideline/page-sheet.png" alt="" width="270" class="max-w-full h-auto rounded-xl border border-edge-subtle"><ul class="flex flex-col gap-[5px] list-disc pl-[20px] text-body text-ink-secondary"><li>底下的頁面蓋一層 60% 黑，面板是第二層底色，上方圓角 12。</li><li>最上面：把手、置中的標題、右上的關閉。</li><li>一個面板一件事、一顆主按鈕。</li></ul></div>
+        </article>
+        <article id="pattern-settings" class="flex flex-col gap-[15px] scroll-mt-[20px]">
+          <h3 class="text-body font-semibold">設定清單</h3>
+          <p class="text-body text-ink-secondary">Settings 這類由很多項目組成的頁面。</p>
+          <div class="grid gap-[20px] md:grid-cols-[290px_1fr] items-start"><img src="assets/guideline/page-settings.png" alt="" width="270" class="max-w-full h-auto rounded-xl border border-edge-subtle"><ul class="flex flex-col gap-[5px] list-disc pl-[20px] text-body text-ink-secondary"><li>相關的項目放在同一張卡片裡，卡片上面一行分組標題（15、灰）。</li><li>點了會開新頁的項目：右邊寫現況（Not added、091***233、Dark）加箭頭。</li><li>立刻生效的開關：右邊放開關，不要箭頭。</li><li>還沒完成、有點數的項目，在現況後面加「+10」。</li></ul></div>
+        </article>
+      </section>
+      <section id="components" class="flex flex-col gap-[20px] scroll-mt-[20px]">
+        <h2 class="text-title font-semibold border-b border-edge-subtle pb-[10px]">元件</h2>
+
+        <article id="nav-top" class="flex flex-col gap-[15px] scroll-mt-[20px]">
+          <div class="flex flex-wrap items-baseline gap-x-[10px] gap-y-[5px]">
+            <h3 class="text-body font-semibold">頂列</h3>
+            <span class="font-mono text-micro text-ink text-ink-secondary">.nav-top · .nav-top-action · .nav-top-title</span>
+          </div>
+          <p class="text-body text-ink-secondary">頁面最上面那一列：左邊一個動作，中間是這一頁的名字。</p>
+          <div class="grid gap-[20px] md:grid-cols-[360px_1fr] items-start">
+            <div class="rounded-xl border border-edge-subtle p-[15px] flex flex-col gap-group">
+              <div class="nav-top -mx-[15px]">
+                <a href="#nav-top" aria-label="Close" class="nav-top-action"><span class="icon icon-close" aria-hidden="true"></span></a>
+                <p class="nav-top-title">Login</p>
+              </div>
+            </div>
+            <div class="flex flex-col gap-[15px] min-w-0">
+              <div class="overflow-x-auto"><table class="w-full text-body-sm text-ink-secondary"><thead><tr><th class="text-left font-semibold text-ink py-[8px] pr-[15px] whitespace-nowrap">規格</th><th class="text-left font-semibold text-ink py-[8px] pr-[15px] whitespace-nowrap">值</th></tr></thead><tbody><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top">高度</td><td class="py-[8px] pr-[15px] align-top">44（三種頂列都是 44）</td></tr><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top">左右內距</td><td class="py-[8px] pr-[15px] align-top">8</td></tr><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top">圖示</td><td class="py-[8px] pr-[15px] align-top">24，點擊範圍 44 × 44</td></tr><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top">標題</td><td class="py-[8px] pr-[15px] align-top">18 / 24 semibold，置中</td></tr></tbody></table></div>
+              <ul class="flex flex-col gap-[5px] list-disc pl-[20px] text-body text-ink-secondary"><li>一頁一個。</li><li>左邊只放關閉（✕）或返回，不放別的。</li><li>標題是這一頁的名字，每個字首大寫：Login、Sign Up、Forget Password。</li><li>不放 logo（網站的 header 已經有）。</li><li>Login 和 Sign Up 這兩頁例外：頂列中間是兩個文字分頁「Sign Up　Log In」（順序照 wireframe 固定）。目前這頁白色粗體、下面一條短綠線，另一頁灰色；兩個都是 18，點擊範圍 44。因為它們切換的是整頁內容（像短影音 app 頂部的「推薦／關注」），所以放在頂列。按鈕下面不再放連結列。</li></ul>
+            </div>
+          </div>
+          <p class="text-body-sm text-ink-secondary">寫法和所有狀態在 <a href="ui-kit.html#nav-top" class="text-brand-2">UI kit</a>。</p>
+        </article>
+        <article id="btn" class="flex flex-col gap-[15px] scroll-mt-[20px]">
+          <div class="flex flex-wrap items-baseline gap-x-[10px] gap-y-[5px]">
+            <h3 class="text-body font-semibold">主按鈕</h3>
+            <span class="font-mono text-micro text-ink text-ink-secondary">.btn</span>
+          </div>
+          <p class="text-body text-ink-secondary">這一頁要使用者做的那件事。</p>
+          <div class="grid gap-[20px] md:grid-cols-[360px_1fr] items-start">
+            <div class="rounded-xl border border-edge-subtle p-[15px] flex flex-col gap-group">
+              <button type="button" class="btn">Log In</button>
+              <button type="button" class="btn" disabled>Log In</button>
+            </div>
+            <div class="flex flex-col gap-[15px] min-w-0">
+              <div class="overflow-x-auto"><table class="w-full text-body-sm text-ink-secondary"><thead><tr><th class="text-left font-semibold text-ink py-[8px] pr-[15px] whitespace-nowrap">規格</th><th class="text-left font-semibold text-ink py-[8px] pr-[15px] whitespace-nowrap">值</th></tr></thead><tbody><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top">高度</td><td class="py-[8px] pr-[15px] align-top">46</td></tr><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top">寬度</td><td class="py-[8px] pr-[15px] align-top">撐滿</td></tr><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top">形狀</td><td class="py-[8px] pr-[15px] align-top">全圓</td></tr><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top">可按</td><td class="py-[8px] pr-[15px] align-top">底 #FFBC00、黑字 17 medium</td></tr><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top">不可按</td><td class="py-[8px] pr-[15px] align-top">底 #5C6570、字 #9BA7B7</td></tr></tbody></table></div>
+              <ul class="flex flex-col gap-[5px] list-disc pl-[20px] text-body text-ink-secondary"><li><b class="text-ink">一頁一顆。</b></li><li>表單還不能送出時用 <code class="font-mono text-micro text-ink">disabled</code> 變灰，<b class="text-ink">不要藏起來</b>——位置不動，版面才不會跳。</li><li>文字寫按下去會發生的事，每個字首大寫：Log In、Sign Up、Send Code。不要寫 Submit、OK。</li><li><b class="text-ink">按鈕不會變紅。</b>送出後被拒絕時，原因寫在出錯的地方（欄位下面、驗證碼格子下面），按鈕維持原樣。</li><li>不要改高度、不要加圖示或箭頭。</li></ul>
+            </div>
+          </div>
+          <p class="text-body-sm text-ink-secondary">寫法和所有狀態在 <a href="ui-kit.html#btn" class="text-brand-2">UI kit</a>。</p>
+        </article>
+        <article id="link-row" class="flex flex-col gap-[15px] scroll-mt-[20px]">
+          <div class="flex flex-wrap items-baseline gap-x-[10px] gap-y-[5px]">
+            <h3 class="text-body font-semibold">連結列</h3>
+            <span class="font-mono text-micro text-ink text-ink-secondary">.link-row</span>
+          </div>
+          <p class="text-body text-ink-secondary">主按鈕下面那一行，帶使用者去另一頁（登入 ↔ 註冊）。</p>
+          <div class="grid gap-[20px] md:grid-cols-[360px_1fr] items-start">
+            <div class="rounded-xl border border-edge-subtle p-[15px] flex flex-col gap-group">
+              <p class="link-row">New to V9bet? <a href="#link-row">Create account</a></p>
+            </div>
+            <div class="flex flex-col gap-[15px] min-w-0">
+              <div class="overflow-x-auto"><table class="w-full text-body-sm text-ink-secondary"><thead><tr><th class="text-left font-semibold text-ink py-[8px] pr-[15px] whitespace-nowrap">規格</th><th class="text-left font-semibold text-ink py-[8px] pr-[15px] whitespace-nowrap">值</th></tr></thead><tbody><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top">高度</td><td class="py-[8px] pr-[15px] align-top">46</td></tr><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top">文字</td><td class="py-[8px] pr-[15px] align-top">15，白色</td></tr><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top">連結</td><td class="py-[8px] pr-[15px] align-top">粗體、綠色 #00DA87</td></tr></tbody></table></div>
+              <ul class="flex flex-col gap-[5px] list-disc pl-[20px] text-body text-ink-secondary"><li>緊接在主按鈕下面，一頁一列。</li><li>一句提示加一個連結，不要放兩個連結。</li><li>登入和註冊之間的切換在頂列的分頁，不放在這裡。</li></ul>
+            </div>
+          </div>
+          <p class="text-body-sm text-ink-secondary">寫法和所有狀態在 <a href="ui-kit.html#link-row" class="text-brand-2">UI kit</a>。</p>
+        </article>
+        <article id="field" class="flex flex-col gap-[15px] scroll-mt-[20px]">
+          <div class="flex flex-wrap items-baseline gap-x-[10px] gap-y-[5px]">
+            <h3 class="text-body font-semibold">輸入框</h3>
+            <span class="font-mono text-micro text-ink text-ink-secondary">.field · .field-trail</span>
+          </div>
+          <p class="text-body text-ink-secondary">外框式的輸入框。標籤平常在框裡當提示，有焦點或有值時浮到外框上。</p>
+          <div class="grid gap-[20px] md:grid-cols-[360px_1fr] items-start">
+            <div class="rounded-xl border border-edge-subtle p-[15px] flex flex-col gap-inline">
+              <div class="field"><input id="e1" type="text" placeholder=" "><label for="e1">Account ID / Email</label></div>
+              <div class="field"><input id="e2" type="text" placeholder=" " value="bacon927"><label for="e2">Account ID / Email</label></div>
+              <div class="field"><input id="e3" type="password" placeholder=" " value="secret-pass"><label for="e3">Password</label>
+                <button type="button" class="field-trail" aria-label="Show password"><span class="icon icon-sm icon-eye-crossed" aria-hidden="true"></span></button></div>
+              <div class="field"><input id="e4" type="text" placeholder=" " value="BH0943"><label for="e4">Referral Code (Optional)</label>
+                <span class="field-trail">From invite link <span class="icon icon-sm icon-check text-brand-2" aria-hidden="true"></span></span></div>
+              <div class="field"><input id="e4b" type="email" placeholder=" " aria-describedby="e4b-hint"><label for="e4b">Email</label><p class="hint" id="e4b-hint">說明放在欄位裡面最後，貼在框下 4。</p></div>
+              <div class="field"><input id="e5" type="email" placeholder=" " value="bacon927@" aria-invalid="true" aria-describedby="e5-error"><label for="e5">Email</label><p class="error-text" id="e5-error">Enter a valid email address.</p></div>
+            </div>
+            <div class="flex flex-col gap-[15px] min-w-0">
+              <div class="overflow-x-auto"><table class="w-full text-body-sm text-ink-secondary"><thead><tr><th class="text-left font-semibold text-ink py-[8px] pr-[15px] whitespace-nowrap">規格</th><th class="text-left font-semibold text-ink py-[8px] pr-[15px] whitespace-nowrap">值</th></tr></thead><tbody><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top">框高</td><td class="py-[8px] pr-[15px] align-top">50，上方另留 8 給浮起的標籤（共 58）</td></tr><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top">外框</td><td class="py-[8px] pr-[15px] align-top">1px #5C6570，圓角 12；有焦點時變白</td></tr><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top">字</td><td class="py-[8px] pr-[15px] align-top">值 17、白色；標籤 15（浮起來 13）、#8A93A0</td></tr><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top">右側</td><td class="py-[8px] pr-[15px] align-top">16 的圖示，或 12 的短註記</td></tr><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top">說明</td><td class="py-[8px] pr-[15px] align-top">框下方 4，13 的灰字（<code class="font-mono text-micro text-ink">.hint</code>），放在 <code class="font-mono text-micro text-ink">.field</code> 裡</td></tr><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top">錯誤</td><td class="py-[8px] pr-[15px] align-top">外框和標籤變 #FF4D4D；紅字（<code class="font-mono text-micro text-ink">.error-text</code>）放在說明的位置，說明先收起來</td></tr></tbody></table></div>
+              <ul class="flex flex-col gap-[5px] list-disc pl-[20px] text-body text-ink-secondary"><li><b class="text-ink"><code class="font-mono text-micro text-ink">input</code> 一定要帶 <code class="font-mono text-micro text-ink">placeholder=&quot; &quot;</code></b>（一個空白），標籤才知道什麼時候浮起來。<code class="font-mono text-micro text-ink">label</code> 要緊跟在 <code class="font-mono text-micro text-ink">input</code> 後面。</li><li>標籤就是欄位的名字，一欄一個。不要在輸入框上面另外加一行標題。</li><li>選填的欄位在標籤裡寫 (Optional)。</li><li>右側要放東西就加一個 <code class="font-mono text-micro text-ink">.field-trail</code>，輸入框會自動讓出位置。</li><li>補充說明寫在欄位下方的 <code class="font-mono text-micro text-ink">.hint</code>，一兩句話。</li><li>欄位有錯時，<code class="font-mono text-micro text-ink">input</code> 加 <code class="font-mono text-micro text-ink">aria-invalid=&quot;true&quot;</code>，原因寫在欄位裡最後面的 <code class="font-mono text-micro text-ink">.error-text</code>。<b class="text-ink">離開欄位或送出時才檢查</b>，不要邊打邊跳紅字；值一改就拿掉。</li><li>一個欄位一次只講一個錯，訊息就放在出錯的地方，不要在頁面最上面另外放一條錯誤橫幅。</li><li>欄位之間間距 8：外面包一層 <code class="font-mono text-micro text-ink">flex flex-col gap-inline</code>。</li></ul>
+            </div>
+          </div>
+          <p class="text-body-sm text-ink-secondary">寫法和所有狀態在 <a href="ui-kit.html#field" class="text-brand-2">UI kit</a>。</p>
+        </article>
+        <article id="otp" class="flex flex-col gap-[15px] scroll-mt-[20px]">
+          <div class="flex flex-wrap items-baseline gap-x-[10px] gap-y-[5px]">
+            <h3 class="text-body font-semibold">驗證碼</h3>
+            <span class="font-mono text-micro text-ink text-ink-secondary">.otp · .error-text</span>
+          </div>
+          <p class="text-body text-ink-secondary">輸入 email 或簡訊收到的六位數驗證碼。</p>
+          <div class="grid gap-[20px] md:grid-cols-[360px_1fr] items-start">
+            <div class="rounded-xl border border-edge-subtle p-[15px] flex flex-col gap-[30px] min-w-0">
+              <p class="text-body text-ink-secondary text-center">We sent a verification code to <span class="block text-title text-ink">091***233</span></p>
+              <div class="otp" role="group" aria-label="Verification code"><input id="z1" type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="one-time-code" placeholder=" " aria-label="Digit 1 of 6" value="1"><input id="z2" type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="off" placeholder=" " aria-label="Digit 2 of 6" value="2"><input id="z3" type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="off" placeholder=" " aria-label="Digit 3 of 6" value="3"><input id="z4" type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="off" placeholder=" " aria-label="Digit 4 of 6" value="4"><input id="z5" type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="off" placeholder=" " aria-label="Digit 5 of 6" value="5"><input id="z6" type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="off" placeholder=" " aria-label="Digit 6 of 6"></div>
+              <p class="text-body text-ink-secondary text-center">Resend code in <b class="text-brand-2 tabular-nums">00:32</b></p>
+              <button type="button" class="btn" disabled>Verify</button>
+              <div class="flex flex-col gap-group"><div class="otp" data-invalid role="group" aria-label="Verification code, rejected"><input id="y1" type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="one-time-code" placeholder=" " aria-label="Digit 1 of 6" value="1" readonly><input id="y2" type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="off" placeholder=" " aria-label="Digit 2 of 6" value="2" readonly><input id="y3" type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="off" placeholder=" " aria-label="Digit 3 of 6" value="3" readonly><input id="y4" type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="off" placeholder=" " aria-label="Digit 4 of 6" value="4" readonly><input id="y5" type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="off" placeholder=" " aria-label="Digit 5 of 6" value="5" readonly><input id="y6" type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="off" placeholder=" " aria-label="Digit 6 of 6" value="4" readonly></div><p class="error-text text-center">Invalid code entered</p></div>
+              <button type="button" class="btn" disabled>Verify</button>
+            </div>
+            <div class="flex flex-col gap-[15px] min-w-0">
+              <div class="overflow-x-auto"><table class="w-full text-body-sm text-ink-secondary"><thead><tr><th class="text-left font-semibold text-ink py-[8px] pr-[15px] whitespace-nowrap">規格</th><th class="text-left font-semibold text-ink py-[8px] pr-[15px] whitespace-nowrap">值</th></tr></thead><tbody><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top">格子</td><td class="py-[8px] pr-[15px] align-top">6 格，每格 42 × 44，圓角 12，間距 12，置中</td></tr><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top">外框</td><td class="py-[8px] pr-[15px] align-top">空的 #4B4B4B；有數字變綠 #00DA87；有焦點變白；錯誤時整排 #FF4D4D</td></tr><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top">數字</td><td class="py-[8px] pr-[15px] align-top">17 / 22，白色</td></tr><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top">區塊間距</td><td class="py-[8px] pr-[15px] align-top">30：說明、格子、重送那一行、按鈕</td></tr><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top">說明</td><td class="py-[8px] pr-[15px] align-top">15、白色 60%；寄到哪裡另起一行，18、白色</td></tr><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top">倒數</td><td class="py-[8px] pr-[15px] align-top">15；時間是粗體綠字，數字等寬</td></tr></tbody></table></div>
+              <ul class="flex flex-col gap-[5px] list-disc pl-[20px] text-body text-ink-secondary"><li><b class="text-ink">填滿六格按鈕才亮</b>；之前用 <code class="font-mono text-micro text-ink">disabled</code> 變灰。</li><li>寄到哪裡要遮起來顯示（091***233、b***@gmail.com），讓使用者認得出來就好。</li><li>倒數結束後，那一行換成粗體綠色、有底線的連結 Resend code。倒數期間不要顯示不能按的連結。</li><li>驗證碼錯誤時：格子整排變紅，格子正下方一行紅字；按鈕不變色。<b class="text-ink">數字留著不清掉</b>，使用者一動就恢復。</li><li>手機要能直接帶入簡訊裡的驗證碼，也要能整段貼上。</li><li>這一頁只做這件事，不放其他欄位。</li></ul>
+            </div>
+          </div>
+          <p class="text-body-sm text-ink-secondary">寫法和所有狀態在 <a href="ui-kit.html#otp" class="text-brand-2">UI kit</a>。</p>
+        </article>
+        <article id="tabs" class="flex flex-col gap-[15px] scroll-mt-[20px]">
+          <div class="flex flex-wrap items-baseline gap-x-[10px] gap-y-[5px]">
+            <h3 class="text-body font-semibold">分頁</h3>
+            <span class="font-mono text-micro text-ink text-ink-secondary">.tabs · .tab</span>
+          </div>
+          <p class="text-body text-ink-secondary">在同一頁裡切換兩種做法，例如用驗證碼或用密碼登入。</p>
+          <div class="grid gap-[20px] md:grid-cols-[360px_1fr] items-start">
+            <div class="rounded-xl border border-edge-subtle p-[15px] flex flex-col gap-group">
+              <div class="tabs" role="tablist">
+                <button type="button" class="tab" role="tab" aria-selected="false">One-time code</button>
+                <button type="button" class="tab" role="tab" aria-selected="true">Password</button>
+              </div>
+            </div>
+            <div class="flex flex-col gap-[15px] min-w-0">
+              <div class="overflow-x-auto"><table class="w-full text-body-sm text-ink-secondary"><thead><tr><th class="text-left font-semibold text-ink py-[8px] pr-[15px] whitespace-nowrap">規格</th><th class="text-left font-semibold text-ink py-[8px] pr-[15px] whitespace-nowrap">值</th></tr></thead><tbody><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top">高度</td><td class="py-[8px] pr-[15px] align-top">44</td></tr><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top">字</td><td class="py-[8px] pr-[15px] align-top">15</td></tr><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top">底線</td><td class="py-[8px] pr-[15px] align-top">2px</td></tr><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top">沒選中</td><td class="py-[8px] pr-[15px] align-top">#888888</td></tr><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top">選中</td><td class="py-[8px] pr-[15px] align-top">#00DA87</td></tr></tbody></table></div>
+              <ul class="flex flex-col gap-[5px] list-disc pl-[20px] text-body text-ink-secondary"><li>狀態寫在 <code class="font-mono text-micro text-ink">aria-selected</code>，程式只要改這一個屬性，顏色會跟著變。</li><li>每個分頁等寬，兩到三個為限。</li><li>分頁換的是這一頁下面的內容，不是跳到另一頁。跳頁用連結列。</li></ul>
+            </div>
+          </div>
+          <p class="text-body-sm text-ink-secondary">寫法和所有狀態在 <a href="ui-kit.html#tabs" class="text-brand-2">UI kit</a>。</p>
+        </article>
+        <article id="tick" class="flex flex-col gap-[15px] scroll-mt-[20px]">
+          <div class="flex flex-wrap items-baseline gap-x-[10px] gap-y-[5px]">
+            <h3 class="text-body font-semibold">勾選</h3>
+            <span class="font-mono text-micro text-ink text-ink-secondary">.tick</span>
+          </div>
+          <p class="text-body text-ink-secondary">一個可以開關的選項：同意條款、保持登入。</p>
+          <div class="grid gap-[20px] md:grid-cols-[360px_1fr] items-start">
+            <div class="rounded-xl border border-edge-subtle p-[15px] flex flex-col gap-group">
+              <label class="flex items-center gap-inline text-body-sm"><input type="checkbox" class="sr-only" checked><span class="tick"></span>Keep me logged in</label>
+              <label class="flex items-center gap-inline text-body-sm"><input type="checkbox" class="sr-only"><span class="tick"></span>Keep me logged in</label>
+            </div>
+            <div class="flex flex-col gap-[15px] min-w-0">
+              <div class="overflow-x-auto"><table class="w-full text-body-sm text-ink-secondary"><thead><tr><th class="text-left font-semibold text-ink py-[8px] pr-[15px] whitespace-nowrap">規格</th><th class="text-left font-semibold text-ink py-[8px] pr-[15px] whitespace-nowrap">值</th></tr></thead><tbody><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top">大小</td><td class="py-[8px] pr-[15px] align-top">22 的圓框，裡面 12 的圓點</td></tr><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top">關</td><td class="py-[8px] pr-[15px] align-top">#5C6570</td></tr><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top">開</td><td class="py-[8px] pr-[15px] align-top">#00DA87</td></tr><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top">文字</td><td class="py-[8px] pr-[15px] align-top">13，和圓框間距 8</td></tr></tbody></table></div>
+              <ul class="flex flex-col gap-[5px] list-disc pl-[20px] text-body text-ink-secondary"><li>真正的 <code class="font-mono text-micro text-ink">input</code> 藏起來（<code class="font-mono text-micro text-ink">sr-only</code>），<code class="font-mono text-micro text-ink">.tick</code> 緊跟在它後面，整個包在 <code class="font-mono text-micro text-ink">label</code> 裡——這樣點文字也能切換，鍵盤也能操作。</li><li>文字裡的連結（Terms of Service）用綠色。</li><li>同意條款放在主按鈕正上方：它是按鈕能不能按的最後一個條件。</li></ul>
+            </div>
+          </div>
+          <p class="text-body-sm text-ink-secondary">寫法和所有狀態在 <a href="ui-kit.html#tick" class="text-brand-2">UI kit</a>。</p>
+        </article>
+        <article id="divider-label" class="flex flex-col gap-[15px] scroll-mt-[20px]">
+          <div class="flex flex-wrap items-baseline gap-x-[10px] gap-y-[5px]">
+            <h3 class="text-body font-semibold">分隔線</h3>
+            <span class="font-mono text-micro text-ink text-ink-secondary">.divider-label</span>
+          </div>
+          <p class="text-body text-ink-secondary">把同一件事的兩種做法分開：用社群帳號，或用 email。</p>
+          <div class="grid gap-[20px] md:grid-cols-[360px_1fr] items-start">
+            <div class="rounded-xl border border-edge-subtle p-[15px] flex flex-col gap-group">
+              <div class="divider-label">or log in with</div>
+            </div>
+            <div class="flex flex-col gap-[15px] min-w-0">
+              <div class="overflow-x-auto"><table class="w-full text-body-sm text-ink-secondary"><thead><tr><th class="text-left font-semibold text-ink py-[8px] pr-[15px] whitespace-nowrap">規格</th><th class="text-left font-semibold text-ink py-[8px] pr-[15px] whitespace-nowrap">值</th></tr></thead><tbody><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top">線</td><td class="py-[8px] pr-[15px] align-top">1px #5C6570，50% 透明</td></tr><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top">文字</td><td class="py-[8px] pr-[15px] align-top">13，白色 60%</td></tr><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top">間距</td><td class="py-[8px] pr-[15px] align-top">線和文字之間 12</td></tr></tbody></table></div>
+              <ul class="flex flex-col gap-[5px] list-disc pl-[20px] text-body text-ink-secondary"><li>文字用小寫的短句：or log in with、or sign up with email。</li><li>只在上下是「二選一」的時候用，不拿來當一般的區塊分隔。</li></ul>
+            </div>
+          </div>
+          <p class="text-body-sm text-ink-secondary">寫法和所有狀態在 <a href="ui-kit.html#divider-label" class="text-brand-2">UI kit</a>。</p>
+        </article>
+        <article id="social" class="flex flex-col gap-[15px] scroll-mt-[20px]">
+          <div class="flex flex-wrap items-baseline gap-x-[10px] gap-y-[5px]">
+            <h3 class="text-body font-semibold">社群登入</h3>
+            <span class="font-mono text-micro text-ink text-ink-secondary">.social-row · .social-btn · .social-btn-icon · .social-btn-badge</span>
+          </div>
+          <p class="text-body text-ink-secondary">Google、LINE、Zalo 的登入入口。v1 沒有這個元件，這是照 v1 的顏色和字級做的。</p>
+          <div class="grid gap-[20px] md:grid-cols-[360px_1fr] items-start">
+            <div class="rounded-xl border border-edge-subtle p-[15px] flex flex-col gap-group">
+              <div class="social-row">
+                <button type="button" class="social-btn" data-last-used>
+                  <span class="social-btn-badge">Last used</span>
+                  <span class="social-btn-icon"><svg width="22" height="22" viewBox="0 0 48 48"><path fill="#4285F4" d="M46.6 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.5 3-2.2 5.5-4.7 7.2v6h7.6c4.4-4.1 7-10.1 7-17.7Z"/><path fill="#34A853" d="M24 47c6.3 0 11.6-2.1 15.5-5.7l-7.6-6c-2.1 1.4-4.8 2.3-7.9 2.3-6.1 0-11.2-4.1-13.1-9.6h-7.8v6.1C7.3 41.9 15 47 24 47Z"/><path fill="#FBBC05" d="M10.9 27.9c-.5-1.4-.7-2.9-.7-4.4s.3-3.1.7-4.4v-6.1H3.1A23 23 0 0 0 1 23.5c0 3.7.9 7.2 2.5 10.2z"/><path fill="#EA4335" d="M24 10.2c3.4 0 6.5 1.2 8.9 3.5l6.7-6.7C35.6 3.2 30.3 1 24 1 15 1 7.3 6.1 3.9 13.5l7.8 6.1c1.9-5.6 7-9.4 13.1-9.4Z"/></svg></span>
+                  Google
+                </button>
+                <button type="button" class="social-btn"><span class="social-btn-icon"><img src="assets/social/line.png" alt=""></span>LINE</button>
+                <button type="button" class="social-btn"><span class="social-btn-icon"><img src="assets/social/zalo.webp" alt=""></span>Zalo</button>
+              </div>
+            </div>
+            <div class="flex flex-col gap-[15px] min-w-0">
+              <div class="overflow-x-auto"><table class="w-full text-body-sm text-ink-secondary"><thead><tr><th class="text-left font-semibold text-ink py-[8px] pr-[15px] whitespace-nowrap">規格</th><th class="text-left font-semibold text-ink py-[8px] pr-[15px] whitespace-nowrap">值</th></tr></thead><tbody><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top">圖示</td><td class="py-[8px] pr-[15px] align-top">48 的圓</td></tr><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top">名稱</td><td class="py-[8px] pr-[15px] align-top">13，白色 60%，圖示下方 4</td></tr><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top">圖示之間</td><td class="py-[8px] pr-[15px] align-top">32</td></tr><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top">上次使用</td><td class="py-[8px] pr-[15px] align-top">2px 綠色外圈 ＋ 標記（12）</td></tr><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top">離頂列</td><td class="py-[8px] pr-[15px] align-top">頁面已經離頂列 20，這一列上方再多 20 給「Last used」標籤</td></tr></tbody></table></div>
+              <ul class="flex flex-col gap-[5px] list-disc pl-[20px] text-body text-ink-secondary"><li><b class="text-ink">圖示一律用官方的檔案</b>（<code class="font-mono text-micro text-ink">assets/social/</code>），不要自己畫近似的。</li><li>一定放在 <code class="font-mono text-micro text-ink">.social-row</code> 裡：它管圖示之間的距離，也讓圖示和頂列保持距離。</li><li>使用者上次用哪一個登入，就在那顆加 <code class="font-mono text-micro text-ink">data-last-used</code> 和標記，避免他選錯又開一個新帳號。</li><li>依市場顯示：在某個市場不能用或沒人用的，整顆不顯示。</li></ul>
+            </div>
+          </div>
+          <p class="text-body-sm text-ink-secondary">寫法和所有狀態在 <a href="ui-kit.html#social" class="text-brand-2">UI kit</a>。</p>
+        </article>
+      </section>
+      <section id="figma-components" class="flex flex-col gap-[20px] scroll-mt-[20px]">
+        <h2 class="text-title font-semibold border-b border-edge-subtle pb-[10px]">設定、引導與面板的元件</h2>
+        <p class="text-body text-ink-secondary">這些元件 <a href="https://www.figma.com/design/RQEyZIgfkCKHdzYmOwprvR" class="text-brand-2">Figma</a> 和程式都有，寫法和狀態在 <a href="ui-kit.html#list-row" class="text-brand-2">UI kit</a>。面板（<code class="font-mono text-micro text-ink">.sheet</code>）和結果頁的綠圈（<code class="font-mono text-micro text-ink">.status-mark</code>）的規則在上面的頁面模式。</p>
+        <article id="option-card" class="flex flex-col gap-[15px] scroll-mt-[20px]">
+          <div class="flex flex-wrap items-baseline gap-x-[10px] gap-y-[5px]"><h3 class="text-body font-semibold">選項卡片</h3><span class="font-mono text-micro text-ink-secondary">Figma: Option card · <a href="ui-kit.html#option-card" class="text-brand-2">.option-card</a></span></div>
+          <p class="text-body text-ink-secondary">從兩到四個選項裡選一個，而且每個選項需要一行說明（幣別、主題、訊息管道、收驗證碼的方式）。</p>
+          <div class="grid gap-[20px] md:grid-cols-[360px_1fr] items-start"><img src="assets/guideline/option-card.png" alt="" width="330" class="max-w-full h-auto rounded-xl border border-edge-subtle"><ul class="flex flex-col gap-[5px] list-disc pl-[20px] text-body text-ink-secondary"><li>整張卡片都可以點，不只是左邊的圈。</li><li>選中時圈變綠，外框不變。</li><li>名稱在兩種狀態都是白字，沒選中不能看起來像不能按。</li><li>有國旗或標誌就放在圈和名稱之間；沒有就不放。</li><li>暫時不能選的選項降到 50% 透明，說明寫為什麼（Add a phone number first）。</li></ul></div>
+        </article>
+        <article id="list-row" class="flex flex-col gap-[15px] scroll-mt-[20px]">
+          <div class="flex flex-wrap items-baseline gap-x-[10px] gap-y-[5px]"><h3 class="text-body font-semibold">清單列與開關</h3><span class="font-mono text-micro text-ink-secondary">Figma: List row · Toggle · <a href="ui-kit.html#list-row" class="text-brand-2">.card .list-row .toggle</a></span></div>
+          <p class="text-body text-ink-secondary">設定類的項目。50 高，放在第一層底色的卡片裡，同一張卡片的列之間用一條細線隔開。</p>
+          <div class="grid gap-[20px] md:grid-cols-[360px_1fr] items-start"><img src="assets/guideline/list-row.png" alt="" width="330" class="max-w-full h-auto rounded-xl border border-edge-subtle"><ul class="flex flex-col gap-[5px] list-disc pl-[20px] text-body text-ink-secondary"><li>箭頭：點了開新頁；右邊的值說現在的狀態。</li><li>開關：立刻生效，打開是綠色；整列都可以點。</li><li>標題太長時截斷，不換行。</li></ul></div>
+        </article>
+        <article id="action-bar" class="flex flex-col gap-[15px] scroll-mt-[20px]">
+          <div class="flex flex-wrap items-baseline gap-x-[10px] gap-y-[5px]"><h3 class="text-body font-semibold">底部按鈕列</h3><span class="font-mono text-micro text-ink-secondary">Figma: Action bar · <a href="ui-kit.html#action-bar" class="text-brand-2">.action-bar</a></span></div>
+          <p class="text-body text-ink-secondary">長頁和引導頁把主按鈕釘在底部用的。</p>
+          <div class="grid gap-[20px] md:grid-cols-[360px_1fr] items-start"><img src="assets/guideline/action-bar.png" alt="" width="330" class="max-w-full h-auto rounded-xl border border-edge-subtle"><ul class="flex flex-col gap-[5px] list-disc pl-[20px] text-body text-ink-secondary"><li>只放一顆主按鈕，加最多一行文字連結。</li><li>短頁不要用，按鈕直接跟在內容後面。</li></ul></div>
+        </article>
+        <article id="step-hero" class="flex flex-col gap-[15px] scroll-mt-[20px]">
+          <div class="flex flex-wrap items-baseline gap-x-[10px] gap-y-[5px]"><h3 class="text-body font-semibold">引導頁標題區</h3><span class="font-mono text-micro text-ink-secondary">Figma: Step top bar · Step hero · <a href="ui-kit.html#step-hero" class="text-brand-2">.nav-top-progress .step-hero</a></span></div>
+          <p class="text-body text-ink-secondary">引導式頁面的上半部：18 的標題、一句為什麼、點數。進度「n of 8」放在頂列中間，這裡不再放編號圈（使用者 2026-10-15：「大 1 太明顯了，也占空間」）。</p>
+          <div class="grid gap-[20px] md:grid-cols-[360px_1fr] items-start"><img src="assets/guideline/step-hero.png" alt="" width="330" class="max-w-full h-auto rounded-xl border border-edge-subtle"><ul class="flex flex-col gap-[5px] list-disc pl-[20px] text-body text-ink-secondary"><li>一頁只放一個標題區。</li><li>「為什麼」就用清單上同一項的說明，不另外寫一句。</li><li>標題跟全站一樣是 18，不另外放大。</li></ul></div>
+        </article>
+        <article id="checklist-row" class="flex flex-col gap-[15px] scroll-mt-[20px]">
+          <div class="flex flex-wrap items-baseline gap-x-[10px] gap-y-[5px]"><h3 class="text-body font-semibold">清單項目</h3><span class="font-mono text-micro text-ink-secondary">Figma: Checklist row · <a href="ui-kit.html#checklist" class="text-brand-2">.checklist</a></span></div>
+          <p class="text-body text-ink-secondary">Account Setup 和岔路頁用的項目：未完成顯示編號，完成換成綠勾、標題變淡。</p>
+          <div class="grid gap-[20px] md:grid-cols-[360px_1fr] items-start"><img src="assets/guideline/checklist-row.png" alt="" width="330" class="max-w-full h-auto rounded-xl border border-edge-subtle"><ul class="flex flex-col gap-[5px] list-disc pl-[20px] text-body text-ink-secondary"><li>同一組的項目放在同一個外框裡。</li><li>說明寫這一項的用途和點數（Needed before withdrawal · +10 points）。</li></ul></div>
+        </article>
+      </section>
+      <section id="copy" class="flex flex-col gap-[20px] scroll-mt-[20px]">
+        <h2 class="text-title font-semibold border-b border-edge-subtle pb-[10px]">文案</h2>
+<div class="overflow-x-auto"><table class="w-full text-body-sm text-ink-secondary"><thead><tr><th class="text-left font-semibold text-ink py-[8px] pr-[15px] whitespace-nowrap">位置</th><th class="text-left font-semibold text-ink py-[8px] pr-[15px] whitespace-nowrap">寫法</th><th class="text-left font-semibold text-ink py-[8px] pr-[15px] whitespace-nowrap">例子</th></tr></thead><tbody><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top">頂列標題、按鈕</td><td class="py-[8px] pr-[15px] align-top">每個字首大寫</td><td class="py-[8px] pr-[15px] align-top">Log In · Sign Up · Send Code</td></tr><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top">欄位標籤</td><td class="py-[8px] pr-[15px] align-top">每個字首大寫，選填加 (Optional)</td><td class="py-[8px] pr-[15px] align-top">Referral Code (Optional)</td></tr><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top">說明文字</td><td class="py-[8px] pr-[15px] align-top">一般句子，只寫客人自己想不到的事；看欄位名稱就懂的不寫（Email 不用說明）</td><td class="py-[8px] pr-[15px] align-top">Must match the name on your payout account.</td></tr><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top">連結列</td><td class="py-[8px] pr-[15px] align-top">一句提示 ＋ 動作</td><td class="py-[8px] pr-[15px] align-top">Already have an account? Log in</td></tr><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top">錯誤</td><td class="py-[8px] pr-[15px] align-top">說哪裡不對、怎麼修。不道歉、不只丟錯誤代碼</td><td class="py-[8px] pr-[15px] align-top">That code has expired. Send a new one.</td></tr></tbody></table></div>
+      </section>
+      <section id="adding" class="flex flex-col gap-[20px] scroll-mt-[20px]">
+        <h2 class="text-title font-semibold border-b border-edge-subtle pb-[10px]">要加新元件的時候</h2>
+<ul class="flex flex-col gap-[5px] list-disc pl-[20px] text-body text-ink-secondary"><li>先去 v1 的設計稿找有沒有現成的。有就照它的數字做。</li><li>把它加進 <code class="font-mono text-micro text-ink">tailwind.config.js</code> 的 <code class="font-mono text-micro text-ink">addComponents</code>，顏色和字級都讀 variables.css 裡的變數。</li><li>在這一頁補上範例、規格和規則。</li><li>然後才在頁面裡用。<b class="text-ink">沒有寫進這一頁的樣式，不要出現在頁面上。</b></li></ul>
+      </section>
+      <section id="dont" class="flex flex-col gap-[20px] scroll-mt-[20px]">
+        <h2 class="text-title font-semibold border-b border-edge-subtle pb-[10px]">不要做的事</h2>
+<ul class="flex flex-col gap-[5px] list-disc pl-[20px] text-body text-ink-secondary"><li>按鈕變紅來表示出錯。</li><li>用 #5C6570 當文字顏色。</li><li>用紫色當開關、連結或選中狀態。</li><li>引導頁一頁放兩件事，或每一頁都放一張大插畫。</li><li>為了跟 v1 一樣而保留已知的可用性問題。</li><li>在頁面裡用 utilities 重新刻一顆按鈕或輸入框。</li><li>寫死色碼（<code class="font-mono text-micro text-ink">bg-[#FFBC00]</code>）或用 Tailwind 的 <code class="font-mono text-micro text-ink">dark:</code> 前綴——深淺色由變數決定。</li><li>一頁放兩顆黃色按鈕。</li><li>自己畫第三方的品牌圖示。</li><li>在最上面或最下面預留一條空白當安全區。</li><li>提出新的視覺方向。視覺照 v1。</li></ul>
+      </section>
+
+  </div>
+<script>
+  /* Tabs switch on click so the selected state can be tried on this page. */
+  document.querySelectorAll('.tabs').forEach((tabs) => tabs.addEventListener('click', (e) => {
+    const tab = e.target.closest('.tab'); if (!tab) return;
+    tabs.querySelectorAll('.tab').forEach((t) => t.setAttribute('aria-selected', String(t === tab)));
+  }));
+</script>
+</body>
+</html>

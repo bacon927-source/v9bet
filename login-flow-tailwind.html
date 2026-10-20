@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>V9Bet · Login (Tailwind)</title>
+
+<!-- variables.css holds every value. tailwind.config.js turns them into the theme
+     and into the component classes (.btn, .field, .tab …) used below — the look
+     is the live product's, Figma APP-V9Bet-v1. -->
+<link rel="stylesheet" href="variables.css">
+
+<!-- No Node on this machine, so Tailwind runs from the CDN — but it reads the
+     same tailwind.config.js a build would, so there is one theme, not two. -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>var module = {};</script>
+<script src="tailwind.config.js"></script>
+<script>tailwind.config = module.exports;</script>
+</head>
+
+<body class="bg-app text-ink font-sans antialiased">
+  <div class="min-h-[100dvh] flex justify-center bg-app">
+    <div class="w-full md:max-w-[440px] md:border-x md:border-edge-subtle min-h-[100dvh] flex flex-col safe-top">
+
+      <div class="nav-top">
+        <a href="index.html" aria-label="Close" class="nav-top-action"><span class="icon icon-close" aria-hidden="true"></span></a>
+        <nav class="nav-tabs" aria-label="Sign up or log in"><a href="signup-flow-tailwind.html">Sign Up</a><span aria-current="page">Log In</span></nav>
+        
+      </div>
+
+      <div class="page-body">
+
+        <div class="social-row">
+          <button type="button" class="social-btn" data-social="google" data-last-used>
+            <span class="social-btn-badge">Last used</span>
+            <span class="social-btn-icon"><svg width="22" height="22" viewBox="0 0 48 48"><path fill="#4285F4" d="M46.6 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.5 3-2.2 5.5-4.7 7.2v6h7.6c4.4-4.1 7-10.1 7-17.7Z"/><path fill="#34A853" d="M24 47c6.3 0 11.6-2.1 15.5-5.7l-7.6-6c-2.1 1.4-4.8 2.3-7.9 2.3-6.1 0-11.2-4.1-13.1-9.6h-7.8v6.1C7.3 41.9 15 47 24 47Z"/><path fill="#FBBC05" d="M10.9 27.9c-.5-1.4-.7-2.9-.7-4.4s.3-3.1.7-4.4v-6.1H3.1A23 23 0 0 0 1 23.5c0 3.7.9 7.2 2.5 10.2z"/><path fill="#EA4335" d="M24 10.2c3.4 0 6.5 1.2 8.9 3.5l6.7-6.7C35.6 3.2 30.3 1 24 1 15 1 7.3 6.1 3.9 13.5l7.8 6.1c1.9-5.6 7-9.4 13.1-9.4Z"/></svg></span>
+            Google
+          </button>
+          <button type="button" class="social-btn" data-social="line">
+            <span class="social-btn-icon"><img src="assets/social/line.png" alt=""></span>
+            LINE
+          </button>
+          <button type="button" class="social-btn" data-social="zalo">
+            <span class="social-btn-icon"><img src="assets/social/zalo.webp" alt=""></span>
+            Zalo
+          </button>
+        </div>
+
+        <div class="divider-label">or log in with</div>
+
+        <!-- Passkey has no tab of its own — it surfaces through the identifier
+             field's autofill (see login-flow-wireframe.html). -->
+        <div class="tabs" role="tablist">
+          <button type="button" class="tab" role="tab" id="tab-otc" aria-selected="false">One-time code</button>
+          <button type="button" class="tab" role="tab" id="tab-pwd" aria-selected="true">Password</button>
+        </div>
+
+        <div class="flex flex-col gap-inline">
+          <div class="field">
+            <input id="identifier" type="text" autocomplete="username webauthn" placeholder=" " aria-describedby="hint-otc">
+            <label for="identifier" id="identifier-label">Account ID / Email / Phone</label>
+            <p class="hint" id="hint-otc" hidden>We'll send a 6-digit code to the email or phone on your account.</p>
+          </div>
+          <div class="field" id="field-pwd">
+            <input id="password" type="password" autocomplete="current-password" placeholder=" ">
+            <label for="password">Password</label>
+            <button type="button" class="field-trail" id="pwd-toggle" aria-label="Show password"><span id="pwd-icon" class="icon icon-sm icon-eye-crossed" aria-hidden="true"></span></button>
+          </div>
+        </div>
+
+        <div class="flex items-center">
+          <label class="tap gap-inline cursor-pointer text-body-sm">
+            <input id="remember" type="checkbox" checked class="sr-only">
+            <span class="tick"></span>
+            Keep me logged in
+          </label>
+        </div>
+
+        <button type="button" class="btn" id="submit" disabled>Log In</button>
+
+        <a href="verification-flow-wireframe.html" class="tap self-center text-body-sm text-brand-2 underline">Forgot Password?</a>
+      </div>
+    </div>
+  </div>
+
+<script>
+  const tabPwd = document.getElementById('tab-pwd');
+  const tabOtc = document.getElementById('tab-otc');
+  const fieldPwd = document.getElementById('field-pwd');
+  const hintOtc = document.getElementById('hint-otc');
+  const identifier = document.getElementById('identifier');
+  const identifierLabel = document.getElementById('identifier-label');
+  const password = document.getElementById('password');
+  const submit = document.getElementById('submit');
+  let mode = 'pwd';
+
+  /* The button stays grey until there is something to send. */
+  const sync = () => { submit.disabled = !identifier.value.trim() || (mode === 'pwd' && !password.value); };
+  const setTab = (next) => {
+    mode = next;
+    tabPwd.setAttribute('aria-selected', String(mode === 'pwd'));
+    tabOtc.setAttribute('aria-selected', String(mode === 'otc'));
+    fieldPwd.hidden = mode !== 'pwd';
+    hintOtc.hidden = mode !== 'otc';
+    // A code goes to an email or a phone, so the code tab does not ask for an Account ID.
+    identifierLabel.textContent = mode === 'pwd' ? 'Account ID / Email / Phone' : 'Email / Phone';
+    identifier.autocomplete = mode === 'pwd' ? 'username webauthn' : 'username';
+    submit.textContent = mode === 'pwd' ? 'Log In' : 'Send Code';
+    sync();
+  };
+  tabPwd.addEventListener('click', () => setTab('pwd'));
+  tabOtc.addEventListener('click', () => setTab('otc'));
+  identifier.addEventListener('input', sync);
+  password.addEventListener('input', sync);
+
+  const toggle = document.getElementById('pwd-toggle');
+  toggle.addEventListener('click', () => {
+    const show = password.type === 'password';
+    password.type = show ? 'text' : 'password';
+    toggle.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
+    toggle.setAttribute('aria-pressed', String(show));
+    document.getElementById('pwd-icon').className = 'icon icon-sm ' + (show ? 'icon-eye' : 'icon-eye-crossed');
+  });
+</script>
+</body>
+</html>
