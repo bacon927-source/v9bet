@@ -77,8 +77,8 @@ fileKey `RQEyZIgfkCKHdzYmOwprvR`，在 v9 團隊下。跟網頁版是同一套�
 | Tick | `4:87` | State = Off / On |
 | Divider | set `223:50`：`Label=Yes` `4:95`（原本的 Divider label，instance 都還連著它）、`Label=No` `223:46` | **2026-10-20 改成兩個變體**（使用者：「加一個沒有文字只有線的」）。Yes：兩條線中間一段短字，TEXT `Label`，把社群登入和手動填寫分成兩區；No：一條完整的線，給不需要名字的兩組之間。兩種都是上下 padding `spacing/4` 加上頁面間距 16 = 32。沒用「隱藏文字」做，因為藏掉字以後兩條線中間還會留 12 的缺口。程式 `.divider-label` · `.divider` |
 | Code cell | `4:111` | State = Empty / Focus / Filled / Error；TEXT `Digit` |
-| Code input | set `226:77`：`State=Default` `226:46`、`State=Invalid` `226:59` | 2026-10-20 新增。六個 Code cell、間距 `spacing/3`、置中；Invalid 六格全紅，下面一行 TEXT `Error`。取代畫面裡手排的 `code` 框（11 處，第 3 步換）。程式 `.otp` · `.otp[data-invalid]` ＋ `.error-text` |
-| Field | `5:65` | State = Empty / Focus / Filled / Error × Trailing = None / Icon / Note（共 7 個）；TEXT `Label` `Value` `Note` `Error`。**2026-10-20**：加 BOOLEAN `Hint`（預設關）＋ TEXT `Hint text`，說明字是每個非 Error 變體的最後一行（13、`text/secondary`、框下 4），打開才佔高度——規則是說明放在欄位裡，不要在欄位外另放一行。Focus 變體的浮起標籤改綁 `text/primary`，跟白框線一起亮（使用者：「focus 時，字也要一併 focus」）；程式 `.field > input:focus:not([aria-invalid="true"]) + label` |
+| Code input | set `226:77`：`State=Default` `226:46`、`State=Invalid` `226:59` | 2026-10-20 新增。六個 Code cell、間距 `spacing/3`、置中；Invalid 六格全紅，下面一行 TEXT `Error`。已取代畫面裡手排的 `code` 框 10 處和 `code block` 2 處（2026-10-20，每格狀態、數字、錯誤訊息逐一照抄並比對）。程式 `.otp` · `.otp[data-invalid]` ＋ `.error-text` |
+| Field | `5:65` | State = Empty / Focus / Filled / Error × Trailing = None / Icon / Note（共 7 個）；TEXT `Label` `Value` `Note` `Error`。**2026-10-20**：加 BOOLEAN `Hint`（預設關）＋ TEXT `Hint text`，說明字是每個非 Error 變體的最後一行（13、`text/secondary`、框下 4），打開才佔高度——規則是說明放在欄位裡，不要在欄位外另放一行。畫面上原本放在欄位外的 6 處（`field + hint` 框）已改成打開 Hint（2026-10-20，高度不變）。Focus 變體的浮起標籤改綁 `text/primary`，跟白框線一起亮（使用者：「focus 時，字也要一併 focus」）；程式 `.field > input:focus:not([aria-invalid="true"]) + label` |
 | Social button | `5:121` | Provider = Google / LINE / Zalo × Last used = No / Yes。標誌是 `social/google|line|zalo`（`5:76` `5:78` `5:80`），LINE、Zalo 是上傳的官方圖檔 |
 | Action bar | `14:38` | BOOLEAN `Skip link`；裡面是 Button（`button`）和 Link row（`skip link`）。內容比畫面高的頁面把按鈕釘在底部用的。網頁版是 `.action-bar`（2026-10-16 補上） |
 | Option card | `16:78` | State = Default / Selected；TEXT `Title` `Sub`；INSTANCE_SWAP `Icon`（預設 `flag/vn`）。v1 的「radio button with icon」加寬成兩行 |
@@ -86,13 +86,13 @@ fileKey `RQEyZIgfkCKHdzYmOwprvR`，在 v9 團隊下。跟網頁版是同一套�
 | Sheet header | `22:63` | TEXT `Title`；把手、置中標題、右上關閉（`icon/sheet-close` `22:51`）。v1 的彈窗是從底部上來的面板（AnchoredSheet）：底 `bg/sheet` #1C1C1E、上方圓角 12、後面一層 `bg/scrim` 黑 60% |
 | Status mark | `22:73` | 48 的綠圈加勾，結果頁用，取代 wireframe 的 emoji |
 | List row | `36:83` | Trailing = Chevron / Toggle on / Toggle off；TEXT `Title` `Value`。v1 設定頁的 search/list：50 高、卡片底 `bg/card` #212326、圓角 12，同一張卡裡用一條頁面底色的細線隔開，上面一行 15px 白 30% 的分組標題（`text/tertiary`） |
-| Card | `227:58` | 2026-10-20 新增。List row 疊在 `bg/card`、`radius/xl` 12，列之間 1px `bg/app` 的線。第 1–3 列固定，BOOLEAN `Row 4` `Row 5` `Row 6` 開關（藏一列會連它上面的線一起藏）。取代畫面裡手拼的 `list` 框（8 處，第 3 步換）。程式 `.card` ＋ `.list-row` |
+| Card | `227:58` | 2026-10-20 新增。List row 疊在 `bg/card`、`radius/xl` 12，列之間 1px `bg/app` 的線。第 1–3 列固定，BOOLEAN `Row 4` `Row 5` `Row 6` 開關（藏一列會連它上面的線一起藏）。已取代畫面裡手拼的 `list` 框 8 處和 Profile 的 `more` 1 處（2026-10-20，每列標題、值、Trailing 逐一照抄，高度一致）。程式 `.card` ＋ `.list-row` |
 | Toggle | `36:63` | State = On / Off；開的時候是綠色（v1 是紫色，2026-10-13 改） |
 | Step top bar | `55:58` | TEXT `Progress`、BOOLEAN `Back`。引導式 Setup 的頂列：返回（只有 24 的 icon/back，不寫「Back」，點擊範圍 44 × 44；使用者 2026-10-14）＋「n of 8」灰色 13 置中（2026-10-15 從右邊移到中間；頂列不放標題）。開場頁 Guided · Start（`57:1137`）不用它，改用 Nav top「Account Setup」＋✕（2026-10-14 使用者：「每頁應該都有 header」） |
 | Step hero | `55:69` | TEXT `Title` `Why` `Points`、BOOLEAN `Show points`。18 標題、一句為什麼、點數小標，置中。2026-10-15 拿掉 56 綠圈數字（`Number` 屬性已刪），標題從 28 改 18：進度只在 Step top bar 出現一次 |
 | Auth tabs | `72:1466` | Current = Sign Up / Log In。Login、Sign Up 的頂列：✕ 在左，中間兩個文字分頁「Sign Up　Log In」，目前這頁白色粗體＋16×3 綠線、另一頁灰色，都是 18。取代了 Nav top；按鈕下面沒有連結列；Login 的 Forgot Password? 在按鈕下面置中 |
 | Checklist row | `7:45` | State = Todo / Done；TEXT `Number` `Title` `Sub`。v1 沒有，照 v1 的語言畫的；網頁版是 `.checklist` ＋ `.checklist-row`（2026-10-16 補上） |
-| Checklist | `227:103` | 2026-10-20 新增。Checklist row 包在 1px `border/default` 外框、`radius/xl` 12，列之間是 `border/subtle` 8% 的細線；外框線算進排版，所以列寬 356。第 1–3 列固定，BOOLEAN `Row 4` `Row 5`。取代畫面裡手拼的 `items` 框（14 處，第 3 步換）。程式 `.checklist` ＋ `.checklist-row` |
+| Checklist | `227:103` | 2026-10-20 新增。Checklist row 包在 1px `border/default` 外框、`radius/xl` 12，列之間是 `border/subtle` 8% 的細線；外框線算進排版，所以列寬 356。第 1–2 列固定，BOOLEAN `Row 3`（預設開，兩項的群組關掉）`Row 4` `Row 5`。已取代畫面裡手拼的 `items` 框 14 處（2026-10-20，含 4 個兩列的群組）。程式 `.checklist` ＋ `.checklist-row` |
 
 | 畫面 | id | 尺寸 |
 |---|---|---|
