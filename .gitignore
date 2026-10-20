@@ -10,3 +10,6 @@ docs/
 
 # Third-party skill with no licence file — do not redistribute from a public repo
 .claude/skills/mobile-app-ui-design/
+
+# Bundles prepared for upload elsewhere — generated, not source
+export/

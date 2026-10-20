@@ -1,0 +1,183 @@
+/* ──────────────────────────────────────────────────────────────
+   V9Bet design variables — the single source of truth for both platforms.
+   The native app reads these values into its theme; Tailwind points at
+   the variables (tailwind.config.js). Change a value here, not there.
+
+   The look is the live product's (design file: APP-V9Bet-v1). The dark
+   theme below reads from the --v1-* primitives: a dark grey ground, a
+   yellow main button, green for links and for whatever is selected.
+
+   Dark is the default. Light overrides only the semantic layer and is
+   not finished. Never use a primitive directly in a component — use the
+   semantic variable, which is what changes with the theme.
+   ────────────────────────────────────────────────────────────── */
+
+:root {
+  /* ---- primitives (do not use directly) ----
+     The dark theme reads the --v1-* values further down. The neutral, gold
+     and green ramps are left from the earlier direction (green-tinted
+     greys); only the unfinished light theme and the status colours still use
+     them. Rebuild the light theme on v1's greys before adding to them. */
+  --neutral-0:#FFFFFF;  --neutral-50:#F3F9F5; --neutral-100:#E6EEE9; --neutral-200:#CFDED5;
+  --neutral-300:#A9C0B2;--neutral-400:#7C9A88;--neutral-500:#6B9480; --neutral-600:#28543C;
+  --neutral-700:#143826;--neutral-800:#0C2619;--neutral-900:#061710; --neutral-950:#020B07;
+  --neutral-1000:#000000;
+
+  --gold-500:#F9D000; --gold-600:#D4AF00; --gold-700:#A88A00;
+
+  --green-400:#35D07F; --green-500:#0C8F4A; --green-600:#076834;
+
+  --red-400:#FF6B61;   --red-500:#E8453A;   --red-600:#BE2D24;
+  /* Warning is pushed to orange — an amber this close to the brand gold
+     would read as the brand rather than as a caution. */
+  --orange-400:#FF8A3D; --orange-500:#E86F1C;
+  --blue-400:#4DA3FF;  --blue-500:#2F7FD4;
+
+  /* The live product's palette (Figma: APP-V9Bet-v1). Since 2026-10-13 the
+     dark theme below reads from these: the UI follows the existing product
+     rather than a new visual direction. */
+  --v1-bg:#1A1C1F;       --v1-grey-500:#5C6570; --v1-grey-400:#888888;
+  --v1-grey-300:#9BA7B7; --v1-gold:#FFBC00;     --v1-green:#00DA87;
+  /* v1 draws an empty code cell fainter than a field, and an error in pure red. */
+  --v1-grey-600:#4B4B4B; --v1-red:#FF0000;
+  /* v1's settings and profile: cards a shade above the page, purple for switches. */
+  --v1-purple:#9B5BF5;
+  /* Tuned away from v1 on 2026-10-13: a grey that passes as text, a red that
+     passes as text, and surfaces a visible step apart. */
+  --grey-450:#8A93A0; --red-450:#FF4D4D; --surface-1:#23262B; --surface-2:#282C31;
+
+  /* ---- semantic · dark (default) ---- */
+  /* Three surface steps: page, card, sheet. */
+  --color-bg-app:var(--v1-bg);
+  /* v1 fields are outlined, not filled. */
+  --color-bg-input:transparent;
+  --color-bg-disabled:var(--v1-grey-500);
+  --color-bg-scrim:rgba(0,0,0,.60);
+  --color-bg-sheet:var(--surface-2);
+  --color-bg-card:var(--surface-1);
+  --color-promo-accent:var(--v1-purple);
+  --color-bg-provider:var(--neutral-0);
+  --color-text-tertiary:var(--grey-450);
+  --color-sheet-handle:rgba(255,255,255,.30);
+
+  --color-text-primary:var(--neutral-0);
+  /* v1: body copy is white at 60%; field labels and placeholders are the
+     grey of the field outline. */
+  --color-text-secondary:rgba(255,255,255,.60);
+  --color-text-muted:var(--grey-450);
+  --color-text-disabled:var(--v1-grey-300);
+  --color-text-nav-inactive:var(--v1-grey-400);
+  --color-text-on-brand:var(--neutral-1000);
+
+  --color-border-subtle:rgba(255,255,255,.08);
+  --color-border-default:var(--v1-grey-500);
+  --color-border-strong:var(--v1-grey-300);
+  --color-border-focus:var(--neutral-0);
+  --color-border-empty:var(--v1-grey-600);
+
+  --color-brand-primary:var(--v1-gold);
+  --color-brand-hover:var(--v1-gold);
+  --color-brand-pressed:var(--v1-gold);
+  --color-brand-subtle:rgba(255,188,0,.14);
+
+  /* v1's green is the accent: links, the active tab, a ticked option. */
+  --color-brand-secondary:var(--v1-green);
+  --color-brand-secondary-hover:var(--v1-green);
+  --color-brand-secondary-subtle:rgba(0,218,135,.16);
+
+  --color-status-success:var(--green-400);
+  --color-status-warning:var(--orange-400);
+  --color-status-error:var(--red-450);
+  --color-text-on-error:var(--neutral-0);
+  --color-status-info:var(--blue-400);
+  --color-status-success-subtle:rgba(53,208,127,.16);
+  --color-status-warning-subtle:rgba(232,111,28,.16);
+  --color-status-error-subtle:rgba(232,69,58,.16);
+  --color-status-info-subtle:rgba(47,127,212,.16);
+
+  --color-money-up:var(--green-400);
+  --color-money-down:var(--red-400);
+
+  /* Spacing — on Tailwind's 4px grid (gap-2 = 8, gap-3 = 12, gap-4 = 16 …),
+     named for what they separate: gap-group, gap-block, mt-action, pt-header … */
+  --space-note:4px;     /* a field to its own hint or error */
+  --space-inline:8px;   /* tight pairs: tick or icon to its label, field to field */
+  --space-group:12px;   /* inside a group: items in a card, a list, a result */
+  --space-gutter:16px;  /* page edge */
+  --space-block:16px;   /* between blocks */
+  --space-action:32px;  /* each side of a divider; between social icons */
+  --space-header:20px;  /* header to the first content */
+
+  /* Radius — Tailwind's scale (rounded-sm 2, rounded 4, rounded-md 6 … rounded-xl 12).
+     In use: rounded-xl for boxes (fields, code cells, cards, sheets),
+     rounded-full for buttons, pills and rings, rounded-sm for the tab bar. */
+  --radius-none:0px; --radius-sm:2px; --radius:4px; --radius-md:6px;
+  --radius-lg:8px;   --radius-xl:12px; --radius-2xl:16px; --radius-full:9999px;
+
+  /* ---- type ---- */
+  /* v1 is set in the system face (SF Pro on iOS, Roboto on Android): one
+     family, no web font. Display is the same face; it is kept as its own
+     name so a heavier face can be swapped in without touching pages. */
+  --font-latin:-apple-system,BlinkMacSystemFont,"SF Pro Text","Roboto","Noto Sans Thai",system-ui,sans-serif;
+  --font-display:var(--font-latin);
+  --font-thai:"Noto Sans Thai",-apple-system,system-ui,sans-serif;
+
+  /* Four sizes — 13, 15, 17, 18 — plus 28 for a balance. Leading is loose
+     because Vietnamese stacks tone marks and Thai grows both ways. */
+  --font-size-display:28px; --leading-display:34px;
+  --font-size-body:15px;    --leading-body:23px;
+  --font-size-body-sm:13px; --leading-body-sm:20px;
+  --font-size-title:18px;   --leading-title:24px;
+  --font-size-button:17px;  --leading-button:22px;
+  --font-size-field:17px;   --leading-field:22px;
+  --font-size-field-label:13px; --leading-field-label:18px;
+  --font-size-micro:13px;   --leading-micro:18px;
+}
+
+/* ---- semantic · light ---- */
+:root[data-theme="light"] {
+  --color-bg-app:var(--neutral-50);
+  --color-bg-input:var(--neutral-100);
+  --color-bg-scrim:rgba(2,11,7,.50);
+
+  --color-text-primary:var(--neutral-900);
+  /* Light mode cannot reuse the dark mode's steps. neutral-500 is tuned to sit
+     on a near-black; on #F3F9F5 it drops to 3.19:1 and fails AA, so the light
+     theme walks one step further down the ramp for both. */
+  --color-text-secondary:var(--neutral-700);
+  --color-text-muted:var(--neutral-600);
+  --color-text-on-brand:var(--neutral-950);
+
+  --color-border-subtle:var(--neutral-200);
+  --color-border-default:var(--neutral-300);
+  --color-border-strong:var(--neutral-400);
+  --color-border-empty:var(--neutral-300);
+  /* The dark theme's focus ring is white; on a light page it would vanish. */
+  --color-border-focus:var(--neutral-900);
+
+  /* The yellow holds up on white only when it is darkened; #F9D000 on white
+     fails contrast for anything but a large solid fill with dark text. */
+  --color-brand-primary:var(--gold-500);
+  --color-brand-hover:var(--gold-600);
+  --color-brand-pressed:var(--gold-700);
+  --color-brand-subtle:rgba(249,208,0,.18);
+
+  --color-brand-secondary:var(--green-600);
+  --color-brand-secondary-hover:var(--green-500);
+  --color-brand-secondary-subtle:rgba(12,143,74,.12);
+
+  --color-status-success:var(--green-600);
+  --color-status-warning:var(--orange-500);
+  --color-status-error:var(--red-500);
+  --color-status-info:var(--blue-500);
+  --color-status-success-subtle:rgba(53,208,127,.12);
+  --color-status-warning-subtle:rgba(232,111,28,.12);
+  --color-status-error-subtle:rgba(232,69,58,.12);
+  --color-status-info-subtle:rgba(47,127,212,.12);
+
+  --color-money-up:var(--green-600);
+  --color-money-down:var(--red-500);
+}
+
+/* Money always lines up in columns. */
+.num, [data-num] { font-variant-numeric: tabular-nums; }

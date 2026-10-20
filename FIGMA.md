@@ -1,0 +1,318 @@
+# V9Bet — Figma 檔案地圖
+
+**動 Figma、或說「Figma 裡沒有 X」之前先讀這份。**
+
+| | 檔案 | fileKey | 用途 |
+|---|---|---|---|
+| **現在的設計來源** | [APP-V9Bet-v1](https://www.figma.com/design/QDrxbGP6Zd6bw8tJHT7CE7/APP-V9Bet-v1?node-id=2822-38593) | `QDrxbGP6Zd6bw8tJHT7CE7` | 線上產品的設計稿。2026-10-13 使用者決定**視覺直接用這份**，不做新視覺 |
+| **我們交付的 Figma** | [V9Bet Mobile Web — UI (v1 look)](https://www.figma.com/design/RQEyZIgfkCKHdzYmOwprvR) | `RQEyZIgfkCKHdzYmOwprvR` | 2026-10-13 開的。照 v1 的長相、跟 `variables.css` / `tailwind.config.js` 同一套變數與元件。兩份交付之一（另一份是給 IT 的 UI kit） |
+| 已不是來源 | [V9Bet Mobile Web UI Kit](https://www.figma.com/design/Y9aEzSppCMldfkYd6m9cCc) | `Y9aEzSppCMldfkYd6m9cCc` | Claude 2026-10-12 開的新視覺版。內容已跟網頁不一致，不要再照它做 |
+| 已不是來源 | [V9Bet UI Kit](https://www.figma.com/design/0stLHADYWKuf32S0e48UX1/V9Bet-UI-Kit) | `0stLHADYWKuf32S0e48UX1` | Claude 更早開的新視覺版 |
+
+下面的 node id 與數量都是當天量到的，動手前再確認一次。
+
+---
+
+# 設計來源：APP-V9Bet-v1
+
+這是別人的設計稿，**只讀不寫**。頁面 `desktop/h5`（`2822:38593`）有幾百個畫面，`get_metadata` 整頁會回 3 MB 以上——存檔後用腳本找名字，再對單一畫面呼叫 `get_design_context`。
+
+## 用得到的畫面（390 × 844，含 Safari 上下列）
+
+| 畫面 | id |
+|---|---|
+| login（空白／已填） | `3260:100963` · `3260:100990` |
+| sign up（五個狀態，最後一個全填） | `3260:100706` `3260:100744` `3260:100782` `3260:100820` `3260:100856` |
+| OTP（進行中／完成／重送／錯誤／超過三次） | `3260:100892` `3260:100927` `3260:101095` `3260:101125` `5119:193057` |
+| Forget PW | `3260:101211` · `3260:101235` |
+| Reset / create new password | `3260:100685` · `8232:209805` |
+| 分頁元件的例子（inbox 的 Tab menu） | `5119:194095` |
+
+## 量到的規格（對應 `variables.css` 的 `--v1-*` 與 `tailwind.config.js` 的元件）
+
+| | v1 | 元件 class |
+|---|---|---|
+| 底色 | `#1A1C1F` | `bg-app` |
+| 頂列 | 44 高（跟 Auth tabs、Step top bar 一樣；使用者 2026-10-14 從 v1 的 40 改成 44）、內距 10；✕ 點擊範圍 44 × 44；左邊 24 的 ✕；標題 18 semibold 置中 | `.nav-top` |
+| 輸入框 | 外框 1px `#5C6570`、圓角 12（`radius/xl`）、50 高，上方留 10 給標籤（共 60）；字 14；標籤 `#5C6570`，沒值時在框內、有值或 focus 時浮到外框上；右側 16 的圖示 | `.field` `.field-trail` |
+| 主按鈕 | 46 高、全圓、`#FFBC00`、黑字 17 medium；不能送出時底 `#5C6570`、字 `#9BA7B7` | `.btn` |
+| 按鈕下的連結列 | 46 高；白字 15 ＋ 粗體綠字 `#00DA87` | `.link-row` |
+| 分頁 | 44 高；字 15；下方 2px 線；未選 `#888`、選中 `#00DA87` | `.tabs` `.tab` |
+| 勾選 | 22 的圓框 ＋ 12 的圓點；關 `#5C6570`、開 `#00DA87` | `.tick` |
+| 內文 | 15、白色 60%；小字 13；最小 12 | `.hint` |
+| 驗證碼格 | 6 格，42 × 44、圓角 12、間距 10；數字 17/22；外框空的 `#4B4B4B`、有數字 `#00DA87`、錯誤 `red`；說明／格子／重送／按鈕之間 30 | `.otp` |
+| 錯誤 | 純紅 `#FF0000`：驗證碼錯誤時格子外框變紅、**按鈕底變紅白字**、按鈕下方 10 放一行 13 的紅字 | `data-invalid` `.error-text` |
+| 版面 | 左右邊距 15；欄位間距 10；區塊間距 15 / 20；內容從上往下排，按鈕緊接在表單後面 | utilities |
+| 字體 | SF Pro（系統字體） | `font-sans` |
+
+圖示放在 `assets/icons/`，是 v1 Icon 頁 Flaticon UIcons Bold Rounded 的原檔（`back` `close` `chevron-right` `chevron-down` `eye` `eye-crossed` `check`）。v1 **有**睜眼圖示（`fi-bs-eye`，Icon 頁 `45:3505`），顯示密碼時換成它。
+
+v1 沒有、但我們這版需要的元件（照 v1 的語言做的）：社群登入 `.social-btn`、帶文字的分隔線 `.divider-label`。輸入框的錯誤狀態 v1 也沒畫（sign up 五個狀態裡沒有錯誤），是照 OTP 錯誤畫面的紅色延伸的：外框和標籤變紅、框下方一行紅字。
+
+---
+
+# 我們交付的 Figma：V9Bet Mobile Web — UI (v1 look)
+
+fileKey `RQEyZIgfkCKHdzYmOwprvR`，在 v9 團隊下。跟網頁版是同一套東西，改一邊要改另一邊。
+
+| 頁 | id | 內容 |
+|---|---|---|
+| 🧩 Components | `0:1` | 一個 auto-layout 的板子 `4:2`，每個元件一節 |
+| 📱 Screens | `2:2` | **一個流程一個 Section、由上往下，畫面是 Section 裡最上層的 frame**（2026-10-14 使用者嫌外框太多層、點不到畫面，拿掉了原本的 auto-layout 畫布 `8:29`、每列的 row 和每張的說明外框）：Login `127:2308` / Sign Up `127:2309` / Sign Up · existing account `127:2310` / Sign Up · social `127:2311` / Setup · guided `127:2312` / Tutorial & App `127:2313` / Forgot Password `127:2314` / Settings `127:2315` / Profile `127:2316`，共 54 張。間距標註不放這頁，放在 **📏 Spacing** 頁 `134:46`（使用者 2026-10-15：「在左邊 page 加一個來放，裡面都會放 space」）；第一個 Section 是 **Login & Sign Up** `190:286`（2026-10-15 使用者要求把頂列、圖示、間距表標在 Login／Sign Up 畫面上）：兩張畫面的複本，疊上量出來的標註（粉紅＝間距和 token 名、藍＝尺寸、橘＝圖示和點擊範圍）。標註是當下量的快照，畫面或間距改了要重跑，不會自己更新。同流程的新畫面放進那個 Section、接在最後一張右邊（間距 40）；新流程開一個新 Section。**不要再把畫面包進 auto-layout 外框**。腳本找畫面用 `section.children` |
+| 📏 Spacing | `134:46` | 間距標註專用頁。一個流程一個 Section，裡面是畫面的複本加上量出來的標註（粉紅＝間距和 token、藍＝尺寸、橘＝圖示）。目前有 Login & Sign Up `190:286`（Login · Password／Sign Up · Default／Login · Enter code · typing）、Setup · guided `188:154`（Start／1 Currency／Before Step 2）。2026-10-19 全部重新產生：標註從量到的節點算出來，標籤兩兩、標籤和畫面都檢查過不重疊 |
+
+**變數**（名字和值對應 `variables.css`，WEB code syntax 已填）：`Primitives`（`v1/*`、`neutral/*`、`alpha/*`，另有調過的 `grey/450` `red/450` `surface/1` `surface/2`，scopes 空的）、`Color`（只有 Dark 一個 mode：`bg/app|card|sheet|scrim|disabled` `text/primary|secondary|muted|tertiary|disabled|nav-inactive|on-brand|on-error` `border/default|focus|empty|subtle|handle` `brand/primary|secondary` `status/error` `promo/accent`）、`Spacing`（`space/5…30`）、`Radius`（`radius/md` `radius/full`）。在 v1 之上調過的八件事列在 `CLAUDE.md`。
+
+**文字樣式**（2026-10-13 收成四階）：`Title/Semibold|Regular` 18/24、`Button/Medium` `Code digit/Regular` `Field/Regular` 17/22、`Body/Regular|Bold` 15/23、`Tab/Regular` 15/27、`Small/Regular|Light` 13/20、`Micro/Regular` `Field label/Regular` 13/18、`Display/SemiBold` 28/34（只給餘額）。畫面上實際用到的字級只有 13／15／17／18／28。
+
+**字體是 Roboto，不是 SF Pro。** `listAvailableFontsAsync()` 會列出 SF Pro，`loadFontAsync` 也不報錯，但文字寬度全部是 0、`hasMissingFont` 是 true，截圖裡一個字都沒有，`setProperties` 改文字會報「font isn't available」。Roboto 是產品字體堆疊裡 Android 用的那支。使用者要 SF Pro 的話得在自己的 Figma 桌面版把文字樣式換掉。
+
+| 元件 | id | Variants / 屬性 |
+|---|---|---|
+| icon/close · back · eye · eye-crossed · check · chevron-down · chevron-right | `4:10` 新 `icon/back` `icon/eye` `4:14` `4:18` `16:33` `36:53` | **固定一套：v1 Icon 頁的 Flaticon UIcons Bold Rounded（fi-br；眼睛只有 fi-bs）**（使用者 2026-10-14：「icon 可以拿 v1 版本，也要開始固定」）。單獨 24、輸入框裡 16；顏色綁變數。原本混了 fi-rr 的 ✕、fi-ios 的箭頭、三角形下拉、iOS 樣式的 sheet-close，已全部換掉；sheet-close 刪除，面板關閉也用 icon/close。程式：`.icon .icon-<name>`，檔案在 `assets/icons/<name>.svg` |
+| Nav top | `4:28` | TEXT `Title`；裡面的 `action` 可以隱藏（Setup 沒有關閉） |
+| Button | `4:41` | State = Default / Disabled；TEXT `Label`。**沒有紅色狀態**（2026-10-13 拿掉） |
+| Link row | `4:48` | TEXT `Prompt`、`Action` |
+| Tab · Tabs | `4:60` `4:77` | Tab：Selected = True / False。Tabs：Active = First / Second（One-time code ｜ Password） |
+| Tick | `4:87` | State = Off / On |
+| Divider label | `4:95` | TEXT `Label`；上下各多 10（加上頁面間距 20 = 30），把社群登入和手動填寫分成兩區 |
+| Code cell | `4:111` | State = Empty / Focus / Filled / Error；TEXT `Digit` |
+| Field | `5:65` | State = Empty / Focus / Filled / Error × Trailing = None / Icon / Note（共 7 個）；TEXT `Label` `Value` `Note` `Error` |
+| Social button | `5:121` | Provider = Google / LINE / Zalo × Last used = No / Yes。標誌是 `social/google|line|zalo`（`5:76` `5:78` `5:80`），LINE、Zalo 是上傳的官方圖檔 |
+| Action bar | `14:38` | BOOLEAN `Skip link`；裡面是 Button（`button`）和 Link row（`skip link`）。內容比畫面高的頁面把按鈕釘在底部用的。網頁版是 `.action-bar`（2026-10-16 補上） |
+| Option card | `16:78` | State = Default / Selected；TEXT `Title` `Sub`；INSTANCE_SWAP `Icon`（預設 `flag/vn`）。v1 的「radio button with icon」加寬成兩行 |
+| flag/vn · flag/th | `16:40` `16:48` | v1 匯出的 SVG（`assets/flags/`） |
+| Sheet header | `22:63` | TEXT `Title`；把手、置中標題、右上關閉（`icon/sheet-close` `22:51`）。v1 的彈窗是從底部上來的面板（AnchoredSheet）：底 `bg/sheet` #1C1C1E、上方圓角 12、後面一層 `bg/scrim` 黑 60% |
+| Status mark | `22:73` | 48 的綠圈加勾，結果頁用，取代 wireframe 的 emoji |
+| List row | `36:83` | Trailing = Chevron / Toggle on / Toggle off；TEXT `Title` `Value`。v1 設定頁的 search/list：50 高、卡片底 `bg/card` #212326、圓角 12，同一張卡裡用一條頁面底色的細線隔開，上面一行 15px 白 30% 的分組標題（`text/tertiary`） |
+| Toggle | `36:63` | State = On / Off；開的時候是綠色（v1 是紫色，2026-10-13 改） |
+| Step top bar | `55:58` | TEXT `Progress`、BOOLEAN `Back`。引導式 Setup 的頂列：返回（只有 24 的 icon/back，不寫「Back」，點擊範圍 44 × 44；使用者 2026-10-14）＋「n of 8」灰色 13 置中（2026-10-15 從右邊移到中間；頂列不放標題）。開場頁 Guided · Start（`57:1137`）不用它，改用 Nav top「Account Setup」＋✕（2026-10-14 使用者：「每頁應該都有 header」） |
+| Step hero | `55:69` | TEXT `Title` `Why` `Points`、BOOLEAN `Show points`。18 標題、一句為什麼、點數小標，置中。2026-10-15 拿掉 56 綠圈數字（`Number` 屬性已刪），標題從 28 改 18：進度只在 Step top bar 出現一次 |
+| Auth tabs | `72:1466` | Current = Sign Up / Log In。Login、Sign Up 的頂列：✕ 在左，中間兩個文字分頁「Sign Up　Log In」，目前這頁白色粗體＋16×3 綠線、另一頁灰色，都是 18。取代了 Nav top；按鈕下面沒有連結列；Login 的 Forgot Password? 在按鈕下面置中 |
+| Checklist row | `7:45` | State = Todo / Done；TEXT `Number` `Title` `Sub`。v1 沒有，照 v1 的語言畫的；網頁版是 `.checklist` ＋ `.checklist-row`（2026-10-16 補上） |
+
+| 畫面 | id | 尺寸 |
+|---|---|---|
+| Login · Password / · filled / · One-time code | `8:35` `8:94` `8:157` | 360 × 800 |
+| Sign Up · Default / · Ready / · From invite link | `8:214` `8:260` `8:308` | 360 × 800 |
+| Verify Email · In progress / · Ready / · Resend available / · Invalid code / · Too many resends | `21:535` `21:568` `21:601` `21:633` `21:667` | 360 × 800（排在 Sign Up 那一列） |
+| Sign Up · Account exists（Sign Up 上面蓋一張面板） | `23:602` | 360 × 800 |
+| Existing account · Reactivated / · Signed in / · Limited / · Restricted | `23:675` `23:695` `23:715` `23:738` | 360 × 800 |
+| Social · Welcome / · Account found / · Verify it's you / · Linked | `23:756` `23:777` `23:798` `23:829` | 360 × 800 |
+
+| Welcome + Offers | `17:716` | 360 × 800 |
+| Tutorial & App · You're all set / · Tour running / · What's new | `25:862` `25:894` `25:919` | 360 × 800（列：Tutorial & App） |
+| Forgot Password · Choose how / · Enter phone / · Reset / · New password filled | `37:891` `37:931` `37:961` `37:989` | 360 × 800（列：Forgot Password） |
+| Settings · Setup incomplete / · All done | `37:1024` `37:1154` | 360 × 1339 / 1205（列：Settings） |
+| Profile | `39:1102` | 360 × 1070（列：Profile）。2026-10-13 重排：身分、餘額弧形（28 的金額）、Needs your attention（待提款＋Cancel、Finish setting up、Inbox）、Statement 兩格、More（Promotions／Your offers／Refer a friend／Referral code／Language 收成清單列）、Log out |
+
+| Account Setup · Step 1 / 2 / 3 / · Step 1 · no contact on file | `8:366` `8:453` `17:343` `17:435` | 原本的 Setup 總覽，2026-10-14 搬進 Settings 列 |
+
+**2026-10-14 Setup 改成引導式**（使用者：「setup UI 做成剛拿到 iPhone 時一開始帶領使用者的步驟」「內容不變只是 UI 呈現方式改變」）：
+- 列「Setup · guided」：Start → 1 幣別 → 2 個人資料（→ 2b 沒有聯絡方式時補 email／電話）→ Step 2 岔路頁（Continue／Skip this step）→ 3 收款 → 4 聯絡方式 → 5 密碼 → Step 3 岔路頁 → 6 通知 → 7 主題 → 8 訊息管道 → Welcome + Offers。一頁一件事、按鈕釘在底部、可跳過的項目底下是「Set up later」。畫面 id `57:1137` 起（Start）到 `57:1599`（8 Message channel）。
+- 原本的清單總覽搬進 Settings 那一列，改名 **Account Setup**（頂列標題、按鈕 Continue Setup），用途是之後回來補做。
+- 之後回來補做也走引導頁（使用者 2026-10-14：「補強加引導」）：從 Account Setup 點一項，打開的就是同一張引導頁，只是返回回到 Account Setup、沒有「n of 8」、沒有「Set up later」。Settings 那一列放了兩張範例（收款帳戶 `62:1458`、通知 `62:1482`）。原本有麵包屑的三列內頁（12 張）已刪除。
+
+- **畫面是 iPhone 390 × 844，上下套 v1 的 Safari 外框**（使用者 2026-10-14：「到 v1 拿一個，保留上下兩塊，中間放內容」；尺寸取 Figma 機型清單裡最接近 375 的 iPhone 13 & 14）：上面 `Browser top · Safari`（`84:148`，狀態列＋網址列 94），下面 `Browser bottom · Safari`（`84:158`，工具列＋Home 條 83），都是從 v1 匯出的向量做成的元件；中間的頁面可以捲動。**只是呈現用**：網頁不畫這兩條、也不替它們留空間（`CLAUDE.md`）。程式仍在 360 寬檢查。
+| Login · Enter code · typing / · all six entered / · invalid / · too many resends | `86:2217` `86:2271` `86:2325` `86:2381` | 2026-10-14 補：Login 按 Send Code 之後那一步（login-flow-wireframe 的 One-time Code Login） |
+| Forgot Password · Enter code | `86:2435` | 2026-10-14 補：輸入電話和重設密碼之間那一步 |
+- 畫面是 frame，裡面全部是元件的 instance；寬 360 固定。Login／Sign Up 高度至少 800、隨內容長高；Setup 固定 800，按鈕釘在底部（使用者 2026-10-13 確認）。
+- 間距走 Tailwind 的 4px 格線（2026-10-14）：Spacing 變數 `space/4 8 12 16 20 32 40`；欄位和欄位 8（`fields` 綁 space/8）、其他同一組 12、區塊之間 16（page body 的 gap 綁 space/16；程式是 `gap-block`。分隔線元件上下 padding 綁 space/16，加上 gap 共 32）、主按鈕上方 16（直接用 page body 的 gap，不包框、不加 padding；使用者 2026-10-14：「12 拿掉，用 gap 就好」）、左右 16、頂列到內容 20、欄位到它的說明 4（說明放在欄位框裡最後，`space/4`）。圓角走 Tailwind 刻度：`radius/xl` 12（框）、`radius/full` 9999、`radius/sm` 2（分頁底線），畫面和元件上的圓角全部綁變數（2026-10-14 稽核：0 個沒綁）。**畫面上每一個 gap 和 padding 都綁在 Spacing 變數上**（2026-10-14 稽核：0 個沒綁），變數的 code syntax 是 `var(--space-*)`，跟程式引用同一組。元件內部的細部尺寸沒有綁變數，但全部落在 Tailwind 的刻度上（2、4、6、8、12…；2026-10-16 使用者決定元件內的 10 改 8、14 改 12，程式和 Figma 一起改，綁 space/8、space/12），跟 `tailwind.config.js` 元件裡寫的數字一致。
+- **不用麵包屑**（使用者 2026-10-14：「我不要這個」）：Forgot Password、Settings、Account Setup 的麵包屑列已刪，Breadcrumb 元件也刪了。Account Setup（從 Settings 打開）頂列補上 ✕，不然沒有出口。
+- 每一頁 `page body` 上方都是 space/20，頂列到第一個內容一律 20（使用者 2026-10-14 先試 60，再改 40，最後「header 和內容之間拿掉 20」→ 20，全部頁面一起改）；Login／Sign Up 的 `social row` 上方多一個 space/20 給「Last used」標籤，圖示之間 space/32。
+- Setup 是 wireframe 的 Setup Overview（`signup-flow-wireframe.html` 的 B 組）：獎勵進度、三步八項、Step 1 沒有關閉也不能跳過。**網頁版還沒切這一頁。**
+- Setup 的子頁（Choose Currency、Personal Information）頂列沒有 ✕：Step 1 不能離開。短頁的按鈕跟在表單後面，不釘底。
+- Personal Information 照 `signup-flow-wireframe.html` 畫了姓名、生日、性別三欄；`setup-nine.html` 的文字還多列了「國籍」，兩份不一致，**等使用者決定**。
+- 驗證碼錯誤：格子變紅、訊息在格子正下方、按鈕不變色（照 wireframe；v1 是按鈕也變紅，2026-10-13 決定不照）。
+- 「帳號已存在」面板裡用六格驗證碼（wireframe 畫的是一個「Enter code ＋ Paste」輸入框），跟驗證碼頁同一個元件。
+- Setup Step 2／3 的六項在 `signup-flow-wireframe.html` 沒有畫面，內容取自 `profile-settings-flow-wireframe.html`（Settings 的同名頁），套上 Setup 的外框（獎勵進度、Later）。Notifications 在 Setup 裡只問要不要開（一顆按鈕），細項開關留在 Settings。
+- Settings 和 Profile 是照 v1 現有的畫面做的（v1 node：setting `3305:156759`、Security／Change Password `3305:158019`、profile `6588:215736`）。使用者 2026-10-13：「profile 拿現有的框來優化」。Profile 保留 v1 的區塊和順序（身分、餘額弧形、Inbox、Promotions、Statement、Offers、Referral、Refer a Friend、語言、登出），改的是：Promotions 只列三則、Cancel 改成外框小按鈕（黃色留給主按鈕）、Unsettled／Cash Out 改成兩個外框格、齒輪改成「Settings ›」文字、加一列「Finish setting up」、修正拼字（Offees → Offers）。弧形的紫色是 Withdrawable、綠色是 Remaining churn。區塊標題前的圖示和優惠圖還沒放（沒有原檔）。
+- 圖像位用虛線框加文字標明要放什麼（教學插圖、QR code），不是成品。
+- 還沒畫：Settings 的子頁（Personal Information 三個狀態、Phone／Email／Change Password、Security & Sessions、Bank Account 清單、Notifications、Theme & Language、Product Preferences）；錢包使用者說先不要。可選的項目都沒有畫「已填」狀態，密碼強度（v1 有 password strong 元件）也還沒做。
+
+---
+
+# 已不是來源：V9Bet Mobile Web UI Kit（新視覺版，2026-10-12）
+
+> 下面記的是這個檔案當時的內容。網頁版已經改照 v1，這個檔案沒有跟著改。
+
+對應的網頁是 `login-flow-tailwind.html` 和 `signup-flow-tailwind.html`，兩邊要一起改。兩個網頁共用 `tailwind.config.js`（CDN 頁面直接讀它，不再各自內嵌一份設定）。
+
+## 頁面
+
+| 頁 | id | 內容 |
+|---|---|---|
+| 🧩 Components | `0:1` | 所有元件 |
+| 📱 Screens | `1:2` | Login 四個畫面 ＋ 各自的標籤 |
+
+## 變數與樣式（跟 `variables.css` 同名同值，WEB code syntax 已填 `var(--…)`）
+
+| Collection | id | 內容 |
+|---|---|---|
+| Primitives | `VariableCollectionId:1:3` | 24 支：`neutral/0…950`、`gold/400…700`、`green/400…600`、`alpha/black-40`、`alpha/white-7|10`、`alpha/ink-7|10`（scopes 是空的，不會出現在選色器） |
+| Color | `VariableCollectionId:1:23` | 19 支語意色，**Dark（預設）/ Light**，全部 alias 到 Primitives。含 `glass/fill-strong`、`glass/border` |
+
+**`text/secondary`、`text/muted` 在 Dark 是白色 72% / 55%（中性白灰），不是帶綠的灰。** 使用者 2026-10-13 指出字偏綠。對應 `variables.css` 的 `--color-text-secondary` / `--color-text-muted`。
+
+**`bg/input` 在 Dark 是黑色 40%，不是綠色。** 使用者要求輸入框和分頁底「綠色改成黑色加透明」。它在近黑底上幾乎看不見，所以一定要搭 1px 的 `glass/border`；分頁選中那一側用 `glass/fill-strong`。
+| Spacing | `VariableCollectionId:1:41` | `spacing/xs…3xl` = 4 / 8 / 12 / 16 / 20 / 24 / 32 / 40 |
+| Radius | `VariableCollectionId:1:50` | `radius/sm` 6 · `md` 10 · `lg` 14 · `xl` 20 · `full` 999 |
+
+- Text styles：`Heading/H1`（**Be Vietnam Pro** ExtraBold 26/32，頁面標題用；注意這個字體的樣式名沒有空格——`ExtraBold`、`SemiBold`，Inter 的才是 `Semi Bold`）。其餘是 Inter：`Body/Regular|Medium|Semibold|Bold`（15/23）、`Body Small/Regular|Medium|Semibold`（13/20）、`Caption/Regular`（11/16）、`Micro/Regular`（10/16）
+- Effect styles：`Effect/CTA sheen`（按鈕頂緣 1px 內亮線）、`Effect/Tab lift`
+- Paint styles：`Gradient/CTA`（gold/400 → gold/500）、`Gradient/Felt spotlight`（logo 後面那塊橢圓綠光）
+
+## 元件
+
+| 元件 | id | Variants / 屬性 |
+|---|---|---|
+| Button | `36:18` | State = Default / Disabled。TEXT：`Label#36:0`（2026-10-13 變成 component set 時 key 換過，舊的 `Label#3:0` 已失效）。48 高、`radius/xl` |
+| Text Field | `3:36` | Type = Text / Password × State = Default / Focus，另有 Text 的 Filled（有輸入值）與 Applied（值帶右側說明，例如邀請碼）。TEXT：`Placeholder#3:1`（也是輸入值；Password 要自己覆寫成「Password」）、`Note#36:3` |
+| Segmented Tab | `3:47` | Active = First / Second。TEXT：`First label#3:6`、`Second label#3:9` |
+| Checkbox Row | `3:56` | State = On / Off。TEXT：`Label#3:12`。標籤會撐滿並換行；instance 要設 FILL 寬。標籤裡的連結（Terms 等）是在 instance 的文字上用 `setRange*` 加粗加底線 |
+| Social Button | `3:91` | Provider = Google / LINE / Zalo × LastUsed = No / Yes |
+| Divider Label | `3:92` | TEXT：`Label#3:15` |
+| Auth Link | `33:17` | 主按鈕下方「Don't have an account? **Sign up**」那一行。TEXT：`Prompt#33:0`、`Action#33:1` |
+| Icon Button / Close | `3:105` | 44 × 44 |
+| Logo / V9BET lockup | `3:108` | 120 × 40，圖檔是 `assets/logo/v9bet-lockup-flat.png` |
+| icon/close · eye · check · google | `3:4` `3:8` `3:11` `3:17` | |
+
+每個元件的 `description` 寫了使用者當天訂下的規則（選中態用中性色、勾選框不要亮白、社群圖示用官方檔…），改之前先讀。
+
+## 畫面
+
+| 畫面 | id | 尺寸 |
+|---|---|---|
+| Login · Password · 360 | `4:16` | 360 × 800 |
+| Login · One-time code · 360 | `4:77` | 360 × 800 |
+| Login · Password · 393 | `4:133` | 393 × 852 |
+| Login · One-time code · 393 | `4:194` | 393 × 852 |
+| Sign up · Default · 360 | `37:147` | 360 × 800（未勾同意，按鈕 Disabled） |
+| Sign up · Ready · 360 | `37:193` | 360 × 800 |
+| Sign up · Invite link · 360 | `37:241` | 360 × 800（邀請碼由連結帶入） |
+| Sign up · Ready · 393 | `37:293` | 393 × 852 |
+
+Sign Up 的欄位照 `signup-flow-wireframe.html`：只有 email ＋ 選填邀請碼，沒有密碼、Account ID、幣別、Captcha。同意條款的勾選框放在主按鈕正上方。**還沒做**：「帳號已存在」彈窗、email 格式錯誤與邀請碼無效的錯誤狀態。
+
+使用者 2026-10-13 訂下的版面：
+
+- **頁面上不放 logo。** 這些頁是嵌在網站裡的，網站自己的 header 已經有 logo。原本放 logo 的綠光位置改放**頁面標題**（「Login」）。`Logo / V9BET lockup` 元件留在元件庫給網站 header 用，但不要放進這類頁面。
+- **頂列只有左邊的 ✕**，沒有標題、沒有「Sign up ｜ Login」切換（放過，被否決）。
+- **綠光是一整塊**：從畫面最上緣開始，蓋過 ✕ 那一列和標題。不要讓 ✕ 那一列是黑底、綠光從它下面才開始——那條硬邊被指出來過。
+- **Login ↔ Sign Up 的入口**是主按鈕下方的文字連結，照現有線上版 Sign Up 的做法。
+- **不預留上下安全區**（mobile web 有瀏覽器自己的列）。
+
+結構：`header`（帶 `Gradient/Felt spotlight`，裡面是 `top bar` 與 `title area`）→ `content`（`upper` 與 `actions` 用 SPACE_BETWEEN 撐開，中間就是吸收剩餘高度的彈性區，CTA 釘在底部）。畫面是 frame，不是 component。每個畫面上方的標籤是從量到的尺寸產生的。
+
+## 圖片怎麼進 Figma
+
+- `use_figma` 不能抓外部圖。用 `upload_assets` 拿上傳網址，`curl --data-binary` 把檔案 POST 上去，圖會直接變成指定節點的 fill。
+- **webp 上傳會成功但不會顯示**（Zalo 圖示踩過）。先用 `sips -s format png` 轉成 PNG 再傳。
+- 上傳會蓋掉節點原本的 fills；要保留底色（例如 Zalo 底下的白）得事後把 fills 設回 `[底色, 圖片]`。
+
+---
+
+# 舊檔：V9Bet UI Kit（`0stLHADYWKuf32S0e48UX1`）
+
+## 先知道這兩個陷阱（2026-10-12 踩過）
+
+1. **`get_metadata` 不帶 nodeId 只會回 `📕 Cover` 一頁。** 那不代表檔案只有一頁。要列出所有頁面，用 `use_figma` 跑：
+
+   ```js
+   return figma.root.children.map(p => ({ id: p.id, name: p.name, n: p.children.length }));
+   ```
+
+2. **`search_design_system` 查不到這個檔案自己的元件。** 它只搜已發佈的 library；這裡的元件是 local 的，查「button」「logo」會回空陣列。要盤點本地元件，進 `5:3` 那頁用 `findAllWithCriteria({ types: ['COMPONENT', 'COMPONENT_SET'] })`。
+
+這兩個結果加在一起，曾經讓我對使用者說「Figma 只有一頁封面、沒有元件可重用」，然後在 code 裡從零重刻了一個 Figma 早就有的 Login 畫面。**空結果不是「不存在」的證據。**
+
+---
+
+## 頁面
+
+| 頁 | id | 內容 |
+|---|---|---|
+| 📕 Cover | `0:1` | 封面 |
+| 🎨 Foundations | `5:2` | 一個大 frame `22:2`：Logo、Colour、Type、Spacing、Radius、Layout、Glass、Gradients、Money、What not to do |
+| 🧩 Components | `5:3` | 所有元件（見下表） |
+| 📱 Screens | `13:2` | 畫面元件 ＋ iOS / Android 裝置框 |
+
+## 變數與樣式（跟 `variables.css` 是同一組值）
+
+| Collection | 數量 | Modes |
+|---|---|---|
+| Primitives | 43 | Value |
+| Color | 38 | **Dark / Light** |
+| Spacing | 12 | Value |
+| Radius | 6 | Value |
+| Type | 22 | Value |
+
+Color 的變數名對應 `variables.css` 的語意層：`bg/app` `bg/surface` `bg/raised` `bg/input` `bg/hover` `bg/felt` · `text/primary|secondary|muted|on-brand|inverse` · `border/subtle|default|strong|focus` · `brand/primary|hover|pressed|subtle` · `brand/secondary|secondary-hover|secondary-subtle` · `status/*` · `money/up|down` · `glass/*`
+
+- Text styles：`Display`、`Heading/H1–H3`、`Body/Large|Base|Strong|Small`、`Caption`、`Numeric/Large|Base`
+- Paint styles：`Gradient/Felt`、`Gradient/Brand`、`Gradient/Banner · brand|hot`、`Gradient/App background` 等 13 支
+- Effect styles：`Effect/Glass blur`、`Effect/Lift`、`Effect/Halo` 等 6 支
+
+**畫面一律綁變數和樣式，不要寫死色碼或數字。**
+
+## 元件（`🧩 Components`）
+
+| 元件 | id | Variants / 屬性 |
+|---|---|---|
+| Button | `8:14` | Style = Primary / Secondary / Ghost × State = Default / Disabled |
+| Text Field | `9:23` | State = Default / Focus / Filled / Error / Disabled |
+| OTP Cell | `9:32` | State = Empty / Focus / Filled / Error |
+| Selection Row | `9:45` | Control = Radio / Checkbox × State = Off / On |
+| Social Button | `89:23` | Provider = Google / LINE / Zalo × LastUsed = No / Yes |
+| Tab Bar | `12:12` | Active = Deposit / Withdrawal（Login 的 One-time code ｜ Password 也是借這顆改字） |
+| Badge | `8:21` | Tone = Neutral / Required / Reward |
+| Alert | `8:34` | Tone = Info / Success / Warning / Error |
+| Checklist Row | `25:26` | State = Todo / Done；TEXT：Number、Title、Sub |
+| Payment Method | `12:33` | State = Default / Preferred / Offer / Maintenance；Icon（INSTANCE_SWAP）、Name、Min |
+| Promo Banner | `32:29` | Tone = Brand / Hot |
+| List Row | `9:46` | 單一元件 |
+| Progress Bar | `9:53` | 單一元件 |
+| icon/bank · atm · usdt · qr | `16:4` `16:8` `16:12` `16:18` | 24×24 |
+
+每個元件的 `description` 寫了它的規則（例如 Primary 一頁只有一顆），改之前先讀。
+
+## Logo
+
+- `V9BET` lockup 和 `V9` mark 是**外部 library 的元件**（`remote: true`），不在這個檔案裡。用 key 匯入：
+  - V9BET lockup：`4769535312fd09c7efd2494f7ea567c8997ceb61`
+  - V9 mark：`3c72669a25d4a337ebe9a11fe7e5f6dfdf1c9406`
+- 規則寫在 Foundations 的 Logo 區（`95:29`）：不改色、不加陰影、不描邊；一頁出現一次；lockup 的 BET 是白字，只能放深色底；寬度低於 120dp 用 mark。
+- Web 端對應檔：`assets/logo/v9bet-lockup-flat.png`（純金 V9 ＋ 純白 BET）。**不要用 3D 金屬質感那版**，使用者否決過。
+
+## 畫面（`📱 Screens`）
+
+畫面本體是 component，裝置框裡放的是它的 instance——**改畫面要改 component，不要改裝置框裡的 instance。**
+
+| 畫面 component | id | 尺寸 |
+|---|---|---|
+| Banking · Bonus active | `48:129` | 390 × 1146 |
+| Setup · Step 1 | `73:393` | 390 × 949 |
+| Login · One-time code | `91:1184` | 360 × 724 |
+| Sign Up · Default | `91:1185` | 360 × 724 |
+
+每個畫面各有一組裝置框：iOS（402 × 874，狀態列 62、home indicator 34，用 Apple iOS 27 kit）與 Android（360 × 800，狀態列 52、手勢列 24，用 Material 3 kit）。已掛的 library：Material 3 Design Kit、iOS and iPadOS 26、iOS and iPadOS 27。
+
+---
+
+## Figma ↔ Tailwind 目前不一致的地方（2026-10-12）
+
+這是**舊檔**的 Login 跟 Tailwind 版的差異。使用者的決定是開新檔重做，所以舊檔沒有被修改，下表右欄就是新檔現在的樣子。
+
+| | Figma `Login · One-time code` | `login-flow-tailwind.html`（使用者當天確認過的） |
+|---|---|---|
+| 頂列 | logo 靠左 ＋ ✕ | 「Sign up ｜ Login」文字 ＋ ✕，logo 置中在下面 |
+| 標題 | 「Welcome back」＋ 副標 | **拿掉了**（使用者要求） |
+| 社群登入 | 三顆 96 × 52 的文字 pill（G / LINE / Zalo） | 圓形 48、**官方圖示**、間距 32、「Last used」小標 |
+| 分頁 | Tab Bar，選中態帶黃 | 中性色 `bg-hover`、圓角跟輸入框一致、字 15px 粗體 |
+| 輸入框 | 52 高、有邊框 | 48 高、無邊框純填色 |
+| 勾選框 | 黃色填滿 | 中性灰外框（不要綠、不要亮白） |
+| 主按鈕 | 56 高、全圓 | 48 高、圓角 20、上淺下深的金色 |
+| 底部 | 「New to V9BET? Create an account」 | 沒有（Sign up 在頂列） |
+| 綠場 | 340 高的 felt 區塊 | 以 logo 為中心的橢圓聚光（使用者嫌原本太綠） |
+
+社群圖示的來源：LINE 是官方 app icon（`assets/social/line.png`），Zalo 取自 zalo.me 自己的 CDN（`assets/social/zalo.webp`）。**第三方品牌圖示一律找官方檔，不要手畫**——使用者為這個糾正過兩次。
