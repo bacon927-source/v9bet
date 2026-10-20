@@ -16,7 +16,7 @@
 
 ## 2026-10-20 的狀態
 
-**GitHub 停在 `3be5836`（10-07）。** 這台比 GitHub 多下面幾個 commit，還沒推，因為網路不穩：
+**GitHub 停在 `3be5836`（10-07）。** 這台比 GitHub 多下面這些 commit（之後的看 `git log --oneline origin/main..HEAD`），還沒推，因為網路不穩：
 
 | commit | 日期 | 內容 |
 |---|---|---|
@@ -64,7 +64,7 @@
 - **GitHub 登入**：`gh auth status` 要看到 `bacon927-source`。SSH 推不動的機器就照上面用 HTTPS 推
 - **本機預覽**：`.claude/launch.json` 已經在 repo 裡（`python3 -m http.server 4599`）
 - **網路**：Tailwind 是從 CDN 載的。連不上 CDN 時頁面會沒有樣式，那是網路問題，不是頁面壞了
-- **Figma**：檔案在雲端，不用同步。但那台的 Claude 要自己接上 Figma 才能改檔；檔案 id 在 `FIGMA.md`
+- **Figma**：檔案在雲端，不用同步。但那台的 Claude 要自己接上 Figma 才能改檔；檔案 id 在 `FIGMA.md`。確認方法：叫 Claude 跑 `whoami`，要看到帳號 bacon、**v9 團隊 Full seat**（能編輯）；再用 `FIGMA.md` 的 node id 讀 📱 Screens `2:2`。**不要用不帶 node id 的頁面列表判斷**，它只會列出 Components 一頁
 
 ## 不會跟著換電腦的東西
 
@@ -82,4 +82,4 @@ Figma 檔不管在哪台改都是同一份，但 **`variables.css` 只有 commit
 
 | 日期 | 從 → 到 | 換手前做了什麼 | GitHub 是否同步 |
 |---|---|---|---|
-| 2026-10-20 | 另一台 → MacBook Pro (2) | 另一台一直出問題，改在這台做。10-08 到 10-19 的工作原本都沒 commit，已整理成 commit | ❌ 這台多 7 個（含這份紀錄），網路不穩還沒推 |
+| 2026-10-20 | 另一台 → MacBook Pro (2) | 另一台一直出問題，改在這台做。10-08 到 10-19 的工作原本都沒 commit，已整理成 commit。這台的 Figma 連線已確認（v9 團隊 Full seat；Screens 9 區 54 張，與 `FIGMA.md` 一致） | ❌ 網路不穩還沒推（清單：`git log --oneline origin/main..HEAD`） |
