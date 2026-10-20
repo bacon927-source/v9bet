@@ -65,18 +65,10 @@ module.exports = {
         down: v('color-money-down'),
       },
 
-      /* Spacing: Tailwind's own numeric keys (gap-2, p-4, pt-5, mt-8), pointed at
-         variables.css so Figma's spacing/N, --space-N and the class are one name.
-         Any Tailwind step is allowed; only a value off Tailwind's scale is an exception. */
-      spacing: {
-        1: v('space-1'), 2: v('space-2'), 3: v('space-3'), 4: v('space-4'),
-        5: v('space-5'), 8: v('space-8'),
-      },
-
-      borderRadius: {
-        none: v('radius-none'), sm: v('radius-sm'), DEFAULT: v('radius'), md: v('radius-md'),
-        lg: v('radius-lg'), xl: v('radius-xl'), '2xl': v('radius-2xl'), full: v('radius-full'),
-      },
+      /* Spacing and radius are Tailwind's own default scales, used as is
+         (p-4, gap-7, p-0.5, rounded-xl …) — IT builds with Tailwind, so we do
+         not re-declare values Tailwind already has. Only a value that is not
+         on Tailwind's scale is an exception, and it needs the user's OK. */
 
       /* v1 is set in the system face — SF Pro on iOS, Roboto on Android — so
          there is one family and no web font to load. */
@@ -182,9 +174,9 @@ module.exports = {
            whole page, like a feed switcher, so they belong in the header. The
            current one is white with a short green bar; the other is grey. */
         '.nav-tabs': {
-          position: 'absolute', inset: '0', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '28px', pointerEvents: 'none',
+          position: 'absolute', inset: '0', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: theme('spacing.7'), pointerEvents: 'none',
           '& > *': {
-            pointerEvents: 'auto', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '4px', minHeight: '44px',
+            pointerEvents: 'auto', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: theme('spacing.1'), minHeight: '44px',
             ...type('title'), color: c('ink.muted'),
           },
           '& > *::after': { content: '""', width: '16px', height: '3px', borderRadius: theme('borderRadius.sm'), backgroundColor: 'transparent' },
@@ -212,11 +204,11 @@ module.exports = {
            field has focus or a value. The input needs placeholder=" ".
            The value is 17px: under 16 iOS Safari zooms the page on focus. */
         '.field': {
-          position: 'relative', paddingTop: '8px',
+          position: 'relative', paddingTop: theme('spacing.2'),
           '& > input': {
             display: 'block', width: '100%', height: '50px',
             border: `1px solid ${c('edge.DEFAULT')}`, borderRadius: theme('borderRadius.xl'),
-            backgroundColor: c('input'), padding: '0 12px',
+            backgroundColor: c('input'), padding: `0 ${theme('spacing.3')}`,
             ...type('field'), color: c('ink.DEFAULT'), outline: 'none',
           },
           '& > input:focus': { borderColor: c('edge.focus') },
@@ -230,7 +222,7 @@ module.exports = {
           '& > input[aria-invalid="true"] ~ .hint': { display: 'none' },
           '& > input:-webkit-autofill': { WebkitTextFillColor: c('ink.DEFAULT'), boxShadow: `inset 0 0 0 100px ${c('app')}` },
           '& > label': {
-            position: 'absolute', left: '12px', top: '8px', height: '50px', display: 'flex', alignItems: 'center',
+            position: 'absolute', left: theme('spacing.3'), top: theme('spacing.2'), height: '50px', display: 'flex', alignItems: 'center',
             fontSize: type('body').fontSize, lineHeight: 'normal', color: c('ink.muted'),
             pointerEvents: 'none', transition: 'top .12s ease, left .12s ease, font-size .12s ease, transform .12s ease',
           },
@@ -239,27 +231,27 @@ module.exports = {
              field keeps its red label even while focused. */
           '& > input:focus:not([aria-invalid="true"]) + label': { color: c('ink.DEFAULT') },
           '& > input:focus + label, & > input:not(:placeholder-shown) + label': {
-            top: '8px', left: '8px', height: 'auto', padding: '2px 4px', transform: 'translateY(-50%)', backgroundColor: c('app'),
+            top: theme('spacing.2'), left: theme('spacing.2'), height: 'auto', padding: `${theme('spacing[0.5]')} ${theme('spacing.1')}`, transform: 'translateY(-50%)', backgroundColor: c('app'),
             fontSize: v('font-size-field-label'),
           },
           '@media (prefers-reduced-motion: reduce)': { '& > label': { transition: 'none' } },
         },
         /* Trailing slot: an icon or a short note at the right edge of the box. */
         '.field-trail': {
-          position: 'absolute', right: '8px', top: '8px', height: '50px', display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '6px',
+          position: 'absolute', right: theme('spacing.2'), top: theme('spacing.2'), height: '50px', display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: theme('spacing[1.5]'),
           ...type('micro'), color: c('ink.secondary'),
         },
-        '.field:has(> .field-trail) > input': { paddingRight: '40px' },
+        '.field:has(> .field-trail) > input': { paddingRight: theme('spacing.10') },
         '.field-trail[hidden]': { display: 'none' },
         /* The icon is 16px; the thing you tap is 44. */
-        'button.field-trail': { minWidth: '44px', right: '0', paddingRight: '8px', color: c('ink.DEFAULT') },
+        'button.field-trail': { minWidth: '44px', right: '0', paddingRight: theme('spacing.2'), color: c('ink.DEFAULT') },
 
         /* Tabs — text over a 2px rule; the selected one turns green.
            State lives in aria-selected, so scripts flip one attribute. */
         '.tabs': { display: 'flex' },
         '.tab': {
-          flex: '1 1 0%', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px',
-          height: '44px', paddingTop: '8px', fontSize: type('body').fontSize, lineHeight: '27px', color: c('ink.navOff'),
+          flex: '1 1 0%', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: theme('spacing.1'),
+          height: '44px', paddingTop: theme('spacing.2'), fontSize: type('body').fontSize, lineHeight: '27px', color: c('ink.navOff'),
           '&::after': { content: '""', width: '100%', height: '2px', backgroundColor: 'currentColor' },
           '&[aria-selected="true"]': { color: c('brand-2.DEFAULT') },
         },
@@ -299,7 +291,7 @@ module.exports = {
            action step apart. */
         '.social-row': { display: 'flex', alignItems: 'flex-start', justifyContent: 'center', gap: theme('spacing.8'), paddingTop: theme('spacing.5') },
         '.social-btn': {
-          position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px',
+          position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: theme('spacing.1'),
           ...type('body-sm'), color: c('ink.secondary'),
         },
         '.social-btn-icon': {
@@ -309,7 +301,7 @@ module.exports = {
         },
         '.social-btn[data-last-used] .social-btn-icon': { boxShadow: `0 0 0 2px ${c('brand-2.DEFAULT')}` },
         '.social-btn-badge': {
-          position: 'absolute', top: '-18px', left: '50%', transform: 'translateX(-50%)', padding: '2px 6px',
+          position: 'absolute', top: '-18px' /* not on Tailwind's scale (no 4.5) — exception, awaiting the user's OK */, left: '50%', transform: 'translateX(-50%)', padding: `${theme('spacing[0.5]')} ${theme('spacing[1.5]')}`,
           borderRadius: pill, backgroundColor: c('app'), border: `1px solid ${c('edge.DEFAULT')}`,
           ...type('micro'), color: c('ink.secondary'), whiteSpace: 'nowrap',
         },
@@ -355,7 +347,7 @@ module.exports = {
            A row that opens a page is an <a>; a row with a toggle is a <label>
            so the whole row flips it. Long titles truncate, they do not wrap. */
         '.list-row': {
-          display: 'flex', alignItems: 'center', gap: theme('spacing.2'), width: '100%', minHeight: '50px', padding: '0 16px',
+          display: 'flex', alignItems: 'center', gap: theme('spacing.2'), width: '100%', minHeight: '50px', padding: `0 ${theme('spacing.4')}`,
           backgroundColor: c('card'), textAlign: 'left', cursor: 'pointer',
           ...type('body'), color: c('ink.DEFAULT'),
           '& > .list-row-title': { flex: '1 1 0%', minWidth: '0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' },
@@ -367,7 +359,7 @@ module.exports = {
            promotions only). Put it right after a visually hidden checkbox
            with role="switch": it takes effect at once, no Save button. */
         '.toggle': {
-          flex: 'none', display: 'flex', alignItems: 'center', width: '40px', height: '24px', padding: '0 2px',
+          flex: 'none', display: 'flex', alignItems: 'center', width: '40px', height: '24px', padding: `0 ${theme('spacing[0.5]')}`,
           borderRadius: pill, backgroundColor: c('disabled.DEFAULT'), transition: 'background-color .12s ease',
           '&::after': { content: '""', width: '20px', height: '20px', borderRadius: pill, backgroundColor: c('ink.DEFAULT'), transition: 'transform .12s ease' },
           '@media (prefers-reduced-motion: reduce)': { '&, &::after': { transition: 'none' } },
@@ -416,7 +408,7 @@ module.exports = {
           '& > p': { ...type('body'), color: c('ink.secondary') },
         },
         '.points': {
-          display: 'inline-flex', alignItems: 'center', padding: '4px 8px', borderRadius: pill,
+          display: 'inline-flex', alignItems: 'center', padding: `${theme('spacing.1')} ${theme('spacing.2')}`, borderRadius: pill,
           border: `1px solid ${c('edge.DEFAULT')}`, ...type('body-sm'), color: c('brand-2.DEFAULT'),
         },
 
@@ -429,7 +421,7 @@ module.exports = {
           '& > * + *': { borderTop: `1px solid ${c('edge.subtle')}` },
         },
         '.checklist-row': {
-          display: 'flex', alignItems: 'center', gap: theme('spacing.3'), width: '100%', padding: '8px 12px', textAlign: 'left',
+          display: 'flex', alignItems: 'center', gap: theme('spacing.3'), width: '100%', padding: `${theme('spacing.2')} ${theme('spacing.3')}`, textAlign: 'left',
           ...type('body'), color: c('ink.DEFAULT'),
         },
         '.checklist-row-marker': {
@@ -457,8 +449,8 @@ module.exports = {
         '.sheet-header': {
           position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: theme('spacing.2'), paddingTop: theme('spacing.1'),
           '&::before': { content: '""', width: '36px', height: '5px', borderRadius: pill, backgroundColor: c('sheet.handle') },
-          '& > h2': { display: 'flex', alignItems: 'center', minHeight: '40px', padding: '0 56px', textAlign: 'center', ...type('title'), fontWeight: '600', color: c('ink.DEFAULT') },
-          '& > .sheet-close': { position: 'absolute', top: theme('spacing.1'), right: '6px', display: 'grid', placeItems: 'center', width: '44px', height: '44px', color: c('ink.DEFAULT') },
+          '& > h2': { display: 'flex', alignItems: 'center', minHeight: '40px', padding: `0 ${theme('spacing.14')}`, textAlign: 'center', ...type('title'), fontWeight: '600', color: c('ink.DEFAULT') },
+          '& > .sheet-close': { position: 'absolute', top: theme('spacing.1'), right: theme('spacing[1.5]'), display: 'grid', placeItems: 'center', width: '44px', height: '44px', color: c('ink.DEFAULT') },
         },
         '.sheet-body': {
           display: 'flex', flexDirection: 'column', gap: theme('spacing.4'),

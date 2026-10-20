@@ -98,22 +98,9 @@
   --color-money-up:var(--green-400);
   --color-money-down:var(--red-400);
 
-  /* Spacing — named exactly as Tailwind's numeric scale (2026-10-20, user chose
-     "all Tailwind numbers"): --space-4 is p-4 is Figma's spacing/4, all 16px.
-     Any Tailwind step is allowed; only a value off Tailwind's scale is an exception.
-     These are the steps in use; the numbers are Tailwind keys, not px. */
-  --space-1:4px;   /* a field to its own hint or error */
-  --space-2:8px;   /* tight pairs: tick or icon to its label, field to field */
-  --space-3:12px;  /* inside a group: items in a card, a list, a result */
-  --space-4:16px;  /* page edge; between blocks; above the primary button */
-  --space-5:20px;  /* header to the first content */
-  --space-8:32px;  /* each side of a divider; between social icons */
-
-  /* Radius — Tailwind's scale (rounded-sm 2, rounded 4, rounded-md 6 … rounded-xl 12).
-     In use: rounded-xl for boxes (fields, code cells, cards, sheets),
-     rounded-full for buttons, pills and rings, rounded-sm for the tab bar. */
-  --radius-none:0px; --radius-sm:2px; --radius:4px; --radius-md:6px;
-  --radius-lg:8px;   --radius-xl:12px; --radius-2xl:16px; --radius-full:9999px;
+  /* Spacing and radius: none here. They are Tailwind's default scales, used
+     as is — p-4 is 16, gap-7 is 28, rounded-xl is 12. We only declare what
+     Tailwind does not have (colours, type). Flutter reads the same numbers. */
 
   /* ---- type ---- */
   /* v1 is set in the system face (SF Pro on iOS, Roboto on Android): one
