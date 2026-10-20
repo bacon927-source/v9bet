@@ -20,7 +20,7 @@
 
 <body class="bg-app text-ink font-sans antialiased">
   <div class="min-h-[100dvh] flex justify-center bg-app">
-    <div class="w-full md:max-w-[440px] md:border-x md:border-edge-subtle min-h-[100dvh] flex flex-col safe-top">
+    <div class="page w-full md:max-w-[440px] md:border-x md:border-edge-subtle min-h-[100dvh]">
 
       <div class="nav-top">
         <a href="index.html" aria-label="Close" class="nav-top-action"><span class="icon icon-close" aria-hidden="true"></span></a>
@@ -50,7 +50,7 @@
         <!-- Email + a code is the whole registration: no password, no Account ID,
              no Captcha (signup-flow-wireframe.html). Referral sits under the one
              required field and never blocks sign-up. -->
-        <div class="flex flex-col gap-inline">
+        <div class="flex flex-col gap-2">
           <div class="field">
             <input id="email" type="email" inputmode="email" autocomplete="email" placeholder=" ">
             <label for="email">Email</label>
@@ -64,7 +64,7 @@
 
         <!-- Consent is the last thing before the button it unlocks, and it covers
              every method on this screen — the social icons included. -->
-        <label class="flex items-center gap-inline min-h-[44px] cursor-pointer text-body-sm font-light">
+        <label class="flex items-center gap-2 min-h-[44px] cursor-pointer text-body-sm font-light">
           <input id="terms" type="checkbox" class="sr-only">
           <span class="tick"></span>
           <span>You are 21+ years old and accept our <a href="system-pages-wireframe.html" class="text-brand-2">Terms of Service</a> and <a href="system-pages-wireframe.html" class="text-brand-2">Privacy Policy</a>.</span>

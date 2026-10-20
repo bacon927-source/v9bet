@@ -65,11 +65,12 @@ module.exports = {
         down: v('color-money-down'),
       },
 
-      /* Spacing: gap-group, gap-block, px-gutter, pt-header, mt-action …
-         Named for what they separate, so nobody has to remember 10 vs 20. */
+      /* Spacing: Tailwind's own numeric keys (gap-2, p-4, pt-5, mt-8), pointed at
+         variables.css so Figma's spacing/N, --space-N and the class are one name.
+         Spacing uses only 1 2 3 4 5 8; the other keys stay for sizes (w-6, h-11). */
       spacing: {
-        note: v('space-note'), inline: v('space-inline'), group: v('space-group'), gutter: v('space-gutter'),
-        block: v('space-block'), action: v('space-action'), header: v('space-header'),
+        1: v('space-1'), 2: v('space-2'), 3: v('space-3'), 4: v('space-4'),
+        5: v('space-5'), 8: v('space-8'),
       },
 
       borderRadius: {
@@ -125,7 +126,7 @@ module.exports = {
          is reserved, only whatever inset the device itself reports. */
       addUtilities({
         '.safe-top': { paddingTop: 'env(safe-area-inset-top)' },
-        '.safe-bottom': { paddingBottom: `calc(${theme('spacing.gutter')} + env(safe-area-inset-bottom))` },
+        '.safe-bottom': { paddingBottom: `calc(${theme('spacing.4')} + env(safe-area-inset-bottom))` },
         /* Small links and tick rows: the text stays small, the target is 44 tall. */
         '.tap': { display: 'inline-flex', alignItems: 'center', minHeight: '44px' },
       });
@@ -145,18 +146,31 @@ module.exports = {
       });
 
       addComponents({
-        /* Page body — everything under the header: 20 from the header to the
-           first content on every page, 16 gutters, 16 between blocks (the main
+        /* Page — set first, before anything else on the screen: the 16 left and
+           right edges (px-4) for the header and the content alike (user,
+           2026-10-20: "每頁都先訂左右的 padding 然後才設定 header then content").
+           The header and the body carry no side padding of their own, so the ✕,
+           the tabs and every block line up on the same 16 line. Pages add
+           min-h-[100dvh]; demo frames don't. */
+        '.page': {
+          display: 'flex', flexDirection: 'column', paddingInline: theme('spacing.4'),
+          paddingTop: 'env(safe-area-inset-top)',
+        },
+
+        /* Page body — everything under the header, inside .page: 20 from the
+           header to the first content on every page, 16 between blocks (the main
            button included), and the bottom edge keeps clear of any inset the
-           device reports. */
+           device reports. No side padding — .page owns that. */
         '.page-body': {
-          display: 'flex', flexDirection: 'column', gap: theme('spacing.block'),
-          padding: `${theme('spacing.header')} ${theme('spacing.gutter')} calc(${theme('spacing.gutter')} + env(safe-area-inset-bottom))`,
+          display: 'flex', flexDirection: 'column', gap: theme('spacing.4'),
+          padding: `${theme('spacing.5')} 0 calc(${theme('spacing.4')} + env(safe-area-inset-bottom))`,
         },
 
         /* Navigation-Top — 44 tall like every header (title, tabs or steps),
-           so the ✕ gets a full 44 × 44 to tap. Action left, title centred. */
-        '.nav-top': { position: 'relative', display: 'flex', alignItems: 'center', height: '44px', padding: '0 8px' },
+           so the ✕ gets a full 44 × 44 to tap. Action left, title centred.
+           No side padding: it sits inside .page, so the ✕ starts on the same
+           16 line as the content and its tap area runs inward, not off-screen. */
+        '.nav-top': { position: 'relative', display: 'flex', alignItems: 'center', height: '44px' },
         '.nav-top-action': { position: 'relative', zIndex: '10', display: 'flex', alignItems: 'center', width: '44px', height: '44px' },
         '.nav-top-title': {
           position: 'absolute', inset: '0', display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -212,7 +226,7 @@ module.exports = {
              place: the outline and label go red and the hint steps aside. */
           '& > input[aria-invalid="true"]': { borderColor: c('error') },
           '& > input[aria-invalid="true"] + label': { color: c('error') },
-          '& > .hint, & > .error-text': { marginTop: theme('spacing.note') },
+          '& > .hint, & > .error-text': { marginTop: theme('spacing.1') },
           '& > input[aria-invalid="true"] ~ .hint': { display: 'none' },
           '& > input:-webkit-autofill': { WebkitTextFillColor: c('ink.DEFAULT'), boxShadow: `inset 0 0 0 100px ${c('app')}` },
           '& > label': {
@@ -262,7 +276,7 @@ module.exports = {
            what is above and below: the page gap (16) plus padding that makes
            up the rest. */
         '.divider-label': {
-          display: 'flex', alignItems: 'center', gap: theme('spacing.group'), paddingBlock: `calc(${theme('spacing.action')} - ${theme('spacing.block')})`, ...type('body-sm'), color: c('ink.secondary'),
+          display: 'flex', alignItems: 'center', gap: theme('spacing.3'), paddingBlock: `calc(${theme('spacing.8')} - ${theme('spacing.4')})`, ...type('body-sm'), color: c('ink.secondary'),
           '&::before, &::after': { content: '""', flex: '1 1 0%', height: '1px', backgroundColor: c('edge.DEFAULT'), opacity: '.5' },
         },
 
@@ -272,7 +286,7 @@ module.exports = {
            header gap; the row adds 20 more on top because the "Last used"
            badge rises 18 above the icon (Figma: space/20). Buttons sit one
            action step apart. */
-        '.social-row': { display: 'flex', alignItems: 'flex-start', justifyContent: 'center', gap: theme('spacing.action'), paddingTop: theme('spacing.header') },
+        '.social-row': { display: 'flex', alignItems: 'flex-start', justifyContent: 'center', gap: theme('spacing.8'), paddingTop: theme('spacing.5') },
         '.social-btn': {
           position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px',
           ...type('body-sm'), color: c('ink.secondary'),
@@ -299,7 +313,7 @@ module.exports = {
            empty, green once it holds a digit, and the whole row goes red with
            data-invalid. Each input needs placeholder=" ". */
         '.otp': {
-          display: 'flex', justifyContent: 'center', gap: theme('spacing.group'),
+          display: 'flex', justifyContent: 'center', gap: theme('spacing.3'),
           '& > input': {
             flex: '0 1 42px', minWidth: '0', width: '42px', height: '44px', padding: '0', textAlign: 'center',
             border: `1px solid ${c('edge.empty')}`, borderRadius: theme('borderRadius.xl'),
@@ -330,7 +344,7 @@ module.exports = {
            A row that opens a page is an <a>; a row with a toggle is a <label>
            so the whole row flips it. Long titles truncate, they do not wrap. */
         '.list-row': {
-          display: 'flex', alignItems: 'center', gap: theme('spacing.inline'), width: '100%', minHeight: '50px', padding: '0 16px',
+          display: 'flex', alignItems: 'center', gap: theme('spacing.2'), width: '100%', minHeight: '50px', padding: '0 16px',
           backgroundColor: c('card'), textAlign: 'left', cursor: 'pointer',
           ...type('body'), color: c('ink.DEFAULT'),
           '& > .list-row-title': { flex: '1 1 0%', minWidth: '0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' },
@@ -355,7 +369,7 @@ module.exports = {
            explanation. The whole card is the <label>; the tick turns green,
            the outline does not change. A disabled option drops to 50%. */
         '.option-card': {
-          display: 'flex', alignItems: 'center', gap: theme('spacing.group'), width: '100%', padding: theme('spacing.group'),
+          display: 'flex', alignItems: 'center', gap: theme('spacing.3'), width: '100%', padding: theme('spacing.3'),
           border: `1px solid ${c('edge.DEFAULT')}`, borderRadius: theme('borderRadius.xl'), cursor: 'pointer',
           ...type('body'), color: c('ink.DEFAULT'),
           '& > img, & > svg': { flex: 'none', width: '22px', height: '22px' },
@@ -368,8 +382,11 @@ module.exports = {
            guided page, with at most one text link under it. Short pages do
            not use it: the button follows the content. */
         '.action-bar': {
-          position: 'sticky', bottom: '0', display: 'flex', flexDirection: 'column', gap: theme('spacing.note'),
-          padding: `${theme('spacing.gutter')} ${theme('spacing.gutter')} calc(${theme('spacing.gutter')} + env(safe-area-inset-bottom))`,
+          /* Inside .page, but full-bleed: it cancels the page's 16 so its top
+             rule and background run edge to edge, then pads its own 16 back. */
+          marginInline: `calc(-1 * ${theme('spacing.4')})`,
+          position: 'sticky', bottom: '0', display: 'flex', flexDirection: 'column', gap: theme('spacing.1'),
+          padding: `${theme('spacing.4')} ${theme('spacing.4')} calc(${theme('spacing.4')} + env(safe-area-inset-bottom))`,
           backgroundColor: c('app'), borderTop: `1px solid ${c('edge.subtle')}`,
         },
 
@@ -383,7 +400,7 @@ module.exports = {
         /* Step hero — the top of a guided page: 18 title, one line of why,
            and the points pill. One per page. */
         '.step-hero': {
-          display: 'flex', flexDirection: 'column', alignItems: 'center', gap: theme('spacing.group'), textAlign: 'center',
+          display: 'flex', flexDirection: 'column', alignItems: 'center', gap: theme('spacing.3'), textAlign: 'center',
           '& > h1, & > h2': { ...type('title'), fontWeight: '600', color: c('ink.DEFAULT') },
           '& > p': { ...type('body'), color: c('ink.secondary') },
         },
@@ -401,7 +418,7 @@ module.exports = {
           '& > * + *': { borderTop: `1px solid ${c('edge.subtle')}` },
         },
         '.checklist-row': {
-          display: 'flex', alignItems: 'center', gap: theme('spacing.group'), width: '100%', padding: '8px 12px', textAlign: 'left',
+          display: 'flex', alignItems: 'center', gap: theme('spacing.3'), width: '100%', padding: '8px 12px', textAlign: 'left',
           ...type('body'), color: c('ink.DEFAULT'),
         },
         '.checklist-row-marker': {
@@ -427,14 +444,14 @@ module.exports = {
           borderTopLeftRadius: theme('borderRadius.xl'), borderTopRightRadius: theme('borderRadius.xl'),
         },
         '.sheet-header': {
-          position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: theme('spacing.inline'), paddingTop: theme('spacing.note'),
+          position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: theme('spacing.2'), paddingTop: theme('spacing.1'),
           '&::before': { content: '""', width: '36px', height: '5px', borderRadius: pill, backgroundColor: c('sheet.handle') },
           '& > h2': { display: 'flex', alignItems: 'center', minHeight: '40px', padding: '0 56px', textAlign: 'center', ...type('title'), fontWeight: '600', color: c('ink.DEFAULT') },
-          '& > .sheet-close': { position: 'absolute', top: theme('spacing.note'), right: '6px', display: 'grid', placeItems: 'center', width: '44px', height: '44px', color: c('ink.DEFAULT') },
+          '& > .sheet-close': { position: 'absolute', top: theme('spacing.1'), right: '6px', display: 'grid', placeItems: 'center', width: '44px', height: '44px', color: c('ink.DEFAULT') },
         },
         '.sheet-body': {
-          display: 'flex', flexDirection: 'column', gap: theme('spacing.block'),
-          padding: `${theme('spacing.gutter')} ${theme('spacing.gutter')} calc(${theme('spacing.gutter')} + env(safe-area-inset-bottom))`,
+          display: 'flex', flexDirection: 'column', gap: theme('spacing.4'),
+          padding: `${theme('spacing.4')} ${theme('spacing.4')} calc(${theme('spacing.4')} + env(safe-area-inset-bottom))`,
         },
 
         /* Status mark — the 48 green ring with a tick that opens a result page.
