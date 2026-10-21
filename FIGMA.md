@@ -61,7 +61,7 @@ fileKey `RQEyZIgfkCKHdzYmOwprvR`，在 v9 團隊下。跟網頁版是同一套�
 | 📱 Screens | `2:2` | **一個流程一個 Section、由上往下，畫面是 Section 裡最上層的 frame**（2026-10-14 使用者嫌外框太多層、點不到畫面，拿掉了原本的 auto-layout 畫布 `8:29`、每列的 row 和每張的說明外框）：Login `127:2308` / Sign Up `127:2309` / Sign Up · existing account `127:2310` / Sign Up · social `127:2311` / Setup · guided `127:2312` / Tutorial & App `127:2313` / Forgot Password `127:2314` / Settings `127:2315` / Profile `127:2316`，共 54 張。間距標註不放這頁，放在 **📏 Spacing** 頁 `134:46`（使用者 2026-10-15：「在左邊 page 加一個來放，裡面都會放 space」）；第一個 Section 是 **Login & Sign Up** `190:286`（2026-10-15 使用者要求把頂列、圖示、間距表標在 Login／Sign Up 畫面上）：兩張畫面的複本，疊上量出來的標註（粉紅＝間距和 token 名、藍＝尺寸、橘＝圖示和點擊範圍）。標註是當下量的快照，畫面或間距改了要重跑，不會自己更新。同流程的新畫面放進那個 Section、接在最後一張右邊（間距 40）；新流程開一個新 Section。**不要再把畫面包進 auto-layout 外框**。腳本找畫面用 `section.children` |
 | ↳ Setup · guided `127:2312` | | **2026-10-20 改成 iPhone 新機設定那樣：一頁一件事、沒有負擔**（使用者）。順序：1 幣別（必填）→ 2 **Account ID（新增，必填；會員自己設定，它是登入值也是送給遊戲商的值）** → 3 個人資料（可略過；全名、生日下面不放說明字，10-21 使用者：「是不需要的」）→ 4 銀行／USDT（戶名欄下面不放說明字、表單下面也不放「Your first withdrawal to this account will ask for a code.」，10-21 使用者決定拿掉；從設定頁進去的銀行頁同樣拿掉）→ 5 電話（Email 註冊一定有 email，所以這步只收電話；原本「無聯絡方式」的必填版本已刪）。**Email 這一頁只給第三方登入沒拿到 email 的會員**（例如 Zalo、LINE 沒授權 email；Google 會給 email 就不出現），放在電話前面、可略過（10-21 使用者：「沒有抓到，要有欄位給客人去填，在 setup 時，但 still can skip」）。這類會員總共 10 步，百分比 = 第幾步 ÷ 這位會員的總步數，所以 Email 頁是 50%（Step top bar 補了 `Progress=50%` 變體），之後幾頁的百分比也跟一般會員不同 → 6 密碼 → 7 通知（一個開關＋Continue）→ 8 主題 → 9 訊息管道 → Welcome。刪掉總覽開場頁和 Before Step 2／3 兩張清單頁；可略過的頁統一「Set up later」。**待定**：Account ID 的規則（長度、字元、能否重複、能否改；v1 設計稿沒寫）；幣別頁文字要改成什麼；密碼頁要不要放 2FA；Zalo／LINE 社群登入沒有 email 的會員怎麼辦。📏 Spacing 頁的 Setup 三張規格（Start、1 Currency、Before Step 2）是舊流程的快照，Setup 定案後要重量 |
 | 📏 Spacing | `134:46` | 間距標註專用頁。一個流程一個 Section，裡面是畫面的複本加上量出來的標註（粉紅＝間距和 token、藍＝尺寸、橘＝圖示）。目前有 Login & Sign Up `190:286`（Login · Password／Sign Up · Default／Login · Enter code · typing）、Setup · guided `188:154`（Start／1 Currency／Before Step 2）。2026-10-19 全部重新產生：標註從量到的節點算出來，標籤兩兩、標籤和畫面都檢查過不重疊。**2026-10-20 整頁更新**：標籤改成 `spacing/N`；6 張規格畫面改成 page 結構；頂列那一排的標註框（header 外框、✕／返回的 44 點擊範圍、24 圖示、兩個分頁之間的間隔）從實際節點重量，連到它們的引線按標籤重新接（圖示接中心、header 接右緣、分頁間隔接右緣）。左右邊距條本來就從頂列畫到底，不用動。之後畫面再改，這頁要再量一次 |
-| 🔀 Flows | `270:94` | **2026-10-21 新增**（使用者要「兩條流程畫出來」）。板子 `270:95`：① Email 註冊（Sign Up → 驗證 email → Setup 9 步 → Welcome）、② 第三方註冊（Sign Up → Account created，不用驗證碼 → Setup 9 步，沒拿到 email 的多一頁虛線框的「Add your email」共 10 步 → Welcome）。每張卡片寫步驟名稱和百分比（② 同時寫有 email／沒 email 兩種），**卡片標題是連結，點了會跳到 📱 Screens 上真正的畫面**——流程圖不複製畫面，畫面改了這頁不用跟著改；只有新增、刪除或改順序時才要更新這頁 |
+| 🔀 Flows | `270:94` | **2026-10-21**（使用者：「不要這種文字 flow，要用 screen 的」）。板子 `271:2632`：① Email 註冊、② 第三方註冊，**每一步都是 📱 Screens 上真正畫面的 instance**（縮成 0.5），之間用箭頭串起來，上方一行小標寫第幾步和百分比；只有沒拿到 email 才出現的「Add your email」用虛線框圈起來。**為了讓流程跟畫面同步，這 15 張畫面已轉成元件**（位置和名稱不變，id 換新：舊→新對照見 commit 訊息）：在 Screens 改畫面，流程頁自動跟著變；只有增刪或調換步驟時要回來改這頁 |
 
 **變數**（名字和值對應 `variables.css`，WEB code syntax 已填）：`Primitives`（`v1/*`、`neutral/*`、`alpha/*`，另有調過的 `grey/450` `red/450` `surface/1` `surface/2`，scopes 空的）、`Color`（只有 Dark 一個 mode：`bg/app|card|sheet|scrim|disabled` `text/primary|secondary|muted|tertiary|disabled|nav-inactive|on-brand|on-error` `border/default|focus|empty|subtle|handle` `brand/primary|secondary` `status/error` `promo/accent`）、`Spacing`（`spacing/1 2 3 4 5 8`，2026-10-20 起用 Tailwind 的數字命名，見下）、`Radius`（`radius/md` `radius/full`）。在 v1 之上調過的八件事列在 `CLAUDE.md`。
 
@@ -99,13 +99,13 @@ fileKey `RQEyZIgfkCKHdzYmOwprvR`，在 v9 團隊下。跟網頁版是同一套�
 | 畫面 | id | 尺寸 |
 |---|---|---|
 | Login · Password / · filled / · One-time code | `8:35` `8:94` `8:157` | 360 × 800 |
-| Sign Up · Default / · Ready / · From invite link | `8:214` `8:260` `8:308` | 360 × 800 |
-| Verify Email · In progress / · Ready / · Resend available / · Invalid code / · Too many resends | `21:535` `21:568` `21:601` `21:633` `21:667` | 360 × 800（排在 Sign Up 那一列） |
+| Sign Up · Default / · Ready / · From invite link | `271:2618` `271:2617` `8:308` | 360 × 800 |
+| Verify Email · In progress / · Ready / · Resend available / · Invalid code / · Too many resends | `21:535` `271:2619` `21:601` `21:633` `21:667` | 360 × 800（排在 Sign Up 那一列） |
 | Sign Up · Account exists（Sign Up 上面蓋一張面板） | `23:602` | 360 × 800 |
 | Existing account · Reactivated / · Signed in / · Limited / · Restricted | `23:675` `23:695` `23:715` `23:738` | 360 × 800 |
-| Social · Welcome / · Account found / · Verify it's you / · Linked | `23:756` `23:777` `23:798` `23:829` | 360 × 800 |
+| Social · Welcome / · Account found / · Verify it's you / · Linked | `271:2620` `23:777` `23:798` `23:829` | 360 × 800 |
 
-| Welcome + Offers | `17:716` | 360 × 800 |
+| Welcome + Offers | `271:2631` | 360 × 800 |
 | Tutorial & App · You're all set / · Tour running / · What's new | `25:862` `25:894` `25:919` | 360 × 800（列：Tutorial & App） |
 | Forgot Password · Choose how / · Enter phone / · Reset / · New password filled | `37:891` `37:931` `37:961` `37:989` | 360 × 800（列：Forgot Password） |
 | Settings · Setup incomplete / · All done | `37:1024` `37:1154` | 360 × 1339 / 1205（列：Settings） |
@@ -114,7 +114,7 @@ fileKey `RQEyZIgfkCKHdzYmOwprvR`，在 v9 團隊下。跟網頁版是同一套�
 | Account Setup · Step 1 / 2 / 3 / · Step 1 · no contact on file | `8:366` `8:453` `17:343` `17:435` | 原本的 Setup 總覽，2026-10-14 搬進 Settings 列 |
 
 **2026-10-14 Setup 改成引導式**（使用者：「setup UI 做成剛拿到 iPhone 時一開始帶領使用者的步驟」「內容不變只是 UI 呈現方式改變」）：
-- 列「Setup · guided」：Start → 1 幣別 → 2 個人資料（→ 2b 沒有聯絡方式時補 email／電話）→ Step 2 岔路頁（Continue／Skip this step）→ 3 收款 → 4 聯絡方式 → 5 密碼 → Step 3 岔路頁 → 6 通知 → 7 主題 → 8 訊息管道 → Welcome + Offers。一頁一件事、按鈕釘在底部、可跳過的項目底下是「Set up later」。畫面 id `57:1137` 起（Start）到 `57:1599`（8 Message channel）。
+- 列「Setup · guided」：Start → 1 幣別 → 2 個人資料（→ 2b 沒有聯絡方式時補 email／電話）→ Step 2 岔路頁（Continue／Skip this step）→ 3 收款 → 4 聯絡方式 → 5 密碼 → Step 3 岔路頁 → 6 通知 → 7 主題 → 8 訊息管道 → Welcome + Offers。一頁一件事、按鈕釘在底部、可跳過的項目底下是「Set up later」。畫面 id `57:1137` 起（Start）到 `271:2630`（8 Message channel）。
 - 原本的清單總覽搬進 Settings 那一列，改名 **Account Setup**（頂列標題、按鈕 Continue Setup），用途是之後回來補做。
 - 之後回來補做也走引導頁（使用者 2026-10-14：「補強加引導」）：從 Account Setup 點一項，打開的就是同一張引導頁，只是返回回到 Account Setup、沒有「n of 8」、沒有「Set up later」。Settings 那一列放了兩張範例（收款帳戶 `62:1458`、通知 `62:1482`）。原本有麵包屑的三列內頁（12 張）已刪除。
 
