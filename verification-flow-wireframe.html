@@ -171,6 +171,10 @@ const screens = [
       ${ci(8,"Claim promotion","after Personal Details",false)}
       ${ci(9,"Forgot password","Active or Dormant account",false)}
     </div>
+    <div class="grp">Sign-up (10-21)</div>
+    <div class="opt"><span style="flex:1">Email sign-up</span><small style="color:#b0b0b0">OTP required — verify the email first</small></div>
+    <div class="opt"><span style="flex:1">Third-party sign-up (Google / LINE / Zalo)</span><small style="color:#b0b0b0">no OTP — the provider already proved who they are</small></div>
+    <div class="hint">＊ Third-party still uses OTP in two cases: the provider account matches an existing member (code to that account's contact before linking), and an email or phone added later in Setup (first-time add).</div>
     <div class="grp">OTP mode by verified-contact status</div>
     <div class="opt"><span style="flex:1">Both verified</span><small style="color:#b0b0b0">member selects (Email / SMS)</small></div>
     <div class="opt"><span style="flex:1">Only one verified</span><small style="color:#b0b0b0">auto — no picker</small></div>
@@ -181,7 +185,7 @@ const screens = [
     states:["reference only"],
     fields:["email_status(verified|not)","phone_status(verified|not)","action(add_first|add_secondary|change_contact|set_password|change_password|withdrawal|promo_claim|forgot_password)"],
     api:"Rule matrix enforced server-side on every protected action.",
-    notes:["Reward (Jul 16): completing first-time add phone / email earns +10 points — credited once per contact type per member (anti-abuse), recorded in History category 3 (Rewards).","OTP modes this release = Email / SMS only (Select Verification Mode). Zalo ZNS / LINE / WhatsApp delivery = phase 2.","Docx said change password / withdrawal are NOT allowed with no verified contact — the Jul 16 design supersedes this: inline first-time verification serves as the OTP everywhere.","Component params (design): 6-digit code · resend countdown 32s · after 3rd resend the cooldown escalates to 03:00 · 'Invalid OTP entered' error state · masked contacts (091***233 / ta***@gmail.com) · iOS SMS autofill.","Audit log per docx: request time, channel, result, action, attempts, member ID — never the OTP value in plain text."]
+    notes:["SIGN-UP OTP RULE (10-21, user): Email sign-up needs an OTP — we do not know the address is theirs until a code sent there comes back. Third-party sign-up (Google / LINE / Zalo) needs NO OTP for a brand-new account — the member has just signed in at the provider, which has already established who they are; asking for another code repeats that check (standard OAuth / OpenID Connect sign-in). OTP still applies when the provider account matches an existing member (verify with that account\u2019s contact before linking), and when an email or phone is added later in Setup. OPEN — confirm with IT: Google marks the email it returns as verified (email_verified), so it can count as a verified contact; whether LINE gives the same guarantee for its email is unconfirmed — if not, a LINE member\u2019s email must be verified the first time a code is sent to it (e.g. a withdrawal).","Reward (Jul 16): completing first-time add phone / email earns +10 points — credited once per contact type per member (anti-abuse), recorded in History category 3 (Rewards).","OTP modes this release = Email / SMS only (Select Verification Mode). Zalo ZNS / LINE / WhatsApp delivery = phase 2.","Docx said change password / withdrawal are NOT allowed with no verified contact — the Jul 16 design supersedes this: inline first-time verification serves as the OTP everywhere.","Component params (design): 6-digit code · resend countdown 32s · after 3rd resend the cooldown escalates to 03:00 · 'Invalid OTP entered' error state · masked contacts (091***233 / ta***@gmail.com) · iOS SMS autofill.","Audit log per docx: request time, channel, result, action, attempts, member ID — never the OTP value in plain text."]
   }
 },
 {

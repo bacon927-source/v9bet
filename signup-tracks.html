@@ -666,6 +666,11 @@ footer{
             </div>
           </div>
 
+          <div class="body" style="margin-top:20px;border-left:3px solid var(--email);padding-left:12px">
+            <b>註冊時要不要 OTP（2026-10-21）：</b><b>Email 註冊要</b>，先驗證 email——我們不知道這個 email 是不是他的，寄碼過去才能確認。<b>第三方註冊不用</b>——他剛在 Google、LINE、Zalo 登入過，身分由對方確認了，再要一次驗證碼是重複的（OAuth 登入的標準做法）。第三方仍會用到 OTP 的兩種情況：對到已存在的會員（寄碼到那個帳號的聯絡方式才能綁定），以及之後在 Setup 補 email 或電話。<b>待 IT 確認</b>：Google 會標示 email 已驗證；LINE 給的 email 有沒有同樣保證還不確定。
+            <div class="en"><b>OTP at sign-up (2026-10-21):</b> <b>email sign-up needs one</b> — we do not know the address is theirs until a code sent there comes back. <b>Third-party sign-up does not</b> — the member has just signed in at Google, LINE or Zalo, which already established who they are; another code repeats that check (standard OAuth). Third-party still uses OTP when the account matches an existing member (code to that account's contact before linking) and when an email or phone is added later in Setup. <b>To confirm with IT:</b> Google marks its email as verified; whether LINE does the same is unconfirmed.</div>
+          </div>
+
           <div class="body" style="margin-top:20px;border-left:3px solid var(--social);padding-left:12px">
             <b>2026-10-21 更新：</b><b>Email 註冊</b>：不問 email。<b>第三方登入、有拿到 email</b>（例如 Google）：不問。<b>第三方登入、沒拿到 email</b>（例如 Zalo，或 LINE 沒授權 email）：Setup 多一頁「Add your email」，<b>可以略過</b>。
             <div class="en"><b>Update 2026-10-21:</b> <b>Email sign-up</b>: never asked for an email. <b>Third-party sign-in that returned an email</b> (e.g. Google): never asked. <b>Third-party sign-in that returned none</b> (e.g. Zalo, or LINE without the email permission): Setup shows one extra page, "Add your email", which <b>can be skipped</b>.</div>
