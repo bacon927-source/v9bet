@@ -108,7 +108,9 @@ fileKey `RQEyZIgfkCKHdzYmOwprvR`，在 v9 團隊下。跟網頁版是同一套�
 | Welcome + Offers | `271:2631` | 360 × 800 |
 | Tutorial & App · You're all set / · Tour running / · What's new | `25:862` `25:894` `25:919` | 360 × 800（列：Tutorial & App） |
 | Forgot Password · Choose how / · Enter phone / · Reset / · New password filled | `37:891` `37:931` `37:961` `37:989` | 360 × 800（列：Forgot Password） |
-| Settings · Setup incomplete / · All done | `37:1024` `37:1154` | 360 × 1339 / 1205（列：Settings） |
+| Settings · Setup incomplete / · All done | `37:1024` `37:1154` | 360 × 1339 / 1205（列：Settings）。**2026-10-21 Security 卡片跟 Setup 第 6 步對齊**：Passkeys（Set up／2 devices）、Two-factor authentication（Off／On）、Active session、Auto log out after 30 min。Settings 這裡用「Passkeys」這個名稱（`security-methods-wireframe.html` 的規則：客人到 Settings 是來找這個設定的），進去第一行寫「Sign in with face or fingerprint.」跟 Setup 的用字接上 |
+| Settings › Two-factor authentication · phone not verified / · on | `297:1155` `297:1359` | 2026-10-21。內容跟 Setup 第 6 步的 2FA 部分一樣（開關＋ Email、電話欄位，Verified／Get code，按 Get code 跳出同一個驗證碼面板），頂列 Nav top 改返回箭頭，沒有進度條、沒有 Continue（改了就生效）。列：Settings |
+| Settings › Passkeys | `297:1545` | 2026-10-21。一行「Sign in with face or fingerprint.」＋裝置清單（iPhone 15 · This device、MacBook Air · Used Oct 18），點進去可移除（要 OTP，還沒畫）。規則照 `security-methods-wireframe.html` 的 Passkeys 頁。列：Settings |
 | Profile | `39:1102` | 360 × 1070（列：Profile）。2026-10-13 重排：身分、餘額弧形（28 的金額）、Needs your attention（待提款＋Cancel、Finish setting up、Inbox）、Statement 兩格、More（Promotions／Your offers／Refer a friend／Referral code／Language 收成清單列）、Log out |
 
 | Account Setup · Step 1 / 2 / 3 / · Step 1 · no contact on file | `8:366` `8:453` `17:343` `17:435` | 原本的 Setup 總覽，2026-10-14 搬進 Settings 列 |
