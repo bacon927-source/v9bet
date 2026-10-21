@@ -36,7 +36,7 @@
 1. 間距照 Tailwind 原生刻度，程式不再自建 `--space-*` `--radius-*`；頁面骨架「先定左右邊距，再放頂列，然後內容」（`.page`）
 2. 元件重畫：間距補綁、預設寬度 358／390、說明照程式重寫；新增 Divider `Label=No`、Card、Checklist、Code input、Field 的 Hint；focus 時標籤跟框線一起變白
 3. 畫面上手拼的 41 處換成元件
-4. Setup 改成 iPhone 新機設定式：一頁一件事、**9 步**、頂列進度條＋百分比（Step top bar 的 `Progress` 變體）、點數拿掉、新增 Account ID（必填）、通知改開關。**10-21：第 5 步密碼（可略過）、第 6 步 Security 兩個開關「Sign in with face or fingerprint」（passkey）和 2FA（預設都關；IT 會改成固定的中央驗證網域，passkey 綁在那裡）；2FA 打開才出現 email／電話，按 Get code 跳出底部面板輸入驗證碼，不另開頁**（細節在 `FIGMA.md` 的 Setup 列）
+4. Setup 改成 iPhone 新機設定式：一頁一件事、**9 步**、頂列進度條＋百分比（Step top bar 的 `Progress` 變體）、點數拿掉、新增 Account ID（必填）、通知改開關。**10-21：第 5 步密碼（可略過）、第 6 步 Security 一個 2FA 開關（預設關）。Passkey 不放 Setup：登入成功後問一次＋ Settings › Passkeys（IT 會改成固定的中央驗證網域，passkey 綁在那裡）；2FA 打開才出現 email／電話，按 Get code 跳出底部面板輸入驗證碼，不另開頁**（細節在 `FIGMA.md` 的 Setup 列）
 5. 🔀 Flows 頁：兩條註冊流程用真正畫面的 instance 畫出來（板子 `286:2679`）
 
 **明天先問使用者的**：
