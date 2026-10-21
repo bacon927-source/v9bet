@@ -36,18 +36,21 @@
 1. 間距照 Tailwind 原生刻度，程式不再自建 `--space-*` `--radius-*`；頁面骨架「先定左右邊距，再放頂列，然後內容」（`.page`）
 2. 元件重畫：間距補綁、預設寬度 358／390、說明照程式重寫；新增 Divider `Label=No`、Card、Checklist、Code input、Field 的 Hint；focus 時標籤跟框線一起變白
 3. 畫面上手拼的 41 處換成元件
-4. Setup 改成 iPhone 新機設定式：一頁一件事、9 步、頂列進度條＋百分比（Step top bar 的 `Progress` 變體）、點數拿掉、新增 Account ID（必填）、電話只剩一頁、通知改開關
+4. Setup 改成 iPhone 新機設定式：一頁一件事、**8 步**、頂列進度條＋百分比（Step top bar 的 `Progress` 變體）、點數拿掉、新增 Account ID（必填）、通知改開關。**10-21：第 5 步 Security 把密碼和雙重驗證放同一頁；email／電話驗證就在這頁做，不另開頁**（細節在 `FIGMA.md` 的 Setup 列）
+5. 🔀 Flows 頁：兩條註冊流程用真正畫面的 instance 畫出來（板子 `280:92`）
 
 **明天先問使用者的**：
-1. ~~密碼頁要不要放雙重驗證~~ → 10-21 已決定：放在密碼頁，**電話和 email 都驗證過才能開**（不是看密碼；推翻 09-20）。**還要問**：打開開關之後走哪個流程（驗證器 App 的 4 步：裝 App、掃 QR、輸入碼、存備援碼）
+1. ~~密碼頁要不要放雙重驗證~~ → 10-21 已決定：密碼和 2FA 都在 Security 一頁；2FA 開關打開後，電話和 email 都驗證過才算開好。**還要問**：開好之後要不要再走驗證器 App（裝 App、掃 QR、輸入碼、存備援碼），還是簡訊／email 碼就夠
 2. 幣別頁的文字要改成什麼
 3. Account ID 的規則：長度、字元、能否重複、之後能否改（v1 設計稿沒寫，可能要問 IT）
-4. ~~Zalo／LINE 沒有 email 的會員~~ → 10-21 已決定：第三方登入沒拿到 email 的，Setup 多一頁 Email（可略過，在電話前面）；Email 註冊和有拿到 email 的不問
+4. ~~Zalo／LINE 沒有 email 的會員~~ → 10-21 已決定：第三方登入沒拿到 email 的，在 Security 頁打開 2FA 時就地補 email 並驗證；Email 註冊和有拿到 email 的不問
+8. 第三方註冊的「Account created」頁 `271:2620` 還寫著舊的點數文案：要拿掉這頁還是改字
+9. Settings 那一列兩張「之後回來補做」的頁也用 Step top bar，現在顯示 13%（以前是 11%），回來補做時要不要顯示進度
 5. Setup 區剩下兩條手繪線要不要刪（另外四條不見了，原因不明）
 6. ~~個人資料頁兩行說明字~~ → 10-21 已決定拿掉（使用者：「是不需要的」），框到框回到 16；說明字換成新建節點後使用者的 Figma 已能顯示
 7. 之後再看：徽章 -18px、連結列 0.3em 兩個不在 Tailwind 上的例外；Figma 0.5／1.5 變數命名（Figma 不收「.」）；IT 用 Tailwind v3 還是 v4；元件尺寸（46、50…）要不要照規則檢查
 
-**決定之後要一起改的**：wireframe（`signup-flow-wireframe.html`）和 `setup-nine.html` 還是舊的 8 項流程；📏 Spacing 頁的 Setup 規格是舊流程快照；程式的 Setup 頁面和進度條還沒做
+**決定之後要一起改的**：wireframe（`signup-flow-wireframe.html`）、`setup-nine.html`、`signup-tracks.html` 還是舊流程（還寫 Email 是 Setup 裡的一頁）；📏 Spacing 頁的 Setup 規格是舊流程快照；程式的 Setup 頁面和進度條還沒做
 
 ---
 
