@@ -267,6 +267,13 @@ footer{margin-top:48px;padding-top:16px;border-top:1px solid var(--rule);font-fa
         <div class="en">The test is <code>has_verified_contact</code>, <b>not which method was used</b>. Google returns a verified email, so those members should not be asked twice; the ones who genuinely need it are Zalo and LINE without the email permission. Because it keys off account state, LINE moves to the skippable side on its own if the permission is granted — <b>with no screen changes</b>. It keeps the number 4, since the API and the points ledger reference it.</div>
       </div>
     </div>
+    <div class="note">
+      <h3>2026-10-21 更新：要不要問 email · When Setup asks for an email</h3>
+      <div class="body">
+        <b>Email 註冊</b>：不問 email。<b>第三方登入、有拿到 email</b>（例如 Google）：不問。<b>第三方登入、沒拿到 email</b>（例如 Zalo，或 LINE 沒授權 email）：Setup 多一頁「Add your email」，<b>可以略過</b>。取代上面「沒有聯絡方式就變成 Step 1 必填」的做法：現在一律可以略過，而且 email 和電話各自一頁。
+        <div class="en"><b>Email sign-up</b>: never asked for an email. <b>Third-party sign-in that returned an email</b> (e.g. Google): never asked. <b>Third-party sign-in that returned none</b> (e.g. Zalo, or LINE without the email permission): Setup shows one extra page, "Add your email", which <b>can be skipped</b>. This replaces the "required Step 1 item for accounts with no contact" rule above: every contact page can now be skipped, and email and phone are separate pages.</div>
+      </div>
+    </div>
 
     <div class="truth">
       <h3>跳過的代價其實不是點數</h3>
