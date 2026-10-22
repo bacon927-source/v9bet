@@ -262,9 +262,7 @@ const screens = [
   render:()=>`
     <div class="hometop"><span class="logo">V9BET</span><span class="sp"></span><span class="balancechip">💰 ₫0</span><span class="ic">🔍</span><span class="ic">✉️</span></div>
     <div style="border:2px solid var(--solid);border-radius:12px;padding:12px 14px;margin:8px 0;background:#fff">
-      <b>🎁 Finish setup, earn 100 points</b>
-      <div class="pbar" style="margin:8px 0 4px"><i style="width:0%"></i></div>
-      <div class="hint" style="margin:0">0 / 100 points — currency, profile and payout still needed</div>
+      <b>Finish setting up</b>
       ${CTA("Set up account")}
     </div>
     <div class="grp">Popular right now</div>
@@ -274,11 +272,11 @@ const screens = [
     <div class="tabbar"><div class="on"><span class="d">🏠</span>Home</div><div><span class="d">🎮</span>Products</div><div><span class="d">🎁</span>Promos</div><div><span class="d">✉️</span>Messages</div><div><span class="d">👤</span>Account</div></div>
     <div class="hint">＊ No favourites / recent yet — 'For you' is replaced by a generic 'Popular right now' row until the member has activity.</div>`,
   spec:{
-    goal:"First home view right after sign-up / social welcome: no personalization data yet, so the setup-rewards card takes the top slot instead of 'For you'.",
-    states:["just finished sign-up, 0 points, no favourites/recent"],
-    fields:["setup_progress","points_earned"],
+    goal:"First home view right after sign-up / social welcome: no personalization data yet, so a 'Finish setting up' card (only when Setup items were skipped) takes the top slot instead of 'For you'.",
+    states:["just finished sign-up, no favourites/recent","Welcome + offers popup over this page (new sign-ups only), then the coach-mark tour"],
+    fields:["setup_progress"],
     api:"GET /home (same endpoint; empty favourites/recent arrays swap the row)",
-    notes:["Setup card here is the SAME reward progress bar as Setup Overview (signup-flow-wireframe.html) — tapping 'Set up account' deep-links straight into it, same 0/100 state.","Once favourites/recent exist, this card demotes below the fold and 'For you' takes over (see Home · Logged-in)."]
+    notes:["10-21 (user): Setup ends HERE — Welcome + new-member offers is a popup over this page, not a page of its own, and the coach-mark tour starts after it is closed. The Setup points were removed the same day: this card has no points and no progress bar, it only reopens Setup at the first skipped item.","Once favourites/recent exist, this card demotes below the fold and 'For you' takes over (see Home · Logged-in)."]
   }
 },
 {

@@ -400,16 +400,12 @@ module.exports = {
           ...type('body-sm'), color: c('ink.muted'), pointerEvents: 'none',
         },
 
-        /* Step hero — the top of a guided page: 18 title, one line of why,
-           and the points pill. One per page. */
+        /* Step hero — the top of a guided page: 18 title and one line of
+           why. One per page. (The points pill was removed 2026-10-21.) */
         '.step-hero': {
           display: 'flex', flexDirection: 'column', alignItems: 'center', gap: theme('spacing.3'), textAlign: 'center',
           '& > h1, & > h2': { ...type('title'), fontWeight: '600', color: c('ink.DEFAULT') },
           '& > p': { ...type('body'), color: c('ink.secondary') },
-        },
-        '.points': {
-          display: 'inline-flex', alignItems: 'center', padding: `${theme('spacing.1')} ${theme('spacing.2')}`, borderRadius: pill,
-          border: `1px solid ${c('edge.DEFAULT')}`, ...type('body-sm'), color: c('brand-2.DEFAULT'),
         },
 
         /* Checklist — one outlined box per group of setup items, rows split
