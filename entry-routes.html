@@ -113,7 +113,7 @@ footer{margin-top:48px;padding-top:16px;border-top:1px solid var(--rule);font-fa
 
   <figure>
     <div class="scroller">
-      <svg viewBox="0 0 1100 620" role="img" aria-label="一個入口與一次驗證，通過後分成五種結果：新帳號經過 Setup 與 Welcome 後到首頁；正常帳號直接進站；休眠帳號解凍後進站；黑名單帳號照樣進站但功能受限；受限帳號只到 Live Chat。教學在首頁之後出現，新舊會員都可能看到。">
+      <svg viewBox="0 0 1100 620" role="img" aria-label="一個入口與一次驗證，通過後分成五種結果：新帳號經過 Setup 後到首頁，首頁上先跳出 Welcome 與優惠；正常帳號直接進站；休眠帳號解凍後進站；黑名單帳號照樣進站但功能受限；受限帳號只到 Live Chat。教學在首頁之後出現，新舊會員都可能看到（10-21 改）。">
         <defs>
           <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><polygon points="0,1 10,5 0,9" fill="currentColor"/></marker>
           <marker id="an" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><polygon points="0,1 10,5 0,9" fill="var(--new)"/></marker>
@@ -152,15 +152,11 @@ footer{margin-top:48px;padding-top:16px;border-top:1px solid var(--rule);font-fa
         <text x="393" y="57" text-anchor="middle" font-size="12" font-weight="700" fill="var(--new)">① 註冊</text>
         <text x="393" y="73" text-anchor="middle" font-size="9" fill="var(--new)">建立新帳號</text>
         <rect x="503" y="33" width="130" height="54" rx="4" fill="var(--paper)" stroke="currentColor" stroke-width="1.2"/>
-        <text x="568" y="57" text-anchor="middle" font-size="12" fill="currentColor">Setup 8 項</text>
-        <text x="568" y="73" text-anchor="middle" font-size="9" fill="var(--muted)">Step 1 必填</text>
-        <rect x="673" y="33" width="130" height="54" rx="4" fill="var(--paper)" stroke="currentColor" stroke-width="1.2"/>
-        <text x="738" y="57" text-anchor="middle" font-size="12" fill="currentColor">Welcome</text>
-        <text x="738" y="73" text-anchor="middle" font-size="9" fill="var(--muted)">＋ 優惠</text>
+        <text x="568" y="57" text-anchor="middle" font-size="12" fill="currentColor">Setup 9 步</text>
+        <text x="568" y="73" text-anchor="middle" font-size="9" fill="var(--muted)">幣別、ID 必填</text>
         <g fill="none" stroke="var(--new)" stroke-width="1.5">
           <path d="M463,60 H497" marker-end="url(#an)"/>
-          <path d="M633,60 H667" marker-end="url(#an)"/>
-          <path d="M803,60 H838 V262 H855" marker-end="url(#an)"/>
+          <path d="M633,60 H838 V262 H855" marker-end="url(#an)"/>
         </g>
 
         <rect x="323" y="153" width="140" height="54" rx="4" fill="var(--paper)" stroke="currentColor" stroke-width="1.6"/>
@@ -206,6 +202,12 @@ footer{margin-top:48px;padding-top:16px;border-top:1px solid var(--rule);font-fa
         <text x="910" y="312" text-anchor="middle" font-size="8.5" fill="var(--muted)">signed in</text>
 
         <path d="M960,290 H990" fill="none" stroke="currentColor" stroke-width="1.5" marker-end="url(#a)"/>
+        <rect x="996" y="120" width="96" height="84" rx="4" fill="var(--new-fill)" stroke="var(--new)" stroke-width="2"/>
+        <text x="1044" y="148" text-anchor="middle" font-size="11.5" font-weight="700" fill="var(--new)">Welcome</text>
+        <text x="1044" y="164" text-anchor="middle" font-size="8.5" fill="var(--new)">＋ 優惠 · popup</text>
+        <text x="1044" y="180" text-anchor="middle" font-size="8" fill="var(--muted2)">只有新註冊</text>
+        <path d="M910,248 V162 H990" fill="none" stroke="var(--new)" stroke-width="1.5" marker-end="url(#an)"/>
+        <path d="M1044,204 V242" fill="none" stroke="var(--new)" stroke-width="1.5" marker-end="url(#an)"/>
         <rect x="996" y="248" width="96" height="84" rx="4" fill="var(--paper)" stroke="currentColor" stroke-width="1.4" stroke-dasharray="5 4"/>
         <text x="1044" y="274" text-anchor="middle" font-size="11.5" font-weight="700" fill="currentColor">教學</text>
         <text x="1044" y="290" text-anchor="middle" font-size="8.5" fill="var(--muted)">新功能公告</text>
@@ -214,8 +216,8 @@ footer{margin-top:48px;padding-top:16px;border-top:1px solid var(--rule);font-fa
       </svg>
     </div>
     <figcaption>
-      一個入口、一次驗證、五種結果。<b>只有 ① 是註冊</b>——唯一會建立帳號、也唯一會跑 Setup。②③④ 都是回來的人，但三者不同：② 只是登入，③ 要先解凍，<b>④ 黑名單照樣進得來，只是有些功能用不了</b>。只有「受限」是真的擋在門外。注意終點：<b>Welcome 之後先到首頁</b>，教學是從首頁才出現的，而且新舊會員都可能看到。
-      <div class="en">One door, one verification, five outcomes. <b>Only ① is a registration</b> — the only one that creates an account and the only one that runs Setup. ②③④ are all returning members and all different: ② simply signs in, ③ has to be unfrozen first, and <b>④ gets in like anyone else but with features withheld</b>. Only "restricted" is actually kept out. Note the tail: <b>Welcome leads to Home</b>, and the tour appears from there — for returning members as well as new ones.</div>
+      一個入口、一次驗證、五種結果。<b>只有 ① 是註冊</b>——唯一會建立帳號、也唯一會跑 Setup。②③④ 都是回來的人，但三者不同：② 只是登入，③ 要先解凍，<b>④ 黑名單照樣進得來，只是有些功能用不了</b>。只有「受限」是真的擋在門外。注意終點：<b>Setup 做完直接到首頁</b>，Welcome ＋ 優惠是蓋在首頁上的 popup（只有新註冊），教學在那之後才出現。
+      <div class="en">One door, one verification, five outcomes. <b>Only ① is a registration</b> — the only one that creates an account and the only one that runs Setup. ②③④ are all returning members and all different: ② simply signs in, ③ has to be unfrozen first, and <b>④ gets in like anyone else but with features withheld</b>. Only "restricted" is actually kept out. Note the tail: <b>Setup ends on Home</b>, Welcome + offers is a popup over it (new sign-ups only), and the tour comes after.</div>
     </figcaption>
   </figure>
 
@@ -237,8 +239,8 @@ footer{margin-top:48px;padding-top:16px;border-top:1px solid var(--rule);font-fa
           <div class="en">The only route that creates an account. Passing the code creates it with an auto-generated Account ID, then goes straight into Setup.</div>
         </div>
         <dl>
-          <dt>Setup</dt><dd>8 項，只有 Step 1 擋人</dd>
-          <dt>結束</dt><dd>Welcome ＋ 優惠 → 教學</dd>
+          <dt>Setup</dt><dd>9 步，只有幣別和 Account ID 必填</dd>
+          <dt>結束</dt><dd>首頁 → Welcome ＋ 優惠（popup 蓋在首頁上）→ 教學</dd>
           <dt>埋點</dt><dd>帶 method 與 referral_source</dd>
         </dl>
       </div>
@@ -324,8 +326,8 @@ footer{margin-top:48px;padding-top:16px;border-top:1px solid var(--rule);font-fa
       <div class="rrow">
         <div class="k">終點是首頁，不是教學<div class="en-h">The flow ends on Home</div></div>
         <div class="v">
-          Welcome 之後<b>先到首頁</b>，教學從首頁才出現。註冊應該結束在產品上，不是結束在一段導覽。而且<b>教學不是只給新會員的</b>——功能一直在上新的，舊會員也需要被告知。同一個元件、不同觸發：新會員看基本操作，回來的人看「上次之後多了什麼」，兩邊都不會看到已經看過的東西。
-          <div class="en">Welcome leads to <b>Home first</b>, and the tour appears from there. Registration should finish on the product, not on a walkthrough. And <b>the tour is not only for new members</b> — the product keeps shipping, and existing customers need telling. One component, two triggers: newcomers see the basics, returning members see what has landed since, and neither sees anything twice.</div>
+          Setup 做完<b>直接到首頁</b>，Welcome ＋ 優惠是蓋在首頁上的 popup（10-21 使用者：「welcome 用一個 popup 蓋在上面」），不再是一整頁；教學在那之後才出現。註冊應該結束在產品上，不是結束在一段導覽。而且<b>教學不是只給新會員的</b>——功能一直在上新的，舊會員也需要被告知。同一個元件、不同觸發：新會員看基本操作，回來的人看「上次之後多了什麼」，兩邊都不會看到已經看過的東西。
+          <div class="en">Setup ends <b>on Home</b>; Welcome + offers is a popup over Home (10-21), no longer a page of its own, and the tour comes after it. Registration should finish on the product, not on a walkthrough. And <b>the tour is not only for new members</b> — the product keeps shipping, and existing customers need telling. One component, two triggers: newcomers see the basics, returning members see what has landed since, and neither sees anything twice.</div>
         </div>
       </div>
       <div class="rrow">
