@@ -77,6 +77,7 @@ fileKey `RQEyZIgfkCKHdzYmOwprvR`，在 v9 團隊下。跟網頁版是同一套�
 | Link row | `4:48` | TEXT `Prompt`、`Action` |
 | Tab · Tabs | `4:60` `4:77` | Tab：Selected = True / False。Tabs：Active = First / Second（One-time code ｜ Password） |
 | Radio card | set `311:101`（`State=Default` `311:93`、`State=Selected` `311:97`） | **2026-10-21 新增**（使用者選「兩張選項卡」取代分頁，怕 USDT 分頁被忽略）。二選一的選項，兩張並排一樣大：高 50（跟 Field 一樣）、左右 `spacing/3`、`radius/xl`、1px 內框線；Default 框線 `border/default`，Selected 框線 `brand/secondary`＋右邊 icon/check。TEXT `Label`。並排時中間 `spacing/3`、各自撐滿。做法照 kit 提款頁的付款方式選擇（`wallet-flow-wireframe.html`），提款頁畫進 Figma 時用同一個。**程式還沒做**（Tailwind 沒有現成元件，到時用一般的 radio input 做） |
+| Coach mark | set `319:228` | **2026-10-21 新增**。教學的說明泡泡：標題（Body/Bold）、一句說明（Small/Regular、`text/secondary`）、底列「1 / 4」＋ Skip ＋ Next（綠字 Body/Bold，最後一站改「Done」）。底色 `bg/sheet`、`radius/xl`、內距 `spacing/4`、行距 `spacing/2`、寬 280。VARIANT `Placement` = bottom-start / bottom / bottom-end / top-start / top / top-end（照 Floating UI／Popper 的命名：泡泡在目標的哪一邊，箭頭在另一邊、離邊 `spacing/5`）。TEXT `Title` `Body` `Step` `Next`，BOOLEAN `Show skip`。亮目標用的暗幕不在元件裡，在畫面上用 `bg/scrim` 的矩形挖洞。**程式還沒做** |
 | Tick | `4:87` | State = Off / On |
 | Divider | set `223:50`：`Label=Yes` `4:95`（原本的 Divider label，instance 都還連著它）、`Label=No` `223:46` | **2026-10-20 改成兩個變體**（使用者：「加一個沒有文字只有線的」）。Yes：兩條線中間一段短字，TEXT `Label`，把社群登入和手動填寫分成兩區；No：一條完整的線，給不需要名字的兩組之間。兩種都是上下 padding `spacing/4` 加上頁面間距 16 = 32。沒用「隱藏文字」做，因為藏掉字以後兩條線中間還會留 12 的缺口。程式 `.divider-label` · `.divider` |
 | Code cell | `4:111` | State = Empty / Focus / Filled / Error；TEXT `Digit` |
@@ -107,7 +108,8 @@ fileKey `RQEyZIgfkCKHdzYmOwprvR`，在 v9 團隊下。跟網頁版是同一套�
 | Social · Welcome / · Account found / · Verify it's you / · Linked | `271:2620` `23:777` `23:798` `23:829` | 360 × 800 |
 
 | Welcome + Offers | `271:2631` | 360 × 800 |
-| Tutorial & App · You're all set / · Tour running / · What's new | `25:862` `25:894` `25:919` | 360 × 800（列：Tutorial & App） |
+| Tutorial · Coach mark (example on blank lobby) | `319:3135` | **2026-10-21**（使用者：「Tutorial 要用什麼方式呈現？跟著畫面跑？」→ 選 coach mark）。教學改成在真的畫面上一次亮一個地方：暗幕挖一個洞把目標亮出來（`bg/scrim`），旁邊一個 Coach mark 說明。新會員在 Welcome popup 關掉後跑一次（3–4 站、可 Skip、看過不再出現）；舊會員的新功能只亮那一個。**lobby 還沒設計**，所以這張只是示範：目標「Deposit」是虛線佔位，真正停哪幾站等 lobby 定了再排。列：Tutorial & App（排在最前面） |
+| Tutorial & App · You're all set / · Tour running / · What's new | `25:862` `25:894` `25:919` | 360 × 800（列：Tutorial & App）。**10-21 起是舊做法（投影片式），要換成 coach mark**，等 lobby 設計好、決定停哪幾站後再拿掉；「Get the app」放哪還沒決定 |
 | Forgot Password · Choose how / · Enter phone / · Reset / · New password filled | `37:891` `37:931` `37:961` `37:989` | 360 × 800（列：Forgot Password） |
 | Settings · Setup incomplete / · All done | `37:1024` `37:1154` | 360 × 1339 / 1205（列：Settings）。**2026-10-21 Security 卡片跟 Setup 第 6 步對齊**：Passkeys（Set up／2 devices）、Two-factor authentication（Off／On）、Active session、Auto log out after 30 min。Settings 這裡用「Passkeys」這個名稱（`security-methods-wireframe.html` 的規則：客人到 Settings 是來找這個設定的），進去第一行寫「Sign in with face or fingerprint.」跟 Setup 的用字接上 |
 | Settings › Two-factor authentication · phone not verified / · on | `297:1155` `297:1359` | 2026-10-21。內容跟 Setup 第 6 步的 2FA 部分一樣（開關＋ Email、電話欄位，Verified／Get code，按 Get code 跳出同一個驗證碼面板），頂列 Nav top 改返回箭頭，沒有進度條、沒有 Continue（改了就生效）。列：Settings |
