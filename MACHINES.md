@@ -42,6 +42,7 @@
 **明天先問使用者的**：
 1. ~~密碼頁要不要放雙重驗證~~ → 10-21 已決定：密碼和 2FA 都在 Security 一頁；2FA 開關打開後，電話和 email 都驗證過才算開好。**還要問**：開好之後要不要再走驗證器 App（裝 App、掃 QR、輸入碼、存備援碼），還是簡訊／email 碼就夠
 2. 幣別頁的文字要改成什麼
+13. 點數 10-21 在 Figma 全部拿掉了，但文件（`profile-settings-flow-wireframe.html` 的 🎁+10、`setup-nine.html`、`signup-flow-wireframe.html`、`home-flow-wireframe.html` 的「earn 100 points」卡）還寫著點數，要一起改；Settings 的 Account Setup 四張還是舊的 8 項清單，要不要整個換成新的 9 步
 12. 「Get the app」（掃 QR 下載 App）放哪：coach mark 最後一站、首頁橫幅、還是先不放（10-21 舊的 You're all set 頁刪掉後沒有地方放）
 11. ~~問 IT 中央驗證網域~~ → 10-21 IT 回覆會改架構（會員網站都導向固定的 auth 網域，passkey 綁那裡）。**還要確認**：(a) 這個 auth 網域本身會不會在越南、泰國被封——被封就全部人不能登入；(b) 網域名稱客人會看到（系統的建立 passkey 視窗、手機密碼管理裡都寫它），要選看得出是 V9bet 的名字；(c) 登入頁要不要整頁放在 auth 網域上——09-20 定的「passkey 出現在帳號欄的自動填入，不放按鈕」只有登入頁在 auth 網域上才做得到
 10. 密碼規則（長度、要不要數字等）要問 IT；拿到後畫「不符合」和「兩欄不一樣」兩個錯誤狀態
