@@ -123,8 +123,11 @@ module.exports = {
         '.tap': { display: 'inline-flex', alignItems: 'center', minHeight: '44px' },
       });
 
-      /* Icons — one set, v1's Flaticon UIcons Bold Rounded (fi-br), in
-         assets/icons. 24 on their own, 16 (.icon-sm) inside a field. The
+      /* Icons — one set, Heroicons outline (Tailwind Labs, 24 viewBox,
+         1.5 stroke; switched from v1's fi-br on 2026-10-26), in
+         assets/icons under the kit's own names (back = chevron-left,
+         close = x-mark, eye-crossed = eye-slash). 24 on their own, 16
+         (.icon-sm) inside a field. The
          colour is the text colour, so set it with text-*. Decorative icons
          get aria-hidden; the button around them carries the aria-label. */
       const ICONS = ['back', 'close', 'chevron-right', 'chevron-down', 'eye', 'eye-crossed', 'check'];
