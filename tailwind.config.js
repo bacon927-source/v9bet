@@ -272,8 +272,8 @@ module.exports = {
 
         /* Divider with a label between two rules (2026-10-26, the Preline
            pattern): 12 above and below inside it (py-3), 24 between each rule
-           and the label (gap-6). The page's gap-6 between sections adds the
-           rest, so the rule sits 36 from what is above and below. */
+           and the label (gap-6). The page's gap-4 between sections adds the
+           rest, so the rule sits 28 from what is above and below. */
         '.divider-label': {
           display: 'flex', alignItems: 'center', gap: theme('spacing.6'), paddingBlock: theme('spacing.3'), ...type('body-sm'), color: c('ink.secondary'),
           '&::before, &::after': { content: '""', flex: '1 1 0%', height: '1px', backgroundColor: c('edge.DEFAULT'), opacity: '.5' },
@@ -281,7 +281,7 @@ module.exports = {
 
         /* Divider without a label — one plain rule between two groups that need
            no name. Same 12 above and below as .divider-label (py-3); the page's
-           gap-6 between sections adds the rest.
+           gap-4 between sections adds the rest.
            Use <div class="divider" role="separator"></div>. */
         '.divider': {
           display: 'flex', paddingBlock: theme('spacing.3'),
