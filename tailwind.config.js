@@ -210,16 +210,35 @@ module.exports = {
           position: 'relative', paddingTop: theme('spacing.2'),
           '& > input': {
             display: 'block', width: '100%', height: '50px',
-            border: `1px solid ${c('edge.DEFAULT')}`, borderRadius: theme('borderRadius.xl'),
+            border: 'none', borderRadius: theme('borderRadius.xl'),
             backgroundColor: c('input'), padding: `0 ${theme('spacing.3')}`,
             ...type('field'), color: c('ink.DEFAULT'), outline: 'none',
           },
-          '& > input:focus': { borderColor: c('edge.focus') },
+          /* The outline is a <fieldset> whose <legend> carries a hidden copy of
+             the label: when the label lifts, the legend opens and the browser
+             breaks the border behind it (Material's notched outline). The label
+             itself stays transparent, so the field works on any surface — page,
+             card or sheet — without matching a background colour.
+             Markup: <fieldset aria-hidden="true"><legend><span>Label</span></legend></fieldset>
+             The legend is 11 tall, so the fieldset starts 5.5 higher to put the
+             border line exactly on the box's top edge. */
+          '& > fieldset': {
+            position: 'absolute', left: '0', right: '0', top: `calc(${theme('spacing.2')} - 5.5px)`, height: 'calc(50px + 5.5px)',
+            margin: '0', padding: `0 ${theme('spacing.2')}`, minWidth: '0', pointerEvents: 'none',
+            border: `1px solid ${c('edge.DEFAULT')}`, borderRadius: theme('borderRadius.xl'),
+          },
+          '& > fieldset > legend': {
+            display: 'block', width: 'auto', maxWidth: '0.01px', height: '11px', padding: '0', overflow: 'hidden',
+            visibility: 'hidden', whiteSpace: 'nowrap', fontSize: v('font-size-field-label'), transition: 'max-width .05s',
+          },
+          '& > fieldset > legend > span': { display: 'inline-block', paddingInline: theme('spacing.1') },
+          '& > input:focus ~ fieldset > legend, & > input:not(:placeholder-shown) ~ fieldset > legend': { maxWidth: '100%', transition: 'max-width .1s ease .05s' },
+          '& > input:focus ~ fieldset': { borderColor: c('edge.focus') },
           /* A note about this field — .hint, or .error-text when it is invalid —
              goes last inside the field, 4 under the box, so it reads as part of
              the field and not as a block of its own. The error takes the hint's
              place: the outline and label go red and the hint steps aside. */
-          '& > input[aria-invalid="true"]': { borderColor: c('error') },
+          '& > input[aria-invalid="true"] ~ fieldset': { borderColor: c('error') },
           '& > input[aria-invalid="true"] + label': { color: c('error') },
           '& > .hint, & > .error-text': { marginTop: theme('spacing.1') },
           '& > input[aria-invalid="true"] ~ .hint': { display: 'none' },
@@ -234,10 +253,10 @@ module.exports = {
              field keeps its red label even while focused. */
           '& > input:focus:not([aria-invalid="true"]) + label': { color: c('ink.DEFAULT') },
           '& > input:focus + label, & > input:not(:placeholder-shown) + label': {
-            top: theme('spacing.2'), left: theme('spacing.2'), height: 'auto', padding: `${theme('spacing[0.5]')} ${theme('spacing.1')}`, transform: 'translateY(-50%)', backgroundColor: c('app'),
+            top: theme('spacing.2'), left: theme('spacing.2'), height: 'auto', padding: `${theme('spacing[0.5]')} ${theme('spacing.1')}`, transform: 'translateY(-50%)',
             fontSize: v('font-size-field-label'),
           },
-          '@media (prefers-reduced-motion: reduce)': { '& > label': { transition: 'none' } },
+          '@media (prefers-reduced-motion: reduce)': { '& > label, & > fieldset > legend': { transition: 'none' } },
         },
         /* Trailing slot: an icon or a short note at the right edge of the box. */
         '.field-trail': {
@@ -445,9 +464,6 @@ module.exports = {
           position: 'fixed', left: '0', right: '0', bottom: '0', zIndex: '50', maxHeight: '90dvh', overflowY: 'auto',
           display: 'flex', flexDirection: 'column', backgroundColor: c('sheet.DEFAULT'),
           borderTopLeftRadius: theme('borderRadius.xl'), borderTopRightRadius: theme('borderRadius.xl'),
-          /* A lifted field label masks the outline with the surface behind it,
-             so inside a sheet it takes the sheet colour, not the page's. */
-          '& .field > input:focus + label, & .field > input:not(:placeholder-shown) + label': { backgroundColor: c('sheet.DEFAULT') },
         },
         '.sheet-header': {
           position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: theme('spacing.2'), paddingTop: theme('spacing.1'),

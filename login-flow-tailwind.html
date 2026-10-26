@@ -58,12 +58,12 @@
         <div class="flex flex-col gap-2">
           <div class="field">
             <input id="identifier" type="text" autocomplete="username webauthn" placeholder=" " aria-describedby="hint-otc">
-            <label for="identifier" id="identifier-label">Account ID / Email / Phone</label>
+            <label for="identifier" id="identifier-label">Account ID / Email / Phone</label><fieldset aria-hidden="true"><legend><span>Account ID / Email / Phone</span></legend></fieldset>
             <p class="hint" id="hint-otc" hidden>We'll send a 6-digit code to the email or phone on your account.</p>
           </div>
           <div class="field" id="field-pwd">
             <input id="password" type="password" autocomplete="current-password" placeholder=" ">
-            <label for="password">Password</label>
+            <label for="password">Password</label><fieldset aria-hidden="true"><legend><span>Password</span></legend></fieldset>
             <button type="button" class="field-trail" id="pwd-toggle" aria-label="Show password"><span id="pwd-icon" class="icon icon-sm icon-eye-crossed" aria-hidden="true"></span></button>
           </div>
         </div>
@@ -104,6 +104,7 @@
     hintOtc.hidden = mode !== 'otc';
     // A code goes to an email or a phone, so the code tab does not ask for an Account ID.
     identifierLabel.textContent = mode === 'pwd' ? 'Account ID / Email / Phone' : 'Email / Phone';
+    identifierLabel.parentElement.querySelector('fieldset legend span').textContent = identifierLabel.textContent; // the outline gap follows the label
     identifier.autocomplete = mode === 'pwd' ? 'username webauthn' : 'username';
     submit.textContent = mode === 'pwd' ? 'Log In' : 'Send Code';
     sync();
