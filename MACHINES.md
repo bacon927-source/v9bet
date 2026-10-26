@@ -43,7 +43,7 @@
 1. ~~密碼頁要不要放雙重驗證~~ → 10-21 已決定：密碼和 2FA 都在 Security 一頁；2FA 開關打開後，電話和 email 都驗證過才算開好。**還要問**：開好之後要不要再走驗證器 App（裝 App、掃 QR、輸入碼、存備援碼），還是簡訊／email 碼就夠
 2. 幣別頁的文字要改成什麼
 16. 問 IT：登入頁能不能整頁放在固定的 auth 網域上（會員網站按登入就跳過去、登入完跳回來）？「Last used」、登入狀態、passkey 都存在 auth 網域，換網址不會不見、客人也不用重新登入（10-26 使用者決定 Last used 記在瀏覽器，前提是能解決換網址）
-15. Login／Sign Up 改成 ✕ 頂列＋ Segmented control（10-26）後還沒跟上的：程式成品頁 `login-flow-tailwind.html` `signup-flow-tailwind.html` 和 `tailwind.config.js` 的 `.nav-tabs`；📏 Spacing 頁 Login & Sign Up 兩張規格（還是舊頂列）
+15. Login／Sign Up 改成 ✕ 頂列＋ Segmented control（10-26）後還沒跟上的：程式成品頁 `login-flow-tailwind.html` `signup-flow-tailwind.html` 和 `tailwind.config.js` 的 `.nav-tabs`
 14. Settings 拆成 Account／Settings 後：Profile 的 More 還有一列 Language，跟 Settings 重複，留哪邊；`profile-settings-flow-wireframe.html` 還是一頁 Settings，要跟著拆
 13. 點數 10-21 在 Figma 全部拿掉了，但文件（`profile-settings-flow-wireframe.html` 的 🎁+10、`setup-nine.html`、`signup-flow-wireframe.html`、`home-flow-wireframe.html` 的「earn 100 points」卡）還寫著點數，要一起改；Settings 的 Account Setup 四張還是舊的 8 項清單，要不要整個換成新的 9 步
 12. 「Get the app」（掃 QR 下載 App）放哪：coach mark 最後一站、首頁橫幅、還是先不放（10-21 舊的 You're all set 頁刪掉後沒有地方放）
