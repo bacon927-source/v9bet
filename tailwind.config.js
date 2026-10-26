@@ -445,6 +445,9 @@ module.exports = {
           position: 'fixed', left: '0', right: '0', bottom: '0', zIndex: '50', maxHeight: '90dvh', overflowY: 'auto',
           display: 'flex', flexDirection: 'column', backgroundColor: c('sheet.DEFAULT'),
           borderTopLeftRadius: theme('borderRadius.xl'), borderTopRightRadius: theme('borderRadius.xl'),
+          /* A lifted field label masks the outline with the surface behind it,
+             so inside a sheet it takes the sheet colour, not the page's. */
+          '& .field > input:focus + label, & .field > input:not(:placeholder-shown) + label': { backgroundColor: c('sheet.DEFAULT') },
         },
         '.sheet-header': {
           position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: theme('spacing.2'), paddingTop: theme('spacing.1'),
