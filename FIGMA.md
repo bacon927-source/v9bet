@@ -107,7 +107,7 @@ fileKey `RQEyZIgfkCKHdzYmOwprvR`，在 v9 團隊下。跟網頁版是同一套�
 | Verify Email · In progress / · Ready / · Resend available / · Invalid code / · Too many resends | `21:535` `271:2619` `21:601` `21:633` `21:667` | 360 × 800（排在 Sign Up 那一列） |
 | Sign Up · Account exists（Sign Up 上面蓋一張面板） | `23:602` | 360 × 800 |
 | ~~Existing account · Reactivated / · Signed in / · Limited / · Restricted~~ | 已刪 | **2026-10-26 刪除**（使用者：「應該不會有後面這些」）：Sign Up 時帳號已存在，在面板輸入驗證碼就直接登入，不再多一張結果頁。休眠／黑名單／受限的處理規則仍在 `entry-routes.html` |
-| Social · Welcome / · Account found / · Verify it's you / · Linked | `271:2620` `23:777` `23:798` `23:829` | 360 × 800 |
+| Social · Welcome / · Account found / · Verify it's you / · Linked | `271:2620` `23:777` `23:798` `23:829` | 360 × 800。**2026-10-26 Google 自動連結**（使用者：「Google 自動連結 ok」）：Google 給的 email 已驗證、且等於既有帳號裡已驗證的 email，就直接登入並連結，不出現 Account found；這幾張的例子因此改成 LINE（Account found、Verify it’s you、Linked） |
 
 | Welcome + Offers | `271:2631` | 360 × 800 |
 | Tutorial · New member tour / · What's new | `319:3135` `320:3097` | **2026-10-21**（使用者：「Tutorial 要用什麼方式呈現？跟著畫面跑？」→ coach mark；「這 4 個覺得很亂……這時已經進去 lobby 了」）。教學**全部在 lobby 上**，只有一種做法：暗幕挖洞把目標亮出來（`bg/scrim`），旁邊一個 Coach mark。**新會員**：Welcome popup 關掉後跑一次，3–4 站、可 Skip、看過不再出現（`319:3135`，1 / 4）。**舊會員有新功能**：只亮那一個，一站、沒有 Skip、按「Got it」結束（`320:3097`，Step 寫「New」）。**lobby 還沒設計**，目標（Deposit、History）是虛線佔位，真正停哪幾站等 lobby 定了再排。原本投影片式的 3 張（You're all set、Tour running、What's new；`25:862` `25:894` `25:919`）已刪。**「Get the app」（掃 QR 下載 App）跟著那張一起拿掉了，要放哪還沒決定**。列：Tutorial & App |
