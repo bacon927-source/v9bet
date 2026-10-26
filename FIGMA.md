@@ -88,7 +88,7 @@ fileKey `RQEyZIgfkCKHdzYmOwprvR`，在 v9 團隊下。跟網頁版是同一套�
 | Option card | `16:78` | State = Default / Selected；TEXT `Title` `Sub`；INSTANCE_SWAP `Icon`（預設 `flag/vn`）。v1 的「radio button with icon」加寬成兩行 |
 | flag/vn · flag/th | `16:40` `16:48` | v1 匯出的 SVG（`assets/flags/`） |
 | Sheet header | `22:63` | TEXT `Title`；把手、置中標題、右上關閉（`icon/sheet-close` `22:51`）。v1 的彈窗是從底部上來的面板（AnchoredSheet）：底 `bg/sheet` #1C1C1E、上方圓角 12、後面一層 `bg/scrim` 黑 60% |
-| Status mark | `22:73` | 48 的綠圈加勾，結果頁用，取代 wireframe 的 emoji |
+| Status mark | `22:73` | 48 的綠圈加勾，結果頁用，取代 wireframe 的 emoji。**2026-10-26**：勾改成 32（`size-8`），線寬 2 跟外圈一樣粗（換 Heroicons 後原本 16 的勾太細，使用者：「這 icon 很弱」） |
 | List row | `36:83` | Trailing = Chevron / Toggle on / Toggle off；TEXT `Title` `Value`。v1 設定頁的 search/list：50 高、卡片底 `bg/card` #212326、圓角 12，同一張卡裡用一條頁面底色的細線隔開，上面一行 15px 白 30% 的分組標題（`text/tertiary`） |
 | Card | `227:58` | 2026-10-20 新增。List row 疊在 `bg/card`、`radius/xl` 12，列之間 1px `bg/app` 的線。第 1–3 列固定，BOOLEAN `Row 4` `Row 5` `Row 6` 開關（藏一列會連它上面的線一起藏）。已取代畫面裡手拼的 `list` 框 8 處和 Profile 的 `more` 1 處（2026-10-20，每列標題、值、Trailing 逐一照抄，高度一致）。程式 `.card` ＋ `.list-row` |
 | Toggle | `36:63` | State = On / Off；開的時候是綠色（v1 是紫色，2026-10-13 改） |
