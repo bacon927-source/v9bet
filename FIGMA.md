@@ -103,6 +103,7 @@ fileKey `RQEyZIgfkCKHdzYmOwprvR`，在 v9 團隊下。跟網頁版是同一套�
 |---|---|---|
 | Login · Password / · filled / · One-time code | `8:35` `8:94` `8:157` | 360 × 800 |
 | Login · Password · typing a phone number | `401:5374` | **電話自動帶國碼**（2026-10-26，使用者看了 BC.Game：「只要輸入 09 之後，它就會跳出國碼，我覺得這比單純輸入好」）：帳號欄一開始是空的一格；輸入第一個字是數字或「+」時，欄位左邊出現「+84 🇻🇳 ▾ |」，打英文字母就收回（當成 Account ID 或 email）。預設國家**不看 IP**（很多客人用 VPN，BC.Game 就猜錯成 +62）：先看手機時區（Asia/Ho_Chi_Minh／Asia/Bangkok），再看系統語言地區（vi-VN／th-TH），都看不出來才用網站所屬市場；點國碼可改成 +66。Account ID 現在允許全數字，所以後端收到全數字時，Account ID 和電話（用顯示的國碼）兩邊都查，兩邊都有就用密碼決定；One-time code 分頁只收 email／電話，不會撞。 |
+| Login · error · phone too short / · email / · Account ID / · wrong password | `437:3847` `437:3958` `437:4069` `437:4180` | **2026-10-26**（使用者給 v1 的錯誤欄位：「這是我之前的版，你可以給我新的」）。用 Field 的 Error 狀態：紅框、紅標籤、框下一行紅字。前三種是格式錯（離開欄位或按 Log In 時才檢查，Log In 變灰）：電話太短「Enter a valid phone number.」（國碼留著）、email 格式「Enter a valid email address.」、Account ID 有空白或符號「Letters and numbers only.」（v1 寫「Only contain alphanumeric characters」，改成較通順的說法）。第四種是送出後帳密不對：錯誤放在密碼欄「Account ID or password is incorrect.」，**不說是哪一個錯**（不透露帳號存不存在）。Field 沒有 Error＋眼睛圖示的變體，所以這張密碼欄的眼睛暫時不見，要補一個 `State=Error, Trailing=Icon` |
 | Sign Up · Default / · Ready / · From invite link | `271:2618` `271:2617` `8:308` | 360 × 800 |
 | Verify Email · In progress / · Ready / · Resend available / · Invalid code / · Too many resends | `21:535` `271:2619` `21:601` `21:633` `21:667` | 360 × 800（排在 Sign Up 那一列） |
 | Sign Up · Account exists（Sign Up 上面蓋一張面板） | `23:602` | 360 × 800 |
