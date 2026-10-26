@@ -270,20 +270,21 @@ module.exports = {
         'input:checked + .tick::after': { backgroundColor: c('brand-2.DEFAULT') },
         'input:focus-visible + .tick': { outline: `2px solid ${c('edge.focus')}`, outlineOffset: '2px' },
 
-        /* Divider with a label between two rules. It splits provider sign-in
-           from the member's own details, so it sits an action step (32) from
-           what is above and below: the page gap (16) plus padding that makes
-           up the rest. */
+        /* Divider with a label between two rules (2026-10-26, the Preline
+           pattern): 12 above and below inside it (py-3), 24 between each rule
+           and the label (gap-6). The page's gap-6 between sections adds the
+           rest, so the rule sits 36 from what is above and below. */
         '.divider-label': {
-          display: 'flex', alignItems: 'center', gap: theme('spacing.3'), paddingBlock: `calc(${theme('spacing.8')} - ${theme('spacing.4')})`, ...type('body-sm'), color: c('ink.secondary'),
+          display: 'flex', alignItems: 'center', gap: theme('spacing.6'), paddingBlock: theme('spacing.3'), ...type('body-sm'), color: c('ink.secondary'),
           '&::before, &::after': { content: '""', flex: '1 1 0%', height: '1px', backgroundColor: c('edge.DEFAULT'), opacity: '.5' },
         },
 
         /* Divider without a label — one plain rule between two groups that need
-           no name. Same 32 from what is above and below as .divider-label.
+           no name. Same 12 above and below as .divider-label (py-3); the page's
+           gap-6 between sections adds the rest.
            Use <div class="divider" role="separator"></div>. */
         '.divider': {
-          display: 'flex', paddingBlock: `calc(${theme('spacing.8')} - ${theme('spacing.4')})`,
+          display: 'flex', paddingBlock: theme('spacing.3'),
           '&::before': { content: '""', flex: '1 1 0%', height: '1px', backgroundColor: c('edge.DEFAULT'), opacity: '.5' },
         },
         /* Social sign-in — a 48 circle carrying the provider's official icon,
