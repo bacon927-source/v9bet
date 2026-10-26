@@ -352,12 +352,12 @@ footer{
             <div class="body"><code>POST /auth/social/exchange</code></div>
             <ul class="branch">
               <li>
-                <b>全新帳號</b> → <b>不需要 OTP</b>，直接進 Welcome。provider 已經證明過身分了。
-                <div class="en"><b>Brand-new account</b> → <b>no OTP</b>, straight to Welcome. The provider has already proved the identity.</div>
+                <b>全新帳號</b> → 有拿到 email（Google、LINE）就寄碼到那個 email，驗過記成已驗證；可以按 Skip 直接進 Setup 1。沒拿到 email（Zalo、LINE 沒權限）→ 問要不要加 email，要就寄碼驗證，也可以 Skip（10-26）。
+                <div class="en"><b>Brand-new account</b> → if the provider gave an email (Google, LINE), a code goes to it and passing records it as verified; Skip goes straight to Setup 1. No email (Zalo, LINE without permission) → asked to add one, with a code, or Skip (10-26).</div>
               </li>
               <li>
-                <b>配對到既有帳號</b> → <b>Google（email 已驗證、且等於我們帳號裡已驗證的 email）直接登入並自動連結</b>（10-26）；LINE 的 email 等於我們某帳號的 email（LINE 的 email 不保證驗證過），或我們這邊 email 未驗證 → Account Found，詢問是否綁定。Zalo 不給 email 也不給電話，對不到任何帳號，一律開新帳號。驗證碼寄到<b>既有帳號</b>已驗證的聯絡方式，不是新的 provider——兩邊都要證明身分才綁。
-                <div class="en"><b>Matches an existing account</b> → <b>Google with a verified email equal to our verified email signs in and links automatically</b> (10-26); LINE / Zalo, or our email unverified → Account Found, offering to link. The code goes to the contact on file for the <b>existing</b> account, not to the new provider — both sides must prove themselves before linking.</div>
+                <b>配對到既有帳號</b> → <b>Google、LINE、Zalo 都一樣：Account Found → 一次驗證碼，不能跳過</b>，驗過就登入並綁定（10-26，取代「Google 自動連結」）。驗證碼寄到<b>既有帳號</b>的聯絡方式（用 email 對到的就寄到那個 email）——兩邊都要證明身分才綁。
+                <div class="en"><b>Matches an existing account</b> → <b>every provider: Account Found → one code, not skippable</b>, then signed in and linked (10-26, replaces Google auto-link). The code goes to the contact on file for the <b>existing</b> account, not to the new provider — both sides must prove themselves before linking.</div>
               </li>
               <li class="warn">
                 <b>既有帳號本身沒有聯絡方式</b> → 沒有地方可以寄碼，只能導 Live Chat。
