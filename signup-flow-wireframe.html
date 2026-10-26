@@ -280,18 +280,17 @@ const screens = [
     <div class="hint">＊ ONE welcome for every provider (09-17). Whether a contact is still missing is settled in Setup Step 1, not here — see Setup Overview state 4.</div>`
   :s===1?`
     <div class="scr-title"><span class="x">←</span>Account Found</div>
-    <div class="err">This LINE account already matches an existing account <b>v9_user***</b>.</div>
-    <div class="scr-step">Verify it's you to link this Google account — for your protection, we can't link it on Google's word alone</div>
-    ${CTA("Send code to existing account")}
-    ${CTA("Use a different account",'ghost')}
-    <div class="link"><b>Not you? Contact Live Chat</b></div>`
+    <div class="err">The email on this LINE account is already used by <b>v9_user***</b>.</div>
+    <div class="scr-step">We'll send a code to confirm it's you.</div>
+    ${CTA("Send code")}
+    ${CTA("Use a different account",'ghost')}`
   :s===2?`
     <div class="scr-title"><span class="x">←</span>Verify It's You</div>
-    <div class="scr-step">Code sent to the phone on file for v9_user*** &nbsp; 091***233</div>
+    <div class="scr-step">We sent a code to &nbsp; ba*****on@gmail.com</div>
     <div class="otpcells"><span class="f">_</span><span>_</span><span>_</span><span>_</span><span>_</span><span>_</span></div>
     <div class="hint" style="text-align:center">Resend in 32s</div>
     ${CTA("Verify and link",'disabled')}
-    <div class="hint">＊ This proves ownership of the EXISTING account, not the new Google identity — Google already proved that side.</div>
+    <div class="hint">＊ The code goes to the same email that matched — it proves the member owns that email and the account behind it.</div>
     <div class="hint">＊ Same rule as email sign-up: pass the code and you're straight in, dormant accounts reactivating in place. A restricted account stops here — see Existing Account.</div>`
   :`
     <div class="scr-title">Welcome back!</div>
