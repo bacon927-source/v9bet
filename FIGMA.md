@@ -75,7 +75,7 @@ fileKey `RQEyZIgfkCKHdzYmOwprvR`，在 v9 團隊下。跟網頁版是同一套�
 | Nav top | `4:28` | TEXT `Title`；裡面的 `action` 可以隱藏（Setup 沒有關閉） |
 | Button | `4:41` | State = Default / Disabled；TEXT `Label`。**沒有紅色狀態**（2026-10-13 拿掉） |
 | Link row | `4:48` | TEXT `Prompt`、`Action` |
-| Tab · Tabs | `4:60` `4:77` | Tab：Selected = True / False。Tabs：Active = First / Second（One-time code ｜ Password） |
+| Tab · Tabs | `4:60` `4:77` | Tab：Selected = True / False。Tabs：Active = First / Second（One-time code ｜ Password）。**2026-10-26 Tab 加 BOOLEAN `Last used`**（使用者在 Password 分頁上畫了「Last used」）：跟社群按鈕同一個「Last used」小標，置中放在分頁字的上方。**一頁只會有一個 Last used**：上次用 Google／LINE／Zalo 就標在社群按鈕，上次用密碼或驗證碼就標在那個分頁，而且登入頁直接打開那個分頁。Login · Password 三張標 Password，Login · One-time code 那張示範上次用 Google |
 | Radio card | set `311:101`（`State=Default` `311:93`、`State=Selected` `311:97`） | **2026-10-21 新增**（使用者選「兩張選項卡」取代分頁，怕 USDT 分頁被忽略）。二選一的選項，兩張並排一樣大：高 50（跟 Field 一樣）、左右 `spacing/3`、`radius/xl`、1px 內框線；Default 框線 `border/default`，Selected 框線 `brand/secondary`＋右邊 icon/check。TEXT `Label`。並排時中間 `spacing/3`、各自撐滿。做法照 kit 提款頁的付款方式選擇（`wallet-flow-wireframe.html`），提款頁畫進 Figma 時用同一個。**程式還沒做**（Tailwind 沒有現成元件，到時用一般的 radio input 做） |
 | Coach mark | set `319:228` | **2026-10-21 新增**。教學的說明泡泡：標題（Body/Bold）、一句說明（Small/Regular、`text/secondary`）、底列「1 / 4」＋ Skip ＋ Next（綠字 Body/Bold，最後一站改「Done」）。底色 `bg/sheet`、`radius/xl`、內距 `spacing/4`、行距 `spacing/2`、寬 280。VARIANT `Placement` = bottom-start / bottom / bottom-end / top-start / top / top-end（照 Floating UI／Popper 的命名：泡泡在目標的哪一邊，箭頭在另一邊、離邊 `spacing/5`）。TEXT `Title` `Body` `Step` `Next`，BOOLEAN `Show skip`。亮目標用的暗幕不在元件裡，在畫面上用 `bg/scrim` 的矩形挖洞。**程式還沒做** |
 | Tick | `4:87` | State = Off / On |
