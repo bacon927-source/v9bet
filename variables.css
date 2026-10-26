@@ -40,6 +40,8 @@
   --v1-grey-300:#9BA7B7; --v1-gold:#FFBC00;     --v1-green:#00DA87;
   /* v1 draws an empty code cell fainter than a field, and an error in pure red. */
   --v1-grey-600:#4B4B4B; --v1-red:#FF0000;
+  /* v1's toast message: light blue with near-black text (2026-10-26). */
+  --v1-blue-light:#99CCFF;
   /* v1's settings and profile: cards a shade above the page, purple for switches. */
   --v1-purple:#9B5BF5;
   /* Tuned away from v1 on 2026-10-13: a grey that passes as text, a red that
