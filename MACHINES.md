@@ -37,11 +37,12 @@
 2. 元件重畫：間距補綁、預設寬度 358／390、說明照程式重寫；新增 Divider `Label=No`、Card、Checklist、Code input、Field 的 Hint；focus 時標籤跟框線一起變白
 3. 畫面上手拼的 41 處換成元件
 4. Setup 改成 iPhone 新機設定式：一頁一件事、**8 步**（10-26 通知＋訊息管道併頁）、頂列進度條＋百分比（Step top bar 的 `Progress` 變體）、點數拿掉、新增 Account ID（必填）、通知改開關。**10-21：第 5 步密碼（可略過）、第 6 步 Security 一個 2FA 開關（預設關）。Passkey 不放 Setup：登入成功後問一次＋ Settings › Passkeys（IT 會改成固定的中央驗證網域，passkey 綁在那裡）；2FA 打開才出現 email／電話，按 Get code 跳出底部面板輸入驗證碼，不另開頁**（細節在 `FIGMA.md` 的 Setup 列）
-5. 🔀 Flows 頁：兩條註冊流程用真正畫面的 instance 畫出來（板子 `483:5742`）
+5. 🔀 Flows 頁：兩條註冊流程用真正畫面的 instance 畫出來（板子 `505:5331`）
 
 **明天先問使用者的**：
 1. ~~密碼頁要不要放雙重驗證~~ → 10-21 已決定：密碼和 2FA 都在 Security 一頁；2FA 開關打開後，電話和 email 都驗證過才算開好。**還要問**：開好之後要不要再走驗證器 App（裝 App、掃 QR、輸入碼、存備援碼），還是簡訊／email 碼就夠
 2. 幣別頁的文字要改成什麼
+17. 問 IT：LINE Login 的 email 權限申請了沒（LINE Developers 後台要送隱私權政策截圖，沒申請就拿不到 email）；Zalo 一般登入只給 Zalo ID、名字、大頭照，有沒有辦法拿到電話
 16. 問 IT：登入頁能不能整頁放在固定的 auth 網域上（會員網站按登入就跳過去、登入完跳回來）？「Last used」、登入狀態、passkey 都存在 auth 網域，換網址不會不見、客人也不用重新登入（10-26 使用者決定 Last used 記在瀏覽器，前提是能解決換網址）
 15. Login／Sign Up 改成 ✕ 頂列＋ Segmented control（10-26）後還沒跟上的：程式成品頁 `login-flow-tailwind.html` `signup-flow-tailwind.html` 和 `tailwind.config.js` 的 `.nav-tabs`
 14. Settings 拆成 Account／Settings 後：Profile 的 More 還有一列 Language，跟 Settings 重複，留哪邊；`profile-settings-flow-wireframe.html` 還是一頁 Settings，要跟著拆
@@ -51,7 +52,7 @@
 10. 密碼規則（長度、要不要數字等）要問 IT；拿到後畫「不符合」和「兩欄不一樣」兩個錯誤狀態
 3. Account ID 的規則：長度、字元、能否重複、之後能否改（v1 設計稿沒寫，可能要問 IT）
 4. ~~Zalo／LINE 沒有 email 的會員~~ → 10-21 已決定：第三方登入沒拿到 email 的，在 Security 頁打開 2FA 時自己輸入 email、Get code 驗證；Email 註冊和有拿到 email 的不問
-8. 第三方註冊的「Account created」頁 `271:2620` 還寫著舊的點數文案：要拿掉這頁還是改字
+8. ~~第三方註冊的「Account created」頁~~ → 10-26 刪除，第三方回來直接分流
 9. Settings 那一列兩張「之後回來補做」的頁也用 Step top bar，現在顯示 11%，回來補做時要不要顯示進度
 5. Setup 區剩下兩條手繪線要不要刪（另外四條不見了，原因不明）
 6. ~~個人資料頁兩行說明字~~ → 10-21 已決定拿掉（使用者：「是不需要的」），框到框回到 16；說明字換成新建節點後使用者的 Figma 已能顯示
