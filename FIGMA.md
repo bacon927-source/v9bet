@@ -71,7 +71,7 @@ fileKey `RQEyZIgfkCKHdzYmOwprvR`，在 v9 團隊下。跟網頁版是同一套�
 
 | 元件 | id | Variants / 屬性 |
 |---|---|---|
-| icon/close · back · eye · eye-crossed · check · chevron-down · chevron-right | `4:10` 新 `icon/back` `icon/eye` `4:14` `4:18` `16:33` `36:53` | **固定一套：v1 Icon 頁的 Flaticon UIcons Bold Rounded（fi-br；眼睛只有 fi-bs）**（使用者 2026-10-14：「icon 可以拿 v1 版本，也要開始固定」）。單獨 24、輸入框裡 16；顏色綁變數。原本混了 fi-rr 的 ✕、fi-ios 的箭頭、三角形下拉、iOS 樣式的 sheet-close，已全部換掉；sheet-close 刪除，面板關閉也用 icon/close。程式：`.icon .icon-<name>`，檔案在 `assets/icons/<name>.svg` |
+| icon/close · back · eye · eye-crossed · check · chevron-down · chevron-right | `4:10` 新 `icon/back` `icon/eye` `4:14` `4:18` `16:33` `36:53` | **固定一套：v1 Icon 頁的 Flaticon UIcons Bold Rounded（fi-br；眼睛只有 fi-bs）**（使用者 2026-10-14：「icon 可以拿 v1 版本，也要開始固定」）。**2026-10-26 統一做法**（使用者：「你有重做 icon 並放在元件庫嗎」）：每個 icon 都是 24×24 的框，圖形放在中間 20×20 內（eye、eye-crossed 寬 20，check 寬 18；原本這三個是 16 的框、圖形貼邊），所有圖層設成跟著框縮放，不裁切。用的時候只改框的大小：24、20（Tailwind `size-5`，輸入框裡的眼睛）、16（`size-4`，Verified 勾、選項卡的勾）。44 的點擊範圍屬於按鈕，不放在 icon 裡。顏色綁變數。原本混了 fi-rr 的 ✕、fi-ios 的箭頭、三角形下拉、iOS 樣式的 sheet-close，已全部換掉；sheet-close 刪除，面板關閉也用 icon/close。程式：`.icon .icon-<name>`，檔案在 `assets/icons/<name>.svg` |
 | Nav top | `4:28` | TEXT `Title`；裡面的 `action` 可以隱藏（Setup 沒有關閉） |
 | Button | `4:41` | State = Default / Disabled；TEXT `Label`。**沒有紅色狀態**（2026-10-13 拿掉） |
 | Link row | `4:48` | TEXT `Prompt`、`Action` |
