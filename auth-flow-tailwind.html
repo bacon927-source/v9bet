@@ -16,7 +16,15 @@
 <script>tailwind.config = module.exports;</script>
 <!-- Screens and forms are switched with the hidden attribute; flex utilities
      would otherwise override it. -->
-<style>[hidden] { display: none !important; }</style>
+<style>
+  [hidden] { display: none !important; }
+  /* Country prefix on the identifier: it appears once what is typed looks like
+     a phone number, and makes room for itself (Figma: Login · Password ·
+     typing a phone number). */
+  .field-cc { display: none; }
+  .field[data-phone] > .field-cc { display: flex; }
+  .field[data-phone] > input { padding-left: 112px; }
+</style>
 </head>
 
 <body class="bg-app text-ink font-sans antialiased">
@@ -91,6 +99,16 @@
               <div class="field">
                 <input id="identifier" type="text" autocomplete="username webauthn" placeholder=" " aria-describedby="hint-otc identifier-error">
                 <label for="identifier" id="identifier-label">Account ID / Email / Phone</label><fieldset aria-hidden="true"><legend><span>Account ID / Email / Phone</span></legend></fieldset>
+                <!-- +84 🇻🇳 ▾ | — tap to change the country. The default comes from the
+                     device's time zone, then its language, then the site's market. -->
+                <span class="field-cc absolute left-3 top-2 z-10 h-[50px] items-center gap-1 text-field text-ink">
+                  <span id="cc-code">+84</span><img id="cc-flag" src="assets/flags/vn.svg" alt="" class="size-[22px]">
+                  <span class="icon icon-sm icon-chevron-down text-ink-secondary" aria-hidden="true"></span>
+                  <span class="ml-2 h-6 w-px bg-edge" aria-hidden="true"></span>
+                  <select id="cc-select" aria-label="Country code" class="absolute inset-0 opacity-0 cursor-pointer">
+                    <option value="VN">Vietnam +84</option><option value="TH">Thailand +66</option>
+                  </select>
+                </span>
                 <p class="hint" id="hint-otc" hidden>We'll send a 6-digit code to the email or phone on your account.</p>
                 <p class="error-text" id="identifier-error" hidden></p>
               </div>
@@ -239,6 +257,26 @@
   $('tab-pwd').addEventListener('click', () => setTab('pwd'));
   $('tab-otc').addEventListener('click', () => setTab('otc'));
   $('identifier').addEventListener('input', syncLogin);
+
+  /* Phone prefix: shown while the identifier is all digits (an Account ID is
+     digits too — the server checks both, and the password decides). */
+  const COUNTRIES = { VN: { code: '+84', flag: 'assets/flags/vn.svg' }, TH: { code: '+66', flag: 'assets/flags/th.svg' } };
+  const setCountry = (key) => {
+    $('cc-select').value = key; $('cc-code').textContent = COUNTRIES[key].code; $('cc-flag').src = COUNTRIES[key].flag;
+  };
+  const defaultCountry = () => {
+    const zone = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+    if (/Bangkok/.test(zone)) return 'TH';
+    if (/Ho_Chi_Minh|Saigon/.test(zone)) return 'VN';
+    const region = (navigator.language.split('-')[1] || '').toUpperCase();
+    return COUNTRIES[region] ? region : 'VN'; // the site's market
+  };
+  const syncPhone = () => {
+    $('identifier').parentElement.toggleAttribute('data-phone', /^\d[\d\s]*$/.test($('identifier').value));
+  };
+  $('identifier').addEventListener('input', syncPhone);
+  $('cc-select').addEventListener('change', () => { setCountry($('cc-select').value); $('identifier').focus(); });
+  setCountry(defaultCountry());
   $('password').addEventListener('input', syncLogin);
   $('pwd-toggle').addEventListener('click', () => {
     const reveal = $('password').type === 'password';
@@ -355,6 +393,8 @@
     ['Log In', [
       ['login', 'Password', () => { setSide('login'); show('screen-entry'); }],
       ['login-filled', 'Password · filled', () => { setSide('login'); fill('identifier', 'bacon927'); fill('password', 'secret123'); show('screen-entry'); }],
+      ['login-typing-phone', 'Typing a phone number', () => { setSide('login'); fill('identifier', '0913'); show('screen-entry'); $('identifier').focus(); }],
+      ['login-typing-email', 'Typing an email', () => { setSide('login'); fill('identifier', 'bacon927@gm'); show('screen-entry'); $('identifier').focus(); }],
       ['login-code', 'One-time code', () => { setSide('login'); setTab('otc'); show('screen-entry'); }],
       ['login-no-record', 'No Last used (first visit)', () => { lastUsed = false; setSide('login'); setTab('otc'); show('screen-entry'); }],
     ]],
