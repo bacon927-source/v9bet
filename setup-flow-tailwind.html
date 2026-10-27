@@ -521,7 +521,7 @@
   ];
   // A #state opens that state; with none, the member arrives from sign-up on step 1.
   const handlers = Object.fromEntries(STATES.flatMap(([, items]) => items).map(([key, , fn]) => [key, fn]));
-  if (!TestPanel.init({ page: 'setup', handlers, reset: fresh, buttonClass: 'bottom-40', panelClass: 'bottom-56 max-h-[calc(100dvh-240px)]' })) { fresh(); handlers.arrive(); }
+  if (!TestPanel.init({ page: 'setup', handlers, reset: fresh, fallback: 'arrive', buttonClass: 'bottom-40', panelClass: 'bottom-56' })) { fresh(); handlers.arrive(); }
 </script>
 </body>
 </html>

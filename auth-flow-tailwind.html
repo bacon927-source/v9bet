@@ -686,7 +686,8 @@
     page: 'auth',
     handlers: Object.fromEntries(STATES.flatMap(([, items]) => items).map(([key, , fn]) => [key, fn])),
     reset: fresh,
-    buttonClass: 'bottom-24', panelClass: 'bottom-40 max-h-[calc(100dvh-176px)]',
+    fallback: new URLSearchParams(location.search).get('mode') === 'signup' ? 'signup' : 'login',
+    buttonClass: 'bottom-24', panelClass: 'bottom-40',
   }) || setSide(new URLSearchParams(location.search).get('mode') === 'signup' ? 'signup' : 'login');
   // A #state opens that state; ?mode=signup opens on Sign Up (the "Sign Up" button elsewhere links here).
 </script>
