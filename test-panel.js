@@ -193,22 +193,46 @@
   ];
   const token = (px) => (px % 4 === 0 ? `${px} · spacing/${px / 4}` : `${px}px · off the scale`);
   const shown = (el) => el.offsetParent !== null || getComputedStyle(el).position === 'fixed';
+  // Two inks, kept light so the screen still reads through: pink for spacing,
+  // blue for sizes. Labels are small dark pills; bands are a faint wash edged
+  // with a dashed line, so you see exactly where a gap starts and ends.
+  const INK = {
+    pink: { text: '#f9a8d4', edge: 'rgba(236,72,153,.75)', wash: 'rgba(236,72,153,.12)' },
+    blue: { text: '#93c5fd', edge: 'rgba(96,165,250,.85)' },
+  };
   let layer = null;
-  const tag = (x, y, text, color) => {
+  let placed = [];
+  // Put a label at (x, y) — y is its middle; align 'right' means x is its right
+  // edge. If that covers another label, try the other end of the band (alt is
+  // its left edge), then step down below the clash — never off the screen.
+  const tag = (x, y, text, ink, align = 'left', alt = null) => {
     const t = document.createElement('span');
     t.textContent = text;
-    t.style.cssText = `position:absolute;left:${x}px;top:${y}px;transform:translateY(-50%);padding:1px 6px;border-radius:4px;background:${color};color:#fff;font:600 11px/16px system-ui,sans-serif;white-space:nowrap;`;
+    t.style.cssText = `position:absolute;left:0;top:0;padding:0 6px;border-radius:999px;background:rgba(14,15,18,.86);border:1px solid ${INK[ink].edge};color:${INK[ink].text};font:600 10px/15px system-ui,-apple-system,sans-serif;letter-spacing:.01em;white-space:nowrap;`;
     layer.append(t);
+    const w = t.offsetWidth, h = t.offsetHeight;
+    const clash = (l, tp) => placed.find((r) => l < r.x2 + 3 && l + w > r.x1 - 3 && tp < r.y2 + 1 && tp + h > r.y1 - 1);
+    let left = Math.max(0, align === 'right' ? x - w : x);
+    let top = y - h / 2;
+    if (clash(left, top) && alt !== null && !clash(alt, top)) left = alt;
+    for (let n = 0; n < 6 && clash(left, top); n += 1) top = clash(left, top).y2 + 2;
+    t.style.left = `${left}px`; t.style.top = `${top}px`;
+    placed.push({ x1: left, x2: left + w, y1: top, y2: top + h });
+    return t;
   };
-  const band = (x, y, w, h, text) => {
+  const band = (x, y, w, h, text, edges = 'tb') => {
     if (w < 1 || h < 1) return;
     const b = document.createElement('div');
-    b.style.cssText = `position:absolute;left:${x}px;top:${y}px;width:${w}px;height:${h}px;background:rgba(236,72,153,.28);`;
+    const dash = `1px dashed ${INK.pink.edge}`;
+    b.style.cssText = `position:absolute;left:${x}px;top:${y}px;width:${w}px;height:${h}px;background:${INK.pink.wash};box-sizing:border-box;`
+      + (edges.includes('t') ? `border-top:${dash};` : '') + (edges.includes('b') ? `border-bottom:${dash};` : '')
+      + (edges.includes('l') ? `border-left:${dash};` : '') + (edges.includes('r') ? `border-right:${dash};` : '');
     layer.append(b);
-    if (text) tag(x + 4, y + h / 2, text, '#db2777');
+    if (text) tag(x + w - 6, y + h / 2, text, 'pink', 'right', x + 6);
   };
   const drawSpacing = (root) => {
     if (layer) layer.remove();
+    placed = [];
     layer = document.createElement('div');
     layer.setAttribute('aria-hidden', 'true');
     layer.dataset.tpLayer = '1';
@@ -217,25 +241,39 @@
     const sx = window.scrollX, sy = window.scrollY;
     const box = (el) => { const r = el.getBoundingClientRect(); return { x: r.left + sx, y: r.top + sy, w: r.width, h: r.height }; };
 
-    // The page frame: 16 left and right.
+    // Sizes first, so the spacing labels slide out of their way.
+    SIZES.forEach(([sel, name, dims]) => {
+      const el = [...root.querySelectorAll(sel)].find((e) => shown(e) && !e.closest('[aria-label="Test panel"]'));
+      if (!el) return;
+      const b = box(el);
+      const o = document.createElement('div');
+      o.style.cssText = `position:absolute;left:${b.x}px;top:${b.y}px;width:${b.w}px;height:${b.h}px;outline:1px dashed ${INK.blue.edge};outline-offset:-1px;`;
+      layer.append(o);
+      const text = `${name} ${dims === 'wh' ? Math.round(b.w) + ' × ' : ''}${Math.round(b.h)}`;
+      // Inside the right edge of wide components; beside small ones so it stays on screen.
+      if (b.w >= 160) tag(b.x + b.w - 6, b.y + b.h / 2, text, 'blue', 'right', b.x + 6);
+      else tag(b.x + b.w + 4, b.y + b.h / 2, text, 'blue');
+    });
+
+    // The page frame: 16 left and right, labelled down the left band.
     const page = root.querySelector('.page');
     if (page) {
       const p = box(page), pad = parseFloat(getComputedStyle(page).paddingLeft);
-      band(p.x, p.y, pad, p.h, '');
-      band(p.x + p.w - pad, p.y, pad, p.h, '');
-      // Written down the left band itself, so it never sits on the content's labels.
-      tag(p.x, p.y + 140, `${pad} · spacing/${pad / 4} · left / right (page frame)`, '#db2777');
-      Object.assign(layer.lastChild.style, { writingMode: 'vertical-rl', transform: 'none', padding: '6px 1px', width: `${pad}px`, textAlign: 'center' });
+      band(p.x, p.y, pad, p.h, '', 'r');
+      band(p.x + p.w - pad, p.y, pad, p.h, '', 'l');
+      const t = tag(p.x, p.y + p.h * 0.62, `${token(pad)} · left / right`, 'pink');
+      Object.assign(t.style, { writingMode: 'vertical-rl', padding: '6px 0', width: `${pad}px`, left: `${p.x}px`, textAlign: 'center', boxSizing: 'border-box' });
     }
     root.querySelectorAll('*').forEach((el) => {
-      if (el.closest('[aria-label="Test panel"]') || !shown(el)) return;
+      if (el.closest('[aria-label="Test panel"]') || el.closest('[data-tp-layer]') || !shown(el)) return;
       const cs = getComputedStyle(el);
       // Paddings that are part of the layout rules.
       const named = Object.keys(SPACING_PADDED).find((c) => el.classList.contains(c));
       if (named) {
         const b = box(el), top = parseFloat(cs.paddingTop), bottom = parseFloat(cs.paddingBottom);
+        const divider = named === 'divider-label' || named === 'divider';
         if (top >= 4) band(b.x, b.y, b.w, top, `${token(top)} · ${SPACING_PADDED[named]}`);
-        if (bottom >= 4 && named !== 'page-body') band(b.x, b.y + b.h - bottom, b.w, bottom, el.classList.contains('divider-label') || el.classList.contains('divider') ? '' : `${token(bottom)} · ${SPACING_PADDED[named]}`);
+        if (bottom >= 4 && named !== 'page-body') band(b.x, b.y + b.h - bottom, b.w, bottom, divider ? token(bottom) : `${token(bottom)} · ${SPACING_PADDED[named]}`);
       }
       // Gaps between stacked blocks.
       if ((cs.display === 'flex' && cs.flexDirection === 'column') || cs.display === 'grid') {
@@ -248,22 +286,9 @@
         for (let i = 0; i < kids.length - 1; i += 1) {
           const a = box(kids[i]), c = box(kids[i + 1]);
           if (c.y - (a.y + a.h) < 2) continue; // same row in a grid
-          band(b.x, a.y + a.h, b.w, c.y - (a.y + a.h), i === 0 ? `${token(gap)} · ${what}` : `${token(gap)}`);
+          band(b.x, a.y + a.h, b.w, c.y - (a.y + a.h), i === 0 ? `${token(gap)} · ${what}` : token(gap));
         }
       }
-    });
-    // Sizes of the main components — the first one of each kind on screen.
-    SIZES.forEach(([sel, name, dims]) => {
-      const el = [...root.querySelectorAll(sel)].find((e) => shown(e) && !e.closest('[aria-label="Test panel"]'));
-      if (!el) return;
-      const b = box(el);
-      const o = document.createElement('div');
-      o.style.cssText = `position:absolute;left:${b.x}px;top:${b.y}px;width:${b.w}px;height:${b.h}px;outline:1px solid #3b82f6;`;
-      layer.append(o);
-      // Inside the right edge of wide components; beside small ones so it stays on screen.
-      const text = `${name} ${dims === 'wh' ? Math.round(b.w) + ' × ' : ''}${Math.round(b.h)}`;
-      if (b.w >= 160) { tag(b.x + b.w - 4, b.y + b.h / 2, text, '#2563eb'); layer.lastChild.style.transform = 'translate(-100%, -50%)'; }
-      else tag(b.x + b.w + 4, b.y + b.h / 2, text, '#2563eb');
     });
   };
   const clearSpacing = () => { if (layer) { layer.remove(); layer = null; } };
