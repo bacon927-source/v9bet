@@ -111,7 +111,23 @@ module.exports = {
 
       addBase({
         'a:focus-visible, button:focus-visible': { outline: `2px solid ${c('edge.focus')}`, outlineOffset: '2px' },
+        /* Motion as Tailwind's own components (Catalyst, 2026-10-27 user: "照官方"):
+           a sheet rises 3rem (translate-y-12) and fades in, its backdrop fades
+           in — 100ms ease-out. Only when the device has not asked for less
+           motion (motion-safe). */
+        '@keyframes sheet-in': { from: { opacity: '0', transform: 'translateY(3rem)' }, to: { opacity: '1', transform: 'none' } },
+        '@keyframes fade-in': { from: { opacity: '0' }, to: { opacity: '1' } },
+        '@media (prefers-reduced-motion: no-preference)': {
+          '.sheet:not([hidden])': { animation: 'sheet-in 100ms ease-out' },
+          '.sheet-scrim:not([hidden])': { animation: 'fade-in 100ms ease-out' },
+        },
       });
+      /* Tailwind's `transition`: colours ease over 150ms with its default curve. */
+      const colourEase = {
+        transitionProperty: 'color, background-color, border-color',
+        transitionTimingFunction: theme('transitionTimingFunction.DEFAULT'), transitionDuration: theme('transitionDuration.DEFAULT'),
+        '@media (prefers-reduced-motion: reduce)': { transition: 'none' },
+      };
 
       /* Mobile web sits inside the browser's own chrome: no top or bottom band
          is reserved, only whatever inset the device itself reports. */
@@ -192,6 +208,7 @@ module.exports = {
           borderRadius: pill, backgroundColor: c('brand.DEFAULT'), color: c('ink.onBrand'),
           ...type('button'), fontWeight: '500', letterSpacing: '-0.408px',
           '&:disabled': { backgroundColor: c('disabled.DEFAULT'), color: c('disabled.ink'), cursor: 'not-allowed' },
+          ...colourEase,
         },
 
         /* Link row — the line under the button that leads to the other screen. */
@@ -279,6 +296,7 @@ module.exports = {
           height: '44px', paddingTop: theme('spacing.2'), fontSize: type('body').fontSize, lineHeight: type('body').lineHeight, color: c('ink.navOff'),
           '&::after': { content: '""', width: '100%', height: '2px', backgroundColor: 'currentColor' },
           '&[aria-selected="true"]': { color: c('brand-2.DEFAULT') },
+          ...colourEase,
         },
 
         /* Radio (.tick) — pick one of several (option cards). A 22px ring,
@@ -406,8 +424,8 @@ module.exports = {
            with role="switch": it takes effect at once, no Save button. */
         '.toggle': {
           flex: 'none', display: 'flex', alignItems: 'center', width: '40px', height: '24px', padding: `0 ${theme('spacing[0.5]')}`,
-          borderRadius: pill, backgroundColor: c('disabled.DEFAULT'), transition: 'background-color .12s ease',
-          '&::after': { content: '""', width: '20px', height: '20px', borderRadius: pill, backgroundColor: c('ink.DEFAULT'), transition: 'transform .12s ease' },
+          borderRadius: pill, backgroundColor: c('disabled.DEFAULT'), transition: `background-color 200ms ${theme('transitionTimingFunction.in-out')}`, /* Catalyst switch: duration-200 ease-in-out */
+          '&::after': { content: '""', width: '20px', height: '20px', borderRadius: pill, backgroundColor: c('ink.DEFAULT'), transition: `transform 200ms ${theme('transitionTimingFunction.in-out')}` },
           '@media (prefers-reduced-motion: reduce)': { '&, &::after': { transition: 'none' } },
         },
         'input:checked + .toggle': { backgroundColor: c('brand-2.DEFAULT') },

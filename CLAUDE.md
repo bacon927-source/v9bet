@@ -91,6 +91,7 @@ V9Bet 是一家做了十年的博弈品牌，**招牌就是黃色和綠色**。�
 - **灰色用 Tailwind 的 zinc**（使用者選的）：頁面底 white／zinc-900、卡片 zinc-50／zinc-800、面板 white／zinc-900（＋ 1px 細線）、主要字 zinc-900／white、次要字 zinc-600／zinc-400、框線 zinc-300／zinc-700、細線 zinc-200／zinc-800、分段選中 zinc-200／zinc-600。
 - **品牌色保留**（Tailwind 沒有品牌色）：黃 `#FFBC00` 兩種模式都一樣；綠 `#00DA87` 在深色用，淺色時綠字對比不夠，改用 Tailwind `emerald-700`。
 - **面板（sheet）照 Tailwind 官方元件（Catalyst）**（使用者 10-27：「照 Tailwind 官方」）：底色跟頁面同色（white／zinc-900），用一圈 1px 細線分開（zinc-950 10%／white 10%），後面遮罩 zinc-950 25%／50%。條款／隱私面板也一樣跟著主題（「follow framework」）。
+- **動畫照 Tailwind 官方元件**（使用者 10-27：「照官方」）：面板往上 3rem 滑入＋淡入、遮罩淡入，100ms ease-out；開關圓鈕 200ms ease-in-out；按鈕、分頁、切換鈕只做顏色漸變（Tailwind `transition`，150ms）。手機開了「減少動態效果」就全部關掉（motion-safe）。關閉時不做動畫。
 - Figma：`Color` 變數有 Dark、Light 兩個模式；Screens 頁最下面的「Theme · Dark / Light」放了三組對照。
 - 下面「顏色的分工」是 v1 時期寫的，數值以這段和 `variables.css` 為準；黃色是唯一的動作色、綠色是選中／連結，這個分工不變。
 

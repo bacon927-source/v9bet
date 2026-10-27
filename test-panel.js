@@ -399,7 +399,7 @@
       <div class="flex items-center justify-between gap-3">
         <span class="font-semibold text-ink">主題</span>
         <div class="flex h-9 p-1 rounded-full bg-card border border-edge" role="radiogroup" aria-label="Theme">${[['system', '跟系統'], ['light', '淺色'], ['dark', '深色']].map(([v, l]) =>
-          `<button type="button" role="radio" data-theme-choice="${v}" aria-checked="false" class="px-3 rounded-full text-ink-secondary aria-checked:bg-selected aria-checked:text-ink aria-checked:font-semibold">${l}</button>`).join('')}</div>
+          `<button type="button" role="radio" data-theme-choice="${v}" aria-checked="false" class="px-3 rounded-full transition text-ink-secondary aria-checked:bg-selected aria-checked:text-ink aria-checked:font-semibold">${l}</button>`).join('')}</div>
       </div>
       <label class="flex items-center justify-between gap-3 h-11 px-3 rounded-xl bg-card border border-edge cursor-pointer">
         <span class="font-semibold text-ink">顯示間距 <span class="font-normal text-ink-secondary">（Spacing）</span></span>
