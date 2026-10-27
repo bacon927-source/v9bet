@@ -38,7 +38,11 @@
   --color-bg-disabled:var(--zinc-200);
   /* The chosen half of a segmented control. */
   --color-bg-selected:var(--zinc-200);
-  --color-bg-scrim:rgba(0,0,0,.50);
+  /* Sheets and dialogs as Tailwind's own components draw them (Catalyst,
+     2026-10-27 user: "照 Tailwind 官方"): same colour as the page, a 1px
+     ring (zinc-950/10, white/10 in dark) and a zinc-950 backdrop at 25 / 50%. */
+  --color-bg-scrim:rgba(9,9,11,.25);
+  --color-sheet-ring:rgba(9,9,11,.10);
   --color-bg-provider:var(--white);
   --color-sheet-handle:var(--zinc-300);
   --color-promo-accent:var(--violet-600);
@@ -110,10 +114,11 @@
 .dark {
   --color-bg-app:var(--zinc-900);
   --color-bg-card:var(--zinc-800);
-  --color-bg-sheet:var(--zinc-800);
+  --color-bg-sheet:var(--zinc-900);
   --color-bg-disabled:var(--zinc-700);
   --color-bg-selected:var(--zinc-600);
-  --color-bg-scrim:rgba(0,0,0,.60);
+  --color-bg-scrim:rgba(9,9,11,.50);
+  --color-sheet-ring:rgba(255,255,255,.10);
   --color-sheet-handle:var(--zinc-600);
   --color-promo-accent:var(--violet-400);
 

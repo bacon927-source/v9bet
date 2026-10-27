@@ -486,6 +486,8 @@ module.exports = {
         '.sheet': {
           position: 'fixed', left: '0', right: '0', bottom: '0', zIndex: '50', maxHeight: '90dvh', overflowY: 'auto',
           display: 'flex', flexDirection: 'column', backgroundColor: c('sheet.DEFAULT'),
+          /* ring-1, as Tailwind's dialogs: the sheet is the page's colour, the ring sets it apart. */
+          boxShadow: `0 0 0 1px ${v('color-sheet-ring')}`,
           borderTopLeftRadius: theme('borderRadius.xl'), borderTopRightRadius: theme('borderRadius.xl'),
         },
         '.sheet-header': {
