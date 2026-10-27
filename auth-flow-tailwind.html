@@ -313,7 +313,8 @@
       $('otp').setAttribute('data-invalid', ''); $('code-error').hidden = false; return;
     }
     clearInterval(timer);
-    if (side === 'signup') land('Setup · step 1', 'Account created');
+    // Sign Up carries on into Setup (setup-flow-tailwind.html opens on step 1 with "Account created").
+    if (side === 'signup') location.href = 'setup-flow-tailwind.html';
     else land('Lobby', 'Logged in');
   });
 

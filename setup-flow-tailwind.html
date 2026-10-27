@@ -1,0 +1,560 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>V9Bet · Setup (Tailwind)</title>
+
+<!-- Setup after sign-up: 8 steps, then the lobby with the Welcome popup.
+     Figma: 📱 Screens › Setup · guided. Every value comes from variables.css
+     through tailwind.config.js. -->
+<link rel="stylesheet" href="variables.css">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>var module = {};</script>
+<script src="tailwind.config.js"></script>
+<script>tailwind.config = module.exports;</script>
+<style>
+  /* Steps, sheets and states are switched with the hidden attribute; flex
+     utilities would otherwise override it. */
+  [hidden] { display: none !important; }
+  /* Phone field: the country prefix appears once the member starts typing
+     (Figma: Field › Country code). */
+  .field-cc { display: none; }
+  .field:has(> input:focus, > input:not(:placeholder-shown)) > .field-cc { display: flex; }
+  .field:has(> .field-cc) > input:focus, .field:has(> .field-cc) > input:not(:placeholder-shown) { padding-left: 84px; }
+</style>
+</head>
+
+<body class="bg-app text-ink font-sans antialiased">
+  <div class="min-h-[100dvh] flex justify-center bg-app">
+    <div class="page relative w-full md:max-w-[440px] md:border-x md:border-edge-subtle min-h-[100dvh]">
+
+      <!-- Step top bar (Figma 55:58): back, the bar, the percentage. 12 apart. -->
+      <div class="nav-top gap-3" id="topbar">
+        <button type="button" aria-label="Back" class="nav-top-action" id="back"><span class="icon icon-back size-7" aria-hidden="true"></span></button>
+        <div class="flex-1 h-1 rounded-full bg-edge overflow-hidden" role="progressbar" aria-valuemin="0" aria-valuemax="100" id="bar"><div class="h-full bg-brand-2" id="bar-done"></div></div>
+        <span class="text-body-sm text-ink-muted w-9 text-right" id="pct"></span>
+      </div>
+
+      <!-- ── 1 · Currency ── -->
+      <form class="step flex-1 flex flex-col" data-step="1" data-pct="13" novalidate>
+        <div class="page-body flex-1">
+          <div class="step-hero"><h1>Choose account currency</h1><p>Currency cannot be changed once set.</p></div>
+          <fieldset class="flex flex-col gap-2">
+            <legend class="sr-only">Account currency</legend>
+            <label class="option-card"><input type="radio" name="currency" value="VND" class="sr-only" checked><span class="tick"></span><img src="assets/flags/vn.svg" alt=""><span class="option-card-text">VND</span></label>
+            <label class="option-card"><input type="radio" name="currency" value="THB" class="sr-only"><span class="tick"></span><img src="assets/flags/th.svg" alt=""><span class="option-card-text">THB</span></label>
+          </fieldset>
+        </div>
+        <div class="action-bar"><button type="submit" class="btn">Confirm Currency</button></div>
+      </form>
+
+      <!-- ── 2 · Account ID ── -->
+      <form class="step flex-1 flex flex-col" data-step="2" data-pct="25" hidden novalidate>
+        <div class="page-body flex-1">
+          <div class="step-hero"><h1>Create your Account ID</h1><p>You can use it to log in.</p></div>
+          <div class="field">
+            <input id="account-id" type="text" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder=" " aria-describedby="account-id-error">
+            <label for="account-id">Account ID</label><fieldset aria-hidden="true"><legend><span>Account ID</span></legend></fieldset>
+            <p class="error-text" id="account-id-error" hidden></p>
+          </div>
+        </div>
+        <div class="action-bar"><button type="submit" class="btn">Save</button></div>
+      </form>
+
+      <!-- ── 3 · Personal information ── -->
+      <form class="step flex-1 flex flex-col" data-step="3" data-pct="38" hidden novalidate>
+        <div class="page-body flex-1">
+          <div class="step-hero"><h1>Personal information</h1><p>Needed for promo claims and withdrawals.</p></div>
+          <div class="flex flex-col gap-2">
+            <div class="field">
+              <input id="full-name" type="text" autocomplete="name" placeholder=" ">
+              <label for="full-name">Full Name</label><fieldset aria-hidden="true"><legend><span>Full Name</span></legend></fieldset>
+            </div>
+            <div class="field">
+              <input id="dob" type="text" inputmode="numeric" autocomplete="bday" placeholder=" ">
+              <label for="dob">Date of Birth</label><fieldset aria-hidden="true"><legend><span>Date of Birth</span></legend></fieldset>
+            </div>
+            <!-- A picker: the native list opens on top of the field. -->
+            <div class="field">
+              <input id="gender" type="text" readonly placeholder=" " tabindex="-1">
+              <label for="gender-select">Gender (Optional)</label><fieldset aria-hidden="true"><legend><span>Gender (Optional)</span></legend></fieldset>
+              <span class="field-trail"><span class="icon icon-sm icon-chevron-down text-ink" aria-hidden="true"></span></span>
+              <select id="gender-select" class="absolute inset-x-0 top-2 h-[50px] w-full opacity-0 cursor-pointer">
+                <option value="" selected disabled></option><option>Male</option><option>Female</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="action-bar"><button type="submit" class="btn">Save</button><a href="#" class="link-row skip">Set up later</a></div>
+      </form>
+
+      <!-- ── 4 · Bank account / USDT ── -->
+      <form class="step flex-1 flex flex-col" data-step="4" data-pct="50" hidden novalidate>
+        <div class="page-body flex-1">
+          <div class="step-hero"><h1>Bank account / USDT</h1><p>Needed before withdrawal.</p></div>
+          <div class="flex flex-col gap-3">
+            <div class="mx-auto flex w-60 h-11 p-1 rounded-full bg-card" role="tablist" aria-label="Payout method">
+              <button type="button" role="tab" id="seg-bank" class="flex-1 rounded-full text-body text-ink-secondary aria-selected:bg-[var(--v1-grey-500)] aria-selected:text-ink aria-selected:font-semibold" aria-selected="true">Bank account</button>
+              <button type="button" role="tab" id="seg-usdt" class="flex-1 rounded-full text-body text-ink-secondary aria-selected:bg-[var(--v1-grey-500)] aria-selected:text-ink aria-selected:font-semibold" aria-selected="false">USDT</button>
+            </div>
+            <div class="flex flex-col gap-2" id="fields-bank">
+              <div class="field">
+                <input id="bank" type="text" readonly placeholder=" " class="cursor-pointer">
+                <label for="bank">Bank</label><fieldset aria-hidden="true"><legend><span>Bank</span></legend></fieldset>
+                <span class="field-trail pointer-events-none"><span class="icon icon-sm icon-chevron-down text-ink" aria-hidden="true"></span></span>
+              </div>
+              <div class="field">
+                <input id="account-number" type="text" inputmode="numeric" autocomplete="off" placeholder=" ">
+                <label for="account-number">Account Number</label><fieldset aria-hidden="true"><legend><span>Account Number</span></legend></fieldset>
+              </div>
+              <div class="field">
+                <input id="holder" type="text" readonly placeholder=" ">
+                <label for="holder">Account Holder Name</label><fieldset aria-hidden="true"><legend><span>Account Holder Name</span></legend></fieldset>
+              </div>
+            </div>
+            <div class="flex flex-col gap-2" id="fields-usdt" hidden>
+              <div class="field">
+                <input id="usdt-address" type="text" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder=" ">
+                <label for="usdt-address">USDT address</label><fieldset aria-hidden="true"><legend><span>USDT address</span></legend></fieldset>
+              </div>
+              <div class="field">
+                <input id="usdt-nickname" type="text" autocomplete="off" placeholder=" ">
+                <label for="usdt-nickname">Nickname for this address</label><fieldset aria-hidden="true"><legend><span>Nickname for this address</span></legend></fieldset>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="action-bar"><button type="submit" class="btn">Save</button><a href="#" class="link-row skip">Set up later</a></div>
+      </form>
+
+      <!-- ── 5 · Password ── -->
+      <form class="step flex-1 flex flex-col" data-step="5" data-pct="63" hidden novalidate>
+        <div class="page-body flex-1">
+          <div class="step-hero"><h1>Set a password</h1><p>Another way to log in.</p></div>
+          <div class="flex flex-col gap-2">
+            <div class="field">
+              <input id="pw-new" type="password" autocomplete="new-password" placeholder=" ">
+              <label for="pw-new">New Password</label><fieldset aria-hidden="true"><legend><span>New Password</span></legend></fieldset>
+              <button type="button" class="field-trail eye" aria-label="Show password"><span class="icon icon-sm icon-eye-crossed" aria-hidden="true"></span></button>
+            </div>
+            <div class="field">
+              <input id="pw-confirm" type="password" autocomplete="new-password" placeholder=" ">
+              <label for="pw-confirm">Confirm New Password</label><fieldset aria-hidden="true"><legend><span>Confirm New Password</span></legend></fieldset>
+              <button type="button" class="field-trail eye" aria-label="Show password"><span class="icon icon-sm icon-eye-crossed" aria-hidden="true"></span></button>
+            </div>
+          </div>
+        </div>
+        <div class="action-bar"><button type="submit" class="btn">Continue</button><a href="#" class="link-row skip">Set up later</a></div>
+      </form>
+
+      <!-- ── 6 · Security ── -->
+      <form class="step flex-1 flex flex-col" data-step="6" data-pct="75" hidden novalidate>
+        <div class="page-body flex-1">
+          <div class="step-hero"><h1>Security</h1><p>Keep your account safe.</p></div>
+          <div class="flex flex-col gap-3">
+            <div class="card">
+              <label class="list-row"><span class="list-row-title">Two-factor authentication</span><input type="checkbox" role="switch" class="sr-only" id="twofa"><span class="toggle"></span></label>
+            </div>
+            <!-- Email and phone are two plain fields: Verified, or Get code. -->
+            <div class="flex flex-col gap-2" id="contacts" hidden>
+              <div class="field">
+                <input id="sec-email" type="email" inputmode="email" autocomplete="email" placeholder=" ">
+                <label for="sec-email">Email</label><fieldset aria-hidden="true"><legend><span>Email</span></legend></fieldset>
+                <span class="field-trail" data-verified="sec-email" hidden>Verified <span class="icon icon-sm icon-check text-brand-2" aria-hidden="true"></span></span>
+                <button type="button" class="field-trail font-semibold !text-brand-2" data-get-code="sec-email" hidden>Get code</button>
+              </div>
+              <div class="field">
+                <input id="sec-phone" type="tel" inputmode="tel" autocomplete="tel-national" placeholder=" ">
+                <label for="sec-phone">Phone Number</label><fieldset aria-hidden="true"><legend><span>Phone Number</span></legend></fieldset>
+                <span class="field-cc absolute left-3 top-2 h-[50px] items-center gap-1 text-field text-ink pointer-events-none"><img src="assets/flags/vn.svg" alt="" class="size-[18px]">+84<span class="ml-1 text-ink-muted">|</span></span>
+                <span class="field-trail" data-verified="sec-phone" hidden>Verified <span class="icon icon-sm icon-check text-brand-2" aria-hidden="true"></span></span>
+                <button type="button" class="field-trail font-semibold !text-brand-2" data-get-code="sec-phone" hidden>Get code</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="action-bar"><button type="submit" class="btn">Continue</button><a href="#" class="link-row skip">Set up later</a></div>
+      </form>
+
+      <!-- ── 7 · Notifications + message channel ── -->
+      <form class="step flex-1 flex flex-col" data-step="7" data-pct="88" hidden novalidate>
+        <div class="page-body flex-1">
+          <div class="step-hero"><h1>Notifications</h1><p>Know the moment there’s a deposit or withdrawal update, a bet result or a security alert.</p></div>
+          <div class="card">
+            <label class="list-row"><span class="list-row-title">Push notifications</span><input type="checkbox" role="switch" class="sr-only" checked><span class="toggle"></span></label>
+          </div>
+          <fieldset class="flex flex-col gap-3">
+            <legend class="group-label mb-3">Message channel</legend>
+            <div class="flex flex-col gap-2">
+              <label class="option-card"><input type="radio" name="channel" value="email" class="sr-only" checked><span class="tick"></span><span class="option-card-text">Email<span class="option-card-sub" id="ch-email-sub"></span></span></label>
+              <label class="option-card"><input type="radio" name="channel" value="sms" class="sr-only"><span class="tick"></span><span class="option-card-text">SMS<span class="option-card-sub ch-phone-sub"></span></span></label>
+              <label class="option-card"><input type="radio" name="channel" value="zalo" class="sr-only"><span class="tick"></span><span class="option-card-text">Zalo / LINE<span class="option-card-sub ch-phone-sub"></span></span></label>
+            </div>
+            <p class="hint">Verification codes, security alerts and payment updates are always sent, whatever you choose here.</p>
+          </fieldset>
+        </div>
+        <div class="action-bar"><button type="submit" class="btn">Continue</button><a href="#" class="link-row skip">Set up later</a></div>
+      </form>
+
+      <!-- ── 8 · Theme ── -->
+      <form class="step flex-1 flex flex-col" data-step="8" data-pct="100" hidden novalidate>
+        <div class="page-body flex-1">
+          <div class="step-hero"><h1>Theme</h1><p>Dark, light, or match your device.</p></div>
+          <fieldset class="flex flex-col gap-2">
+            <legend class="sr-only">Theme</legend>
+            <label class="option-card"><input type="radio" name="theme" value="system" class="sr-only" checked><span class="tick"></span><span class="option-card-text">Follow system<span class="option-card-sub">Matches your device</span></span></label>
+            <label class="option-card"><input type="radio" name="theme" value="dark" class="sr-only"><span class="tick"></span><span class="option-card-text">Dark<span class="option-card-sub">Always dark</span></span></label>
+            <label class="option-card"><input type="radio" name="theme" value="light" class="sr-only"><span class="tick"></span><span class="option-card-text">Light<span class="option-card-sub">Always light</span></span></label>
+          </fieldset>
+        </div>
+        <div class="action-bar"><button type="submit" class="btn">Save</button><a href="#" class="link-row skip">Set up later</a></div>
+      </form>
+
+      <!-- ── Lobby (not designed yet) ── -->
+      <section id="lobby" class="flex-1 flex flex-col" hidden>
+        <div class="page-body flex-1">
+          <div class="flex-1 grid place-items-center rounded-xl border border-dashed border-edge text-body text-ink-muted">Lobby</div>
+        </div>
+      </section>
+
+      <!-- ── Sheets ── -->
+      <div class="sheet-scrim" id="scrim" hidden></div>
+
+      <!-- Bank picker: search and the v1 logo grid. -->
+      <section class="sheet md:max-w-[440px] md:mx-auto" id="sheet-bank" role="dialog" aria-modal="true" aria-labelledby="sheet-bank-title" hidden>
+        <div class="sheet-header"><h2 id="sheet-bank-title">Choose your bank</h2><button type="button" class="sheet-close" aria-label="Close"><span class="icon icon-close" aria-hidden="true"></span></button></div>
+        <div class="sheet-body">
+          <div class="field">
+            <input id="bank-search" type="search" autocomplete="off" placeholder=" ">
+            <label for="bank-search">Search bank</label><fieldset aria-hidden="true"><legend><span>Search bank</span></legend></fieldset>
+          </div>
+          <div class="grid grid-cols-3 gap-3" id="bank-grid"></div>
+        </div>
+      </section>
+
+      <!-- Add a phone (SMS / Zalo chosen with no phone on file). -->
+      <section class="sheet md:max-w-[440px] md:mx-auto" id="sheet-phone" role="dialog" aria-modal="true" aria-labelledby="sheet-phone-title" hidden>
+        <div class="sheet-header"><h2 id="sheet-phone-title">Add your phone number</h2><button type="button" class="sheet-close" aria-label="Close"><span class="icon icon-close" aria-hidden="true"></span></button></div>
+        <div class="sheet-body">
+          <div class="field">
+            <input id="add-phone" type="tel" inputmode="tel" autocomplete="tel-national" placeholder=" ">
+            <label for="add-phone">Phone Number</label><fieldset aria-hidden="true"><legend><span>Phone Number</span></legend></fieldset>
+            <span class="field-cc absolute left-3 top-2 h-[50px] items-center gap-1 text-field text-ink pointer-events-none"><img src="assets/flags/vn.svg" alt="" class="size-[18px]">+84<span class="ml-1 text-ink-muted">|</span></span>
+            <button type="button" class="field-trail font-semibold !text-brand-2" id="add-phone-code" hidden>Get code</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Code sheet — one for the email and the phone. -->
+      <section class="sheet md:max-w-[440px] md:mx-auto" id="sheet-code" role="dialog" aria-modal="true" aria-labelledby="sheet-code-title" hidden>
+        <div class="sheet-header"><h2 id="sheet-code-title">Verify your phone</h2><button type="button" class="sheet-close" aria-label="Close"><span class="icon icon-close" aria-hidden="true"></span></button></div>
+        <form class="sheet-body" id="form-code" novalidate>
+          <p class="text-body text-ink-secondary" id="code-to"></p>
+          <div class="flex flex-col gap-3">
+            <div class="otp" id="otp">
+              <input inputmode="numeric" autocomplete="one-time-code" placeholder=" " aria-label="Digit 1"><input inputmode="numeric" placeholder=" " aria-label="Digit 2"><input inputmode="numeric" placeholder=" " aria-label="Digit 3"><input inputmode="numeric" placeholder=" " aria-label="Digit 4"><input inputmode="numeric" placeholder=" " aria-label="Digit 5"><input inputmode="numeric" placeholder=" " aria-label="Digit 6">
+            </div>
+            <p class="error-text text-center" id="code-error" hidden>Invalid code entered</p>
+            <p class="text-center text-body text-ink-secondary" id="resend-wait">Resend code in <b class="font-semibold text-brand-2" id="resend-count">00:54</b></p>
+            <button type="button" class="tap self-center text-body font-semibold text-brand-2 underline" id="resend" hidden>Resend code</button>
+          </div>
+          <button type="submit" class="btn" id="code-submit" disabled>Verify</button>
+        </form>
+      </section>
+
+      <!-- Welcome popup over the lobby. -->
+      <section class="sheet md:max-w-[440px] md:mx-auto" id="sheet-welcome" role="dialog" aria-modal="true" aria-labelledby="sheet-welcome-title" hidden>
+        <div class="sheet-header"><h2 id="sheet-welcome-title">Welcome to V9Bet</h2><button type="button" class="sheet-close" aria-label="Close"><span class="icon icon-close" aria-hidden="true"></span></button></div>
+        <div class="sheet-body">
+          <p class="text-body text-ink-secondary">Your account is ready. Here are your new-member offers.</p>
+          <div class="flex flex-col gap-1 p-4 rounded-xl border border-edge">
+            <p class="text-body-sm text-brand-2">New member offer</p>
+            <p class="text-body font-bold">100% First Deposit Bonus</p>
+            <p class="text-body-sm text-ink-secondary">For Sports / Live, turnover x10 · applied automatically at your first deposit</p>
+          </div>
+          <div class="flex flex-col gap-1 p-4 rounded-xl border border-edge">
+            <p class="text-body-sm text-brand-2">Mission</p>
+            <p class="text-body font-bold">Make your first deposit</p>
+            <p class="text-body-sm text-ink-secondary">Unlock 1 free bet</p>
+          </div>
+          <button type="button" class="btn">Go to Deposit</button>
+        </div>
+      </section>
+
+      <!-- Toast (v1): light blue, black text, 16 above the action bar. -->
+      <div class="fixed bottom-24 inset-x-4 md:mx-auto md:max-w-[408px] z-30 rounded-md bg-[var(--v1-blue-light)] px-4 py-3 text-body font-semibold text-black" id="toast" role="status" hidden></div>
+
+      <!-- Test panel — for reviewing only, not part of the product. Each state
+           has its own #hash, so a link opens that state directly. Its button
+           sits above the action bar and the toast so it never covers them. -->
+      <button type="button" id="tp-open" aria-label="Test panel" aria-expanded="false" class="fixed left-4 bottom-40 z-[60] grid place-items-center size-12 rounded-full bg-card border border-brand-2 text-brand-2">
+        <svg class="size-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75"/></svg>
+      </button>
+      <nav id="tp" hidden aria-label="Test panel" class="fixed left-4 bottom-56 z-[60] w-[min(320px,calc(100vw-32px))] max-h-[calc(100dvh-240px)] overflow-y-auto flex flex-col gap-3 p-4 rounded-xl bg-card border border-brand-2 text-body-sm">
+        <div>
+          <p class="text-body font-semibold text-ink">測試面板</p>
+          <p class="text-ink-secondary">只給看稿用，不是產品的一部分。點一下直接跳到那個畫面。</p>
+        </div>
+        <div id="tp-groups" class="flex flex-col gap-3"></div>
+      </nav>
+
+    </div>
+  </div>
+
+<script>
+  const $ = (id) => document.getElementById(id);
+  const steps = [...document.querySelectorAll('.step')];
+  const SIGNUP_EMAIL = 'bacon927@gmail.com'; // demo: the email this member signed up with, already verified
+  const maskEmail = (v) => v.replace(/^(.{2}).*(.{2}@.*)$/, (_, a, b) => a + '*****' + b);
+  const maskPhone = (v) => { const d = v.replace(/\D/g, ''); return d.slice(0, 3) + '***' + d.slice(-3); };
+
+  /* ── Field helpers ── */
+  const fill = (id, value) => { $(id).value = value; $(id).dispatchEvent(new Event('input')); };
+  const setError = (id, message) => {
+    $(id).setAttribute('aria-invalid', String(Boolean(message)));
+    $(id + '-error').textContent = message || ''; $(id + '-error').hidden = !message;
+  };
+  document.querySelectorAll('.eye').forEach((eye) => eye.addEventListener('click', () => {
+    const input = eye.parentElement.querySelector('input');
+    const reveal = input.type === 'password';
+    input.type = reveal ? 'text' : 'password';
+    eye.setAttribute('aria-label', reveal ? 'Hide password' : 'Show password');
+    eye.firstElementChild.className = 'icon icon-sm ' + (reveal ? 'icon-eye' : 'icon-eye-crossed');
+  }));
+
+  /* ── Steps ── */
+  let current = 1;
+  const showStep = (n) => {
+    current = n;
+    closeSheets();
+    steps.forEach((s) => { s.hidden = Number(s.dataset.step) !== n; });
+    $('lobby').hidden = true; $('topbar').hidden = false;
+    const pct = steps[n - 1].dataset.pct;
+    $('bar-done').style.width = pct + '%'; $('bar').setAttribute('aria-valuenow', pct); $('pct').textContent = pct + '%';
+    window.scrollTo(0, 0);
+  };
+  const next = () => (current < 8 ? showStep(current + 1) : toLobby());
+  $('back').addEventListener('click', () => { if (current > 1) showStep(current - 1); });
+  // "Set up later" leaves this step for later and moves on.
+  document.querySelectorAll('.skip').forEach((a) => a.addEventListener('click', (e) => { e.preventDefault(); next(); }));
+  steps.forEach((form) => form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (form.dataset.step === '2') {
+      const id = $('account-id').value.trim();
+      if (!/^[A-Za-z0-9]+$/.test(id)) { setError('account-id', 'Letters and numbers only.'); return; }
+    }
+    next();
+  }));
+  $('account-id').addEventListener('input', () => setError('account-id', ''));
+
+  /* Step 3 → 4: the account holder is the name from Personal information. */
+  $('full-name').addEventListener('input', () => fill('holder', $('full-name').value));
+  $('gender-select').addEventListener('change', () => fill('gender', $('gender-select').value));
+
+  /* ── Step 4: Bank account | USDT ── */
+  const setPayout = (kind) => {
+    $('seg-bank').setAttribute('aria-selected', String(kind === 'bank'));
+    $('seg-usdt').setAttribute('aria-selected', String(kind === 'usdt'));
+    $('fields-bank').hidden = kind !== 'bank'; $('fields-usdt').hidden = kind !== 'usdt';
+  };
+  $('seg-bank').addEventListener('click', () => setPayout('bank'));
+  $('seg-usdt').addEventListener('click', () => setPayout('usdt'));
+
+  // The 24 tiles from v1 (Figma 324:3149). DongA Bank is shown under maintenance there, so it cannot be picked.
+  const BANKS = ['ACB', 'Agribank', 'Bac A Bank', 'BIDV', 'DongA Bank', 'Eximbank', 'MB', 'LienVietPostBank', 'HDBank', 'MSB', 'Nam A Bank', 'OCB',
+    'Ocean Bank', 'Sacombank', 'SCB', 'SHB', 'Shinhan Bank', 'Techcombank', 'VIB', 'Vietcombank', 'VietinBank', 'SeABank', 'TPBank', 'VPBank'];
+  const DOWN = ['DongA Bank'];
+  $('bank-grid').innerHTML = BANKS.map((name, i) => `
+    <button type="button" class="rounded overflow-hidden disabled:cursor-not-allowed" data-bank="${name}" aria-label="${name}" ${DOWN.includes(name) ? 'disabled' : ''}>
+      <img src="assets/banks/bank-${String(i + 1).padStart(2, '0')}.png" alt="" class="w-full h-auto block">
+    </button>`).join('');
+  $('bank-search').addEventListener('input', () => {
+    const q = $('bank-search').value.trim().toLowerCase();
+    $('bank-grid').querySelectorAll('[data-bank]').forEach((b) => { b.hidden = q && !b.dataset.bank.toLowerCase().includes(q); });
+  });
+  $('bank-grid').addEventListener('click', (e) => {
+    const b = e.target.closest('[data-bank]'); if (!b || b.disabled) return;
+    fill('bank', b.dataset.bank); closeSheets();
+  });
+  $('bank').addEventListener('click', () => openSheet('sheet-bank'));
+
+  /* ── Sheets ── */
+  const SHEETS = ['sheet-bank', 'sheet-phone', 'sheet-code', 'sheet-welcome'];
+  function openSheet(id) { SHEETS.forEach((s) => { $(s).hidden = s !== id; }); $('scrim').hidden = false; }
+  function closeSheets() { SHEETS.forEach((s) => { $(s).hidden = true; }); $('scrim').hidden = true; clearInterval(timer); }
+  document.querySelectorAll('.sheet-close').forEach((b) => b.addEventListener('click', closeSheets));
+  $('scrim').addEventListener('click', closeSheets);
+
+  /* ── Contacts: what is verified drives Security and the message channels ── */
+  const verified = { 'sec-email': true, 'sec-phone': false };
+  const syncContact = (id) => {
+    const has = Boolean($(id).value.trim());
+    document.querySelector(`[data-verified="${id}"]`).hidden = !(has && verified[id]);
+    document.querySelector(`[data-get-code="${id}"]`).hidden = !(has && !verified[id]);
+  };
+  const syncChannels = () => {
+    $('ch-email-sub').textContent = $('sec-email').value ? maskEmail($('sec-email').value) : 'Add your email';
+    const phone = verified['sec-phone'] ? '+84 ' + maskPhone($('sec-phone').value) : 'Add your phone number';
+    document.querySelectorAll('.ch-phone-sub').forEach((s) => { s.textContent = phone; });
+  };
+  ['sec-email', 'sec-phone'].forEach((id) => $(id).addEventListener('input', () => {
+    // Editing a verified contact means it has to be verified again.
+    if ($(id).dataset.verifiedValue !== $(id).value) verified[id] = false;
+    syncContact(id); syncChannels();
+  }));
+  const markVerified = (id) => { verified[id] = true; $(id).dataset.verifiedValue = $(id).value; syncContact(id); syncChannels(); };
+  $('twofa').addEventListener('change', () => { $('contacts').hidden = !$('twofa').checked; });
+  document.querySelectorAll('[data-get-code]').forEach((b) => b.addEventListener('click', () => openCode(b.dataset.getCode)));
+
+  // Step 7: SMS or Zalo / LINE with no verified phone opens "Add your phone number", then the code.
+  document.querySelectorAll('input[name="channel"]').forEach((r) => r.addEventListener('change', () => {
+    if (r.checked && r.value !== 'email' && !verified['sec-phone']) { fill('add-phone', ''); openSheet('sheet-phone'); }
+  }));
+  $('add-phone').addEventListener('input', () => { $('add-phone-code').hidden = !$('add-phone').value.trim(); });
+  $('add-phone-code').addEventListener('click', () => { fill('sec-phone', $('add-phone').value); openCode('sec-phone'); });
+
+  /* ── Code sheet ── */
+  const cells = [...$('otp').querySelectorAll('input')];
+  let timer, codeFor;
+  const startCountdown = () => {
+    let left = 54;
+    $('resend-wait').hidden = false; $('resend').hidden = true; $('resend-count').textContent = '00:54';
+    clearInterval(timer);
+    timer = setInterval(() => {
+      left -= 1;
+      $('resend-count').textContent = '00:' + String(left).padStart(2, '0');
+      if (left <= 0) { clearInterval(timer); $('resend-wait').hidden = true; $('resend').hidden = false; }
+    }, 1000);
+  };
+  const resetCode = () => {
+    cells.forEach((c) => { c.value = ''; });
+    $('otp').removeAttribute('data-invalid'); $('code-error').hidden = true; $('code-submit').disabled = true;
+  };
+  function openCode(id) {
+    codeFor = id;
+    const phone = id === 'sec-phone';
+    $('sheet-code-title').textContent = phone ? 'Verify your phone' : 'Verify your email';
+    $('code-to').textContent = 'We sent a code to ' + (phone ? '+84 ' + maskPhone($(id).value) : maskEmail($(id).value)) + '.';
+    resetCode(); openSheet('sheet-code'); startCountdown(); cells[0].focus();
+  }
+  cells.forEach((cell, i) => {
+    cell.addEventListener('input', () => {
+      // The phone's SMS autofill drops the whole code into one cell — spread it out.
+      const digits = cell.value.replace(/\D/g, '').split('');
+      cell.value = digits[0] || '';
+      digits.slice(1).forEach((d, j) => { if (cells[i + 1 + j]) cells[i + 1 + j].value = d; });
+      $('otp').removeAttribute('data-invalid'); $('code-error').hidden = true;
+      if (digits.length) cells[Math.min(i + digits.length, 5)].focus();
+      $('code-submit').disabled = cells.some((c) => !c.value);
+    });
+    cell.addEventListener('keydown', (e) => { if (e.key === 'Backspace' && !cell.value && cells[i - 1]) cells[i - 1].focus(); });
+  });
+  $('resend').addEventListener('click', () => { resetCode(); startCountdown(); cells[0].focus(); });
+  $('form-code').addEventListener('submit', (e) => {
+    e.preventDefault();
+    // Demo: 000000 is the wrong code; any other six digits pass.
+    if (cells.map((c) => c.value).join('') === '000000') { $('otp').setAttribute('data-invalid', ''); $('code-error').hidden = false; return; }
+    closeSheets(); markVerified(codeFor);
+  });
+
+  /* ── Step 8: theme applies at once ── */
+  const applyTheme = (value) => {
+    const light = value === 'light' || (value === 'system' && matchMedia('(prefers-color-scheme: light)').matches);
+    document.documentElement.toggleAttribute('data-theme', light);
+    if (light) document.documentElement.dataset.theme = 'light';
+  };
+  document.querySelectorAll('input[name="theme"]').forEach((r) => r.addEventListener('change', () => applyTheme(r.value)));
+
+  /* ── Lobby + Welcome ── */
+  function toLobby() {
+    steps.forEach((s) => { s.hidden = true; });
+    $('topbar').hidden = true; $('lobby').hidden = false;
+    openSheet('sheet-welcome');
+  }
+
+  /* ── Toast ── */
+  let toastTimer;
+  const toast = (message) => {
+    $('toast').textContent = message; $('toast').hidden = false;
+    clearTimeout(toastTimer); toastTimer = setTimeout(() => { $('toast').hidden = true; }, 3000);
+  };
+
+  /* ── Test panel ── */
+  const fresh = () => {
+    clearInterval(timer); $('toast').hidden = true; closeSheets(); resetCode();
+    ['account-id', 'full-name', 'dob', 'gender', 'bank', 'account-number', 'usdt-address', 'usdt-nickname', 'pw-new', 'pw-confirm', 'sec-phone', 'add-phone'].forEach((id) => fill(id, ''));
+    setError('account-id', ''); setPayout('bank');
+    $('twofa').checked = false; $('contacts').hidden = true;
+    verified['sec-email'] = true; verified['sec-phone'] = false;
+    fill('sec-email', SIGNUP_EMAIL); markVerified('sec-email');
+    document.querySelector('input[name="channel"][value="email"]').checked = true;
+    // The theme changes only when the member picks one on step 8; until then the site's dark default.
+    document.querySelector('input[name="theme"][value="system"]').checked = true; document.documentElement.removeAttribute('data-theme');
+  };
+  const personal = () => { fill('full-name', 'Pei Chen'); fill('dob', '1992-04-18'); };
+  const twofaOn = () => { $('twofa').checked = true; $('contacts').hidden = false; };
+  const STATES = [
+    ['Steps', [
+      ['step-1', '1 Currency', () => showStep(1)],
+      ['step-2', '2 Account ID', () => showStep(2)],
+      ['step-3', '3 Personal', () => { personal(); showStep(3); }],
+      ['step-4', '4 Bank', () => { personal(); showStep(4); }],
+      ['step-5', '5 Password', () => showStep(5)],
+      ['step-6', '6 Security', () => showStep(6)],
+      ['step-7', '7 Notifications', () => showStep(7)],
+      ['step-8', '8 Theme', () => showStep(8)],
+    ]],
+    ['1 Currency', [
+      ['arrive', 'Arriving · Account created', () => { showStep(1); toast('Account created'); }],
+    ]],
+    ['2 Account ID', [
+      ['account-id-error', 'Error · letters and numbers', () => { showStep(2); fill('account-id', 'V9 test'); steps[1].requestSubmit(); }],
+    ]],
+    ['4 Bank account / USDT', [
+      ['bank-picker', 'Choose bank (sheet)', () => { personal(); showStep(4); openSheet('sheet-bank'); }],
+      ['bank-filled', 'Bank filled', () => { personal(); showStep(4); fill('bank', 'Vietcombank'); fill('account-number', '0071000123456'); }],
+      ['usdt', 'USDT', () => { showStep(4); setPayout('usdt'); }],
+    ]],
+    ['6 Security', [
+      ['security-on', '2FA on · phone empty', () => { showStep(6); twofaOn(); }],
+      ['security-phone', '2FA on · phone not verified', () => { showStep(6); twofaOn(); fill('sec-phone', '091 456 7233'); }],
+      ['security-code', 'Phone code (sheet)', () => { showStep(6); twofaOn(); fill('sec-phone', '091 456 7233'); openCode('sec-phone'); }],
+      ['security-code-invalid', 'Phone code · invalid', () => { showStep(6); twofaOn(); fill('sec-phone', '091 456 7233'); openCode('sec-phone'); cells.forEach((c) => { c.value = '0'; }); $('code-submit').disabled = false; $('form-code').requestSubmit(); }],
+      ['security-done', '2FA on · both verified', () => { showStep(6); twofaOn(); fill('sec-phone', '091 456 7233'); markVerified('sec-phone'); }],
+      ['security-no-email', '2FA on · no email yet', () => { showStep(6); twofaOn(); verified['sec-email'] = false; $('sec-email').dataset.verifiedValue = ''; syncContact('sec-email'); }],
+    ]],
+    ['7 Notifications', [
+      ['sms-add-phone', 'SMS → add phone (sheet)', () => { showStep(7); const r = document.querySelector('input[name="channel"][value="sms"]'); r.checked = true; r.dispatchEvent(new Event('change')); fill('add-phone', '091 456 7233'); }],
+      ['sms-code', 'SMS → phone code (sheet)', () => { showStep(7); document.querySelector('input[name="channel"][value="sms"]').checked = true; fill('sec-phone', '091 456 7233'); openCode('sec-phone'); }],
+    ]],
+    ['After', [
+      ['welcome', 'Lobby + Welcome popup', () => toLobby()],
+    ]],
+  ];
+  const go = (key) => {
+    const state = STATES.flatMap(([, items]) => items).find(([k]) => k === key);
+    if (!state) return false;
+    fresh(); state[2]();
+    $('tp').querySelectorAll('[data-state]').forEach((b) => b.setAttribute('aria-current', String(b.dataset.state === key)));
+    return true;
+  };
+  $('tp-groups').innerHTML = STATES.map(([group, items]) => `
+    <div class="flex flex-col gap-2">
+      <p class="font-semibold text-brand-2">${group}</p>
+      <div class="flex flex-wrap gap-2">${items.map(([key, label]) =>
+        `<a href="#${key}" data-state="${key}" class="px-3 py-2 rounded-xl border border-edge text-ink aria-[current=true]:border-brand-2 aria-[current=true]:text-brand-2">${label}</a>`).join('')}</div>
+    </div>`).join('');
+  $('tp-open').addEventListener('click', () => {
+    const open = $('tp').hidden;
+    $('tp').hidden = !open; $('tp-open').setAttribute('aria-expanded', String(open));
+  });
+  // Clicking the state that is already in the hash fires no hashchange, so go on click too.
+  $('tp-groups').addEventListener('click', (e) => { const a = e.target.closest('[data-state]'); if (a) go(a.dataset.state); });
+  window.addEventListener('hashchange', () => go(location.hash.slice(1)));
+
+  // A #state opens that state; with none, the member arrives from sign-up on step 1.
+  if (!go(location.hash.slice(1))) go('arrive');
+</script>
+</body>
+</html>
