@@ -232,13 +232,13 @@
         <article id="tick" class="flex flex-col gap-[15px] scroll-mt-[20px]">
           <div class="flex flex-wrap items-baseline gap-x-[10px] gap-y-[5px]">
             <h3 class="text-body font-semibold">勾選</h3>
-            <span class="font-mono text-micro text-ink text-ink-secondary">.tick</span>
+            <span class="font-mono text-micro text-ink text-ink-secondary">.checkbox</span>
           </div>
-          <p class="text-body text-ink-secondary">一個可以開關的選項：同意條款、保持登入。</p>
+          <p class="text-body text-ink-secondary">一個可以單獨勾起來的選項：同意條款、保持登入，用方框加 ✓。「幾個裡面選一個」才用圓形的 Radio（<code class="font-mono text-micro text-ink">.tick</code>，放在選項卡裡）。</p>
           <div class="grid gap-[20px] md:grid-cols-[360px_1fr] items-start">
             <div class="rounded-xl border border-edge-subtle p-[15px] flex flex-col gap-3">
-              <label class="flex items-center gap-2 text-body-sm"><input type="checkbox" class="sr-only" checked><span class="tick"></span>Keep me logged in</label>
-              <label class="flex items-center gap-2 text-body-sm"><input type="checkbox" class="sr-only"><span class="tick"></span>Keep me logged in</label>
+              <label class="flex items-center gap-2 text-body-sm"><input type="checkbox" class="sr-only" checked><span class="checkbox"></span>Keep me logged in</label>
+              <label class="flex items-center gap-2 text-body-sm"><input type="checkbox" class="sr-only"><span class="checkbox"></span>Keep me logged in</label>
             </div>
             <div class="flex flex-col gap-[15px] min-w-0">
               <div class="overflow-x-auto"><table class="w-full text-body-sm text-ink-secondary"><thead><tr><th class="text-left font-semibold text-ink py-[8px] pr-[15px] whitespace-nowrap">規格</th><th class="text-left font-semibold text-ink py-[8px] pr-[15px] whitespace-nowrap">值</th></tr></thead><tbody><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top">大小</td><td class="py-[8px] pr-[15px] align-top">22 的圓框，裡面 12 的圓點</td></tr><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top">關</td><td class="py-[8px] pr-[15px] align-top">#5C6570</td></tr><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top">開</td><td class="py-[8px] pr-[15px] align-top">#00DA87</td></tr><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top">文字</td><td class="py-[8px] pr-[15px] align-top">13，和圓框間距 8</td></tr></tbody></table></div>

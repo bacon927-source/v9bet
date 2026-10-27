@@ -278,16 +278,34 @@ module.exports = {
           '&[aria-selected="true"]': { color: c('brand-2.DEFAULT') },
         },
 
-        /* Tick — a 22px ring with a 12px dot: grey off, green on. Put it right
-           after a visually hidden checkbox or radio inside a label. */
+        /* Radio (.tick) — pick one of several (option cards). A 22px ring,
+           empty when off; on: a 2px green ring and a 10px dot. Put it right
+           after a visually hidden radio inside a label (Figma: Radio). */
         '.tick': {
           flex: 'none', width: '22px', height: '22px', borderRadius: pill,
-          border: `1px solid ${c('edge.DEFAULT')}`, display: 'grid', placeItems: 'center',
-          '&::after': { content: '""', width: '12px', height: '12px', borderRadius: pill, backgroundColor: c('edge.DEFAULT') },
+          border: `1.5px solid ${c('edge.DEFAULT')}`, display: 'grid', placeItems: 'center',
+          '&::after': { content: '""', width: '10px', height: '10px', borderRadius: pill, backgroundColor: 'transparent' },
         },
-        'input:checked + .tick': { borderColor: c('brand-2.DEFAULT') },
+        'input:checked + .tick': { borderWidth: '2px', borderColor: c('brand-2.DEFAULT') },
         'input:checked + .tick::after': { backgroundColor: c('brand-2.DEFAULT') },
         'input:focus-visible + .tick': { outline: `2px solid ${c('edge.focus')}`, outlineOffset: '2px' },
+
+        /* Checkbox — something ticked on its own (Keep me logged in, the 21+
+           consent). A 20px square, corner 4, grey edge; on: green fill and a
+           white check. Put it right after a visually hidden checkbox inside a
+           label (Figma: Checkbox). Pick-one choices use .tick. */
+        '.checkbox': {
+          flex: 'none', width: theme('spacing.5'), height: theme('spacing.5'), borderRadius: theme('borderRadius.DEFAULT'),
+          border: `1.5px solid ${c('edge.DEFAULT')}`, display: 'grid', placeItems: 'center',
+          '&::after': {
+            content: '""', width: theme('spacing.4'), height: theme('spacing.4'), backgroundColor: '#fff', opacity: '0',
+            maskImage: 'url("assets/icons/check.svg")', WebkitMaskImage: 'url("assets/icons/check.svg")',
+            maskSize: 'contain', WebkitMaskSize: 'contain', maskRepeat: 'no-repeat', WebkitMaskRepeat: 'no-repeat',
+          },
+        },
+        'input:checked + .checkbox': { borderColor: c('brand-2.DEFAULT'), backgroundColor: c('brand-2.DEFAULT') },
+        'input:checked + .checkbox::after': { opacity: '1' },
+        'input:focus-visible + .checkbox': { outline: `2px solid ${c('edge.focus')}`, outlineOffset: '2px' },
 
         /* Divider with a label between two rules (2026-10-26, the Preline
            pattern): 12 above and below inside it (py-3), 24 between each rule
