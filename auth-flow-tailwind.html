@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>V9Bet · Sign Up / Log In (Tailwind)</title>
+
+<!-- One flow on one page: Sign Up and Log In share the screen (segmented
+     control under the ✕), and both lead to the same code screen.
+     variables.css holds every value; tailwind.config.js turns them into the
+     theme and the component classes (.btn, .field, .otp …). -->
+<link rel="stylesheet" href="variables.css">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>var module = {};</script>
+<script src="tailwind.config.js"></script>
+<script>tailwind.config = module.exports;</script>
+<!-- Screens and forms are switched with the hidden attribute; flex utilities
+     would otherwise override it. -->
+<style>[hidden] { display: none !important; }</style>
+</head>
+
+<body class="bg-app text-ink font-sans antialiased">
+  <div class="min-h-[100dvh] flex justify-center bg-app">
+    <div class="page relative w-full md:max-w-[440px] md:border-x md:border-edge-subtle min-h-[100dvh]">
+
+      <!-- ── 1 · Sign Up / Log In ─────────────────────────────────────── -->
+      <section id="screen-entry">
+        <!-- The top bar carries only the ✕ on flow pages (2026-10-27). -->
+        <div class="nav-top">
+          <a href="#" aria-label="Close" class="nav-top-action"><span class="icon icon-close size-7" aria-hidden="true"></span></a>
+        </div>
+
+        <div class="page-body">
+          <!-- Section: switch + social (8 inside). -->
+          <div class="flex flex-col gap-2">
+            <!-- Segmented control: w-60, 44 tall, surface-1 track, p-1, pill;
+                 the chosen half fills grey-500 and goes bold. -->
+            <div class="mx-auto flex w-60 h-11 p-1 rounded-full bg-card" role="tablist" aria-label="Sign up or log in">
+              <button type="button" role="tab" id="seg-signup" class="seg flex-1 rounded-full text-body text-ink-secondary aria-selected:bg-[var(--v1-grey-500)] aria-selected:text-ink aria-selected:font-semibold" aria-selected="false">Sign Up</button>
+              <button type="button" role="tab" id="seg-login" class="seg flex-1 rounded-full text-body text-ink-secondary aria-selected:bg-[var(--v1-grey-500)] aria-selected:text-ink aria-selected:font-semibold" aria-selected="true">Log In</button>
+            </div>
+
+            <div class="social-row">
+              <button type="button" class="social-btn" data-social="google" id="social-google">
+                <span class="social-btn-badge" id="last-used">Last used</span>
+                <span class="social-btn-icon"><svg width="22" height="22" viewBox="0 0 48 48"><path fill="#4285F4" d="M46.6 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.5 3-2.2 5.5-4.7 7.2v6h7.6c4.4-4.1 7-10.1 7-17.7Z"/><path fill="#34A853" d="M24 47c6.3 0 11.6-2.1 15.5-5.7l-7.6-6c-2.1 1.4-4.8 2.3-7.9 2.3-6.1 0-11.2-4.1-13.1-9.6h-7.8v6.1C7.3 41.9 15 47 24 47Z"/><path fill="#FBBC05" d="M10.9 27.9c-.5-1.4-.7-2.9-.7-4.4s.3-3.1.7-4.4v-6.1H3.1A23 23 0 0 0 1 23.5c0 3.7.9 7.2 2.5 10.2z"/><path fill="#EA4335" d="M24 10.2c3.4 0 6.5 1.2 8.9 3.5l6.7-6.7C35.6 3.2 30.3 1 24 1 15 1 7.3 6.1 3.9 13.5l7.8 6.1c1.9-5.6 7-9.4 13.1-9.4Z"/></svg></span>
+                Google
+              </button>
+              <button type="button" class="social-btn" data-social="line">
+                <span class="social-btn-icon"><img src="assets/social/line.png" alt=""></span>
+                LINE
+              </button>
+              <button type="button" class="social-btn" data-social="zalo">
+                <span class="social-btn-icon"><img src="assets/social/zalo.webp" alt=""></span>
+                Zalo
+              </button>
+            </div>
+          </div>
+
+          <div class="divider-label" id="divider">or log in with</div>
+
+          <!-- Section: Sign Up form (12 inside, 8 between fields). Email and a
+               code is the whole registration. -->
+          <form class="flex flex-col gap-3" id="form-signup" hidden novalidate>
+            <div class="flex flex-col gap-2">
+              <div class="field">
+                <input id="email" type="email" inputmode="email" autocomplete="email" placeholder=" ">
+                <label for="email">Email</label><fieldset aria-hidden="true"><legend><span>Email</span></legend></fieldset>
+              </div>
+              <div class="field">
+                <input id="referral" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder=" ">
+                <label for="referral">Referral Code (Optional)</label><fieldset aria-hidden="true"><legend><span>Referral Code (Optional)</span></legend></fieldset>
+              </div>
+            </div>
+            <label class="flex items-center gap-2 min-h-[44px] cursor-pointer text-body-sm font-light">
+              <input id="terms" type="checkbox" class="sr-only">
+              <span class="tick"></span>
+              <span>You are 21+ years old and accept our <a href="#" class="text-brand-2">Terms of Service</a> and <a href="#" class="text-brand-2">Privacy Policy</a>.</span>
+            </label>
+            <button type="submit" class="btn" id="signup-submit" disabled>Sign Up</button>
+          </form>
+
+          <!-- Section: Log In form. -->
+          <form class="flex flex-col gap-3" id="form-login" novalidate>
+            <div class="tabs" role="tablist">
+              <button type="button" class="tab" role="tab" id="tab-otc" aria-selected="false">One-time code</button>
+              <button type="button" class="tab" role="tab" id="tab-pwd" aria-selected="true">Password</button>
+            </div>
+            <div class="flex flex-col gap-2">
+              <div class="field">
+                <input id="identifier" type="text" autocomplete="username webauthn" placeholder=" " aria-describedby="hint-otc">
+                <label for="identifier" id="identifier-label">Account ID / Email / Phone</label><fieldset aria-hidden="true"><legend><span>Account ID / Email / Phone</span></legend></fieldset>
+                <p class="hint" id="hint-otc" hidden>We'll send a 6-digit code to the email or phone on your account.</p>
+              </div>
+              <div class="field" id="field-pwd">
+                <input id="password" type="password" autocomplete="current-password" placeholder=" ">
+                <label for="password">Password</label><fieldset aria-hidden="true"><legend><span>Password</span></legend></fieldset>
+                <button type="button" class="field-trail" id="pwd-toggle" aria-label="Show password"><span id="pwd-icon" class="icon icon-sm icon-eye-crossed" aria-hidden="true"></span></button>
+              </div>
+            </div>
+            <label class="tap gap-2 cursor-pointer text-body-sm self-start">
+              <input id="remember" type="checkbox" checked class="sr-only">
+              <span class="tick"></span>
+              Keep me logged in
+            </label>
+            <button type="submit" class="btn" id="login-submit" disabled>Log In</button>
+            <a href="#" class="tap self-center text-body-sm text-brand-2 underline">Forgot Password?</a>
+          </form>
+        </div>
+      </section>
+
+      <!-- ── 2 · Code ─────────────────────────────────────────────────── -->
+      <!-- One screen for both: Sign Up verifies the email, Log In verifies it's
+           you. The title lives in the body, never in the top bar. -->
+      <section id="screen-code" hidden>
+        <div class="nav-top">
+          <button type="button" aria-label="Close" class="nav-top-action" id="code-close"><span class="icon icon-close size-7" aria-hidden="true"></span></button>
+        </div>
+        <form class="page-body" id="form-code" novalidate>
+          <div class="step-hero"><h1 id="code-title">Verify email</h1></div>
+          <div class="flex flex-col gap-3">
+            <p class="text-center text-body text-ink-secondary">We sent a code to<span class="block text-title text-ink" id="code-to"></span></p>
+            <div class="otp" id="otp">
+              <input inputmode="numeric" autocomplete="one-time-code" placeholder=" " aria-label="Digit 1">
+              <input inputmode="numeric" placeholder=" " aria-label="Digit 2">
+              <input inputmode="numeric" placeholder=" " aria-label="Digit 3">
+              <input inputmode="numeric" placeholder=" " aria-label="Digit 4">
+              <input inputmode="numeric" placeholder=" " aria-label="Digit 5">
+              <input inputmode="numeric" placeholder=" " aria-label="Digit 6">
+            </div>
+            <p class="error-text text-center" id="code-error" hidden>Invalid code entered</p>
+            <p class="text-center text-body text-ink-secondary" id="resend-wait">Resend code in <b class="font-semibold text-brand-2" id="resend-count">00:32</b></p>
+            <button type="button" class="tap self-center text-body font-semibold text-brand-2 underline" id="resend" hidden>Resend code</button>
+          </div>
+          <button type="submit" class="btn" id="code-submit" disabled>Verify</button>
+        </form>
+      </section>
+
+      <!-- ── 3 · Where the flow lands ─────────────────────────────────── -->
+      <!-- Sign Up lands in Setup step 1, Log In in the lobby. Neither is
+           designed in this file; a placeholder stands in. -->
+      <section id="screen-done" hidden class="flex flex-col min-h-[100dvh]">
+        <div class="nav-top"></div>
+        <div class="page-body flex-1">
+          <div class="flex-1 grid place-items-center rounded-xl border border-dashed border-edge text-body text-ink-muted" id="done-label">Lobby</div>
+        </div>
+      </section>
+
+      <!-- Toast (v1): light blue, black text, sits 16 above the bottom. -->
+      <div class="fixed bottom-4 inset-x-4 md:mx-auto md:max-w-[408px] rounded-md bg-[var(--v1-blue-light)] px-4 py-3 text-body font-semibold text-black" id="toast" role="status" hidden></div>
+
+    </div>
+  </div>
+
+<script>
+  const $ = (id) => document.getElementById(id);
+  const show = (id) => ['screen-entry', 'screen-code', 'screen-done'].forEach((s) => { $(s).hidden = s !== id; });
+  const mask = (v) => v.includes('@')
+    ? v.replace(/^(.{2}).*(.{2}@.*)$/, (_, a, b) => a + '*****' + b)
+    : v.replace(/^(.{3}).*(.{3})$/, '$1***$2');
+
+  /* ── Sign Up | Log In ── */
+  let side = 'login';
+  const setSide = (next) => {
+    side = next;
+    $('seg-signup').setAttribute('aria-selected', String(side === 'signup'));
+    $('seg-login').setAttribute('aria-selected', String(side === 'login'));
+    $('form-signup').hidden = side !== 'signup';
+    $('form-login').hidden = side !== 'login';
+    $('divider').textContent = side === 'signup' ? 'or sign up with email' : 'or log in with';
+    // "Last used" belongs to logging in: it is the method this browser used last time.
+    $('last-used').hidden = side !== 'login';
+    $('social-google').toggleAttribute('data-last-used', side === 'login');
+  };
+  $('seg-signup').addEventListener('click', () => setSide('signup'));
+  $('seg-login').addEventListener('click', () => setSide('login'));
+
+  /* Sign Up: the button stays grey until the form can be sent. */
+  const syncSignup = () => { $('signup-submit').disabled = !$('terms').checked || !$('email').value.trim(); };
+  $('terms').addEventListener('change', syncSignup);
+  $('email').addEventListener('input', syncSignup);
+  $('form-signup').addEventListener('submit', (e) => {
+    e.preventDefault();
+    openCode('Verify email', $('email').value.trim(), 'Verify');
+  });
+
+  /* Log In: Password or One-time code. */
+  let mode = 'pwd';
+  const syncLogin = () => { $('login-submit').disabled = !$('identifier').value.trim() || (mode === 'pwd' && !$('password').value); };
+  const setTab = (next) => {
+    mode = next;
+    $('tab-pwd').setAttribute('aria-selected', String(mode === 'pwd'));
+    $('tab-otc').setAttribute('aria-selected', String(mode === 'otc'));
+    $('field-pwd').hidden = mode !== 'pwd';
+    $('hint-otc').hidden = mode !== 'otc';
+    // A code goes to an email or a phone, so the code tab does not ask for an Account ID.
+    const label = mode === 'pwd' ? 'Account ID / Email / Phone' : 'Email / Phone';
+    $('identifier-label').textContent = label;
+    $('identifier-label').parentElement.querySelector('fieldset legend span').textContent = label; // the outline gap follows the label
+    $('identifier').autocomplete = mode === 'pwd' ? 'username webauthn' : 'username';
+    $('login-submit').textContent = mode === 'pwd' ? 'Log In' : 'Send Code';
+    syncLogin();
+  };
+  $('tab-pwd').addEventListener('click', () => setTab('pwd'));
+  $('tab-otc').addEventListener('click', () => setTab('otc'));
+  $('identifier').addEventListener('input', syncLogin);
+  $('password').addEventListener('input', syncLogin);
+  $('pwd-toggle').addEventListener('click', () => {
+    const reveal = $('password').type === 'password';
+    $('password').type = reveal ? 'text' : 'password';
+    $('pwd-toggle').setAttribute('aria-label', reveal ? 'Hide password' : 'Show password');
+    $('pwd-icon').className = 'icon icon-sm ' + (reveal ? 'icon-eye' : 'icon-eye-crossed');
+  });
+  $('form-login').addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (mode === 'pwd') land('Lobby', 'Logged in');
+    else openCode("Verify it's you", $('identifier').value.trim(), 'Log In');
+  });
+
+  /* ── Code ── */
+  const cells = [...$('otp').querySelectorAll('input')];
+  let timer;
+  const startCountdown = () => {
+    let left = 32;
+    $('resend-wait').hidden = false; $('resend').hidden = true;
+    clearInterval(timer);
+    timer = setInterval(() => {
+      left -= 1;
+      $('resend-count').textContent = '00:' + String(left).padStart(2, '0');
+      // When the wait is over the line turns into the link — no dead link while counting.
+      if (left <= 0) { clearInterval(timer); $('resend-wait').hidden = true; $('resend').hidden = false; }
+    }, 1000);
+  };
+  const resetCode = () => {
+    cells.forEach((c) => { c.value = ''; });
+    $('otp').removeAttribute('data-invalid'); $('code-error').hidden = true;
+    $('code-submit').disabled = true;
+  };
+  const openCode = (title, to, action) => {
+    $('code-title').textContent = title;
+    $('code-to').textContent = mask(to);
+    $('code-submit').textContent = action;
+    resetCode(); startCountdown(); show('screen-code'); cells[0].focus();
+  };
+  cells.forEach((cell, i) => {
+    cell.addEventListener('input', () => {
+      // The phone's SMS autofill drops the whole code into one cell — spread it out.
+      const digits = cell.value.replace(/\D/g, '').split('');
+      cell.value = digits[0] || '';
+      digits.slice(1).forEach((d, j) => { if (cells[i + 1 + j]) cells[i + 1 + j].value = d; });
+      // Any change clears the error; the digits stay so the member can fix one.
+      $('otp').removeAttribute('data-invalid'); $('code-error').hidden = true;
+      const next = cells[Math.min(i + Math.max(digits.length, 1), 5)];
+      if (digits.length) next.focus();
+      $('code-submit').disabled = cells.some((c) => !c.value);
+    });
+    cell.addEventListener('keydown', (e) => { if (e.key === 'Backspace' && !cell.value && cells[i - 1]) cells[i - 1].focus(); });
+    cell.addEventListener('paste', (e) => {
+      const digits = (e.clipboardData.getData('text').match(/\d/g) || []).slice(0, 6);
+      if (!digits.length) return;
+      e.preventDefault();
+      digits.forEach((d, j) => { cells[j].value = d; });
+      cells[Math.min(digits.length, 5)].focus();
+      $('code-submit').disabled = cells.some((c) => !c.value);
+    });
+  });
+  $('resend').addEventListener('click', () => { resetCode(); startCountdown(); cells[0].focus(); });
+  $('code-close').addEventListener('click', () => { clearInterval(timer); show('screen-entry'); });
+  $('form-code').addEventListener('submit', (e) => {
+    e.preventDefault();
+    // Demo: 000000 is the wrong code; any other six digits pass.
+    if (cells.map((c) => c.value).join('') === '000000') {
+      $('otp').setAttribute('data-invalid', ''); $('code-error').hidden = false; return;
+    }
+    clearInterval(timer);
+    if (side === 'signup') land('Setup · step 1', 'Account created');
+    else land('Lobby', 'Logged in');
+  });
+
+  /* ── Landing ── */
+  let toastTimer;
+  const land = (where, message) => {
+    $('done-label').textContent = where;
+    show('screen-done');
+    $('toast').textContent = message; $('toast').hidden = false;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => { $('toast').hidden = true; }, 3000);
+  };
+
+  // ?mode=signup opens on Sign Up (the "Sign Up" button elsewhere links here).
+  setSide(new URLSearchParams(location.search).get('mode') === 'signup' ? 'signup' : 'login');
+</script>
+</body>
+</html>
