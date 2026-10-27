@@ -177,29 +177,43 @@
     open.className = `fixed left-4 ${buttonClass} z-[60] grid place-items-center size-12 rounded-full bg-card border border-brand-2 text-brand-2`;
     open.innerHTML = ICON;
 
-    // Tabs, one per Figma section; the chosen tab shows only its screens as
-    // buttons. ‹ › walk every built screen in Figma order, across pages.
-    // Screens not built yet show greyed out and cannot be picked.
+    // Laid out like a game's test panel: one scrolling list, a green heading per
+    // Figma section, its sub-steps in grey, the screens as buttons. The
+    // dropdown at the top jumps to a section; ‹ › at the bottom walk every built
+    // screen in Figma order, across pages. Screens not built yet are dashed.
     const nav = document.createElement('nav');
     nav.hidden = true;
     nav.setAttribute('aria-label', 'Test panel');
-    // Anchored to the top so it never runs off the screen, whatever its height.
-    // Three bands: the fixed top (title + tabs) and fixed bottom (‹ › and copy)
-    // sit on the lighter sheet surface; the screen list between them scrolls on
-    // the darker page colour, so it reads as the part that moves.
-    nav.className = `fixed left-4 top-4 z-[60] w-[min(360px,calc(100vw-32px))] max-h-[calc(100dvh-32px)] overflow-hidden flex flex-col rounded-xl border border-brand-2 text-body-sm`;
-    const btn = 'grid place-items-center h-11 rounded-xl border border-edge text-ink disabled:opacity-40';
+    nav.className = `fixed left-4 top-4 z-[60] w-[min(380px,calc(100vw-32px))] max-h-[calc(100dvh-112px)] overflow-y-auto flex flex-col gap-4 px-4 pt-4 rounded-xl bg-app border border-brand-2 text-body-sm shadow-2xl`;
+    const btn = 'grid place-items-center h-11 rounded-xl bg-card border border-edge font-semibold text-ink disabled:opacity-40';
+    const chip = 'px-3 py-2 rounded-xl bg-card border border-edge font-semibold text-ink aria-[current=true]:border-brand-2 aria-[current=true]:text-brand-2';
     nav.innerHTML = `
-      <div class="flex-none flex flex-col gap-3 p-4 bg-sheet border-b border-edge">
-        <div>
-          <p class="text-body font-semibold text-ink">測試面板 <span class="font-normal text-ink-muted">· 已做 ${BUILT.length} / ${ALL}</span></p>
-          <p class="text-ink-secondary">只給看稿用，不是產品的一部分。</p>
-        </div>
-        <div class="flex flex-wrap gap-1.5" role="tablist">${CATALOG.map((t, i) =>
-          `<button type="button" role="tab" data-tab="${i}" aria-selected="false" class="px-2.5 py-1 rounded-full border border-edge text-ink-secondary aria-selected:border-transparent aria-selected:bg-[var(--v1-grey-500)] aria-selected:text-ink aria-selected:font-semibold">${t[0]} <span class="opacity-70">${itemsOf(t).length}</span></button>`).join('')}</div>
+      <div>
+        <p class="text-body font-semibold text-ink">測試面板</p>
+        <p class="text-ink-secondary">只給看稿用，不是產品的一部分。已做 ${BUILT.length} / ${ALL} 個畫面。</p>
       </div>
-      <div class="tp-screens flex-1 min-h-0 flex flex-col gap-3 max-h-[42dvh] overflow-y-auto p-4 bg-app"></div>
-      <div class="flex-none flex flex-col gap-2 p-4 bg-sheet border-t border-edge">
+      <div class="flex flex-col gap-2">
+        <p class="font-semibold text-brand-2">跳到流程</p>
+        <span class="relative">
+          <select class="tp-section w-full h-11 pl-3 pr-9 appearance-none rounded-xl bg-card border border-edge font-semibold text-ink">
+            ${CATALOG.map((t, i) => `<option value="${i}">${t[0]}（${itemsOf(t).length}）</option>`).join('')}
+          </select>
+          <span class="icon icon-sm icon-chevron-down absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" aria-hidden="true"></span>
+        </span>
+        <p class="tp-where text-ink-secondary"></p>
+      </div>
+      ${CATALOG.map(([section, subs], i) => `
+        <section class="flex flex-col gap-3" data-section="${i}">
+          <p class="font-semibold text-brand-2">${section}</p>
+          ${subs.map(([sub, items]) => `
+            <div class="flex flex-col gap-1.5">
+              ${subs.length > 1 ? `<p class="text-micro text-ink-muted">${sub}</p>` : ''}
+              <div class="flex flex-wrap gap-2">${items.map(([key, label, p]) => p
+                ? `<button type="button" data-state="${key}" data-page="${p}" class="${chip}">${label}</button>`
+                : `<span class="px-3 py-2 rounded-xl border border-dashed border-edge-subtle text-ink-muted" title="還沒做成網頁">${label}（還沒做）</span>`).join('')}</div>
+            </div>`).join('')}
+        </section>`).join('')}
+      <div class="sticky bottom-0 -mx-4 mt-auto flex flex-col gap-2 p-4 bg-sheet border-t border-edge">
         <div class="grid grid-cols-[1fr_auto_1fr] items-center gap-2">
           <button type="button" class="tp-prev ${btn}">‹ 上一個</button>
           <span class="tp-count text-ink-secondary tabular-nums"></span>
@@ -210,28 +224,23 @@
     document.body.append(open, nav);
 
     let current = null;
-    let tab = 0;
     const index = () => BUILT.findIndex(([key, , p]) => p === page && key === current);
-    const showTab = (i) => {
-      tab = i;
-      nav.querySelectorAll('[data-tab]').forEach((t) => t.setAttribute('aria-selected', String(Number(t.dataset.tab) === i)));
-      // Each tab is split into its Figma sub-steps: a small heading, then that step's screens.
-      nav.querySelector('.tp-screens').innerHTML = CATALOG[i][1].map(([sub, items]) => `
-        <div class="flex flex-col gap-1.5">
-          <p class="text-micro text-ink-muted">${sub}</p>
-          <div class="flex flex-wrap gap-2">${items.map(([key, label, p]) => p
-            ? `<button type="button" data-state="${key}" data-page="${p}" aria-current="${p === page && key === current}" class="px-3 py-1.5 rounded-xl border border-edge text-ink aria-[current=true]:border-brand-2 aria-[current=true]:text-brand-2">${label}</button>`
-            : `<span class="px-3 py-1.5 rounded-xl border border-dashed border-edge-subtle text-ink-muted" title="還沒做成網頁">${label}（還沒做）</span>`).join('')}</div>
-        </div>`).join('');
-    };
+    const sectionOf = (key) => CATALOG.findIndex((t) => itemsOf(t).some(([k, , p]) => p === page && k === key));
+    const scrollTo = (i) => { nav.scrollTop = nav.querySelector(`[data-section="${i}"]`).offsetTop - 16; };
     const sync = () => {
       const i = index();
       nav.querySelector('.tp-count').textContent = i < 0 ? `– / ${BUILT.length}` : `${i + 1} / ${BUILT.length}`;
       nav.querySelector('.tp-prev').disabled = i <= 0;
       nav.querySelector('.tp-next').disabled = i < 0 || i >= BUILT.length - 1;
-      // Open on the tab that holds the current screen.
-      const g = CATALOG.findIndex((t) => itemsOf(t).some(([key, , p]) => p === page && key === current));
-      showTab(g < 0 ? tab : g);
+      nav.querySelectorAll('[data-state]').forEach((b) => b.setAttribute('aria-current', String(b.dataset.page === page && b.dataset.state === current)));
+      const g = sectionOf(current);
+      if (g >= 0) {
+        nav.querySelector('.tp-section').value = String(g);
+        const [section, subs] = CATALOG[g];
+        const sub = subs.find(([, items]) => items.some(([k, , p]) => p === page && k === current));
+        const item = itemsOf(CATALOG[g]).find(([k, , p]) => p === page && k === current);
+        nav.querySelector('.tp-where').textContent = `目前：${section} › ${subs.length > 1 ? sub[0] + ' › ' : ''}${item[1]}`;
+      }
     };
     const go = (key) => {
       if (!handlers[key]) return false;
@@ -244,16 +253,15 @@
       else location.href = `${PAGES[p]}#${key}`;
     };
 
+    nav.querySelector('.tp-section').addEventListener('change', (e) => scrollTo(Number(e.target.value)));
     nav.addEventListener('click', (e) => {
-      const t = e.target.closest('[data-tab]');
-      if (t) { showTab(Number(t.dataset.tab)); return; }
       const s = e.target.closest('[data-state]');
       if (s) visit(BUILT.find(([k, , p]) => k === s.dataset.state && p === s.dataset.page));
     });
     const toggle = (show) => {
       nav.hidden = !show; open.setAttribute('aria-expanded', String(show)); remember(show);
     };
-    open.addEventListener('click', () => toggle(nav.hidden));
+    open.addEventListener('click', () => { toggle(nav.hidden); const g = sectionOf(current); if (!nav.hidden && g >= 0) scrollTo(g); });
     nav.querySelector('.tp-prev').addEventListener('click', () => { const i = index(); if (i > 0) visit(BUILT[i - 1]); });
     nav.querySelector('.tp-next').addEventListener('click', () => { const i = index(); if (i >= 0 && i < BUILT.length - 1) visit(BUILT[i + 1]); });
     nav.querySelector('.tp-copy').addEventListener('click', (e) => {
@@ -267,6 +275,7 @@
     const opened = go(location.hash.slice(1));
     if (!opened) current = fallback || null;
     sync();
+    if (!nav.hidden && sectionOf(current) >= 0) scrollTo(sectionOf(current));
     return opened;
   }
 
