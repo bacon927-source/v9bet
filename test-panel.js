@@ -374,7 +374,8 @@
     open.type = 'button';
     open.setAttribute('aria-label', 'Test panel');
     open.setAttribute('aria-expanded', 'false');
-    open.className = `fixed left-4 ${buttonClass} z-[60] grid place-items-center size-12 rounded-full bg-card border border-brand-2 text-brand-2`;
+    // Above the panel, so a long panel can never cover the button that closes it.
+    open.className = `fixed left-4 ${buttonClass} z-[61] grid place-items-center size-12 rounded-full bg-card border border-brand-2 text-brand-2`;
     open.innerHTML = ICON;
 
     // Laid out like a game's test panel: one scrolling list, a green heading per
@@ -388,9 +389,12 @@
     const btn = 'grid place-items-center h-11 rounded-xl bg-card border border-edge font-semibold text-ink disabled:opacity-40';
     const chip = 'px-3 py-2 rounded-xl bg-card border border-edge font-semibold text-ink aria-[current=true]:border-brand-2 aria-[current=true]:text-brand-2';
     nav.innerHTML = `
-      <div>
-        <p class="text-base/7 font-semibold text-ink">測試面板</p>
-        <p class="text-ink-secondary">只給看稿用，不是產品的一部分。已做 ${BUILT.length} / ${ALL} 個畫面。</p>
+      <div class="flex items-start gap-2">
+        <div class="flex-1">
+          <p class="text-base/7 font-semibold text-ink">測試面板</p>
+          <p class="text-ink-secondary">只給看稿用，不是產品的一部分。已做 ${BUILT.length} / ${ALL} 個畫面。</p>
+        </div>
+        <button type="button" class="tp-close grid place-items-center size-11 -mr-2 -mt-2 text-ink" aria-label="Close test panel"><span class="icon icon-close" aria-hidden="true"></span></button>
       </div>
       <div class="flex items-center justify-between gap-3">
         <span class="font-semibold text-ink">主題</span>
@@ -481,8 +485,17 @@
     });
     const toggle = (show) => {
       nav.hidden = !show; open.setAttribute('aria-expanded', String(show)); remember(show);
+      // Again a moment later: on first load Tailwind may not have placed the button yet.
+      if (show) { requestAnimationFrame(() => fit()); setTimeout(() => fit(), 300); }
     };
     open.addEventListener('click', () => { toggle(nav.hidden); const g = sectionOf(current); if (!nav.hidden && g >= 0) scrollTo(g); });
+    // The panel stops 8 above the round button, so the two never overlap.
+    // Measured each time it opens: the button's place is only known once Tailwind has styled the page.
+    const fit = () => { nav.style.maxHeight = `${Math.max(240, open.getBoundingClientRect().top - 16 - 8)}px`; };
+    window.addEventListener('resize', () => { if (!nav.hidden) fit(); });
+    // Three ways out: the ✕, Esc, or the round button again.
+    nav.querySelector('.tp-close').addEventListener('click', () => { toggle(false); open.focus(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !nav.hidden) { toggle(false); open.focus(); } });
     nav.querySelector('.tp-prev').addEventListener('click', () => { const i = index(); if (i > 0) visit(BUILT[i - 1]); });
     nav.querySelector('.tp-next').addEventListener('click', () => { const i = index(); if (i >= 0 && i < BUILT.length - 1) visit(BUILT[i + 1]); });
     nav.querySelector('.tp-copy').addEventListener('click', (e) => {
