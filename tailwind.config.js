@@ -201,6 +201,10 @@ module.exports = {
           ...type('body'), color: c('ink.DEFAULT'),
           '& a': { fontWeight: '700', color: c('brand-2.DEFAULT') },
         },
+        /* On its own (no "New to V9bet?" before it) a link row is a text
+           button: the same 46 × full width pill as .btn, just no fill —
+           Forgot Password?, Skip, Use a different email. */
+        'a.link-row, button.link-row': { width: '100%', borderRadius: pill, fontWeight: '700', color: c('brand-2.DEFAULT') },
 
         /* Field — a 50px outlined box with 8px above it for the label, which
            sits inside as the placeholder and lifts onto the outline once the

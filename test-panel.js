@@ -193,7 +193,6 @@
     ['.tab', 'Tab', 'h'],
     ['.checkbox', 'Checkbox', 'wh'],
     ['.tick', 'Radio', 'wh'],
-    ['a.tap', 'Link · tap area', 'h'],
     ['.link-row', 'Link row', 'h'],
   ];
   // Corner radius as the Tailwind class it is.
