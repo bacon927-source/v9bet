@@ -121,17 +121,20 @@
     const nav = document.createElement('nav');
     nav.hidden = true;
     nav.setAttribute('aria-label', 'Test panel');
-    nav.className = `fixed left-4 ${panelClass} z-[60] w-[min(340px,calc(100vw-32px))] overflow-y-auto flex flex-col gap-4 p-4 rounded-xl bg-card border border-brand-2 text-body-sm`;
+    nav.className = `fixed left-4 ${panelClass} z-[60] w-[min(340px,calc(100vw-32px))] overflow-y-auto flex flex-col gap-4 px-4 pb-4 rounded-xl bg-card border border-brand-2 text-body-sm`;
     const built = CATALOG.flatMap(([, items]) => items).filter(([, , p]) => p).length;
     const all = CATALOG.flatMap(([, items]) => items).length;
+    // The group index stays pinned at the top, so a flow far down the list
+    // (Setup, Forgot Password …) is one tap away instead of a long scroll.
     nav.innerHTML = `
-      <div>
-        <p class="text-body font-semibold text-ink">測試面板</p>
-        <p class="text-ink-secondary">只給看稿用，不是產品的一部分。照 Figma 的順序列出全部 ${all} 個畫面，點一下直接跳過去。灰色的是 Figma 有、還沒做成網頁的。</p>
-        <p class="text-ink-muted">已做 ${built} / ${all}</p>
+      <div class="sticky top-0 z-10 -mx-4 px-4 pt-4 pb-3 flex flex-col gap-2 bg-card border-b border-edge-subtle">
+        <p class="text-body font-semibold text-ink">測試面板 <span class="font-normal text-ink-muted">· 已做 ${built} / ${all}</span></p>
+        <p class="text-ink-secondary">只給看稿用，不是產品的一部分。照 Figma 的順序列出全部畫面，點一下直接跳過去。灰色的是 Figma 有、還沒做成網頁的。</p>
+        <div class="flex flex-wrap gap-1.5">${CATALOG.map(([group], i) =>
+          `<button type="button" data-group="${i}" class="px-2.5 py-1 rounded-full bg-[var(--v1-grey-500)] text-ink">${group.split(' (')[0]} <span class="text-ink-secondary">${CATALOG[i][1].length}</span></button>`).join('')}</div>
       </div>
-      ${CATALOG.map(([group, items]) => `
-        <div class="flex flex-col gap-2">
+      ${CATALOG.map(([group, items], i) => `
+        <div class="flex flex-col gap-2" id="tp-group-${i}">
           <p class="font-semibold text-brand-2">${group}</p>
           <div class="flex flex-wrap gap-2">${items.map(([key, label, p]) => p
             ? `<a href="${p === page ? '' : PAGES[p]}#${key}" data-state="${key}" data-page="${p}" class="px-3 py-2 rounded-xl border border-edge text-ink aria-[current=true]:border-brand-2 aria-[current=true]:text-brand-2">${label}</a>`
@@ -155,6 +158,9 @@
     });
     // Clicking the state already in the hash fires no hashchange, so go on click too.
     nav.addEventListener('click', (e) => {
+      const g = e.target.closest('[data-group]');
+      // Land the group's title just under the pinned index, whatever height the index wraps to.
+      if (g) { nav.scrollTop = nav.querySelector('#tp-group-' + g.dataset.group).offsetTop - nav.firstElementChild.offsetHeight - 16; return; }
       const a = e.target.closest('[data-state]');
       if (a && a.dataset.page === page) go(a.dataset.state);
     });
