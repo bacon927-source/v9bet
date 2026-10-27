@@ -4,13 +4,16 @@
  *  variables rather than restating hex values, so switching theme or retuning a
  *  token moves Tailwind, the Flutter theme and the Figma kit together.
  *
- *  Dark is the default. Light comes from :root[data-theme="light"] in
- *  variables.css — do NOT use Tailwind's `dark:` prefix, which would create a
- *  second place where the palette is decided.
+ *  Light and dark follow Tailwind's dark-mode pattern (darkMode: 'selector'):
+ *  theme.js puts .dark on <html> from the member's choice or the device, and
+ *  variables.css swaps every colour on that class. Pages use the semantic
+ *  colours below and need no `dark:` classes; reach for `dark:` only for a
+ *  one-off that is not a token.
  */
 const v = (name) => `var(--${name})`;
 
 module.exports = {
+  darkMode: 'selector',
   content: ['./**/*.{html,js,ts,jsx,tsx}'],
   theme: {
     extend: {
@@ -21,6 +24,8 @@ module.exports = {
         scrim:    v('color-bg-scrim'),
         sheet:    { DEFAULT: v('color-bg-sheet'), handle: v('color-sheet-handle') },
         card:     v('color-bg-card'),
+        /* The chosen half of a segmented control. */
+        selected: v('color-bg-selected'),
         promo:    v('color-promo-accent'),
         /* Behind a provider's own logo (Google, LINE, Zalo): white in every theme. */
         provider: v('color-bg-provider'),
@@ -336,6 +341,8 @@ module.exports = {
         '.social-btn-icon': {
           width: '48px', height: '48px', borderRadius: pill, overflow: 'hidden', display: 'grid', placeItems: 'center',
           backgroundColor: c('provider'),
+          // A hairline edge, so a white logo still reads as a circle on a white page.
+          boxShadow: `0 0 0 1px ${c('edge.subtle')}`,
           '& > img': { width: '100%', height: '100%', objectFit: 'cover' },
         },
         '.social-btn[data-last-used] .social-btn-icon': { boxShadow: `0 0 0 2px ${c('brand-2.DEFAULT')}` },

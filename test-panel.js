@@ -392,6 +392,11 @@
         <p class="text-base/7 font-semibold text-ink">測試面板</p>
         <p class="text-ink-secondary">只給看稿用，不是產品的一部分。已做 ${BUILT.length} / ${ALL} 個畫面。</p>
       </div>
+      <div class="flex items-center justify-between gap-3">
+        <span class="font-semibold text-ink">主題</span>
+        <div class="flex h-9 p-1 rounded-full bg-card border border-edge" role="radiogroup" aria-label="Theme">${[['system', '跟系統'], ['light', '淺色'], ['dark', '深色']].map(([v, l]) =>
+          `<button type="button" role="radio" data-theme-choice="${v}" aria-checked="false" class="px-3 rounded-full text-ink-secondary aria-checked:bg-selected aria-checked:text-ink aria-checked:font-semibold">${l}</button>`).join('')}</div>
+      </div>
       <label class="flex items-center justify-between gap-3 h-11 px-3 rounded-xl bg-card border border-edge cursor-pointer">
         <span class="font-semibold text-ink">顯示間距 <span class="font-normal text-ink-secondary">（Spacing）</span></span>
         <input type="checkbox" role="switch" class="tp-spacing sr-only"><span class="toggle"></span>
@@ -461,6 +466,14 @@
       else location.href = `${PAGES[p]}#${key}`;
     };
 
+    // Theme: the same choice Setup › Theme makes (theme.js); the page re-paints at once.
+    const syncThemeChoice = () => nav.querySelectorAll('[data-theme-choice]').forEach((b) => b.setAttribute('aria-checked', String(b.dataset.themeChoice === (window.getTheme ? getTheme() : 'system'))));
+    nav.querySelectorAll('[data-theme-choice]').forEach((b) => b.addEventListener('click', () => {
+      if (window.setTheme) setTheme(b.dataset.themeChoice);
+      syncThemeChoice();
+      document.querySelectorAll('input[name="theme"]').forEach((r) => { r.checked = r.value === b.dataset.themeChoice; });
+    }));
+    syncThemeChoice();
     nav.querySelector('.tp-section').addEventListener('change', (e) => scrollTo(Number(e.target.value)));
     nav.addEventListener('click', (e) => {
       const s = e.target.closest('[data-state]');

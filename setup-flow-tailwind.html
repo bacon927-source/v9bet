@@ -9,6 +9,7 @@
      Figma: 📱 Screens › Setup · guided. Every value comes from variables.css
      through tailwind.config.js. -->
 <link rel="stylesheet" href="variables.css">
+<script src="theme.js"></script>
 <script src="https://cdn.tailwindcss.com"></script>
 <script>var module = {};</script>
 <script src="tailwind.config.js"></script>
@@ -96,8 +97,8 @@
           <div class="step-hero"><h1>Bank account / USDT</h1><p>Needed before withdrawal.</p></div>
           <div class="flex flex-col gap-3">
             <div class="mx-auto flex w-60 h-11 p-1 rounded-full bg-card" role="tablist" aria-label="Payout method">
-              <button type="button" role="tab" id="seg-bank" class="flex-1 rounded-full text-base/7 text-ink-secondary aria-selected:bg-[var(--v1-grey-500)] aria-selected:text-ink aria-selected:font-semibold" aria-selected="true">Bank account</button>
-              <button type="button" role="tab" id="seg-usdt" class="flex-1 rounded-full text-base/7 text-ink-secondary aria-selected:bg-[var(--v1-grey-500)] aria-selected:text-ink aria-selected:font-semibold" aria-selected="false">USDT</button>
+              <button type="button" role="tab" id="seg-bank" class="flex-1 rounded-full text-base/7 text-ink-secondary aria-selected:bg-selected aria-selected:text-ink aria-selected:font-semibold" aria-selected="true">Bank account</button>
+              <button type="button" role="tab" id="seg-usdt" class="flex-1 rounded-full text-base/7 text-ink-secondary aria-selected:bg-selected aria-selected:text-ink aria-selected:font-semibold" aria-selected="false">USDT</button>
             </div>
             <div class="flex flex-col gap-2" id="fields-bank">
               <div class="field">
@@ -445,13 +446,10 @@
     closeSheets(); markVerified(codeFor);
   });
 
-  /* ── Step 8: theme applies at once ── */
-  const applyTheme = (value) => {
-    const light = value === 'light' || (value === 'system' && matchMedia('(prefers-color-scheme: light)').matches);
-    document.documentElement.toggleAttribute('data-theme', light);
-    if (light) document.documentElement.dataset.theme = 'light';
-  };
-  document.querySelectorAll('input[name="theme"]').forEach((r) => r.addEventListener('change', () => applyTheme(r.value)));
+  /* ── Step 8: theme applies at once (theme.js) ── */
+  const syncThemeStep = () => { document.querySelector(`input[name="theme"][value="${getTheme()}"]`).checked = true; };
+  document.querySelectorAll('input[name="theme"]').forEach((r) => r.addEventListener('change', () => setTheme(r.value)));
+  syncThemeStep();
 
   /* ── Lobby + Welcome ── */
   function toLobby() {
@@ -476,8 +474,8 @@
     verified['sec-email'] = true; verified['sec-phone'] = false;
     fill('sec-email', SIGNUP_EMAIL); markVerified('sec-email');
     document.querySelector('input[name="channel"][value="email"]').checked = true;
-    // The theme changes only when the member picks one on step 8; until then the site's dark default.
-    document.querySelector('input[name="theme"][value="system"]').checked = true; document.documentElement.removeAttribute('data-theme');
+    // Step 8 shows whatever theme is in force (the test panel can change it too).
+    syncThemeStep();
   };
   const personal = () => { fill('full-name', 'Pei Chen'); fill('dob', '1992-04-18'); };
   const twofaOn = () => { $('twofa').checked = true; $('contacts').hidden = false; };

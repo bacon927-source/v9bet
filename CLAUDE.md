@@ -83,6 +83,17 @@
 
 V9Bet 是一家做了十年的博弈品牌，**招牌就是黃色和綠色**。現在是改版，不是換品牌——兩個顏色都留著，改的是**比例和分工**。
 
+### 淺色／深色（2026-10-27 定案，先讀這段）
+
+使用者：「整個網站要做 system 的 light and dark……依據 framework 的 css」。
+- **切換照 Tailwind 的 dark mode**（`darkMode: 'selector'`）：`theme.js` 在 `<html>` 加 `.dark`——客人在 Setup › Theme 選了就照選的，沒選就跟手機系統（而且跟著即時變）。每頁 `<head>` 都要先載入 `theme.js`，避免先閃一下錯的顏色。
+- **顏色一律用語意變數**（`bg-app`、`bg-card`、`text-ink`、`border-edge`…），淺色寫在 `:root`、深色寫在 `.dark`，頁面不用寫 `dark:`。
+- **灰色用 Tailwind 的 zinc**（使用者選的）：頁面底 white／zinc-900、卡片 zinc-50／zinc-800、面板 white／zinc-800、主要字 zinc-900／white、次要字 zinc-600／zinc-400、框線 zinc-300／zinc-700、細線 zinc-200／zinc-800、分段選中 zinc-200／zinc-600。
+- **品牌色保留**（Tailwind 沒有品牌色）：黃 `#FFBC00` 兩種模式都一樣；綠 `#00DA87` 在深色用，淺色時綠字對比不夠，改用 Tailwind `emerald-700`。
+- 條款／隱私面板是要讀的文件，兩種模式都白底黑字（white／zinc-900／zinc-500）。
+- Figma：`Color` 變數有 Dark、Light 兩個模式；Screens 頁最下面的「Theme · Dark / Light」放了三組對照。
+- 下面「顏色的分工」是 v1 時期寫的，數值以這段和 `variables.css` 為準；黃色是唯一的動作色、綠色是選中／連結，這個分工不變。
+
 ### 顏色的分工（最重要的一條）
 
 **綠色是場子，黃色是籌碼。** 兩個都是品牌色，差別在工作。

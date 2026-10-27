@@ -3,102 +3,81 @@
    The native app reads these values into its theme; Tailwind points at
    the variables (tailwind.config.js). Change a value here, not there.
 
-   The look is the live product's (design file: APP-V9Bet-v1). The dark
-   theme below reads from the --v1-* primitives: a dark grey ground, a
-   yellow main button, green for links and for whatever is selected.
-
-   Dark is the default. Light overrides only the semantic layer and is
-   not finished. Never use a primitive directly in a component — use the
-   semantic variable, which is what changes with the theme.
+   Light and dark (2026-10-27, user: "整個網站要做 system 的 light and dark…
+   依據 framework 的 css"): Tailwind's dark-mode pattern. Light is :root; dark
+   is the .dark class on <html>, which theme.js sets from the member's choice
+   or, by default, the device's. Greys are Tailwind's zinc ramp (user's pick);
+   the brand yellow and green are V9Bet's own — Tailwind has no brand colours.
+   Never use a primitive directly in a component — use the semantic variable,
+   which is what changes with the theme.
    ────────────────────────────────────────────────────────────── */
 
 :root {
-  /* ---- primitives (do not use directly) ----
-     The dark theme reads the --v1-* values further down. The neutral, gold
-     and green ramps are left from the earlier direction (green-tinted
-     greys); only the unfinished light theme and the status colours still use
-     them. Rebuild the light theme on v1's greys before adding to them. */
-  --neutral-0:#FFFFFF;  --neutral-50:#F3F9F5; --neutral-100:#E6EEE9; --neutral-200:#CFDED5;
-  --neutral-300:#A9C0B2;--neutral-400:#7C9A88;--neutral-500:#6B9480; --neutral-600:#28543C;
-  --neutral-700:#143826;--neutral-800:#0C2619;--neutral-900:#061710; --neutral-950:#020B07;
-  --neutral-1000:#000000;
-
-  --gold-500:#F9D000; --gold-600:#D4AF00; --gold-700:#A88A00;
-
-  --green-400:#35D07F; --green-500:#0C8F4A; --green-600:#076834;
-
-  --red-400:#FF6B61;   --red-500:#E8453A;   --red-600:#BE2D24;
-  /* Warning is pushed to orange — an amber this close to the brand gold
-     would read as the brand rather than as a caution. */
-  --orange-400:#FF8A3D; --orange-500:#E86F1C;
-  --blue-400:#4DA3FF;  --blue-500:#2F7FD4;
-
-  /* The live product's palette (Figma: APP-V9Bet-v1). Since 2026-10-13 the
-     dark theme below reads from these: the UI follows the existing product
-     rather than a new visual direction. */
-  --v1-bg:#1A1C1F;       --v1-grey-500:#5C6570; --v1-grey-400:#888888;
-  --v1-grey-300:#9BA7B7; --v1-gold:#FFBC00;     --v1-green:#00DA87;
-  /* v1 draws an empty code cell fainter than a field, and an error in pure red. */
-  --v1-grey-600:#4B4B4B; --v1-red:#FF0000;
-  /* v1's toast message: light blue with near-black text (2026-10-26). */
+  /* ---- primitives (do not use directly) ---- */
+  /* Tailwind zinc. */
+  --zinc-50:#fafafa;  --zinc-100:#f4f4f5; --zinc-200:#e4e4e7; --zinc-300:#d4d4d8;
+  --zinc-400:#a1a1aa; --zinc-500:#71717a; --zinc-600:#52525b; --zinc-700:#3f3f46;
+  --zinc-800:#27272a; --zinc-900:#18181b; --zinc-950:#09090b;
+  --white:#ffffff;    --black:#000000;
+  /* Tailwind status colours. */
+  --emerald-400:#34d399; --emerald-700:#047857;
+  --red-400:#f87171;     --red-600:#dc2626;
+  --orange-400:#fb923c;  --orange-600:#ea580c;
+  --blue-400:#60a5fa;    --blue-600:#2563eb;
+  --violet-400:#a78bfa;  --violet-600:#7c3aed;
+  /* V9Bet's brand — not in Tailwind, so ours. */
+  --brand-yellow:#FFBC00; --brand-green:#00DA87;
+  /* The toast (v1's light blue with near-black text, 2026-10-26). */
   --v1-blue-light:#99CCFF;
-  /* v1's settings and profile: cards a shade above the page, purple for switches. */
-  --v1-purple:#9B5BF5;
-  /* Tuned away from v1 on 2026-10-13: a grey that passes as text, a red that
-     passes as text, and surfaces a visible step apart. */
-  --grey-450:#8A93A0; --red-450:#FF4D4D; --surface-1:#23262B; --surface-2:#282C31;
 
-  /* ---- semantic · dark (default) ---- */
-  /* Three surface steps: page, card, sheet. */
-  --color-bg-app:var(--v1-bg);
-  /* v1 fields are outlined, not filled. */
+  /* ---- semantic · light (:root) ---- */
+  --color-bg-app:var(--white);
+  --color-bg-card:var(--zinc-50);
+  --color-bg-sheet:var(--white);
   --color-bg-input:transparent;
-  --color-bg-disabled:var(--v1-grey-500);
-  --color-bg-scrim:rgba(0,0,0,.60);
-  --color-bg-sheet:var(--surface-2);
-  --color-bg-card:var(--surface-1);
-  --color-promo-accent:var(--v1-purple);
-  --color-bg-provider:var(--neutral-0);
-  --color-text-tertiary:var(--grey-450);
-  --color-sheet-handle:rgba(255,255,255,.30);
+  --color-bg-disabled:var(--zinc-200);
+  /* The chosen half of a segmented control. */
+  --color-bg-selected:var(--zinc-200);
+  --color-bg-scrim:rgba(0,0,0,.50);
+  --color-bg-provider:var(--white);
+  --color-sheet-handle:var(--zinc-300);
+  --color-promo-accent:var(--violet-600);
 
-  --color-text-primary:var(--neutral-0);
-  /* v1: body copy is white at 60%; field labels and placeholders are the
-     grey of the field outline. */
-  --color-text-secondary:rgba(255,255,255,.60);
-  --color-text-muted:var(--grey-450);
-  --color-text-disabled:var(--v1-grey-300);
-  --color-text-nav-inactive:var(--v1-grey-400);
-  --color-text-on-brand:var(--neutral-1000);
+  --color-text-primary:var(--zinc-900);
+  --color-text-secondary:var(--zinc-600);
+  --color-text-muted:var(--zinc-500);
+  --color-text-tertiary:var(--zinc-500);
+  --color-text-disabled:var(--zinc-400);
+  --color-text-nav-inactive:var(--zinc-500);
+  --color-text-on-brand:var(--zinc-900);
+  --color-text-on-error:var(--white);
 
-  --color-border-subtle:rgba(255,255,255,.08);
-  --color-border-default:var(--v1-grey-500);
-  --color-border-strong:var(--v1-grey-300);
-  --color-border-focus:var(--neutral-0);
-  --color-border-empty:var(--v1-grey-600);
+  --color-border-subtle:var(--zinc-200);
+  --color-border-default:var(--zinc-300);
+  --color-border-strong:var(--zinc-400);
+  --color-border-focus:var(--zinc-900);
+  --color-border-empty:var(--zinc-300);
 
-  --color-brand-primary:var(--v1-gold);
-  --color-brand-hover:var(--v1-gold);
-  --color-brand-pressed:var(--v1-gold);
-  --color-brand-subtle:rgba(255,188,0,.14);
+  --color-brand-primary:var(--brand-yellow);
+  --color-brand-hover:var(--brand-yellow);
+  --color-brand-pressed:var(--brand-yellow);
+  --color-brand-subtle:rgba(255,188,0,.16);
+  /* The brand green is too light for text on white; on light pages links,
+     ticks and the active tab take Tailwind's emerald-700 instead. */
+  --color-brand-secondary:var(--emerald-700);
+  --color-brand-secondary-hover:var(--emerald-700);
+  --color-brand-secondary-subtle:rgba(4,120,87,.12);
 
-  /* v1's green is the accent: links, the active tab, a ticked option. */
-  --color-brand-secondary:var(--v1-green);
-  --color-brand-secondary-hover:var(--v1-green);
-  --color-brand-secondary-subtle:rgba(0,218,135,.16);
-
-  --color-status-success:var(--green-400);
-  --color-status-warning:var(--orange-400);
-  --color-status-error:var(--red-450);
-  --color-text-on-error:var(--neutral-0);
-  --color-status-info:var(--blue-400);
-  --color-status-success-subtle:rgba(53,208,127,.16);
-  --color-status-warning-subtle:rgba(232,111,28,.16);
-  --color-status-error-subtle:rgba(232,69,58,.16);
-  --color-status-info-subtle:rgba(47,127,212,.16);
-
-  --color-money-up:var(--green-400);
-  --color-money-down:var(--red-400);
+  --color-status-success:var(--emerald-700);
+  --color-status-warning:var(--orange-600);
+  --color-status-error:var(--red-600);
+  --color-status-info:var(--blue-600);
+  --color-status-success-subtle:rgba(4,120,87,.12);
+  --color-status-warning-subtle:rgba(234,88,12,.12);
+  --color-status-error-subtle:rgba(220,38,38,.12);
+  --color-status-info-subtle:rgba(37,99,235,.12);
+  --color-money-up:var(--emerald-700);
+  --color-money-down:var(--red-600);
 
   /* Spacing and radius: none here. They are Tailwind's default scales, used
      as is — p-4 is 16, gap-7 is 28, rounded-xl is 12. We only declare what
@@ -127,49 +106,44 @@
   --font-size-micro:12px;   --leading-micro:20px;     /* text-xs/5   */
 }
 
-/* ---- semantic · light ---- */
-:root[data-theme="light"] {
-  --color-bg-app:var(--neutral-50);
-  --color-bg-input:var(--neutral-100);
-  --color-bg-scrim:rgba(2,11,7,.50);
+/* ---- semantic · dark (.dark on <html>) ---- */
+.dark {
+  --color-bg-app:var(--zinc-900);
+  --color-bg-card:var(--zinc-800);
+  --color-bg-sheet:var(--zinc-800);
+  --color-bg-disabled:var(--zinc-700);
+  --color-bg-selected:var(--zinc-600);
+  --color-bg-scrim:rgba(0,0,0,.60);
+  --color-sheet-handle:var(--zinc-600);
+  --color-promo-accent:var(--violet-400);
 
-  --color-text-primary:var(--neutral-900);
-  /* Light mode cannot reuse the dark mode's steps. neutral-500 is tuned to sit
-     on a near-black; on #F3F9F5 it drops to 3.19:1 and fails AA, so the light
-     theme walks one step further down the ramp for both. */
-  --color-text-secondary:var(--neutral-700);
-  --color-text-muted:var(--neutral-600);
-  --color-text-on-brand:var(--neutral-950);
+  --color-text-primary:var(--white);
+  --color-text-secondary:var(--zinc-400);
+  --color-text-muted:var(--zinc-500);
+  --color-text-tertiary:var(--zinc-400);
+  --color-text-disabled:var(--zinc-400);
+  --color-text-nav-inactive:var(--zinc-400);
 
-  --color-border-subtle:var(--neutral-200);
-  --color-border-default:var(--neutral-300);
-  --color-border-strong:var(--neutral-400);
-  --color-border-empty:var(--neutral-300);
-  /* The dark theme's focus ring is white; on a light page it would vanish. */
-  --color-border-focus:var(--neutral-900);
+  --color-border-subtle:var(--zinc-800);
+  --color-border-default:var(--zinc-700);
+  --color-border-strong:var(--zinc-500);
+  --color-border-focus:var(--white);
+  --color-border-empty:var(--zinc-700);
 
-  /* The yellow holds up on white only when it is darkened; #F9D000 on white
-     fails contrast for anything but a large solid fill with dark text. */
-  --color-brand-primary:var(--gold-500);
-  --color-brand-hover:var(--gold-600);
-  --color-brand-pressed:var(--gold-700);
-  --color-brand-subtle:rgba(249,208,0,.18);
+  --color-brand-secondary:var(--brand-green);
+  --color-brand-secondary-hover:var(--brand-green);
+  --color-brand-secondary-subtle:rgba(0,218,135,.16);
 
-  --color-brand-secondary:var(--green-600);
-  --color-brand-secondary-hover:var(--green-500);
-  --color-brand-secondary-subtle:rgba(12,143,74,.12);
-
-  --color-status-success:var(--green-600);
-  --color-status-warning:var(--orange-500);
-  --color-status-error:var(--red-500);
-  --color-status-info:var(--blue-500);
-  --color-status-success-subtle:rgba(53,208,127,.12);
-  --color-status-warning-subtle:rgba(232,111,28,.12);
-  --color-status-error-subtle:rgba(232,69,58,.12);
-  --color-status-info-subtle:rgba(47,127,212,.12);
-
-  --color-money-up:var(--green-600);
-  --color-money-down:var(--red-500);
+  --color-status-success:var(--emerald-400);
+  --color-status-warning:var(--orange-400);
+  --color-status-error:var(--red-400);
+  --color-status-info:var(--blue-400);
+  --color-status-success-subtle:rgba(52,211,153,.16);
+  --color-status-warning-subtle:rgba(251,146,60,.16);
+  --color-status-error-subtle:rgba(248,113,113,.16);
+  --color-status-info-subtle:rgba(96,165,250,.16);
+  --color-money-up:var(--emerald-400);
+  --color-money-down:var(--red-400);
 }
 
 /* Money always lines up in columns. */
