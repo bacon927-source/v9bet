@@ -146,6 +146,20 @@
         </div>
       </section>
 
+      <!-- Test panel — for reviewing only, not part of the product: jumps
+           straight to any screen or state. Each state has its own #hash, so a
+           link opens that state directly. -->
+      <button type="button" id="tp-open" aria-label="Test panel" aria-expanded="false" class="fixed left-4 bottom-4 z-[60] grid place-items-center size-12 rounded-full bg-card border border-brand-2 text-brand-2">
+        <svg class="size-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75"/></svg>
+      </button>
+      <nav id="tp" hidden aria-label="Test panel" class="fixed left-4 bottom-20 z-[60] w-[min(320px,calc(100vw-32px))] max-h-[75dvh] overflow-y-auto flex flex-col gap-3 p-4 rounded-xl bg-card border border-brand-2 text-body-sm">
+        <div>
+          <p class="text-body font-semibold text-ink">測試面板</p>
+          <p class="text-ink-secondary">只給看稿用，不是產品的一部分。點一下直接跳到那個畫面。</p>
+        </div>
+        <div id="tp-groups" class="flex flex-col gap-3"></div>
+      </nav>
+
       <!-- Toast (v1): light blue, black text, sits 16 above the bottom. -->
       <div class="fixed bottom-4 inset-x-4 md:mx-auto md:max-w-[408px] rounded-md bg-[var(--v1-blue-light)] px-4 py-3 text-body font-semibold text-black" id="toast" role="status" hidden></div>
 
@@ -161,6 +175,7 @@
 
   /* ── Sign Up | Log In ── */
   let side = 'login';
+  let lastUsed = true; // demo: this browser last logged in with Google
   const setSide = (next) => {
     side = next;
     $('seg-signup').setAttribute('aria-selected', String(side === 'signup'));
@@ -169,8 +184,8 @@
     $('form-login').hidden = side !== 'login';
     $('divider').textContent = side === 'signup' ? 'or sign up with email' : 'or log in with';
     // "Last used" belongs to logging in: it is the method this browser used last time.
-    $('last-used').hidden = side !== 'login';
-    $('social-google').toggleAttribute('data-last-used', side === 'login');
+    $('last-used').hidden = side !== 'login' || !lastUsed;
+    $('social-google').toggleAttribute('data-last-used', side === 'login' && lastUsed);
   };
   $('seg-signup').addEventListener('click', () => setSide('signup'));
   $('seg-login').addEventListener('click', () => setSide('login'));
@@ -287,8 +302,66 @@
     toastTimer = setTimeout(() => { $('toast').hidden = true; }, 3000);
   };
 
-  // ?mode=signup opens on Sign Up (the "Sign Up" button elsewhere links here).
-  setSide(new URLSearchParams(location.search).get('mode') === 'signup' ? 'signup' : 'login');
+  /* ── Test panel ── */
+  const fill = (id, value) => { $(id).value = value; $(id).dispatchEvent(new Event('input')); };
+  const typeCode = (code) => { cells.forEach((c, i) => { c.value = code[i] || ''; }); $('code-submit').disabled = cells.some((c) => !c.value); };
+  const fresh = () => {
+    clearInterval(timer); $('toast').hidden = true;
+    ['email', 'referral', 'identifier', 'password'].forEach((id) => fill(id, ''));
+    $('terms').checked = false; syncSignup();
+    lastUsed = true; setTab('pwd');
+  };
+  const signupCode = () => { setSide('signup'); fill('email', 'bacon927@gmail.com'); openCode('Verify email', 'bacon927@gmail.com', 'Verify'); };
+  const loginCode = () => { setSide('login'); setTab('otc'); fill('identifier', '0912345233'); openCode("Verify it's you", '0912345233', 'Log In'); };
+  const STATES = [
+    ['Sign Up', [
+      ['signup', 'Sign Up · Default', () => { setSide('signup'); show('screen-entry'); }],
+      ['signup-ready', 'Sign Up · Ready', () => { setSide('signup'); fill('email', 'bacon927@gmail.com'); $('terms').checked = true; syncSignup(); show('screen-entry'); }],
+    ]],
+    ['Verify email', [
+      ['verify-email', 'In progress', () => { signupCode(); typeCode('12345'); }],
+      ['verify-email-ready', 'Ready', () => { signupCode(); typeCode('123456'); }],
+      ['verify-email-invalid', 'Invalid code', () => { signupCode(); typeCode('000000'); $('otp').setAttribute('data-invalid', ''); $('code-error').hidden = false; }],
+      ['verify-email-resend', 'Resend available', () => { signupCode(); clearInterval(timer); $('resend-wait').hidden = true; $('resend').hidden = false; }],
+    ]],
+    ['Log In', [
+      ['login', 'Password', () => { setSide('login'); show('screen-entry'); }],
+      ['login-filled', 'Password · filled', () => { setSide('login'); fill('identifier', 'bacon927'); fill('password', 'secret123'); show('screen-entry'); }],
+      ['login-code', 'One-time code', () => { setSide('login'); setTab('otc'); show('screen-entry'); }],
+      ['login-no-record', 'No Last used (first visit)', () => { lastUsed = false; setSide('login'); setTab('otc'); show('screen-entry'); }],
+    ]],
+    ["Verify it's you", [
+      ['verify-you', 'In progress', () => { loginCode(); typeCode('12345'); }],
+      ['verify-you-invalid', 'Invalid code', () => { loginCode(); typeCode('000000'); $('otp').setAttribute('data-invalid', ''); $('code-error').hidden = false; }],
+    ]],
+    ['After', [
+      ['after-signup', 'Setup · step 1 + Account created', () => { side = 'signup'; land('Setup · step 1', 'Account created'); }],
+      ['after-login', 'Lobby + Logged in', () => { side = 'login'; land('Lobby', 'Logged in'); }],
+    ]],
+  ];
+  const go = (key) => {
+    const state = STATES.flatMap(([, items]) => items).find(([k]) => k === key);
+    if (!state) return false;
+    fresh(); state[2]();
+    $('tp').querySelectorAll('[data-state]').forEach((b) => b.setAttribute('aria-current', String(b.dataset.state === key)));
+    return true;
+  };
+  $('tp-groups').innerHTML = STATES.map(([group, items]) => `
+    <div class="flex flex-col gap-2">
+      <p class="font-semibold text-brand-2">${group}</p>
+      <div class="flex flex-wrap gap-2">${items.map(([key, label]) =>
+        `<a href="#${key}" data-state="${key}" class="px-3 py-2 rounded-xl border border-edge text-ink aria-[current=true]:border-brand-2 aria-[current=true]:text-brand-2">${label}</a>`).join('')}</div>
+    </div>`).join('');
+  $('tp-open').addEventListener('click', () => {
+    const open = $('tp').hidden;
+    $('tp').hidden = !open; $('tp-open').setAttribute('aria-expanded', String(open));
+  });
+  // Clicking the state that is already in the hash fires no hashchange, so go on click too.
+  $('tp-groups').addEventListener('click', (e) => { const a = e.target.closest('[data-state]'); if (a) go(a.dataset.state); });
+  window.addEventListener('hashchange', () => go(location.hash.slice(1)));
+
+  // A #state opens that state; ?mode=signup opens on Sign Up (the "Sign Up" button elsewhere links here).
+  if (!go(location.hash.slice(1))) setSide(new URLSearchParams(location.search).get('mode') === 'signup' ? 'signup' : 'login');
 </script>
 </body>
 </html>
