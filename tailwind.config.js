@@ -80,15 +80,9 @@ module.exports = {
 
       /* leading is deliberately loose: Vietnamese stacks tone marks above the
          letter and Thai grows in both directions. Tight leading clips both. */
-      fontSize: {
-        display: [v('font-size-display'), { lineHeight: v('leading-display') }],
-        body:    [v('font-size-body'),    { lineHeight: v('leading-body') }],
-        'body-sm':[v('font-size-body-sm'),{ lineHeight: v('leading-body-sm') }],
-        title:   [v('font-size-title'),   { lineHeight: v('leading-title') }],
-        button:  [v('font-size-button'),  { lineHeight: v('leading-button') }],
-        field:   [v('font-size-field'),   { lineHeight: v('leading-field') }],
-        micro:   [v('font-size-micro'),   { lineHeight: v('leading-micro') }],
-      },
+      /* No custom font sizes: pages use Tailwind's own classes — text-base/7,
+         text-sm/6, text-xs/5, text-base, text-lg, text-3xl (2026-10-27). The
+         components below read the same numbers from variables.css. */
 
       /* 360 is the width most VN / TH handsets report — check every screen here,
          not only at the 390 an iPhone-drawn design assumes. */
@@ -249,7 +243,7 @@ module.exports = {
           '& > input:-webkit-autofill': { WebkitTextFillColor: c('ink.DEFAULT'), boxShadow: `inset 0 0 0 100px ${c('app')}` },
           '& > label': {
             position: 'absolute', left: theme('spacing.3'), top: theme('spacing.2'), height: '50px', display: 'flex', alignItems: 'center',
-            fontSize: type('body').fontSize, lineHeight: 'normal', color: c('ink.muted'),
+            ...type('body'), color: c('ink.muted'),
             pointerEvents: 'none', transition: 'top .12s ease, left .12s ease, font-size .12s ease, transform .12s ease',
           },
           /* Focus lights the label with the outline, so the two read as one
@@ -258,7 +252,7 @@ module.exports = {
           '& > input:focus:not([aria-invalid="true"]) + label': { color: c('ink.DEFAULT') },
           '& > input:focus + label, & > input:not(:placeholder-shown) + label': {
             top: theme('spacing.2'), left: theme('spacing.2'), height: 'auto', padding: `${theme('spacing[0.5]')} ${theme('spacing.1')}`, transform: 'translateY(-50%)',
-            fontSize: v('font-size-field-label'),
+            ...type('field-label'),
           },
           '@media (prefers-reduced-motion: reduce)': { '& > label, & > fieldset > legend': { transition: 'none' } },
         },
@@ -277,7 +271,7 @@ module.exports = {
         '.tabs': { display: 'flex' },
         '.tab': {
           flex: '1 1 0%', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: theme('spacing.1'),
-          height: '44px', paddingTop: theme('spacing.2'), fontSize: type('body').fontSize, lineHeight: '27px', color: c('ink.navOff'),
+          height: '44px', paddingTop: theme('spacing.2'), fontSize: type('body').fontSize, lineHeight: type('body').lineHeight, color: c('ink.navOff'),
           '&::after': { content: '""', width: '100%', height: '2px', backgroundColor: 'currentColor' },
           '&[aria-selected="true"]': { color: c('brand-2.DEFAULT') },
         },

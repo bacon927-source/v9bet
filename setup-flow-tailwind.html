@@ -34,7 +34,7 @@
       <div class="nav-top gap-3" id="topbar">
         <button type="button" aria-label="Back" class="nav-top-action" id="back"><span class="icon icon-back size-7" aria-hidden="true"></span></button>
         <div class="flex-1 h-1 rounded-full bg-edge overflow-hidden" role="progressbar" aria-valuemin="0" aria-valuemax="100" id="bar"><div class="h-full bg-brand-2" id="bar-done"></div></div>
-        <span class="text-body-sm text-ink-muted w-9 text-right" id="pct"></span>
+        <span class="text-sm/6 text-ink-muted w-9 text-right" id="pct"></span>
       </div>
 
       <!-- ── 1 · Currency ── -->
@@ -96,8 +96,8 @@
           <div class="step-hero"><h1>Bank account / USDT</h1><p>Needed before withdrawal.</p></div>
           <div class="flex flex-col gap-3">
             <div class="mx-auto flex w-60 h-11 p-1 rounded-full bg-card" role="tablist" aria-label="Payout method">
-              <button type="button" role="tab" id="seg-bank" class="flex-1 rounded-full text-body text-ink-secondary aria-selected:bg-[var(--v1-grey-500)] aria-selected:text-ink aria-selected:font-semibold" aria-selected="true">Bank account</button>
-              <button type="button" role="tab" id="seg-usdt" class="flex-1 rounded-full text-body text-ink-secondary aria-selected:bg-[var(--v1-grey-500)] aria-selected:text-ink aria-selected:font-semibold" aria-selected="false">USDT</button>
+              <button type="button" role="tab" id="seg-bank" class="flex-1 rounded-full text-base/7 text-ink-secondary aria-selected:bg-[var(--v1-grey-500)] aria-selected:text-ink aria-selected:font-semibold" aria-selected="true">Bank account</button>
+              <button type="button" role="tab" id="seg-usdt" class="flex-1 rounded-full text-base/7 text-ink-secondary aria-selected:bg-[var(--v1-grey-500)] aria-selected:text-ink aria-selected:font-semibold" aria-selected="false">USDT</button>
             </div>
             <div class="flex flex-col gap-2" id="fields-bank">
               <div class="field">
@@ -168,7 +168,7 @@
               <div class="field">
                 <input id="sec-phone" type="tel" inputmode="tel" autocomplete="tel-national" placeholder=" ">
                 <label for="sec-phone">Phone Number</label><fieldset aria-hidden="true"><legend><span>Phone Number</span></legend></fieldset>
-                <span class="field-cc absolute left-3 top-2 h-[50px] items-center gap-1 text-field text-ink pointer-events-none"><img src="assets/flags/vn.svg" alt="" class="size-[18px]">+84<span class="ml-1 text-ink-muted">|</span></span>
+                <span class="field-cc absolute left-3 top-2 h-[50px] items-center gap-1 text-base text-ink pointer-events-none"><img src="assets/flags/vn.svg" alt="" class="size-[18px]">+84<span class="ml-1 text-ink-muted">|</span></span>
                 <span class="field-trail" data-verified="sec-phone" hidden>Verified <span class="icon icon-sm icon-check text-brand-2" aria-hidden="true"></span></span>
                 <button type="button" class="field-trail font-semibold !text-brand-2" data-get-code="sec-phone" hidden>Get code</button>
               </div>
@@ -215,7 +215,7 @@
       <!-- ── Lobby (not designed yet) ── -->
       <section id="lobby" class="flex-1 flex flex-col" hidden>
         <div class="page-body flex-1">
-          <div class="flex-1 grid place-items-center rounded-xl border border-dashed border-edge text-body text-ink-muted">Lobby</div>
+          <div class="flex-1 grid place-items-center rounded-xl border border-dashed border-edge text-base/7 text-ink-muted">Lobby</div>
         </div>
       </section>
 
@@ -241,7 +241,7 @@
           <div class="field">
             <input id="add-phone" type="tel" inputmode="tel" autocomplete="tel-national" placeholder=" ">
             <label for="add-phone">Phone Number</label><fieldset aria-hidden="true"><legend><span>Phone Number</span></legend></fieldset>
-            <span class="field-cc absolute left-3 top-2 h-[50px] items-center gap-1 text-field text-ink pointer-events-none"><img src="assets/flags/vn.svg" alt="" class="size-[18px]">+84<span class="ml-1 text-ink-muted">|</span></span>
+            <span class="field-cc absolute left-3 top-2 h-[50px] items-center gap-1 text-base text-ink pointer-events-none"><img src="assets/flags/vn.svg" alt="" class="size-[18px]">+84<span class="ml-1 text-ink-muted">|</span></span>
             <button type="button" class="field-trail font-semibold !text-brand-2" id="add-phone-code" hidden>Get code</button>
           </div>
         </div>
@@ -251,14 +251,14 @@
       <section class="sheet md:max-w-[440px] md:mx-auto" id="sheet-code" role="dialog" aria-modal="true" aria-labelledby="sheet-code-title" hidden>
         <div class="sheet-header"><h2 id="sheet-code-title">Verify your phone</h2><button type="button" class="sheet-close" aria-label="Close"><span class="icon icon-close" aria-hidden="true"></span></button></div>
         <form class="sheet-body" id="form-code" novalidate>
-          <p class="text-body text-ink-secondary" id="code-to"></p>
+          <p class="text-base/7 text-ink-secondary" id="code-to"></p>
           <div class="flex flex-col gap-3">
             <div class="otp" id="otp">
               <input inputmode="numeric" autocomplete="one-time-code" placeholder=" " aria-label="Digit 1"><input inputmode="numeric" placeholder=" " aria-label="Digit 2"><input inputmode="numeric" placeholder=" " aria-label="Digit 3"><input inputmode="numeric" placeholder=" " aria-label="Digit 4"><input inputmode="numeric" placeholder=" " aria-label="Digit 5"><input inputmode="numeric" placeholder=" " aria-label="Digit 6">
             </div>
             <p class="error-text text-center" id="code-error" hidden>Invalid code entered</p>
-            <p class="text-center text-body text-ink-secondary" id="resend-wait">Resend code in <b class="font-semibold text-brand-2" id="resend-count">00:54</b></p>
-            <button type="button" class="tap self-center text-body font-semibold text-brand-2 underline" id="resend" hidden>Resend code</button>
+            <p class="text-center text-base/7 text-ink-secondary" id="resend-wait">Resend code in <b class="font-semibold text-brand-2" id="resend-count">00:54</b></p>
+            <button type="button" class="tap self-center text-base/7 font-semibold text-brand-2 underline" id="resend" hidden>Resend code</button>
           </div>
           <button type="submit" class="btn" id="code-submit" disabled>Verify</button>
         </form>
@@ -268,23 +268,23 @@
       <section class="sheet md:max-w-[440px] md:mx-auto" id="sheet-welcome" role="dialog" aria-modal="true" aria-labelledby="sheet-welcome-title" hidden>
         <div class="sheet-header"><h2 id="sheet-welcome-title">Welcome to V9Bet</h2><button type="button" class="sheet-close" aria-label="Close"><span class="icon icon-close" aria-hidden="true"></span></button></div>
         <div class="sheet-body">
-          <p class="text-body text-ink-secondary">Your account is ready. Here are your new-member offers.</p>
+          <p class="text-base/7 text-ink-secondary">Your account is ready. Here are your new-member offers.</p>
           <div class="flex flex-col gap-1 p-4 rounded-xl border border-edge">
-            <p class="text-body-sm text-brand-2">New member offer</p>
-            <p class="text-body font-bold">100% First Deposit Bonus</p>
-            <p class="text-body-sm text-ink-secondary">For Sports / Live, turnover x10 · applied automatically at your first deposit</p>
+            <p class="text-sm/6 text-brand-2">New member offer</p>
+            <p class="text-base/7 font-bold">100% First Deposit Bonus</p>
+            <p class="text-sm/6 text-ink-secondary">For Sports / Live, turnover x10 · applied automatically at your first deposit</p>
           </div>
           <div class="flex flex-col gap-1 p-4 rounded-xl border border-edge">
-            <p class="text-body-sm text-brand-2">Mission</p>
-            <p class="text-body font-bold">Make your first deposit</p>
-            <p class="text-body-sm text-ink-secondary">Unlock 1 free bet</p>
+            <p class="text-sm/6 text-brand-2">Mission</p>
+            <p class="text-base/7 font-bold">Make your first deposit</p>
+            <p class="text-sm/6 text-ink-secondary">Unlock 1 free bet</p>
           </div>
           <button type="button" class="btn">Go to Deposit</button>
         </div>
       </section>
 
       <!-- Toast (v1): light blue, black text, 16 above the action bar. -->
-      <div class="fixed bottom-24 inset-x-4 md:mx-auto md:max-w-[408px] z-30 rounded-md bg-[var(--v1-blue-light)] px-4 py-3 text-body font-semibold text-black" id="toast" role="status" hidden></div>
+      <div class="fixed bottom-24 inset-x-4 md:mx-auto md:max-w-[408px] z-30 rounded-md bg-[var(--v1-blue-light)] px-4 py-3 text-base/7 font-semibold text-black" id="toast" role="status" hidden></div>
 
     </div>
   </div>

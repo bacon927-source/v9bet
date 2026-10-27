@@ -40,7 +40,7 @@
   4. 可點的範圍至少 44：小連結和勾選列用 `.tap`，輸入框右側的圖示按鈕 44 寬
   5. 開關開的時候是綠色；紫色 `--color-promo-accent` 只給優惠類
   6. 三層底色：頁面 #1A1C1F、卡片 `--surface-1` #23262B、面板 `--surface-2` #282C31
-  7. 字級只有 13／15／17／18，金額另有一個 28
+  7. 字級用 Tailwind 的刻度（2026-10-27 使用者：「可以按 Tailwind」「不要考慮 v1，v1 沒有規則可言」）：`text-xs/5` 12/20、`text-sm/6` 14/24、`text-base/7` 16/28（內文）、`text-base` 16/24（按鈕、輸入框）、`text-lg` 18/28（標題）、金額 `text-3xl` 30/36。頁面直接寫這些 Tailwind class，不另建字級名稱
   8. Profile 把餘額和待處理事項放最前面，其餘收成清單列
 - **下面「視覺」一節（黃綠分工、綠場、Be Vietnam Pro、8-point grid）是先前的新視覺方向，已被這個決定取代**，留著只是記錄；跟 v1 衝突時以 v1 為準
 - 我先前自己開的兩個 Figma 檔（V9Bet UI Kit、V9Bet Mobile Web UI Kit）都是新視覺，**不是現在的設計來源**
@@ -76,7 +76,7 @@
 - 金額一律對齊：CSS `font-variant-numeric: tabular-nums`，Flutter 用等寬數字字型特性
 - **USDT 不是獨立幣別**，是 VND/THB 底下的存提款管道，沒有獨立餘額
 - 字型：Latin 與越南文用 **Inter**（聲調會往上堆）、泰文用 **Noto Sans Thai**（上下都會長出來）
-- **行高要放寬**：body 15/23 而不是 15/20。行高太緊，越南文和泰文會被切掉
+- **行高要放寬**：會跑長段文字的（內文、小字、標籤）用 Tailwind 自己的「/n」寫法放寬一格：`text-base/7` 16/28 而不是預設 16/24。行高太緊，越南文和泰文會被切掉
 - 多語系照 `flutter-setup-localization`
 
 ## 視覺

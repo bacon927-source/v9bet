@@ -65,7 +65,7 @@ fileKey `RQEyZIgfkCKHdzYmOwprvR`，在 v9 團隊下。跟網頁版是同一套�
 
 **變數**（名字和值對應 `variables.css`，WEB code syntax 已填）：`Primitives`（`v1/*`、`neutral/*`、`alpha/*`，另有調過的 `grey/450` `red/450` `surface/1` `surface/2`，scopes 空的）、`Color`（只有 Dark 一個 mode：`bg/app|card|sheet|scrim|disabled` `text/primary|secondary|muted|tertiary|disabled|nav-inactive|on-brand|on-error` `border/default|focus|empty|subtle|handle` `brand/primary|secondary` `status/error` `promo/accent`）、`Spacing`（`spacing/1 2 3 4 5 8`，2026-10-20 起用 Tailwind 的數字命名，見下）、`Radius`（`radius/md` `radius/full`）。在 v1 之上調過的八件事列在 `CLAUDE.md`。
 
-**文字樣式**（2026-10-13 收成四階）：`Title/Semibold|Regular` 18/24、`Button/Medium` `Code digit/Regular` `Field/Regular` 17/22、`Body/Regular|Bold` 15/23、`Tab/Regular` 15/27、`Small/Regular|Light` 13/20、`Micro/Regular` `Field label/Regular` 13/18、`Display/SemiBold` 28/34（只給餘額）。畫面上實際用到的字級只有 13／15／17／18／28。
+**文字樣式**（**2026-10-27 改成 Tailwind 刻度**，使用者：「可以按 Tailwind」「不要考慮 v1，v1 沒有規則可言」；每個樣式的 description 寫著對應的 Tailwind class）：`Display/SemiBold` 30/36 `text-3xl`、`Title/Semibold|Regular` 18/28 `text-lg`、`Body/Regular|Bold` 和 `Tab/Regular` 16/28 `text-base/7`、`Button/Medium` `Field/Regular` `Code digit/Regular` 16/24 `text-base`、`Small/Regular|Light` 14/24 `text-sm/6`、`Micro/Regular` `Field label/Regular` 12/20 `text-xs/5`。內文、小字、標籤的行高用 Tailwind 的「/n」放寬一格給越南文、泰文。原本 Tab 15/27、浮起標籤 13/16 不在任何刻度上，一起改掉。Step hero 的標題原本沒套樣式，已套 `Title/Semibold`
 
 **字體是 Roboto，不是 SF Pro。** `listAvailableFontsAsync()` 會列出 SF Pro，`loadFontAsync` 也不報錯，但文字寬度全部是 0、`hasMissingFont` 是 true，截圖裡一個字都沒有，`setProperties` 改文字會報「font isn't available」。Roboto 是產品字體堆疊裡 Android 用的那支。使用者要 SF Pro 的話得在自己的 Figma 桌面版把文字樣式換掉。
 

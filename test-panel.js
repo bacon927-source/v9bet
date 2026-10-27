@@ -203,13 +203,15 @@
     if (r >= Math.min(b.w, b.h) / 2 - 0.5) return 'rounded-full';
     return RADIUS[r] || `radius ${r}`;
   };
-  // Type tokens, read from variables.css so the names always match the code.
-  const TYPE_KEYS = ['display', 'title', 'body', 'body-sm', 'button', 'field', 'field-label', 'micro'];
+  // Typography is Tailwind's scale, so a label names the Tailwind class: the
+  // size's own class, plus /n when the line height is not its default.
+  const TW_SIZE = { 12: ['xs', 16], 14: ['sm', 20], 16: ['base', 24], 18: ['lg', 28], 20: ['xl', 28], 24: ['2xl', 32], 30: ['3xl', 36], 36: ['4xl', 40] };
   const WEIGHT = { 300: 'Light', 400: 'Regular', 500: 'Medium', 600: 'Semibold', 700: 'Bold' };
   const typeToken = (fs, lh) => {
-    const root = getComputedStyle(document.documentElement);
-    const hits = TYPE_KEYS.filter((k) => parseFloat(root.getPropertyValue('--font-size-' + k)) === fs && parseFloat(root.getPropertyValue('--leading-' + k)) === lh);
-    return hits.length ? hits.join(' / ') : 'not a token';
+    const size = TW_SIZE[fs];
+    if (!size) return 'not on the scale';
+    if (lh === size[1]) return `text-${size[0]}`;
+    return lh % 4 === 0 ? `text-${size[0]}/${lh / 4}` : 'not on the scale';
   };
   const token = (px) => (px % 4 === 0 ? `${px} · spacing/${px / 4}` : `${px}px · off the scale`);
   const shown = (el) => el.offsetParent !== null || getComputedStyle(el).position === 'fixed';
@@ -378,12 +380,12 @@
     const nav = document.createElement('nav');
     nav.hidden = true;
     nav.setAttribute('aria-label', 'Test panel');
-    nav.className = `fixed left-4 top-4 z-[60] w-[min(380px,calc(100vw-32px))] max-h-[calc(100dvh-112px)] overflow-y-auto flex flex-col gap-4 px-4 pt-4 rounded-xl bg-app border border-brand-2 text-body-sm shadow-2xl`;
+    nav.className = `fixed left-4 top-4 z-[60] w-[min(380px,calc(100vw-32px))] max-h-[calc(100dvh-112px)] overflow-y-auto flex flex-col gap-4 px-4 pt-4 rounded-xl bg-app border border-brand-2 text-sm/6 shadow-2xl`;
     const btn = 'grid place-items-center h-11 rounded-xl bg-card border border-edge font-semibold text-ink disabled:opacity-40';
     const chip = 'px-3 py-2 rounded-xl bg-card border border-edge font-semibold text-ink aria-[current=true]:border-brand-2 aria-[current=true]:text-brand-2';
     nav.innerHTML = `
       <div>
-        <p class="text-body font-semibold text-ink">測試面板</p>
+        <p class="text-base/7 font-semibold text-ink">測試面板</p>
         <p class="text-ink-secondary">只給看稿用，不是產品的一部分。已做 ${BUILT.length} / ${ALL} 個畫面。</p>
       </div>
       <label class="flex items-center justify-between gap-3 h-11 px-3 rounded-xl bg-card border border-edge cursor-pointer">
@@ -409,7 +411,7 @@
           <p class="font-semibold text-brand-2">${section}</p>
           ${subs.map(([sub, items]) => `
             <div class="flex flex-col gap-1.5">
-              ${subs.length > 1 ? `<p class="text-micro text-ink-muted">${sub}</p>` : ''}
+              ${subs.length > 1 ? `<p class="text-xs/5 text-ink-muted">${sub}</p>` : ''}
               <div class="flex flex-wrap gap-2">${items.map(([key, label, p]) => p
                 ? `<button type="button" data-state="${key}" data-page="${p}" class="${chip}">${label}</button>`
                 : `<span class="px-3 py-2 rounded-xl border border-dashed border-edge-subtle text-ink-muted" title="還沒做成網頁">${label}（還沒做）</span>`).join('')}</div>

@@ -112,16 +112,19 @@
   --font-display:var(--font-latin);
   --font-thai:"Noto Sans Thai",-apple-system,system-ui,sans-serif;
 
-  /* Four sizes — 13, 15, 17, 18 — plus 28 for a balance. Leading is loose
-     because Vietnamese stacks tone marks and Thai grows both ways. */
-  --font-size-display:28px; --leading-display:34px;
-  --font-size-body:15px;    --leading-body:23px;
-  --font-size-body-sm:13px; --leading-body-sm:20px;
-  --font-size-title:18px;   --leading-title:24px;
-  --font-size-button:17px;  --leading-button:22px;
-  --font-size-field:17px;   --leading-field:22px;
-  --font-size-field-label:13px; --leading-field-label:18px;
-  --font-size-micro:13px;   --leading-micro:18px;
+  /* Tailwind's type scale (2026-10-27, user: "可以按 Tailwind"; v1 had no
+     rule to keep). Sizes are Tailwind's; running text takes Tailwind's own
+     one-step-looser leading (text-base/7, text-sm/6, text-xs/5) because
+     Vietnamese stacks tone marks and Thai grows both ways. The class each
+     one is in the pages is on the right. Flutter reads the same numbers. */
+  --font-size-display:30px; --leading-display:36px;   /* text-3xl    */
+  --font-size-body:16px;    --leading-body:28px;      /* text-base/7 */
+  --font-size-body-sm:14px; --leading-body-sm:24px;   /* text-sm/6   */
+  --font-size-title:18px;   --leading-title:28px;     /* text-lg     */
+  --font-size-button:16px;  --leading-button:24px;    /* text-base   */
+  --font-size-field:16px;   --leading-field:24px;     /* text-base   */
+  --font-size-field-label:12px; --leading-field-label:20px; /* text-xs/5 */
+  --font-size-micro:12px;   --leading-micro:20px;     /* text-xs/5   */
 }
 
 /* ---- semantic · light ---- */
