@@ -167,6 +167,110 @@
   const remember = (open) => { try { sessionStorage.setItem('tp-open', open ? '1' : ''); } catch (e) { /* storage blocked */ } };
   const remembered = () => { try { return sessionStorage.getItem('tp-open') === '1'; } catch (e) { return false; } };
 
+  /* ── Spacing overlay ──
+   * Paints the page's spacing over it, the way the Figma 📏 Spacing page does:
+   * pink bands for gaps and paddings with the px value and the Tailwind
+   * spacing token (16 · spacing/4), blue tags for the sizes of the main
+   * components. It is measured from the live page, so it is always the real
+   * spacing, and it redraws whenever the screen changes. */
+  const SPACING_PADDED = {
+    'page-body': 'header → content',
+    'social-row': 'room for the "Last used" tag',
+    'divider-label': 'divider top / bottom',
+    'divider': 'divider top / bottom',
+    'sheet-body': 'sheet padding',
+    'action-bar': 'action bar padding',
+  };
+  const SIZES = [
+    ['.nav-top', 'Header', 'h'],
+    ['.btn', 'Button', 'h'],
+    ['.field > input', 'Field box', 'h'],
+    ['[role="tablist"].w-60', 'Segmented control', 'wh'],
+    ['.otp > input', 'Code cell', 'wh'],
+    ['.option-card', 'Option card', 'h'],
+    ['.list-row', 'List row', 'h'],
+    ['.social-btn-icon', 'Social icon', 'wh'],
+  ];
+  const token = (px) => (px % 4 === 0 ? `${px} · spacing/${px / 4}` : `${px}px · off the scale`);
+  const shown = (el) => el.offsetParent !== null || getComputedStyle(el).position === 'fixed';
+  let layer = null;
+  const tag = (x, y, text, color) => {
+    const t = document.createElement('span');
+    t.textContent = text;
+    t.style.cssText = `position:absolute;left:${x}px;top:${y}px;transform:translateY(-50%);padding:1px 6px;border-radius:4px;background:${color};color:#fff;font:600 11px/16px system-ui,sans-serif;white-space:nowrap;`;
+    layer.append(t);
+  };
+  const band = (x, y, w, h, text) => {
+    if (w < 1 || h < 1) return;
+    const b = document.createElement('div');
+    b.style.cssText = `position:absolute;left:${x}px;top:${y}px;width:${w}px;height:${h}px;background:rgba(236,72,153,.28);`;
+    layer.append(b);
+    if (text) tag(x + 4, y + h / 2, text, '#db2777');
+  };
+  const drawSpacing = (root) => {
+    if (layer) layer.remove();
+    layer = document.createElement('div');
+    layer.setAttribute('aria-hidden', 'true');
+    layer.dataset.tpLayer = '1';
+    layer.style.cssText = 'position:absolute;left:0;top:0;width:100%;pointer-events:none;z-index:55;';
+    document.body.append(layer);
+    const sx = window.scrollX, sy = window.scrollY;
+    const box = (el) => { const r = el.getBoundingClientRect(); return { x: r.left + sx, y: r.top + sy, w: r.width, h: r.height }; };
+
+    // The page frame: 16 left and right.
+    const page = root.querySelector('.page');
+    if (page) {
+      const p = box(page), pad = parseFloat(getComputedStyle(page).paddingLeft);
+      band(p.x, p.y, pad, p.h, '');
+      band(p.x + p.w - pad, p.y, pad, p.h, '');
+      // Written down the left band itself, so it never sits on the content's labels.
+      tag(p.x, p.y + 140, `${pad} · spacing/${pad / 4} · left / right (page frame)`, '#db2777');
+      Object.assign(layer.lastChild.style, { writingMode: 'vertical-rl', transform: 'none', padding: '6px 1px', width: `${pad}px`, textAlign: 'center' });
+    }
+    root.querySelectorAll('*').forEach((el) => {
+      if (el.closest('[aria-label="Test panel"]') || !shown(el)) return;
+      const cs = getComputedStyle(el);
+      // Paddings that are part of the layout rules.
+      const named = Object.keys(SPACING_PADDED).find((c) => el.classList.contains(c));
+      if (named) {
+        const b = box(el), top = parseFloat(cs.paddingTop), bottom = parseFloat(cs.paddingBottom);
+        if (top >= 4) band(b.x, b.y, b.w, top, `${token(top)} · ${SPACING_PADDED[named]}`);
+        if (bottom >= 4 && named !== 'page-body') band(b.x, b.y + b.h - bottom, b.w, bottom, el.classList.contains('divider-label') || el.classList.contains('divider') ? '' : `${token(bottom)} · ${SPACING_PADDED[named]}`);
+      }
+      // Gaps between stacked blocks.
+      if ((cs.display === 'flex' && cs.flexDirection === 'column') || cs.display === 'grid') {
+        const gap = parseFloat(cs.rowGap);
+        if (!gap || gap < 4) return;
+        const kids = [...el.children].filter((k) => shown(k) && k.getBoundingClientRect().height > 0);
+        const b = box(el);
+        if (b.w < 120) return;
+        const what = el.classList.contains('page-body') ? 'between sections' : 'inside';
+        for (let i = 0; i < kids.length - 1; i += 1) {
+          const a = box(kids[i]), c = box(kids[i + 1]);
+          if (c.y - (a.y + a.h) < 2) continue; // same row in a grid
+          band(b.x, a.y + a.h, b.w, c.y - (a.y + a.h), i === 0 ? `${token(gap)} · ${what}` : `${token(gap)}`);
+        }
+      }
+    });
+    // Sizes of the main components — the first one of each kind on screen.
+    SIZES.forEach(([sel, name, dims]) => {
+      const el = [...root.querySelectorAll(sel)].find((e) => shown(e) && !e.closest('[aria-label="Test panel"]'));
+      if (!el) return;
+      const b = box(el);
+      const o = document.createElement('div');
+      o.style.cssText = `position:absolute;left:${b.x}px;top:${b.y}px;width:${b.w}px;height:${b.h}px;outline:1px solid #3b82f6;`;
+      layer.append(o);
+      // Inside the right edge of wide components; beside small ones so it stays on screen.
+      const text = `${name} ${dims === 'wh' ? Math.round(b.w) + ' × ' : ''}${Math.round(b.h)}`;
+      if (b.w >= 160) { tag(b.x + b.w - 4, b.y + b.h / 2, text, '#2563eb'); layer.lastChild.style.transform = 'translate(-100%, -50%)'; }
+      else tag(b.x + b.w + 4, b.y + b.h / 2, text, '#2563eb');
+    });
+  };
+  const clearSpacing = () => { if (layer) { layer.remove(); layer = null; } };
+  const spacingOn = () => { try { return sessionStorage.getItem('tp-spacing') === '1'; } catch (e) { return false; } };
+  const setSpacingOn = (on) => { try { sessionStorage.setItem('tp-spacing', on ? '1' : ''); } catch (e) { /* storage blocked */ } };
+
+
   // fallback: the state the page shows when there is no #state, so the panel
   // can say where you are without re-running it.
   function init({ page, handlers, reset, fallback, buttonClass = 'bottom-4', panelClass = 'bottom-20' }) {
@@ -192,6 +296,10 @@
         <p class="text-body font-semibold text-ink">測試面板</p>
         <p class="text-ink-secondary">只給看稿用，不是產品的一部分。已做 ${BUILT.length} / ${ALL} 個畫面。</p>
       </div>
+      <label class="flex items-center justify-between gap-3 h-11 px-3 rounded-xl bg-card border border-edge cursor-pointer">
+        <span class="font-semibold text-ink">顯示間距 <span class="font-normal text-ink-secondary">（Spacing）</span></span>
+        <input type="checkbox" role="switch" class="tp-spacing sr-only"><span class="toggle"></span>
+      </label>
       <div class="flex flex-col gap-2">
         <p class="font-semibold text-brand-2">跳到流程</p>
         <span class="relative">
@@ -244,7 +352,7 @@
     };
     const go = (key) => {
       if (!handlers[key]) return false;
-      reset(); handlers[key](); current = key; sync();
+      reset(); handlers[key](); current = key; sync(); redraw();
       return true;
     };
     // A screen on this page opens in place; one on the other page opens that page.
@@ -270,6 +378,27 @@
       navigator.clipboard.writeText(location.href).then(() => done('已複製'), () => done('複製失敗，請從網址列複製'));
     });
     window.addEventListener('hashchange', () => go(location.hash.slice(1)));
+
+    // Spacing overlay: on/off is remembered across pages; it redraws after
+    // anything on the page changes (a sheet opens, an error appears …).
+    const spacingInput = nav.querySelector('.tp-spacing');
+    let pending;
+    function redraw() {
+      clearTimeout(pending);
+      pending = setTimeout(() => { if (spacingInput.checked) drawSpacing(document.body); else clearSpacing(); }, 60);
+    }
+    spacingInput.checked = spacingOn();
+    spacingInput.addEventListener('change', () => { setSpacingOn(spacingInput.checked); redraw(); });
+    new MutationObserver((list) => {
+      if (!spacingInput.checked) return;
+      // Ignore the overlay's own redraws and the panel itself, or it would redraw forever.
+      const own = (m) => m.target.closest?.('[data-tp-layer], [aria-label="Test panel"]')
+        || (m.type === 'childList' && [...m.addedNodes, ...m.removedNodes].every((n) => n.dataset?.tpLayer));
+      if (list.every(own)) return;
+      redraw();
+    }).observe(document.body, { subtree: true, childList: true, attributes: true, attributeFilter: ['hidden', 'class', 'aria-invalid', 'aria-selected', 'data-phone'] });
+    window.addEventListener('resize', redraw);
+    document.fonts?.ready.then(redraw);
 
     if (remembered()) toggle(true);
     const opened = go(location.hash.slice(1));
