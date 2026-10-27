@@ -125,7 +125,7 @@
               Keep me logged in
             </label>
             <button type="submit" class="btn" id="login-submit" disabled>Log In</button>
-            <a href="#" class="tap self-center text-body-sm text-brand-2 underline">Forgot Password?</a>
+            <a href="#" class="tap self-center text-body-sm text-brand-2 underline" id="forgot-link">Forgot Password?</a>
           </form>
         </div>
       </section>
@@ -153,7 +153,122 @@
             <p class="text-center text-body text-ink-secondary" id="resend-wait">Resend code in <b class="font-semibold text-brand-2" id="resend-count">00:32</b></p>
             <button type="button" class="tap self-center text-body font-semibold text-brand-2 underline" id="resend" hidden>Resend code</button>
           </div>
-          <button type="submit" class="btn" id="code-submit" disabled>Verify</button>
+          <div class="flex flex-col gap-3">
+            <button type="submit" class="btn" id="code-submit" disabled>Verify</button>
+            <!-- Only a new third-party member may skip verifying their email. -->
+            <button type="button" class="link-row text-brand-2 font-bold social-skip" id="code-skip" hidden>Skip</button>
+          </div>
+        </form>
+      </section>
+
+      <!-- ── Third-party sign-in (Figma: Sign Up · social) ───────────────── -->
+      <!-- Back from Google / LINE / Zalo the server routes the member: a match on
+           an existing account → Account found + one code (no skip) → linked;
+           a new member with an email → Verify email (can skip); a new member
+           with none → Add your email (can skip). New members land in Setup. -->
+      <section id="screen-social-found" hidden>
+        <div class="nav-top">
+          <button type="button" aria-label="Close" class="nav-top-action social-close"><span class="icon icon-close size-7" aria-hidden="true"></span></button>
+        </div>
+        <div class="page-body">
+          <div class="step-hero"><h1>You already have an account</h1><p id="found-why"></p></div>
+          <div class="flex flex-col gap-3">
+            <p class="text-center text-body-sm text-ink-secondary">We’ll send a code to confirm it’s you.</p>
+            <button type="button" class="btn" id="found-send">Send code</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="screen-social-linked" hidden>
+        <div class="nav-top"></div>
+        <div class="page-body">
+          <div class="flex flex-col items-center gap-3">
+            <span class="status-mark"><span class="icon icon-check size-8" aria-hidden="true"></span></span>
+            <div class="step-hero"><h1>Welcome back</h1><p id="linked-why"></p></div>
+          </div>
+          <button type="button" class="btn" id="linked-continue">Continue</button>
+        </div>
+      </section>
+
+      <section id="screen-social-add-email" hidden>
+        <div class="nav-top">
+          <button type="button" aria-label="Close" class="nav-top-action social-close"><span class="icon icon-close size-7" aria-hidden="true"></span></button>
+        </div>
+        <form class="page-body" id="form-add-email" novalidate>
+          <div class="step-hero"><h1>Add your email</h1></div>
+          <div class="field">
+            <input id="add-email" type="email" inputmode="email" autocomplete="email" placeholder=" " aria-describedby="add-email-hint add-email-error">
+            <label for="add-email">Email</label><fieldset aria-hidden="true"><legend><span>Email</span></legend></fieldset>
+            <p class="hint" id="add-email-hint">We’ll send a 6-digit code to this address.</p>
+            <p class="error-text" id="add-email-error" hidden></p>
+          </div>
+          <div class="flex flex-col gap-3">
+            <button type="submit" class="btn" id="add-email-submit" disabled>Send code</button>
+            <button type="button" class="link-row text-brand-2 font-bold social-skip">Skip</button>
+          </div>
+        </form>
+      </section>
+
+      <!-- ── Forgot password (Figma: Forgot Password · …) ─────────────────── -->
+      <!-- Choose how → the email or phone on the account → the code screen above →
+           a new password → back to Log In. -->
+      <section id="screen-fp-choose" hidden>
+        <div class="nav-top">
+          <button type="button" aria-label="Close" class="nav-top-action fp-close"><span class="icon icon-close size-7" aria-hidden="true"></span></button>
+        </div>
+        <form class="page-body" id="form-fp-choose" novalidate>
+          <div class="step-hero"><h1>Forgot password</h1><p>Choose how you'd like to receive your one-time code.</p></div>
+          <fieldset class="flex flex-col gap-2">
+            <legend class="sr-only">Where to send the code</legend>
+            <label class="option-card"><input type="radio" name="fp-via" value="email" class="sr-only"><span class="tick"></span><span class="option-card-text">Send via email<span class="option-card-sub">To the email on your account</span></span></label>
+            <label class="option-card"><input type="radio" name="fp-via" value="sms" class="sr-only" checked><span class="tick"></span><span class="option-card-text">Send via SMS<span class="option-card-sub">To the phone on your account</span></span></label>
+          </fieldset>
+          <button type="submit" class="btn">Request Code</button>
+        </form>
+      </section>
+
+      <section id="screen-fp-enter" hidden>
+        <div class="nav-top">
+          <button type="button" aria-label="Close" class="nav-top-action fp-close"><span class="icon icon-close size-7" aria-hidden="true"></span></button>
+        </div>
+        <form class="page-body" id="form-fp-enter" novalidate>
+          <div class="step-hero"><h1 id="fp-enter-title">Verify phone number</h1><p id="fp-enter-why">Enter the phone number registered to your account.</p></div>
+          <div class="flex flex-col gap-3">
+            <div class="field">
+              <input id="fp-contact" type="tel" inputmode="tel" autocomplete="tel-national" placeholder=" " aria-describedby="fp-contact-error">
+              <label for="fp-contact" id="fp-contact-label">Phone Number</label><fieldset aria-hidden="true"><legend><span>Phone Number</span></legend></fieldset>
+              <span class="field-cc absolute left-3 top-2 z-10 h-[50px] items-center gap-1 text-field text-ink pointer-events-none">
+                <span class="cc-code">+84</span><img class="cc-flag size-[22px]" src="assets/flags/vn.svg" alt="">
+                <span class="icon icon-sm icon-chevron-down text-ink-secondary" aria-hidden="true"></span>
+                <span class="ml-2 h-6 w-px bg-edge" aria-hidden="true"></span>
+              </span>
+              <p class="error-text" id="fp-contact-error" hidden></p>
+            </div>
+            <p class="hint">If it matches an account, we'll send a code.</p>
+          </div>
+          <button type="submit" class="btn" id="fp-enter-submit" disabled>Get Code</button>
+        </form>
+      </section>
+
+      <section id="screen-fp-reset" hidden>
+        <div class="nav-top">
+          <button type="button" aria-label="Close" class="nav-top-action fp-close"><span class="icon icon-close size-7" aria-hidden="true"></span></button>
+        </div>
+        <form class="page-body" id="form-fp-reset" novalidate>
+          <div class="step-hero"><h1>Reset password</h1><p>Account ID: AHHHHHH</p></div>
+          <div class="flex flex-col gap-2">
+            <div class="field">
+              <input id="fp-new" type="password" autocomplete="new-password" placeholder=" ">
+              <label for="fp-new">New Password</label><fieldset aria-hidden="true"><legend><span>New Password</span></legend></fieldset>
+              <button type="button" class="field-trail eye" aria-label="Show password"><span class="icon icon-sm icon-eye-crossed" aria-hidden="true"></span></button>
+            </div>
+            <div class="field">
+              <input id="fp-confirm" type="password" autocomplete="new-password" placeholder=" ">
+              <label for="fp-confirm">Confirm New Password</label><fieldset aria-hidden="true"><legend><span>Confirm New Password</span></legend></fieldset>
+              <button type="button" class="field-trail eye" aria-label="Show password"><span class="icon icon-sm icon-eye-crossed" aria-hidden="true"></span></button>
+            </div>
+          </div>
+          <button type="submit" class="btn" id="fp-reset-submit" disabled>Done</button>
         </form>
       </section>
 
@@ -189,7 +304,7 @@
 
 <script>
   const $ = (id) => document.getElementById(id);
-  const show = (id) => ['screen-entry', 'screen-code', 'screen-done'].forEach((s) => { $(s).hidden = s !== id; });
+  const show = (id) => showScreen(id);
   const mask = (v) => v.includes('@')
     ? v.replace(/^(.{2}).*(.{2}@.*)$/, (_, a, b) => a + '*****' + b)
     : v.replace(/^(.{3}).*(.{3})$/, '$1***$2');
@@ -263,6 +378,8 @@
   const COUNTRIES = { VN: { code: '+84', flag: 'assets/flags/vn.svg' }, TH: { code: '+66', flag: 'assets/flags/th.svg' } };
   const setCountry = (key) => {
     $('cc-select').value = key; $('cc-code').textContent = COUNTRIES[key].code; $('cc-flag').src = COUNTRIES[key].flag;
+    document.querySelectorAll('.cc-code').forEach((el) => { el.textContent = COUNTRIES[key].code; });
+    document.querySelectorAll('.cc-flag').forEach((el) => { el.src = COUNTRIES[key].flag; });
   };
   const defaultCountry = () => {
     const zone = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
@@ -343,7 +460,7 @@
     });
   });
   $('resend').addEventListener('click', () => { resetCode(); startCountdown(); cells[0].focus(); });
-  $('code-close').addEventListener('click', () => { clearInterval(timer); show('screen-entry'); });
+  $('code-close').addEventListener('click', () => { clearInterval(timer); forgot = false; social = null; show('screen-entry'); });
   $('form-code').addEventListener('submit', (e) => {
     e.preventDefault();
     // Demo: 000000 is the wrong code; any other six digits pass.
@@ -351,6 +468,9 @@
       $('otp').setAttribute('data-invalid', ''); $('code-error').hidden = false; return;
     }
     clearInterval(timer);
+    if (forgot) { fill('fp-new', ''); fill('fp-confirm', ''); showScreen('screen-fp-reset'); return; }
+    if (social === 'link') { $('linked-why').textContent = `You’re logged in as v9_user***. ${provider} is now linked to this account.`; showScreen('screen-social-linked'); return; }
+    if (social === 'new') { toSetup(); return; }
     // Sign Up carries on into Setup (setup-flow-tailwind.html opens on step 1 with "Account created").
     if (side === 'signup') location.href = 'setup-flow-tailwind.html';
     else land('Lobby', 'Logged in');
@@ -358,20 +478,108 @@
 
   /* ── Landing ── */
   let toastTimer;
-  const land = (where, message) => {
-    $('done-label').textContent = where;
-    show('screen-done');
+  const toast = (message) => {
     $('toast').textContent = message; $('toast').hidden = false;
     clearTimeout(toastTimer);
     toastTimer = setTimeout(() => { $('toast').hidden = true; }, 3000);
   };
+  const land = (where, message) => { $('done-label').textContent = where; show('screen-done'); toast(message); };
+
+  /* ── Third-party sign-in ── */
+  // The demo stands in for the server's answer: Google returns a new member with
+  // an email, LINE matches an existing account by its email, Zalo gives no email.
+  let social = null; // null | 'new' | 'link' — where the shared code screen leads
+  let provider = 'Google';
+  const PROVIDERS = { google: 'Google', line: 'LINE', zalo: 'Zalo' };
+  const DEMO_ROUTE = { google: 'new-email', line: 'match', zalo: 'new-no-email' };
+  const startSocial = (key, route) => {
+    provider = PROVIDERS[key];
+    if (route === 'match') {
+      social = 'link';
+      $('found-why').textContent = `The email on this ${provider} account is already used by v9_user***.`;
+      showScreen('screen-social-found');
+    } else if (route === 'new-email') {
+      social = 'new'; openCode('Verify email', SOCIAL_EMAIL, 'Verify');
+    } else {
+      social = 'new'; fill('add-email', ''); showScreen('screen-social-add-email');
+    }
+  };
+  const SOCIAL_EMAIL = 'bacon927@gmail.com';
+  document.querySelectorAll('[data-social]').forEach((b) => b.addEventListener('click', () => startSocial(b.dataset.social, DEMO_ROUTE[b.dataset.social])));
+  $('found-send').addEventListener('click', () => openCode("Verify it's you", SOCIAL_EMAIL, 'Verify and Link'));
+  $('linked-continue').addEventListener('click', () => { social = null; land('Lobby', 'Logged in'); });
+  document.querySelectorAll('.social-close').forEach((b) => b.addEventListener('click', () => { social = null; showScreen('screen-entry'); }));
+  // Skip: a new member goes straight in without verifying an email.
+  const toSetup = () => { location.href = 'setup-flow-tailwind.html'; };
+  document.querySelectorAll('.social-skip').forEach((b) => b.addEventListener('click', () => { clearInterval(timer); toSetup(); }));
+  $('add-email').addEventListener('input', () => { setError('add-email', ''); $('add-email-submit').disabled = !$('add-email').value.trim(); });
+  $('form-add-email').addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (!isEmail($('add-email').value.trim())) { setError('add-email', 'Enter a valid email address.'); return; }
+    openCode('Verify email', $('add-email').value.trim(), 'Verify');
+  });
+
+  /* ── Forgot password ── */
+  let forgot = false; // the code screen is shared; this says where it leads
+  const showScreen = (id) => {
+    ['screen-entry', 'screen-code', 'screen-done', 'screen-fp-choose', 'screen-fp-enter', 'screen-fp-reset', 'screen-social-found', 'screen-social-linked', 'screen-social-add-email'].forEach((s) => { $(s).hidden = s !== id; });
+    $('code-skip').hidden = !(id === 'screen-code' && social === 'new');
+  };
+  const fpVia = () => document.querySelector('input[name="fp-via"]:checked').value;
+  const openForgot = () => { forgot = true; showScreen('screen-fp-choose'); };
+  $('forgot-link').addEventListener('click', (e) => { e.preventDefault(); openForgot(); });
+  document.querySelectorAll('.fp-close').forEach((b) => b.addEventListener('click', () => { forgot = false; showScreen('screen-entry'); }));
+  const setFpVia = (via) => {
+    const phone = via === 'sms';
+    $('fp-enter-title').textContent = phone ? 'Verify phone number' : 'Verify email';
+    $('fp-enter-why').textContent = phone ? 'Enter the phone number registered to your account.' : 'Enter the email registered to your account.';
+    const label = phone ? 'Phone Number' : 'Email';
+    $('fp-contact-label').textContent = label;
+    $('fp-contact-label').parentElement.querySelector('fieldset legend span').textContent = label;
+    $('fp-contact').type = phone ? 'tel' : 'email';
+    $('fp-contact').inputMode = phone ? 'tel' : 'email';
+    $('fp-contact').autocomplete = phone ? 'tel-national' : 'email';
+    fill('fp-contact', '');
+  };
+  $('form-fp-choose').addEventListener('submit', (e) => { e.preventDefault(); setFpVia(fpVia()); showScreen('screen-fp-enter'); $('fp-contact').focus(); });
+  $('fp-contact').addEventListener('input', () => {
+    setError('fp-contact', '');
+    $('fp-enter-submit').disabled = !$('fp-contact').value.trim();
+    // The country prefix shows on the phone version once digits are typed.
+    $('fp-contact').parentElement.toggleAttribute('data-phone', fpVia() === 'sms' && /^\d[\d\s]*$/.test($('fp-contact').value));
+  });
+  $('form-fp-enter').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const v = $('fp-contact').value.trim();
+    const problem = fpVia() === 'sms' ? (v.replace(/\D/g, '').length < 9 ? 'Enter a valid phone number.' : '') : (isEmail(v) ? '' : 'Enter a valid email address.');
+    if (problem) { setError('fp-contact', problem); return; }
+    openCode("Verify it's you", v, 'Verify');
+  });
+  const syncReset = () => { $('fp-reset-submit').disabled = !$('fp-new').value || !$('fp-confirm').value; };
+  $('fp-new').addEventListener('input', syncReset);
+  $('fp-confirm').addEventListener('input', syncReset);
+  $('form-fp-reset').addEventListener('submit', (e) => {
+    e.preventDefault();
+    forgot = false; setSide('login'); setTab('pwd'); showScreen('screen-entry');
+    toast('Your password has been changed.');
+  });
+  document.querySelectorAll('.eye').forEach((eye) => eye.addEventListener('click', () => {
+    const input = eye.parentElement.querySelector('input');
+    const reveal = input.type === 'password';
+    input.type = reveal ? 'text' : 'password';
+    eye.setAttribute('aria-label', reveal ? 'Hide password' : 'Show password');
+    eye.firstElementChild.className = 'icon icon-sm ' + (reveal ? 'icon-eye' : 'icon-eye-crossed');
+  }));
+
 
   /* ── Test panel ── */
   const fill = (id, value) => { $(id).value = value; $(id).dispatchEvent(new Event('input')); };
   const typeCode = (code) => { cells.forEach((c, i) => { c.value = code[i] || ''; }); $('code-submit').disabled = cells.some((c) => !c.value); };
   const fresh = () => {
     clearInterval(timer); $('toast').hidden = true;
-    ['email', 'referral', 'identifier', 'password'].forEach((id) => fill(id, ''));
+    ['email', 'referral', 'identifier', 'password', 'fp-new', 'fp-confirm'].forEach((id) => fill(id, ''));
+    forgot = false; social = null; setError('fp-contact', ''); setError('add-email', ''); fill('add-email', '');
+    document.querySelector('input[name="fp-via"][value="sms"]').checked = true; setFpVia('sms');
     $('terms').checked = false; syncSignup();
     ['email', 'identifier', 'password'].forEach((id) => setError(id, ''));
     lastUsed = true; setTab('pwd');
@@ -407,6 +615,24 @@
     ["Verify it's you", [
       ['verify-you', 'In progress', () => { loginCode(); typeCode('12345'); }],
       ['verify-you-invalid', 'Invalid code', () => { loginCode(); typeCode('000000'); $('otp').setAttribute('data-invalid', ''); $('code-error').hidden = false; }],
+    ]],
+    ['Third-party (Google / LINE / Zalo)', [
+      ['social-new-email', 'New · gave an email → Verify email', () => startSocial('google', 'new-email')],
+      ['social-new-no-email', 'New · no email → Add your email', () => startSocial('zalo', 'new-no-email')],
+      ['social-add-email-error', 'Add your email · error', () => { startSocial('zalo', 'new-no-email'); fill('add-email', 'bacon927@gmail'); $('form-add-email').requestSubmit(); }],
+      ['social-found', 'Match · You already have an account', () => startSocial('line', 'match')],
+      ['social-verify', 'Match · Verify it\'s you', () => { startSocial('line', 'match'); $('found-send').click(); }],
+      ['social-linked', 'Match · Welcome back', () => { startSocial('line', 'match'); $('found-send').click(); typeCode('123456'); $('form-code').requestSubmit(); }],
+    ]],
+    ['Forgot password', [
+      ['forgot', 'Choose how', () => openForgot()],
+      ['forgot-phone', 'Enter phone', () => { openForgot(); $('form-fp-choose').requestSubmit(); }],
+      ['forgot-email', 'Enter email', () => { openForgot(); document.querySelector('input[name="fp-via"][value="email"]').checked = true; $('form-fp-choose').requestSubmit(); }],
+      ['forgot-phone-error', 'Phone too short', () => { openForgot(); $('form-fp-choose').requestSubmit(); fill('fp-contact', '0913'); $('form-fp-enter').requestSubmit(); }],
+      ['forgot-code', 'Verify it\'s you', () => { openForgot(); $('form-fp-choose').requestSubmit(); fill('fp-contact', '0912345233'); $('form-fp-enter').requestSubmit(); typeCode('123456'); }],
+      ['forgot-reset', 'Reset password', () => { openForgot(); showScreen('screen-fp-reset'); }],
+      ['forgot-reset-filled', 'Reset · filled', () => { openForgot(); showScreen('screen-fp-reset'); fill('fp-new', 'secret123'); fill('fp-confirm', 'secret123'); }],
+      ['forgot-done', 'Done → Log In', () => { openForgot(); showScreen('screen-fp-reset'); fill('fp-new', 'secret123'); fill('fp-confirm', 'secret123'); $('form-fp-reset').requestSubmit(); }],
     ]],
     ['After', [
       ['after-signup', 'Setup · step 1 + Account created', () => { side = 'signup'; land('Setup · step 1', 'Account created'); }],
