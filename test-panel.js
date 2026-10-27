@@ -190,7 +190,28 @@
     ['.option-card', 'Option card', 'h'],
     ['.list-row', 'List row', 'h'],
     ['.social-btn-icon', 'Social icon', 'wh'],
+    ['.tab', 'Tab', 'h'],
+    ['.checkbox', 'Checkbox', 'wh'],
+    ['.tick', 'Radio', 'wh'],
+    ['a.tap', 'Link · tap area', 'h'],
+    ['.link-row', 'Link row', 'h'],
   ];
+  // Corner radius as the Tailwind class it is.
+  const RADIUS = { 4: 'rounded 4', 6: 'rounded-md 6', 8: 'rounded-lg 8', 12: 'rounded-xl 12', 16: 'rounded-2xl 16' };
+  const radiusOf = (el, b) => {
+    const r = parseFloat(getComputedStyle(el).borderTopLeftRadius) || 0;
+    if (!r) return '';
+    if (r >= Math.min(b.w, b.h) / 2 - 0.5) return 'rounded-full';
+    return RADIUS[r] || `radius ${r}`;
+  };
+  // Type tokens, read from variables.css so the names always match the code.
+  const TYPE_KEYS = ['display', 'title', 'body', 'body-sm', 'button', 'field', 'field-label', 'micro'];
+  const WEIGHT = { 300: 'Light', 400: 'Regular', 500: 'Medium', 600: 'Semibold', 700: 'Bold' };
+  const typeToken = (fs, lh) => {
+    const root = getComputedStyle(document.documentElement);
+    const hits = TYPE_KEYS.filter((k) => parseFloat(root.getPropertyValue('--font-size-' + k)) === fs && parseFloat(root.getPropertyValue('--leading-' + k)) === lh);
+    return hits.length ? hits.join(' / ') : 'not a token';
+  };
   const token = (px) => (px % 4 === 0 ? `${px} · spacing/${px / 4}` : `${px}px · off the scale`);
   const shown = (el) => el.offsetParent !== null || getComputedStyle(el).position === 'fixed';
   // Two inks, kept light so the screen still reads through: pink for spacing,
@@ -199,13 +220,14 @@
   const INK = {
     pink: { text: '#f9a8d4', edge: 'rgba(236,72,153,.75)', wash: 'rgba(236,72,153,.12)' },
     blue: { text: '#93c5fd', edge: 'rgba(96,165,250,.85)' },
+    amber: { text: '#fcd34d', edge: 'rgba(251,191,36,.8)' },
   };
   let layer = null;
   let placed = [];
   // Put a label at (x, y) — y is its middle; align 'right' means x is its right
   // edge. If that covers another label, try the other end of the band (alt is
   // its left edge), then step down below the clash — never off the screen.
-  const tag = (x, y, text, ink, align = 'left', alt = null) => {
+  const tag = (x, y, text, ink, align = 'left', alt = null, dir = 'down') => {
     const t = document.createElement('span');
     t.textContent = text;
     t.style.cssText = `position:absolute;left:0;top:0;padding:0 6px;border-radius:999px;background:rgba(14,15,18,.86);border:1px solid ${INK[ink].edge};color:${INK[ink].text};font:600 10px/15px system-ui,-apple-system,sans-serif;letter-spacing:.01em;white-space:nowrap;`;
@@ -215,7 +237,7 @@
     let left = Math.max(0, align === 'right' ? x - w : x);
     let top = y - h / 2;
     if (clash(left, top) && alt !== null && !clash(alt, top)) left = alt;
-    for (let n = 0; n < 6 && clash(left, top); n += 1) top = clash(left, top).y2 + 2;
+    for (let n = 0; n < 6 && clash(left, top); n += 1) top = dir === 'up' ? clash(left, top).y1 - h - 2 : clash(left, top).y2 + 2;
     t.style.left = `${left}px`; t.style.top = `${top}px`;
     placed.push({ x1: left, x2: left + w, y1: top, y2: top + h });
     return t;
@@ -230,7 +252,7 @@
     layer.append(b);
     if (text) tag(x + w - 6, y + h / 2, text, 'pink', 'right', x + 6);
   };
-  const drawSpacing = (root) => {
+  const drawSpacing = (root, opts = { spacing: true, type: false }) => {
     if (layer) layer.remove();
     placed = [];
     layer = document.createElement('div');
@@ -241,6 +263,47 @@
     const sx = window.scrollX, sy = window.scrollY;
     const box = (el) => { const r = el.getBoundingClientRect(); return { x: r.left + sx, y: r.top + sy, w: r.width, h: r.height }; };
 
+    // Typography: every piece of text gets size / line height · weight · token.
+    if (opts.type) {
+      // Only text a person can see: not the hidden copy of a field label in its
+      // outline, not anything invisible or faded out.
+      const visible = (el) => { const cs = getComputedStyle(el); return cs.visibility !== 'hidden' && parseFloat(cs.opacity) > 0; };
+      const texts = [...root.querySelectorAll('*')].filter((el) => !el.closest('[aria-label="Test panel"], [data-tp-layer], script, style, select, .field > fieldset, [aria-hidden="true"]')
+        && shown(el) && visible(el) && ([...el.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim())
+          || (el.tagName === 'INPUT' && el.value && /^(text|email|tel|password|search|number)$/.test(el.type))));
+      const edge = (root.querySelector('.page') || document.body).getBoundingClientRect().right + sx - 4;
+      const measure = document.createElement('canvas').getContext('2d');
+      // Where each piece of text sits — only the element's own words, not a
+      // child's (an option card's sub line has its own label).
+      const rectOf = (el) => {
+        if (el.tagName === 'INPUT') return el.getBoundingClientRect();
+        const own = [...el.childNodes].filter((n) => n.nodeType === 3 && n.textContent.trim());
+        const range = document.createRange();
+        range.setStart(own[0], 0); range.setEnd(own[own.length - 1], own[own.length - 1].length);
+        return range.getBoundingClientRect();
+      };
+      const items = texts.map((el) => ({ el, r: rectOf(el) })).filter(({ r }) => r.width && r.height);
+      // The words themselves are obstacles too, so no label lands on text.
+      // (A field's box is not one: its own label goes inside it.)
+      items.forEach(({ el, r }) => { if (el.tagName !== 'INPUT') placed.push({ x1: r.left + sx, x2: r.right + sx, y1: r.top + sy, y2: r.bottom + sy }); });
+      items.forEach(({ el, r }) => {
+        const cs = getComputedStyle(el);
+        const fs = parseFloat(cs.fontSize), lh = cs.lineHeight === 'normal' ? Math.round(fs * 1.2) : parseFloat(cs.lineHeight);
+        // Weight only when it is not Regular, to keep the label short.
+        const weight = WEIGHT[cs.fontWeight] || cs.fontWeight;
+        const text = `${fs}/${lh}${weight === 'Regular' ? '' : ' ' + weight} · ${typeToken(fs, lh)}`;
+        measure.font = '600 10px system-ui, -apple-system, sans-serif';
+        const width = measure.measureText(text).width + 16;
+        // Just after the words when there is room; otherwise just above them,
+        // starting where they start.
+        const right = r.right + sx, mid = r.top + sy + r.height / 2;
+        if (el.tagName === 'INPUT') tag(el.getBoundingClientRect().right + sx - 6, mid, text, 'amber', 'right');
+        else if (right + 6 + width < edge) tag(right + 6, mid, text, 'amber');
+        else tag(r.left + sx, r.top + sy - 8, text, 'amber', 'left', null, 'up');
+      });
+    }
+    if (!opts.spacing) return;
+
     // Sizes first, so the spacing labels slide out of their way.
     SIZES.forEach(([sel, name, dims]) => {
       const el = [...root.querySelectorAll(sel)].find((e) => shown(e) && !e.closest('[aria-label="Test panel"]'));
@@ -249,7 +312,8 @@
       const o = document.createElement('div');
       o.style.cssText = `position:absolute;left:${b.x}px;top:${b.y}px;width:${b.w}px;height:${b.h}px;outline:1px dashed ${INK.blue.edge};outline-offset:-1px;`;
       layer.append(o);
-      const text = `${name} ${dims === 'wh' ? Math.round(b.w) + ' × ' : ''}${Math.round(b.h)}`;
+      const rad = radiusOf(el, b);
+      const text = `${name} ${dims === 'wh' ? Math.round(b.w) + ' × ' : ''}${Math.round(b.h)}${rad ? ' · ' + rad : ''}`;
       // Inside the right edge of wide components; beside small ones so it stays on screen.
       if (b.w >= 160) tag(b.x + b.w - 6, b.y + b.h / 2, text, 'blue', 'right', b.x + 6);
       else tag(b.x + b.w + 4, b.y + b.h / 2, text, 'blue');
@@ -294,6 +358,8 @@
   const clearSpacing = () => { if (layer) { layer.remove(); layer = null; } };
   const spacingOn = () => { try { return sessionStorage.getItem('tp-spacing') === '1'; } catch (e) { return false; } };
   const setSpacingOn = (on) => { try { sessionStorage.setItem('tp-spacing', on ? '1' : ''); } catch (e) { /* storage blocked */ } };
+  const typeOn = () => { try { return sessionStorage.getItem('tp-type') === '1'; } catch (e) { return false; } };
+  const setTypeOn = (on) => { try { sessionStorage.setItem('tp-type', on ? '1' : ''); } catch (e) { /* storage blocked */ } };
 
 
   // fallback: the state the page shows when there is no #state, so the panel
@@ -324,6 +390,10 @@
       <label class="flex items-center justify-between gap-3 h-11 px-3 rounded-xl bg-card border border-edge cursor-pointer">
         <span class="font-semibold text-ink">顯示間距 <span class="font-normal text-ink-secondary">（Spacing）</span></span>
         <input type="checkbox" role="switch" class="tp-spacing sr-only"><span class="toggle"></span>
+      </label>
+      <label class="flex items-center justify-between gap-3 h-11 px-3 rounded-xl bg-card border border-edge cursor-pointer">
+        <span class="font-semibold text-ink">顯示字型 <span class="font-normal text-ink-secondary">（Typography）</span></span>
+        <input type="checkbox" role="switch" class="tp-type sr-only"><span class="toggle"></span>
       </label>
       <div class="flex flex-col gap-2">
         <p class="font-semibold text-brand-2">跳到流程</p>
@@ -410,12 +480,18 @@
     let pending;
     function redraw() {
       clearTimeout(pending);
-      pending = setTimeout(() => { if (spacingInput.checked) drawSpacing(document.body); else clearSpacing(); }, 60);
+      pending = setTimeout(() => {
+        const opts = { spacing: spacingInput.checked, type: typeInput.checked };
+        if (opts.spacing || opts.type) drawSpacing(document.body, opts); else clearSpacing();
+      }, 60);
     }
+    const typeInput = nav.querySelector('.tp-type');
     spacingInput.checked = spacingOn();
+    typeInput.checked = typeOn();
     spacingInput.addEventListener('change', () => { setSpacingOn(spacingInput.checked); redraw(); });
+    typeInput.addEventListener('change', () => { setTypeOn(typeInput.checked); redraw(); });
     new MutationObserver((list) => {
-      if (!spacingInput.checked) return;
+      if (!spacingInput.checked && !typeInput.checked) return;
       // Ignore the overlay's own redraws and the panel itself, or it would redraw forever.
       const own = (m) => m.target.closest?.('[data-tp-layer], [aria-label="Test panel"]')
         || (m.type === 'childList' && [...m.addedNodes, ...m.removedNodes].every((n) => n.dataset?.tpLayer));
