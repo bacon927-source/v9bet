@@ -14,6 +14,7 @@
 <script>var module = {};</script>
 <script src="tailwind.config.js"></script>
 <script>tailwind.config = module.exports;</script>
+<script src="test-panel.js"></script>
 <!-- Screens and forms are switched with the hidden attribute; flex utilities
      would otherwise override it. -->
 <style>
@@ -79,6 +80,7 @@
               <div class="field">
                 <input id="referral" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder=" ">
                 <label for="referral">Referral Code (Optional)</label><fieldset aria-hidden="true"><legend><span>Referral Code (Optional)</span></legend></fieldset>
+                <span class="field-trail" id="ref-note" hidden>From invite link <span class="icon icon-sm icon-check text-brand-2" aria-hidden="true"></span></span>
               </div>
             </div>
             <label class="flex items-center gap-2 min-h-[44px] cursor-pointer text-body-sm font-light">
@@ -157,6 +159,7 @@
             <button type="submit" class="btn" id="code-submit" disabled>Verify</button>
             <!-- Only a new third-party member may skip verifying their email. -->
             <button type="button" class="link-row text-brand-2 font-bold social-skip" id="code-skip" hidden>Skip</button>
+            <p class="text-center text-body-sm text-ink-secondary" id="wrong-address" hidden>Wrong address? Close this and start again.</p>
           </div>
         </form>
       </section>
@@ -282,19 +285,23 @@
         </div>
       </section>
 
-      <!-- Test panel — for reviewing only, not part of the product: jumps
-           straight to any screen or state. Each state has its own #hash, so a
-           link opens that state directly. -->
-      <button type="button" id="tp-open" aria-label="Test panel" aria-expanded="false" class="fixed left-4 bottom-4 z-[60] grid place-items-center size-12 rounded-full bg-card border border-brand-2 text-brand-2">
-        <svg class="size-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75"/></svg>
-      </button>
-      <nav id="tp" hidden aria-label="Test panel" class="fixed left-4 bottom-20 z-[60] w-[min(320px,calc(100vw-32px))] max-h-[75dvh] overflow-y-auto flex flex-col gap-3 p-4 rounded-xl bg-card border border-brand-2 text-body-sm">
-        <div>
-          <p class="text-body font-semibold text-ink">測試面板</p>
-          <p class="text-ink-secondary">只給看稿用，不是產品的一部分。點一下直接跳到那個畫面。</p>
-        </div>
-        <div id="tp-groups" class="flex flex-col gap-3"></div>
-      </nav>
+      <!-- Sign Up with an email that already has an account: a code logs them in
+           (Figma: Sign Up · Account exists). -->
+      <div class="sheet-scrim" id="exists-scrim" hidden></div>
+      <section class="sheet md:max-w-[440px] md:mx-auto" id="sheet-exists" role="dialog" aria-modal="true" aria-labelledby="exists-title" hidden>
+        <div class="sheet-header"><h2 id="exists-title">The account already exists</h2><button type="button" class="sheet-close" id="exists-close" aria-label="Close"><span class="icon icon-close" aria-hidden="true"></span></button></div>
+        <form class="sheet-body" id="form-exists" novalidate>
+          <p class="text-body text-ink-secondary" id="exists-to"></p>
+          <div class="flex flex-col gap-3">
+            <div class="otp" id="otp-exists">
+              <input inputmode="numeric" autocomplete="one-time-code" placeholder=" " aria-label="Digit 1"><input inputmode="numeric" placeholder=" " aria-label="Digit 2"><input inputmode="numeric" placeholder=" " aria-label="Digit 3"><input inputmode="numeric" placeholder=" " aria-label="Digit 4"><input inputmode="numeric" placeholder=" " aria-label="Digit 5"><input inputmode="numeric" placeholder=" " aria-label="Digit 6">
+            </div>
+            <p class="text-center text-body text-ink-secondary">Resend code in <b class="font-semibold text-brand-2">00:54</b></p>
+          </div>
+          <button type="submit" class="btn" id="exists-submit" disabled>Log In</button>
+          <button type="button" class="link-row text-brand-2 font-bold" id="exists-other">Use a different email</button>
+        </form>
+      </section>
 
       <!-- Toast (v1): light blue, black text, sits 16 above the bottom. -->
       <div class="fixed bottom-4 inset-x-4 md:mx-auto md:max-w-[408px] rounded-md bg-[var(--v1-blue-light)] px-4 py-3 text-body font-semibold text-black" id="toast" role="status" hidden></div>
@@ -415,13 +422,16 @@
   /* ── Code ── */
   const cells = [...$('otp').querySelectorAll('input')];
   let timer;
-  const startCountdown = () => {
-    let left = 32;
+  const clock = (sec) => String(Math.floor(sec / 60)).padStart(2, '0') + ':' + String(sec % 60).padStart(2, '0');
+  // 00:32 normally; after too many resends the wait grows to 03:00.
+  const startCountdown = (seconds = 32) => {
+    let left = seconds;
+    $('resend-count').textContent = clock(left);
     $('resend-wait').hidden = false; $('resend').hidden = true;
     clearInterval(timer);
     timer = setInterval(() => {
       left -= 1;
-      $('resend-count').textContent = '00:' + String(left).padStart(2, '0');
+      $('resend-count').textContent = clock(left);
       // When the wait is over the line turns into the link — no dead link while counting.
       if (left <= 0) { clearInterval(timer); $('resend-wait').hidden = true; $('resend').hidden = false; }
     }, 1000);
@@ -435,8 +445,36 @@
     $('code-title').textContent = title;
     $('code-to').textContent = mask(to);
     $('code-submit').textContent = action;
+    // Only the email the member typed at Sign Up can be wrong; say how to fix it.
+    $('wrong-address').hidden = !(side === 'signup' && !social && !forgot);
     resetCode(); startCountdown(); show('screen-code'); cells[0].focus();
   };
+
+  /* Sign Up with an email that already has an account: the code logs them in. */
+  const existsCells = [...$('otp-exists').querySelectorAll('input')];
+  const openExists = (email) => {
+    $('exists-to').textContent = `We sent a code to ${mask(email)}. Enter it to log in to your account.`;
+    existsCells.forEach((c) => { c.value = ''; }); $('exists-submit').disabled = true;
+    $('exists-scrim').hidden = false; $('sheet-exists').hidden = false;
+  };
+  const closeExists = () => { $('exists-scrim').hidden = true; $('sheet-exists').hidden = true; };
+  existsCells.forEach((cell, i) => cell.addEventListener('input', () => {
+    const digits = cell.value.replace(/\D/g, '').split('');
+    cell.value = digits[0] || '';
+    digits.slice(1).forEach((d, j) => { if (existsCells[i + 1 + j]) existsCells[i + 1 + j].value = d; });
+    if (digits.length) existsCells[Math.min(i + digits.length, 5)].focus();
+    $('exists-submit').disabled = existsCells.some((c) => !c.value);
+  }));
+  $('exists-close').addEventListener('click', closeExists);
+  $('exists-scrim').addEventListener('click', closeExists);
+  $('exists-other').addEventListener('click', () => { closeExists(); $('email').select(); });
+  $('form-exists').addEventListener('submit', (e) => { e.preventDefault(); closeExists(); land('Lobby', 'Logged in'); });
+
+  /* ?ref= prefills the referral code and says where it came from. It stays
+     editable; the note goes away once the member types their own. */
+  const fromLink = new URLSearchParams(location.search).get('ref');
+  if (fromLink) { $('referral').value = fromLink; $('ref-note').hidden = false; }
+  $('referral').addEventListener('input', () => { $('ref-note').hidden = !(fromLink && $('referral').value === fromLink); });
   cells.forEach((cell, i) => {
     cell.addEventListener('input', () => {
       // The phone's SMS autofill drops the whole code into one cell — spread it out.
@@ -582,7 +620,7 @@
     document.querySelector('input[name="fp-via"][value="sms"]').checked = true; setFpVia('sms');
     $('terms').checked = false; syncSignup();
     ['email', 'identifier', 'password'].forEach((id) => setError(id, ''));
-    lastUsed = true; setTab('pwd');
+    lastUsed = true; setTab('pwd'); closeExists(); $('ref-note').hidden = true;
   };
   const signupCode = () => { setSide('signup'); fill('email', 'bacon927@gmail.com'); openCode('Verify email', 'bacon927@gmail.com', 'Verify'); };
   const loginCode = () => { setSide('login'); setTab('otc'); fill('identifier', '0912345233'); openCode("Verify it's you", '0912345233', 'Log In'); };
@@ -590,12 +628,15 @@
     ['Sign Up', [
       ['signup', 'Sign Up · Default', () => { setSide('signup'); show('screen-entry'); }],
       ['signup-ready', 'Sign Up · Ready', () => { setSide('signup'); fill('email', 'bacon927@gmail.com'); $('terms').checked = true; syncSignup(); show('screen-entry'); }],
+      ['signup-invite', 'From invite link', () => { setSide('signup'); fill('email', 'bacon927@gmail.com'); fill('referral', 'BH0943'); $('ref-note').hidden = false; $('terms').checked = true; syncSignup(); show('screen-entry'); }],
+      ['signup-exists', 'Account exists (sheet)', () => { setSide('signup'); fill('email', 'bacon927@gmail.com'); $('terms').checked = true; syncSignup(); show('screen-entry'); openExists('bacon927@gmail.com'); }],
       ['signup-error-email', 'Error · email', () => { setSide('signup'); fill('email', 'bacon927@gmail'); $('terms').checked = true; syncSignup(); show('screen-entry'); $('signup-submit').click(); }],
     ]],
     ['Verify email', [
       ['verify-email', 'In progress', () => { signupCode(); typeCode('12345'); }],
       ['verify-email-ready', 'Ready', () => { signupCode(); typeCode('123456'); }],
       ['verify-email-invalid', 'Invalid code', () => { signupCode(); typeCode('000000'); $('otp').setAttribute('data-invalid', ''); $('code-error').hidden = false; }],
+      ['verify-email-too-many', 'Too many resends', () => { signupCode(); startCountdown(180); }],
       ['verify-email-resend', 'Resend available', () => { signupCode(); clearInterval(timer); $('resend-wait').hidden = true; $('resend').hidden = false; }],
     ]],
     ['Log In', [
@@ -614,6 +655,9 @@
     ]],
     ["Verify it's you", [
       ['verify-you', 'In progress', () => { loginCode(); typeCode('12345'); }],
+      ['verify-you-ready', 'All six entered', () => { loginCode(); typeCode('123456'); }],
+      ['verify-you-too-many', 'Too many resends', () => { loginCode(); startCountdown(180); }],
+      ['verify-you-resend', 'Resend available', () => { loginCode(); clearInterval(timer); $('resend-wait').hidden = true; $('resend').hidden = false; }],
       ['verify-you-invalid', 'Invalid code', () => { loginCode(); typeCode('000000'); $('otp').setAttribute('data-invalid', ''); $('code-error').hidden = false; }],
     ]],
     ['Third-party (Google / LINE / Zalo)', [
@@ -635,33 +679,16 @@
       ['forgot-done', 'Done → Log In', () => { openForgot(); showScreen('screen-fp-reset'); fill('fp-new', 'secret123'); fill('fp-confirm', 'secret123'); $('form-fp-reset').requestSubmit(); }],
     ]],
     ['After', [
-      ['after-signup', 'Setup · step 1 + Account created', () => { side = 'signup'; land('Setup · step 1', 'Account created'); }],
       ['after-login', 'Lobby + Logged in', () => { side = 'login'; land('Lobby', 'Logged in'); }],
     ]],
   ];
-  const go = (key) => {
-    const state = STATES.flatMap(([, items]) => items).find(([k]) => k === key);
-    if (!state) return false;
-    fresh(); state[2]();
-    $('tp').querySelectorAll('[data-state]').forEach((b) => b.setAttribute('aria-current', String(b.dataset.state === key)));
-    return true;
-  };
-  $('tp-groups').innerHTML = STATES.map(([group, items]) => `
-    <div class="flex flex-col gap-2">
-      <p class="font-semibold text-brand-2">${group}</p>
-      <div class="flex flex-wrap gap-2">${items.map(([key, label]) =>
-        `<a href="#${key}" data-state="${key}" class="px-3 py-2 rounded-xl border border-edge text-ink aria-[current=true]:border-brand-2 aria-[current=true]:text-brand-2">${label}</a>`).join('')}</div>
-    </div>`).join('');
-  $('tp-open').addEventListener('click', () => {
-    const open = $('tp').hidden;
-    $('tp').hidden = !open; $('tp-open').setAttribute('aria-expanded', String(open));
-  });
-  // Clicking the state that is already in the hash fires no hashchange, so go on click too.
-  $('tp-groups').addEventListener('click', (e) => { const a = e.target.closest('[data-state]'); if (a) go(a.dataset.state); });
-  window.addEventListener('hashchange', () => go(location.hash.slice(1)));
-
+  TestPanel.init({
+    page: 'auth',
+    handlers: Object.fromEntries(STATES.flatMap(([, items]) => items).map(([key, , fn]) => [key, fn])),
+    reset: fresh,
+    buttonClass: 'bottom-24', panelClass: 'bottom-40 max-h-[calc(100dvh-176px)]',
+  }) || setSide(new URLSearchParams(location.search).get('mode') === 'signup' ? 'signup' : 'login');
   // A #state opens that state; ?mode=signup opens on Sign Up (the "Sign Up" button elsewhere links here).
-  if (!go(location.hash.slice(1))) setSide(new URLSearchParams(location.search).get('mode') === 'signup' ? 'signup' : 'login');
 </script>
 </body>
 </html>
