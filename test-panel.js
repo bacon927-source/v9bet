@@ -184,22 +184,29 @@
     nav.hidden = true;
     nav.setAttribute('aria-label', 'Test panel');
     // Anchored to the top so it never runs off the screen, whatever its height.
-    nav.className = `fixed left-4 top-4 z-[60] w-[min(360px,calc(100vw-32px))] max-h-[calc(100dvh-32px)] overflow-y-auto flex flex-col gap-3 p-4 rounded-xl bg-card border border-brand-2 text-body-sm`;
+    // Three bands: the fixed top (title + tabs) and fixed bottom (‹ › and copy)
+    // sit on the lighter sheet surface; the screen list between them scrolls on
+    // the darker page colour, so it reads as the part that moves.
+    nav.className = `fixed left-4 top-4 z-[60] w-[min(360px,calc(100vw-32px))] max-h-[calc(100dvh-32px)] overflow-hidden flex flex-col rounded-xl border border-brand-2 text-body-sm`;
     const btn = 'grid place-items-center h-11 rounded-xl border border-edge text-ink disabled:opacity-40';
     nav.innerHTML = `
-      <div>
-        <p class="text-body font-semibold text-ink">測試面板 <span class="font-normal text-ink-muted">· 已做 ${BUILT.length} / ${ALL}</span></p>
-        <p class="text-ink-secondary">只給看稿用，不是產品的一部分。</p>
+      <div class="flex-none flex flex-col gap-3 p-4 bg-sheet border-b border-edge">
+        <div>
+          <p class="text-body font-semibold text-ink">測試面板 <span class="font-normal text-ink-muted">· 已做 ${BUILT.length} / ${ALL}</span></p>
+          <p class="text-ink-secondary">只給看稿用，不是產品的一部分。</p>
+        </div>
+        <div class="flex flex-wrap gap-1.5" role="tablist">${CATALOG.map((t, i) =>
+          `<button type="button" role="tab" data-tab="${i}" aria-selected="false" class="px-2.5 py-1 rounded-full border border-edge text-ink-secondary aria-selected:border-transparent aria-selected:bg-[var(--v1-grey-500)] aria-selected:text-ink aria-selected:font-semibold">${t[0]} <span class="opacity-70">${itemsOf(t).length}</span></button>`).join('')}</div>
       </div>
-      <div class="flex flex-wrap gap-1.5" role="tablist">${CATALOG.map((t, i) =>
-        `<button type="button" role="tab" data-tab="${i}" aria-selected="false" class="px-2.5 py-1 rounded-full border border-edge text-ink-secondary aria-selected:border-transparent aria-selected:bg-[var(--v1-grey-500)] aria-selected:text-ink aria-selected:font-semibold">${t[0]} <span class="opacity-70">${itemsOf(t).length}</span></button>`).join('')}</div>
-      <div class="tp-screens flex flex-col gap-3 max-h-[42dvh] overflow-y-auto border-t border-edge-subtle pt-3"></div>
-      <div class="grid grid-cols-[1fr_auto_1fr] items-center gap-2">
-        <button type="button" class="tp-prev ${btn}">‹ 上一個</button>
-        <span class="tp-count text-ink-secondary tabular-nums"></span>
-        <button type="button" class="tp-next ${btn}">下一個 ›</button>
-      </div>
-      <button type="button" class="tp-copy ${btn} text-brand-2">複製這一張的連結</button>`;
+      <div class="tp-screens flex-1 min-h-0 flex flex-col gap-3 max-h-[42dvh] overflow-y-auto p-4 bg-app"></div>
+      <div class="flex-none flex flex-col gap-2 p-4 bg-sheet border-t border-edge">
+        <div class="grid grid-cols-[1fr_auto_1fr] items-center gap-2">
+          <button type="button" class="tp-prev ${btn}">‹ 上一個</button>
+          <span class="tp-count text-ink-secondary tabular-nums"></span>
+          <button type="button" class="tp-next ${btn}">下一個 ›</button>
+        </div>
+        <button type="button" class="tp-copy ${btn} text-brand-2">複製這一張的連結</button>
+      </div>`;
     document.body.append(open, nav);
 
     let current = null;
