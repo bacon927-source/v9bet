@@ -191,6 +191,10 @@ colors: { brand: { DEFAULT: 'var(--color-brand-primary)' } }
 
 `get_metadata` 不帶 nodeId 只會列出 Cover 一頁；`search_design_system` 搜不到這個檔案的本地元件。兩個都回空的時候，**不要下結論說 Figma 沒東西**——用 `use_figma` 列 `figma.root.children`，或直接讀 `FIGMA.md` 裡的 node id。
 
+### 隱藏的 instance 子圖層拿不回來
+
+在 instance 裡把子圖層設成 `visible=false` 之後，`children` 就不再列出它，`findOne` 也找不到，沒辦法再打開。要讓它重新顯示，就換一個新的 instance 再設屬性（2026-10-27 Step hero 的 why 踩過）。
+
 ### 圖示只用一套
 
 **Heroicons outline**（Tailwind 團隊出的那一套，24 畫布、線寬 1.5；2026-10-26 使用者：「我們這版 icon 要換一下」，取代原本 v1 的 Flaticon `fi-br`）。每個 icon 都是 24 框、圖形在中間 20 內、跟著框縮放：頂列 28（`size-7`，✕ 和返回）、單獨 24、輸入框裡 20（`size-5`）、文字旁 16（`size-4`）；顏色跟著文字。缺的圖示去 Heroicons 找同名的（heroicons.com），不要混別套或自己畫（國旗例外，是我們自己的）。返回只放箭頭，不寫「Back」。程式用 `.icon .icon-<name>`，加新圖示要同時加進 `tailwind.config.js` 的 `ICONS` 和 Figma 的 `icon/<name>`。
