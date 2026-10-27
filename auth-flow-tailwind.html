@@ -308,10 +308,10 @@
            form, never a page change, so nothing typed is lost. Reading is not
            agreeing — the tick on the form is the only consent, so the sheet has
            no "I agree" button. Content comes from Legal (system-pages-wireframe).
-           A document to read, so it is white with dark text in either theme
-           (Tailwind white / zinc-900 / zinc-500; user 2026-10-27). -->
+           Same sheet colours as every other sheet, so it follows the theme
+           (user 2026-10-27: "follow framework"). -->
       <div class="sheet-scrim" id="legal-scrim" hidden></div>
-      <section class="sheet md:max-w-[440px] md:mx-auto h-[90dvh] !bg-white text-zinc-900 [&_.sheet-header>h2]:text-zinc-900 [&_.sheet-close]:text-zinc-900 [&_.sheet-header]:before:bg-zinc-300" id="sheet-legal" role="dialog" aria-modal="true" aria-labelledby="legal-title" hidden>
+      <section class="sheet md:max-w-[440px] md:mx-auto h-[90dvh]" id="sheet-legal" role="dialog" aria-modal="true" aria-labelledby="legal-title" hidden>
         <div class="sheet-header"><h2 id="legal-title"></h2><button type="button" class="sheet-close" id="legal-close" aria-label="Close"><span class="icon icon-close" aria-hidden="true"></span></button></div>
         <div class="sheet-body flex-1 overflow-y-auto" id="legal-body"></div>
       </section>
@@ -480,8 +480,8 @@
   const openLegal = (doc) => {
     const [title, sections] = LEGAL[doc];
     $('legal-title').textContent = title;
-    $('legal-body').innerHTML = '<p class="text-sm/6 text-zinc-500">Version 2.3 · effective Jul 1, 2026</p>'
-      + sections.map((h) => `<div class="flex flex-col gap-1"><p class="text-base/7 font-bold text-zinc-900">${h}</p><p class="text-sm/6 text-zinc-500">Text from Legal.</p></div>`).join('');
+    $('legal-body').innerHTML = '<p class="text-sm/6 text-ink-secondary">Version 2.3 · effective Jul 1, 2026</p>'
+      + sections.map((h) => `<div class="flex flex-col gap-1"><p class="text-base/7 font-bold text-ink">${h}</p><p class="text-sm/6 text-ink-secondary">Text from Legal.</p></div>`).join('');
     $('legal-body').scrollTop = 0;
     $('legal-scrim').hidden = false; $('sheet-legal').hidden = false;
   };
