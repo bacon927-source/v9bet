@@ -86,7 +86,7 @@
             <label class="flex items-center gap-2 min-h-[44px] cursor-pointer text-sm/6 font-light">
               <input id="terms" type="checkbox" class="sr-only">
               <span class="checkbox"></span>
-              <span>You are 21+ years old and accept our <a href="#" class="text-brand-2">Terms of Service</a> and <a href="#" class="text-brand-2">Privacy Policy</a>.</span>
+              <span>You are 21+ years old and accept our <a href="#" class="text-brand-2" data-legal="terms">Terms of Service</a> and <a href="#" class="text-brand-2" data-legal="privacy">Privacy Policy</a>.</span>
             </label>
             <button type="submit" class="btn" id="signup-submit" disabled>Sign Up</button>
           </form>
@@ -122,7 +122,7 @@
               </div>
             </div>
             <label class="tap gap-2 cursor-pointer text-sm/6 self-start">
-              <input id="remember" type="checkbox" checked class="sr-only">
+              <input id="remember" type="checkbox" class="sr-only">
               <span class="checkbox"></span>
               Keep me logged in
             </label>
@@ -303,6 +303,16 @@
         </form>
       </section>
 
+      <!-- Terms of Service / Privacy Policy from Sign Up: a tall sheet over the
+           form, never a page change, so nothing typed is lost. Reading is not
+           agreeing — the tick on the form is the only consent, so the sheet has
+           no "I agree" button. Content comes from Legal (system-pages-wireframe). -->
+      <div class="sheet-scrim" id="legal-scrim" hidden></div>
+      <section class="sheet md:max-w-[440px] md:mx-auto h-[90dvh]" id="sheet-legal" role="dialog" aria-modal="true" aria-labelledby="legal-title" hidden>
+        <div class="sheet-header"><h2 id="legal-title"></h2><button type="button" class="sheet-close" id="legal-close" aria-label="Close"><span class="icon icon-close" aria-hidden="true"></span></button></div>
+        <div class="sheet-body flex-1 overflow-y-auto" id="legal-body"></div>
+      </section>
+
       <!-- Toast (v1): light blue, black text, sits 16 above the bottom. -->
       <div class="fixed bottom-4 inset-x-4 md:mx-auto md:max-w-[408px] rounded-md bg-[var(--v1-blue-light)] px-4 py-3 text-base/7 font-semibold text-black" id="toast" role="status" hidden></div>
 
@@ -458,6 +468,25 @@
     $('exists-scrim').hidden = false; $('sheet-exists').hidden = false;
   };
   const closeExists = () => { $('exists-scrim').hidden = true; $('sheet-exists').hidden = true; };
+
+  /* Terms of Service / Privacy Policy sheet. */
+  const LEGAL = {
+    terms: ['Terms of Service', ['1. Eligibility', '2. Your account', '3. Deposits and withdrawals', '4. Bonuses and turnover', '5. Prohibited conduct', '6. Responsible gaming', '7. Governing law']],
+    privacy: ['Privacy Policy', ['1. What we collect', '2. How we use it', '3. Who we share it with', '4. How long we keep it', '5. Your rights', '6. Contact us']],
+  };
+  const openLegal = (doc) => {
+    const [title, sections] = LEGAL[doc];
+    $('legal-title').textContent = title;
+    $('legal-body').innerHTML = '<p class="text-sm/6 text-ink-secondary">Version 2.3 · effective Jul 1, 2026</p>'
+      + sections.map((h) => `<div class="flex flex-col gap-1"><p class="text-base/7 font-bold">${h}</p><p class="text-sm/6 text-ink-secondary">Text from Legal.</p></div>`).join('');
+    $('legal-body').scrollTop = 0;
+    $('legal-scrim').hidden = false; $('sheet-legal').hidden = false;
+  };
+  const closeLegal = () => { $('legal-scrim').hidden = true; $('sheet-legal').hidden = true; };
+  // The links sit inside the consent label: opening one must not tick the box.
+  document.querySelectorAll('[data-legal]').forEach((a) => a.addEventListener('click', (e) => { e.preventDefault(); openLegal(a.dataset.legal); }));
+  $('legal-close').addEventListener('click', closeLegal);
+  $('legal-scrim').addEventListener('click', closeLegal);
   existsCells.forEach((cell, i) => cell.addEventListener('input', () => {
     const digits = cell.value.replace(/\D/g, '').split('');
     cell.value = digits[0] || '';
@@ -620,7 +649,7 @@
     document.querySelector('input[name="fp-via"][value="sms"]').checked = true; setFpVia('sms');
     $('terms').checked = false; syncSignup();
     ['email', 'identifier', 'password'].forEach((id) => setError(id, ''));
-    lastUsed = true; setTab('pwd'); closeExists(); $('ref-note').hidden = true;
+    lastUsed = true; setTab('pwd'); closeExists(); closeLegal(); $('ref-note').hidden = true;
   };
   const signupCode = () => { setSide('signup'); fill('email', 'bacon927@gmail.com'); openCode('Verify email', 'bacon927@gmail.com', 'Verify'); };
   const loginCode = () => { setSide('login'); setTab('otc'); fill('identifier', '0912345233'); openCode("Verify it's you", '0912345233', 'Log In'); };
@@ -629,6 +658,8 @@
       ['signup', 'Sign Up · Default', () => { setSide('signup'); show('screen-entry'); }],
       ['signup-ready', 'Sign Up · Ready', () => { setSide('signup'); fill('email', 'bacon927@gmail.com'); $('terms').checked = true; syncSignup(); show('screen-entry'); }],
       ['signup-invite', 'From invite link', () => { setSide('signup'); fill('email', 'bacon927@gmail.com'); fill('referral', 'BH0943'); $('ref-note').hidden = false; $('terms').checked = true; syncSignup(); show('screen-entry'); }],
+      ['signup-terms', 'Terms of Service (sheet)', () => { setSide('signup'); fill('email', 'bacon927@gmail.com'); show('screen-entry'); openLegal('terms'); }],
+      ['signup-privacy', 'Privacy Policy (sheet)', () => { setSide('signup'); fill('email', 'bacon927@gmail.com'); show('screen-entry'); openLegal('privacy'); }],
       ['signup-exists', 'Account exists (sheet)', () => { setSide('signup'); fill('email', 'bacon927@gmail.com'); $('terms').checked = true; syncSignup(); show('screen-entry'); openExists('bacon927@gmail.com'); }],
       ['signup-error-email', 'Error · email', () => { setSide('signup'); fill('email', 'bacon927@gmail'); $('terms').checked = true; syncSignup(); show('screen-entry'); $('signup-submit').click(); }],
     ]],

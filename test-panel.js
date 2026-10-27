@@ -57,6 +57,10 @@
         ['verify-email-invalid', 'Invalid code', 'auth'],
         ['verify-email-too-many', 'Too many resends', 'auth'],
       ]],
+      ['Terms & Privacy', [
+        ['signup-terms', 'Terms of Service (sheet)', 'auth'],
+        ['signup-privacy', 'Privacy Policy (sheet)', 'auth'],
+      ]],
       ['Email already registered', [
         ['signup-exists', 'Account exists (sheet)', 'auth'],
       ]],
