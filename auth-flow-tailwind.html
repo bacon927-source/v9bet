@@ -337,9 +337,14 @@
   };
   const isEmail = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
   // What the identifier looks like decides which rule it fails.
+  // Password tab (allowId): Account IDs may be all digits, so digits are not
+  // checked here — the server looks them up as an Account ID and as a phone
+  // (2026-10-29). Only the One-time code tab, which takes no Account ID, knows
+  // digits are a phone.
   const identifierError = (v, allowId) => {
-    if (/^\+?[\d\s-]+$/.test(v)) return v.replace(/\D/g, '').length < 9 ? 'Enter a valid phone number.' : '';
-    if (v.includes('@') || !allowId) return isEmail(v) ? '' : 'Enter a valid email address.';
+    if (v.includes('@')) return isEmail(v) ? '' : 'Enter a valid email address.';
+    if (/^\+?[\d\s-]+$/.test(v)) return !allowId && v.replace(/\D/g, '').length < 9 ? 'Enter a valid phone number.' : '';
+    if (!allowId) return 'Enter a valid email address.';
     return /^[A-Za-z0-9]+$/.test(v) ? '' : 'Letters and numbers only.';
   };
   ['email', 'identifier', 'password'].forEach((id) => $(id).addEventListener('input', () => setError(id, '')));
@@ -387,6 +392,8 @@
     $('identifier-label').parentElement.querySelector('fieldset legend span').textContent = label; // the outline gap follows the label
     $('identifier').autocomplete = mode === 'pwd' ? 'username webauthn' : 'username';
     $('login-submit').textContent = mode === 'pwd' ? 'Log In' : 'Send Code';
+    setError('identifier', '');
+    if (typeof syncPhone === 'function') syncPhone();
     syncLogin();
   };
   $('tab-pwd').addEventListener('click', () => setTab('pwd'));
@@ -408,8 +415,12 @@
     const region = (navigator.language.split('-')[1] || '').toUpperCase();
     return COUNTRIES[region] ? region : 'VN'; // the site's market
   };
+  /* The country prefix shows only on the One-time code tab: there digits can
+     only be a phone. On the Password tab digits may be an Account ID, so the
+     field stays plain and the server checks both (2026-10-29: Account IDs
+     have never been restricted, so many are all digits). */
   const syncPhone = () => {
-    $('identifier').parentElement.toggleAttribute('data-phone', /^\d[\d\s]*$/.test($('identifier').value));
+    $('identifier').parentElement.toggleAttribute('data-phone', mode === 'otc' && /^\d[\d\s]*$/.test($('identifier').value));
   };
   $('identifier').addEventListener('input', syncPhone);
   $('cc-select').addEventListener('change', () => { setCountry($('cc-select').value); $('identifier').focus(); });
@@ -676,13 +687,14 @@
     ['Log In', [
       ['login', 'Password', () => { setSide('login'); show('screen-entry'); }],
       ['login-filled', 'Password · filled', () => { setSide('login'); fill('identifier', 'bacon927'); fill('password', 'secret123'); show('screen-entry'); }],
-      ['login-typing-phone', 'Typing a phone number', () => { setSide('login'); fill('identifier', '0913'); show('screen-entry'); $('identifier').focus(); }],
+      ['login-typing-digits', 'Typing digits (Account ID or phone)', () => { setSide('login'); fill('identifier', '0913'); show('screen-entry'); $('identifier').focus(); }],
+      ['login-typing-phone', 'One-time code · typing a phone number', () => { setSide('login'); setTab('otc'); fill('identifier', '0913'); show('screen-entry'); $('identifier').focus(); }],
       ['login-typing-email', 'Typing an email', () => { setSide('login'); fill('identifier', 'bacon927@gm'); show('screen-entry'); $('identifier').focus(); }],
       ['login-code', 'One-time code', () => { setSide('login'); setTab('otc'); show('screen-entry'); }],
       ['login-no-record', 'No Last used (first visit)', () => { lastUsed = false; setSide('login'); setTab('otc'); show('screen-entry'); }],
     ]],
     ['Log In · errors', [
-      ['login-error-phone', 'Phone too short', () => { setSide('login'); fill('identifier', '0913'); fill('password', 'secret123'); show('screen-entry'); $('login-submit').click(); }],
+      ['login-error-phone', 'One-time code · phone too short', () => { setSide('login'); setTab('otc'); fill('identifier', '0913'); show('screen-entry'); $('login-submit').click(); }],
       ['login-error-email', 'Email', () => { setSide('login'); fill('identifier', 'bacon927@gmail'); fill('password', 'secret123'); show('screen-entry'); $('login-submit').click(); }],
       ['login-error-id', 'Account ID', () => { setSide('login'); fill('identifier', 'V9 test'); fill('password', 'secret123'); show('screen-entry'); $('login-submit').click(); }],
       ['login-error-password', 'Wrong password', () => { setSide('login'); fill('identifier', 'bacon927'); fill('password', '000000'); show('screen-entry'); $('login-submit').click(); }],
