@@ -128,7 +128,6 @@
               Keep me logged in
             </label>
             <button type="submit" class="btn" id="login-submit" disabled>Log In</button>
-            <a href="#" class="link-row" id="forgot-link">Forgot Password?</a>
           </form>
         </div>
       </section>
@@ -210,69 +209,6 @@
             <button type="submit" class="btn" id="add-email-submit" disabled>Send code</button>
             <button type="button" class="link-row text-brand-2 font-bold social-skip">Skip</button>
           </div>
-        </form>
-      </section>
-
-      <!-- ── Forgot password (Figma: Forgot Password · …) ─────────────────── -->
-      <!-- Choose how → the email or phone on the account → the code screen above →
-           a new password → back to Log In. -->
-      <section id="screen-fp-choose" hidden>
-        <div class="nav-top">
-          <button type="button" aria-label="Close" class="nav-top-action fp-close"><span class="icon icon-close size-7" aria-hidden="true"></span></button>
-        </div>
-        <form class="page-body" id="form-fp-choose" novalidate>
-          <div class="step-hero"><h1>Forgot password</h1><p>Choose how you'd like to receive your one-time code.</p></div>
-          <fieldset class="flex flex-col gap-2">
-            <legend class="sr-only">Where to send the code</legend>
-            <label class="option-card"><input type="radio" name="fp-via" value="email" class="sr-only"><span class="tick"></span><span class="option-card-text">Send via email<span class="option-card-sub">To the email on your account</span></span></label>
-            <label class="option-card"><input type="radio" name="fp-via" value="sms" class="sr-only" checked><span class="tick"></span><span class="option-card-text">Send via SMS<span class="option-card-sub">To the phone on your account</span></span></label>
-          </fieldset>
-          <button type="submit" class="btn">Request Code</button>
-        </form>
-      </section>
-
-      <section id="screen-fp-enter" hidden>
-        <div class="nav-top">
-          <button type="button" aria-label="Close" class="nav-top-action fp-close"><span class="icon icon-close size-7" aria-hidden="true"></span></button>
-        </div>
-        <form class="page-body" id="form-fp-enter" novalidate>
-          <div class="step-hero"><h1 id="fp-enter-title">Verify phone number</h1><p id="fp-enter-why">Enter the phone number registered to your account.</p></div>
-          <div class="flex flex-col gap-3">
-            <div class="field">
-              <input id="fp-contact" type="tel" inputmode="tel" autocomplete="tel-national" placeholder=" " aria-describedby="fp-contact-error">
-              <label for="fp-contact" id="fp-contact-label">Phone Number</label><fieldset aria-hidden="true"><legend><span>Phone Number</span></legend></fieldset>
-              <span class="field-cc absolute left-3 top-2 z-10 h-[50px] items-center gap-1 text-base text-ink pointer-events-none">
-                <span class="cc-code">+84</span><img class="cc-flag size-[22px]" src="assets/flags/vn.svg" alt="">
-                <span class="icon icon-sm icon-chevron-down text-ink-secondary" aria-hidden="true"></span>
-                <span class="ml-2 h-6 w-px bg-edge" aria-hidden="true"></span>
-              </span>
-              <p class="error-text" id="fp-contact-error" hidden></p>
-            </div>
-            <p class="hint">If it matches an account, we'll send a code.</p>
-          </div>
-          <button type="submit" class="btn" id="fp-enter-submit" disabled>Get Code</button>
-        </form>
-      </section>
-
-      <section id="screen-fp-reset" hidden>
-        <div class="nav-top">
-          <button type="button" aria-label="Close" class="nav-top-action fp-close"><span class="icon icon-close size-7" aria-hidden="true"></span></button>
-        </div>
-        <form class="page-body" id="form-fp-reset" novalidate>
-          <div class="step-hero"><h1>Reset password</h1><p>Account ID: AHHHHHH</p></div>
-          <div class="flex flex-col gap-2">
-            <div class="field">
-              <input id="fp-new" type="password" autocomplete="new-password" placeholder=" ">
-              <label for="fp-new">New Password</label><fieldset aria-hidden="true"><legend><span>New Password</span></legend></fieldset>
-              <button type="button" class="field-trail eye" aria-label="Show password"><span class="icon icon-sm icon-eye-crossed" aria-hidden="true"></span></button>
-            </div>
-            <div class="field">
-              <input id="fp-confirm" type="password" autocomplete="new-password" placeholder=" ">
-              <label for="fp-confirm">Confirm New Password</label><fieldset aria-hidden="true"><legend><span>Confirm New Password</span></legend></fieldset>
-              <button type="button" class="field-trail eye" aria-label="Show password"><span class="icon icon-sm icon-eye-crossed" aria-hidden="true"></span></button>
-            </div>
-          </div>
-          <button type="submit" class="btn" id="fp-reset-submit" disabled>Done</button>
         </form>
       </section>
 
@@ -465,7 +401,7 @@
     $('code-to').textContent = mask(to);
     $('code-submit').textContent = action;
     // Only the email the member typed at Sign Up can be wrong; say how to fix it.
-    $('wrong-address').hidden = !(side === 'signup' && !social && !forgot);
+    $('wrong-address').hidden = !(side === 'signup' && !social);
     resetCode(); startCountdown(); show('screen-code'); cells[0].focus();
   };
 
@@ -536,7 +472,7 @@
     });
   });
   $('resend').addEventListener('click', () => { resetCode(); startCountdown(); cells[0].focus(); });
-  $('code-close').addEventListener('click', () => { clearInterval(timer); forgot = false; social = null; show('screen-entry'); });
+  $('code-close').addEventListener('click', () => { clearInterval(timer); social = null; show('screen-entry'); });
   $('form-code').addEventListener('submit', (e) => {
     e.preventDefault();
     // Demo: 000000 is the wrong code; any other six digits pass.
@@ -544,7 +480,6 @@
       $('otp').setAttribute('data-invalid', ''); $('code-error').hidden = false; return;
     }
     clearInterval(timer);
-    if (forgot) { fill('fp-new', ''); fill('fp-confirm', ''); showScreen('screen-fp-reset'); return; }
     if (social === 'link') { $('linked-why').textContent = `You’re logged in as v9_user***. ${provider} is now linked to this account.`; showScreen('screen-social-linked'); return; }
     if (social === 'new') { toSetup(); return; }
     // Sign Up carries on into Setup (setup-flow-tailwind.html opens on step 1 with "Account created").
@@ -595,67 +530,18 @@
     openCode('Verify email', $('add-email').value.trim(), 'Verify');
   });
 
-  /* ── Forgot password ── */
-  let forgot = false; // the code screen is shared; this says where it leads
   const showScreen = (id) => {
-    ['screen-entry', 'screen-code', 'screen-done', 'screen-fp-choose', 'screen-fp-enter', 'screen-fp-reset', 'screen-social-found', 'screen-social-linked', 'screen-social-add-email'].forEach((s) => { $(s).hidden = s !== id; });
+    ['screen-entry', 'screen-code', 'screen-done', 'screen-social-found', 'screen-social-linked', 'screen-social-add-email'].forEach((s) => { $(s).hidden = s !== id; });
     $('code-skip').hidden = !(id === 'screen-code' && social === 'new');
   };
-  const fpVia = () => document.querySelector('input[name="fp-via"]:checked').value;
-  const openForgot = () => { forgot = true; showScreen('screen-fp-choose'); };
-  $('forgot-link').addEventListener('click', (e) => { e.preventDefault(); openForgot(); });
-  document.querySelectorAll('.fp-close').forEach((b) => b.addEventListener('click', () => { forgot = false; showScreen('screen-entry'); }));
-  const setFpVia = (via) => {
-    const phone = via === 'sms';
-    $('fp-enter-title').textContent = phone ? 'Verify phone number' : 'Verify email';
-    $('fp-enter-why').textContent = phone ? 'Enter the phone number registered to your account.' : 'Enter the email registered to your account.';
-    const label = phone ? 'Phone Number' : 'Email';
-    $('fp-contact-label').textContent = label;
-    $('fp-contact-label').parentElement.querySelector('fieldset legend span').textContent = label;
-    $('fp-contact').type = phone ? 'tel' : 'email';
-    $('fp-contact').inputMode = phone ? 'tel' : 'email';
-    $('fp-contact').autocomplete = phone ? 'tel-national' : 'email';
-    fill('fp-contact', '');
-  };
-  $('form-fp-choose').addEventListener('submit', (e) => { e.preventDefault(); setFpVia(fpVia()); showScreen('screen-fp-enter'); $('fp-contact').focus(); });
-  $('fp-contact').addEventListener('input', () => {
-    setError('fp-contact', '');
-    $('fp-enter-submit').disabled = !$('fp-contact').value.trim();
-    // The country prefix shows on the phone version once digits are typed.
-    $('fp-contact').parentElement.toggleAttribute('data-phone', fpVia() === 'sms' && /^\d[\d\s]*$/.test($('fp-contact').value));
-  });
-  $('form-fp-enter').addEventListener('submit', (e) => {
-    e.preventDefault();
-    const v = $('fp-contact').value.trim();
-    const problem = fpVia() === 'sms' ? (v.replace(/\D/g, '').length < 9 ? 'Enter a valid phone number.' : '') : (isEmail(v) ? '' : 'Enter a valid email address.');
-    if (problem) { setError('fp-contact', problem); return; }
-    openCode("Verify it's you", v, 'Verify');
-  });
-  const syncReset = () => { $('fp-reset-submit').disabled = !$('fp-new').value || !$('fp-confirm').value; };
-  $('fp-new').addEventListener('input', syncReset);
-  $('fp-confirm').addEventListener('input', syncReset);
-  $('form-fp-reset').addEventListener('submit', (e) => {
-    e.preventDefault();
-    forgot = false; setSide('login'); setTab('pwd'); showScreen('screen-entry');
-    toast('Your password has been changed.');
-  });
-  document.querySelectorAll('.eye').forEach((eye) => eye.addEventListener('click', () => {
-    const input = eye.parentElement.querySelector('input');
-    const reveal = input.type === 'password';
-    input.type = reveal ? 'text' : 'password';
-    eye.setAttribute('aria-label', reveal ? 'Hide password' : 'Show password');
-    eye.firstElementChild.className = 'icon icon-sm ' + (reveal ? 'icon-eye' : 'icon-eye-crossed');
-  }));
-
 
   /* ── Test panel ── */
   const fill = (id, value) => { $(id).value = value; $(id).dispatchEvent(new Event('input')); };
   const typeCode = (code) => { cells.forEach((c, i) => { c.value = code[i] || ''; }); $('code-submit').disabled = cells.some((c) => !c.value); };
   const fresh = () => {
     clearInterval(timer); $('toast').hidden = true;
-    ['email', 'referral', 'identifier', 'password', 'fp-new', 'fp-confirm'].forEach((id) => fill(id, ''));
-    forgot = false; social = null; setError('fp-contact', ''); setError('add-email', ''); fill('add-email', '');
-    document.querySelector('input[name="fp-via"][value="sms"]').checked = true; setFpVia('sms');
+    ['email', 'referral', 'identifier', 'password'].forEach((id) => fill(id, ''));
+    social = null; setError('add-email', ''); fill('add-email', '');
     $('terms').checked = false; syncSignup();
     ['email', 'identifier', 'password'].forEach((id) => setError(id, ''));
     lastUsed = true; setTab('pwd'); closeExists(); closeLegal(); $('ref-note').hidden = true;
@@ -707,16 +593,6 @@
       ['social-found', 'Match · You already have an account', () => startSocial('line', 'match')],
       ['social-verify', 'Match · Verify it\'s you', () => { startSocial('line', 'match'); $('found-send').click(); }],
       ['social-linked', 'Match · Welcome back', () => { startSocial('line', 'match'); $('found-send').click(); typeCode('123456'); $('form-code').requestSubmit(); }],
-    ]],
-    ['Forgot password', [
-      ['forgot', 'Choose how', () => openForgot()],
-      ['forgot-phone', 'Enter phone', () => { openForgot(); $('form-fp-choose').requestSubmit(); }],
-      ['forgot-email', 'Enter email', () => { openForgot(); document.querySelector('input[name="fp-via"][value="email"]').checked = true; $('form-fp-choose').requestSubmit(); }],
-      ['forgot-phone-error', 'Phone too short', () => { openForgot(); $('form-fp-choose').requestSubmit(); fill('fp-contact', '0913'); $('form-fp-enter').requestSubmit(); }],
-      ['forgot-code', 'Verify it\'s you', () => { openForgot(); $('form-fp-choose').requestSubmit(); fill('fp-contact', '0912345233'); $('form-fp-enter').requestSubmit(); typeCode('123456'); }],
-      ['forgot-reset', 'Reset password', () => { openForgot(); showScreen('screen-fp-reset'); }],
-      ['forgot-reset-filled', 'Reset · filled', () => { openForgot(); showScreen('screen-fp-reset'); fill('fp-new', 'secret123'); fill('fp-confirm', 'secret123'); }],
-      ['forgot-done', 'Done → Log In', () => { openForgot(); showScreen('screen-fp-reset'); fill('fp-new', 'secret123'); fill('fp-confirm', 'secret123'); $('form-fp-reset').requestSubmit(); }],
     ]],
     ['After', [
       ['after-login', 'Lobby + Logged in', () => { side = 'login'; land('Lobby', 'Logged in'); }],

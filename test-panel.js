@@ -126,24 +126,6 @@
         ['whats-new', "What's new", null],
       ]],
     ]],
-    ['Forgot PW', [
-      ['Choose how', [
-        ['forgot', 'Email or SMS', 'auth'],
-      ]],
-      ['Enter email / phone', [
-        ['forgot-phone', 'Phone', 'auth'],
-        ['forgot-email', 'Email', 'auth'],
-        ['forgot-phone-error', 'Phone too short', 'auth'],
-      ]],
-      ['Enter code', [
-        ['forgot-code', "Verify it's you", 'auth'],
-      ]],
-      ['New password', [
-        ['forgot-reset', 'Reset', 'auth'],
-        ['forgot-reset-filled', 'Filled', 'auth'],
-        ['forgot-done', 'Done → Log In', 'auth'],
-      ]],
-    ]],
     ['Settings', [
       ['Account & Settings', [
         ['account', 'Account', null],

@@ -45,8 +45,9 @@
 19. **給 IT：登入方式分開**（10-29 使用者：「password 只能用 account，one time code 可以用 email and phone number」；取代同一天「全數字兩邊查」的版本）：
     - **Password 分頁只收 Account ID**（英文字＋數字，可以全數字）。後台只用 Account ID 查，不用再猜是不是電話。
     - **One-time code 分頁只收 Email／Phone**：有 `@` 是 email；全數字是電話，前端帶國碼送出（國碼預設看裝置時區 → 語言 → 網站市場，不用 IP）。
+    - **沒有忘記密碼**（10-29 使用者：「remove Forgot PW」）：忘記密碼的人用 One-time code 登入，登入後再到設定改密碼。只有 Account ID、沒有 email／電話的舊帳號忘了密碼就進不來，要請 IT 看有多少、怎麼處理（例如找客服）。
     - 請 IT 確認：以前用 email／電話＋密碼登入的會員，之後改用 One-time code 登入，有沒有問題（例如沒有驗證過 email 或電話的舊帳號，只能用 Account ID）。
-18. 流程頁的標題從頂列移到內容（10-27，Figma 已改）：程式成品頁的 Verify Email、Enter code、Forgot Password 還是標題在頂列，要改成頂列只留 ✕、標題用 Step hero
+18. 流程頁的標題從頂列移到內容（10-27，Figma 已改）：程式成品頁的 Verify Email、Enter code 還是標題在頂列，要改成頂列只留 ✕、標題用 Step hero
 17. 問 IT：LINE Login 的 email 權限申請了沒（LINE Developers 後台要送隱私權政策截圖，沒申請就拿不到 email）；Zalo 一般登入只給 Zalo ID、名字、大頭照，有沒有辦法拿到電話
 16. 問 IT：登入頁能不能整頁放在固定的 auth 網域上（會員網站按登入就跳過去、登入完跳回來）？「Last used」、登入狀態、passkey 都存在 auth 網域，換網址不會不見、客人也不用重新登入（10-26 使用者決定 Last used 記在瀏覽器，前提是能解決換網址）
 15. Login／Sign Up 改成 ✕ 頂列＋ Segmented control（10-26）後還沒跟上的：程式成品頁 `login-flow-tailwind.html` `signup-flow-tailwind.html` 和 `tailwind.config.js` 的 `.nav-tabs`
