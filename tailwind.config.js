@@ -145,7 +145,7 @@ module.exports = {
          (.icon-sm) inside a field. The
          colour is the text colour, so set it with text-*. Decorative icons
          get aria-hidden; the button around them carries the aria-label. */
-      const ICONS = ['back', 'close', 'chevron-right', 'chevron-down', 'eye', 'eye-crossed', 'check'];
+      const ICONS = ['back', 'close', 'chevron-right', 'chevron-down', 'eye', 'eye-crossed', 'check', 'calendar'];
       addComponents({
         '.icon': {
           display: 'inline-block', flex: 'none', width: '24px', height: '24px', backgroundColor: 'currentColor',

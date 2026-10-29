@@ -73,9 +73,12 @@
               <input id="full-name" type="text" autocomplete="name" placeholder=" ">
               <label for="full-name">Full Name</label><fieldset aria-hidden="true"><legend><span>Full Name</span></legend></fieldset>
             </div>
+            <!-- A picker: the device's own calendar opens on top of the field. -->
             <div class="field">
-              <input id="dob" type="text" inputmode="numeric" autocomplete="bday" placeholder=" ">
-              <label for="dob">Date of Birth</label><fieldset aria-hidden="true"><legend><span>Date of Birth</span></legend></fieldset>
+              <input id="dob" type="text" readonly placeholder=" " tabindex="-1">
+              <label for="dob-picker">Date of Birth</label><fieldset aria-hidden="true"><legend><span>Date of Birth</span></legend></fieldset>
+              <span class="field-trail"><span class="icon icon-sm icon-calendar text-ink" aria-hidden="true"></span></span>
+              <input id="dob-picker" type="date" autocomplete="bday" class="absolute inset-x-0 top-2 h-[50px] w-full opacity-0 cursor-pointer dark:[color-scheme:dark]">
             </div>
             <!-- A picker: the native list opens on top of the field. -->
             <div class="field">
@@ -339,6 +342,13 @@
   /* Step 3 → 4: the account holder is the name from Personal information. */
   $('full-name').addEventListener('input', () => fill('holder', $('full-name').value));
   $('gender-select').addEventListener('change', () => fill('gender', $('gender-select').value));
+  // Shown in the device's date order (18/04/1992 in Vietnam and Thailand).
+  const showDate = (iso) => iso ? new Intl.DateTimeFormat(undefined, { day: '2-digit', month: '2-digit', year: 'numeric' }).format(new Date(iso + 'T00:00')) : '';
+  const setDob = (iso) => { $('dob-picker').value = iso; fill('dob', showDate(iso)); };
+  $('dob-picker').max = new Date().toISOString().slice(0, 10);
+  $('dob-picker').addEventListener('change', () => setDob($('dob-picker').value));
+  // A desktop browser only opens its calendar from its own icon; open it on any click.
+  $('dob-picker').addEventListener('click', () => { try { $('dob-picker').showPicker(); } catch (e) { /* already open, or not supported */ } });
 
   /* ── Step 4: Bank account | USDT ── */
   const setPayout = (kind) => {
@@ -468,7 +478,7 @@
   /* ── Test panel ── */
   const fresh = () => {
     clearInterval(timer); $('toast').hidden = true; closeSheets(); resetCode();
-    ['account-id', 'full-name', 'dob', 'gender', 'bank', 'account-number', 'usdt-address', 'usdt-nickname', 'pw-new', 'pw-confirm', 'sec-phone', 'add-phone'].forEach((id) => fill(id, ''));
+    ['account-id', 'full-name', 'dob', 'gender', 'bank', 'account-number', 'usdt-address', 'usdt-nickname', 'pw-new', 'pw-confirm', 'sec-phone', 'add-phone'].forEach((id) => fill(id, '')); $('dob-picker').value = '';
     setError('account-id', ''); setPayout('bank');
     $('twofa').checked = false; $('contacts').hidden = true;
     verified['sec-email'] = true; verified['sec-phone'] = false;
@@ -477,7 +487,7 @@
     // Step 8 shows whatever theme is in force (the test panel can change it too).
     syncThemeStep();
   };
-  const personal = () => { fill('full-name', 'Pei Chen'); fill('dob', '1992-04-18'); };
+  const personal = () => { fill('full-name', 'Pei Chen'); setDob('1992-04-18'); };
   const twofaOn = () => { $('twofa').checked = true; $('contacts').hidden = false; };
   const STATES = [
     ['Steps', [
