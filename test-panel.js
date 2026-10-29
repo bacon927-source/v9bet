@@ -23,9 +23,8 @@
         ['login-filled', 'Password · filled', 'auth'],
         ['login-code', 'One-time code', 'auth'],
         ['login-no-record', 'First visit (no Last used)', 'auth'],
-        ['login-typing-digits', 'Typing digits (Account ID or phone)', 'auth'],
         ['login-typing-phone', 'One-time code · typing a phone number', 'auth'],
-        ['login-typing-email', 'Typing an email', 'auth'],
+        ['login-typing-email', 'One-time code · typing an email', 'auth'],
       ]],
       ['Enter code', [
         ['verify-you', 'Typing', 'auth'],
@@ -36,7 +35,7 @@
       ]],
       ['Errors', [
         ['login-error-phone', 'One-time code · phone too short', 'auth'],
-        ['login-error-email', 'Email', 'auth'],
+        ['login-error-email', 'One-time code · email', 'auth'],
         ['login-error-id', 'Account ID', 'auth'],
         ['login-error-password', 'Wrong password', 'auth'],
       ]],

@@ -42,14 +42,10 @@
 **明天先問使用者的**：
 1. ~~密碼頁要不要放雙重驗證~~ → 10-21 已決定：密碼和 2FA 都在 Security 一頁；2FA 開關打開後，電話和 email 都驗證過才算開好。**還要問**：開好之後要不要再走驗證器 App（裝 App、掃 QR、輸入碼、存備援碼），還是簡訊／email 碼就夠
 2. 幣別頁的文字要改成什麼
-19. **給 IT：登入帳號欄的後台判斷**（10-29 使用者：「好 改」）。Account ID 從以前就沒有限制，很多是全數字、也可能 09 開頭，畫面分不出是電話還是 Account ID，所以 Password 分頁的帳號欄不再跳國碼、也不在前端判斷，交給後台：
-    - 有 `@` → 當 email 查。
-    - 有英文字 → 當 Account ID 查。
-    - 全數字 → **Account ID 和電話兩邊都查**；電話的國碼用客人裝置的地區補（時區 → 語言 → 網站市場，不用 IP），密碼對的那個就是。
-    - `+` 開頭 → 只當電話查，用他打的國碼（外國電話用）。
-    - 兩邊都對到而且密碼一樣（極少）→ 回傳兩個帳號，前端請客人選。
-    - One-time code 分頁只收 Email／Phone，全數字一定是電話，前端會帶國碼送出。
-    - 請 IT 確認：後台能不能這樣兩邊查；兩邊都中時要回什麼。
+19. **給 IT：登入方式分開**（10-29 使用者：「password 只能用 account，one time code 可以用 email and phone number」；取代同一天「全數字兩邊查」的版本）：
+    - **Password 分頁只收 Account ID**（英文字＋數字，可以全數字）。後台只用 Account ID 查，不用再猜是不是電話。
+    - **One-time code 分頁只收 Email／Phone**：有 `@` 是 email；全數字是電話，前端帶國碼送出（國碼預設看裝置時區 → 語言 → 網站市場，不用 IP）。
+    - 請 IT 確認：以前用 email／電話＋密碼登入的會員，之後改用 One-time code 登入，有沒有問題（例如沒有驗證過 email 或電話的舊帳號，只能用 Account ID）。
 18. 流程頁的標題從頂列移到內容（10-27，Figma 已改）：程式成品頁的 Verify Email、Enter code、Forgot Password 還是標題在頂列，要改成頂列只留 ✕、標題用 Step hero
 17. 問 IT：LINE Login 的 email 權限申請了沒（LINE Developers 後台要送隱私權政策截圖，沒申請就拿不到 email）；Zalo 一般登入只給 Zalo ID、名字、大頭照，有沒有辦法拿到電話
 16. 問 IT：登入頁能不能整頁放在固定的 auth 網域上（會員網站按登入就跳過去、登入完跳回來）？「Last used」、登入狀態、passkey 都存在 auth 網域，換網址不會不見、客人也不用重新登入（10-26 使用者決定 Last used 記在瀏覽器，前提是能解決換網址）
