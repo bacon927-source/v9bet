@@ -88,6 +88,7 @@
       ]],
       ['3 Personal information', [
         ['step-3', 'Personal information', 'setup'],
+        ['dob-under-21', 'Error · under 21', 'setup'],
       ]],
       ['4 Bank account / USDT', [
         ['step-4', 'Bank account', 'setup'],

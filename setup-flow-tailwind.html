@@ -79,6 +79,8 @@
               <label for="dob-picker">Date of Birth</label><fieldset aria-hidden="true"><legend><span>Date of Birth</span></legend></fieldset>
               <span class="field-trail"><span class="icon icon-sm icon-calendar text-ink" aria-hidden="true"></span></span>
               <input id="dob-picker" type="date" autocomplete="bday" class="absolute inset-x-0 top-2 h-[50px] w-full opacity-0 cursor-pointer dark:[color-scheme:dark]">
+              <p class="hint">You must be 21 or older.</p>
+              <p class="error-text" id="dob-error" hidden></p>
             </div>
             <!-- A picker: the native list opens on top of the field. -->
             <div class="field">
@@ -335,6 +337,7 @@
       const id = $('account-id').value.trim();
       if (!/^[A-Za-z0-9]+$/.test(id)) { setError('account-id', 'Letters and numbers only.'); return; }
     }
+    if (form.dataset.step === '3' && $('dob').getAttribute('aria-invalid') === 'true') return;
     next();
   }));
   $('account-id').addEventListener('input', () => setError('account-id', ''));
@@ -344,8 +347,15 @@
   $('gender-select').addEventListener('change', () => fill('gender', $('gender-select').value));
   // Shown in the device's date order (18/04/1992 in Vietnam and Thailand).
   const showDate = (iso) => iso ? new Intl.DateTimeFormat(undefined, { day: '2-digit', month: '2-digit', year: 'numeric' }).format(new Date(iso + 'T00:00')) : '';
-  const setDob = (iso) => { $('dob-picker').value = iso; fill('dob', showDate(iso)); };
-  $('dob-picker').max = new Date().toISOString().slice(0, 10);
+  // Members must be 21 or older (2026-10-29), so the calendar stops 21 years ago.
+  // Some phones (older iPhones) let a later date through anyway, so it is checked too.
+  const today = new Date();
+  const adultBy = `${today.getFullYear() - 21}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+  const setDob = (iso) => {
+    $('dob-picker').value = iso; fill('dob', showDate(iso));
+    setError('dob', iso > adultBy ? 'You must be 21 or older.' : '');
+  };
+  $('dob-picker').max = adultBy;
   $('dob-picker').addEventListener('change', () => setDob($('dob-picker').value));
   // A desktop browser only opens its calendar from its own icon; open it on any click.
   $('dob-picker').addEventListener('click', () => { try { $('dob-picker').showPicker(); } catch (e) { /* already open, or not supported */ } });
@@ -478,7 +488,7 @@
   /* ── Test panel ── */
   const fresh = () => {
     clearInterval(timer); $('toast').hidden = true; closeSheets(); resetCode();
-    ['account-id', 'full-name', 'dob', 'gender', 'bank', 'account-number', 'usdt-address', 'usdt-nickname', 'pw-new', 'pw-confirm', 'sec-phone', 'add-phone'].forEach((id) => fill(id, '')); $('dob-picker').value = '';
+    ['account-id', 'full-name', 'dob', 'gender', 'bank', 'account-number', 'usdt-address', 'usdt-nickname', 'pw-new', 'pw-confirm', 'sec-phone', 'add-phone'].forEach((id) => fill(id, '')); $('dob-picker').value = ''; setError('dob', '');
     setError('account-id', ''); setPayout('bank');
     $('twofa').checked = false; $('contacts').hidden = true;
     verified['sec-email'] = true; verified['sec-phone'] = false;
@@ -494,6 +504,7 @@
       ['step-1', '1 Currency', () => showStep(1)],
       ['step-2', '2 Account ID', () => showStep(2)],
       ['step-3', '3 Personal', () => { personal(); showStep(3); }],
+      ['dob-under-21', '3 Personal · under 21', () => { personal(); setDob(`${new Date().getFullYear() - 18}-01-01`); showStep(3); }],
       ['step-4', '4 Bank', () => { personal(); showStep(4); }],
       ['step-5', '5 Password', () => showStep(5)],
       ['step-6', '6 Security', () => showStep(6)],
