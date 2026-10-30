@@ -93,9 +93,11 @@
         ['as-zalo', 'New · Zalo (no email)', 'setup'],
         ['as-email', 'New · Email', 'setup'],
       ]],
+      ['Before Setup', [
+        ['arrive', 'New member', 'setup'],
+        ['intro-existing', 'Existing member', 'setup'],
+      ]],
       ['1 Currency', [
-        ['arrive', 'Before Setup · new member', 'setup'],
-        ['intro-existing', 'Before Setup · existing member', 'setup'],
         ['step-1', 'Currency', 'setup'],
       ]],
       ['2 Account ID', [

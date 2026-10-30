@@ -679,9 +679,9 @@
       ['step-8', '6 Display', () => showStep(8)],
       ['display-large', '6 Display · Large text', () => { setTextSize('large'); showStep(8); syncThemeStep(); }],
     ]],
-    ['1 Currency', [
-      ['arrive', 'Before Setup · new member', () => showIntro()],
-      ['intro-existing', 'Before Setup · existing member', () => { order = ORDER.filter((n) => n > 2); isNew = false; showIntro(); }],
+    ['Before Setup', [
+      ['arrive', 'New member', () => showIntro()],
+      ['intro-existing', 'Existing member', () => { order = ORDER.filter((n) => n > 2); isNew = false; showIntro(); }],
     ]],
     ['2 Account ID', [
       ['account-id-error', 'Error · letters and numbers', () => { showStep(2); fill('account-id', 'V9 test'); steps[1].requestSubmit(); }],
