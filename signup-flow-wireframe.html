@@ -311,6 +311,7 @@ const screens = [
     <div class="grp">Step 2 · Security &amp; payout <span class="badge">can skip</span></div>
     <div class="checklist">
       ${ci(3,"Bank account / USDT","needed before withdrawal",s>1&&!nc)}
+      <div class="hint">＊ BEFORE SETUP (10-30, user: \"在 sign up 到 setup 中間會有一頁跟客人說 setup 開始，但不用寫開始\" / \"要跟舊客說明我們要更優化所以請做以下 setup\"): one full page between sign-up and Setup, the same for every way in — \"Your account is ready · A few quick settings and you’re all set.\" → Continue. An existing member, the first time Setup is on: \"We’ve improved V9Bet · Please complete the following settings for your account.\" No \"start\" anywhere. Personas also include New · Phone (came in with a one-time code to a phone — there is no phone sign-up form).</div>
       <div class="hint">＊ ONLY WHAT IS MISSING (10-30, user): every member goes through Setup once — a new member right after sign-up, an existing member the first time Setup is switched on — and sees only the steps not done yet; the progress bar counts their own steps. An existing member already has a currency and an Account ID, so starts at Personal information (25% → 50% → 75% → 100%); one who also has personal info and a bank sees only Notifications and Display (50% → 100%). Personas in the test panel: Existing ×2, New · Google / LINE / Zalo / Email.</div>
       <div class="hint">＊ Set a password and Security (2FA, email / phone) are out of Setup for now (10-30, user: "set password 在setup時拿掉" / "2fa在setup 時拿掉"). They stay in Settings.</div>
     </div>
@@ -459,11 +460,14 @@ const screens = [
   }
 },
 {
-  group:"B · Account Setup", id:"theme", title:"Theme", step:"Step 3 · Preferences (can skip)",
-  states:["Theme"],
+  group:"B · Account Setup", id:"theme", title:"Display (theme + text size)", step:"Last step of Setup (can skip)",
+  states:["Default text","Large text"],
   render:(s)=>`
-    <div class="scr-title"><span class="x">←</span>Appearance</div>
-    <div class="scr-step">Choose theme</div>${OPT("🌙 Dark",true)}${OPT("☀️ Light",false)}${OPT("⚙️ Follow system settings",false)}
+    <div class="scr-title"><span class="x">←</span>Display</div>
+    <div class="scr-step">Theme and text size.</div>
+    <div class="grp">Theme</div>${OPT("⚙️ Follow system",true)}${OPT("🌙 Dark",false)}${OPT("☀️ Light",false)}
+    <div class="grp">Text size</div>${OPT("Default",s===0)}${OPT("Large <small style='color:#b0b0b0'>Bigger text, easier to read</small>",s===1)}
+    <div class="hint">＊ TEXT SIZE (10-30, user: \"加一個字體大小…正常字，和放大一點，二個版本\" / \"好 rem\"): all type is in rem, as Tailwind writes it, so text already follows the phone's own text size; Large sets the root to 112.5% (16 → 18) and every size grows with it. Changes the page at once; kept in this browser.</div>
     <div class="hint">＊ No language picker here (09-17) — the interface is already in the right language by the time this screen is reached.</div>
     ${CTA("Continue")}`,
   spec:{
@@ -517,19 +521,19 @@ const screens = [
   }
 },
 {
-  group:"C · Finish", id:"welcome", title:"Welcome + Offers", step:"After setup",
+  group:"C · Finish", id:"welcome", title:"Welcome + Offers", step:"After setup · full page · new members only (10-30)",
   states:["Default"],
   render:()=>`
-    <div class="scr-title">🎉 Welcome to V9Bet</div>
-    <div class="scr-step">Your account is ready. Here are your new-member offers</div>
+    <div class="scr-title"><span class="x">✕</span>Welcome to V9Bet</div>
+    <div class="scr-step">Here are your new-member offers.</div>
     <div class="promo"><span class="tag">New member offer</span>
       <div style="font-weight:700;margin:8px 0 2px">100% First Deposit Bonus</div>
       <div class="hint" style="margin:0">For Sports / Live, turnover x10 · auto-applied at your first deposit</div></div>
     <div class="promo"><span class="tag">Mission</span>
       <div style="font-weight:700;margin:8px 0 2px">Make your first deposit</div>
       <div class="hint" style="margin:0">Unlock free bet x1</div></div>
-    ${CTA("Go to deposit")}
-    ${CTA("Browse home first",'ghost')}`,
+    ${CTA("Go to Deposit")}
+    <div class="hint">＊ 10-30 (user: \"welcome to v9bet 是一整頁的\" / \"放在 setup 結束\"): a full page, not a sheet, at the end of Setup — new members only; an existing member goes straight to Home. ✕ also goes to Home. \"Your account is ready\" moved to the page before Setup.</div>`,
   spec:{
     goal:"Welcome the new member and instantly surface applicable offers → drive to deposit. FIRST of the two finish screens (09-17).",
     states:["has applicable offers (list)","no offers (empty copy)","offers loading / error"],
