@@ -53,9 +53,7 @@
       ['Form', [
         ['signup', 'Default', 'auth'],
         ['signup-ready', 'Ready', 'auth'],
-        ['signup-typing-phone', 'Typing a phone number', 'auth'],
         ['signup-invite', 'From invite link', 'auth'],
-        ['signup-error-phone', 'Phone too short', 'auth'],
         ['signup-error-email', 'Error · email', 'auth'],
       ]],
       ['Verify email', [
