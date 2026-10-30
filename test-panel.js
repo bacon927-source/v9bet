@@ -77,6 +77,14 @@
       ]],
     ]],
     ['Setup', [
+      ['Who is arriving', [
+        ['as-existing', 'Existing · currency + Account ID → 4 steps', 'setup'],
+        ['as-existing-more', 'Existing · + personal info + bank → 2 steps', 'setup'],
+        ['as-google', 'New · Google', 'setup'],
+        ['as-line', 'New · LINE', 'setup'],
+        ['as-zalo', 'New · Zalo (no email)', 'setup'],
+        ['as-email', 'New · Email', 'setup'],
+      ]],
       ['1 Currency', [
         ['arrive', 'Arriving · Account created', 'setup'],
         ['step-1', 'Currency', 'setup'],

@@ -331,18 +331,22 @@
   // for now (2026-10-30, user: 先拿掉); their forms stay in the page because
   // Notifications keeps the member's email and phone in step 6's fields.
   const ORDER = [1, 2, 3, 4, 7, 8];
+  // A member only sees the steps they have not done yet (2026-10-30, user): an
+  // existing member with a currency and an Account ID starts at Personal
+  // information, so their Setup is shorter and the bar counts only their steps.
+  let order = ORDER;
   let current = 1;
   const showStep = (n) => {
     current = n;
     closeSheets();
     steps.forEach((s) => { s.hidden = Number(s.dataset.step) !== n; });
     $('lobby').hidden = true; $('topbar').hidden = false;
-    const pct = Math.round((ORDER.indexOf(n) + 1) / ORDER.length * 100);
+    const pct = Math.round((order.indexOf(n) + 1) / order.length * 100);
     $('bar-done').style.width = pct + '%'; $('bar').setAttribute('aria-valuenow', pct); $('pct').textContent = pct + '%';
     window.scrollTo(0, 0);
   };
-  const next = () => { const i = ORDER.indexOf(current); if (i < ORDER.length - 1) showStep(ORDER[i + 1]); else toLobby(); };
-  $('back').addEventListener('click', () => { const i = ORDER.indexOf(current); if (i > 0) showStep(ORDER[i - 1]); });
+  const next = () => { const i = order.indexOf(current); if (i < order.length - 1) showStep(order[i + 1]); else toLobby(); };
+  $('back').addEventListener('click', () => { const i = order.indexOf(current); if (i > 0) showStep(order[i - 1]); });
   // "Set up later" leaves this step for later and moves on.
   document.querySelectorAll('.skip').forEach((a) => a.addEventListener('click', (e) => { e.preventDefault(); next(); }));
   steps.forEach((form) => form.addEventListener('submit', (e) => {
@@ -540,10 +544,47 @@
     document.querySelector('input[name="channel"][value="email"]').checked = true; Object.keys(MESSENGERS).forEach((k) => setLinked(k, false));
     // Step 8 shows whatever theme is in force (the test panel can change it too).
     syncThemeStep();
+    order = ORDER;
   };
   const personal = () => { fill('full-name', 'Pei Chen'); setDob('1992-04-18'); };
+
+  /* Who is arriving (2026-10-30, user): every member goes through Setup once —
+     a new member right after sign-up, an existing member the first time Setup
+     is switched on — and sees only what is still missing. done = the steps
+     (data-step) they already have; email '' = no email on the account. */
+  const PERSONAS = {
+    'existing':      { isNew: false, done: [1, 2],       email: SIGNUP_EMAIL, phone: '0914567233', linked: [] },
+    'existing-more': { isNew: false, done: [1, 2, 3, 4], email: SIGNUP_EMAIL, phone: '0914567233', linked: [] },
+    'google':        { isNew: true,  done: [], email: SIGNUP_EMAIL, linked: [] },
+    'line':          { isNew: true,  done: [], email: SIGNUP_EMAIL, linked: ['line'] },
+    'zalo':          { isNew: true,  done: [], email: '',           linked: ['zalo'] },
+    'email':         { isNew: true,  done: [], email: SIGNUP_EMAIL, linked: [] },
+  };
+  const startAs = (key) => {
+    const p = PERSONAS[key];
+    if (p.done.includes(3)) personal();
+    if (p.done.includes(4)) { fill('bank', 'Vietcombank'); fill('account-number', '0071000123456'); }
+    if (p.done.includes(2)) fill('account-id', 'bacon927');
+    verified['sec-email'] = false; fill('sec-email', p.email); if (p.email) markVerified('sec-email');
+    if (p.phone) { fill('sec-phone', p.phone); markVerified('sec-phone'); }
+    p.linked.forEach((k) => setLinked(k, true));
+    // No email on the account: the channel starts on the app they signed up with.
+    if (!p.email && p.linked[0]) document.querySelector(`input[name="channel"][value="${p.linked[0]}"]`).checked = true;
+    syncChannels();
+    order = ORDER.filter((n) => !p.done.includes(n));
+    showStep(order[0]);
+    if (p.isNew) toast('Account created');
+  };
   const twofaOn = () => { $('twofa').checked = true; $('contacts').hidden = false; };
   const STATES = [
+    ['Who is arriving', [
+      ['as-existing', 'Existing · has currency + Account ID', () => startAs('existing')],
+      ['as-existing-more', 'Existing · also personal info + bank', () => startAs('existing-more')],
+      ['as-google', 'New · Google', () => startAs('google')],
+      ['as-line', 'New · LINE', () => startAs('line')],
+      ['as-zalo', 'New · Zalo (no email)', () => startAs('zalo')],
+      ['as-email', 'New · Email', () => startAs('email')],
+    ]],
     ['Steps', [
       ['step-1', '1 Currency', () => showStep(1)],
       ['step-2', '2 Account ID', () => showStep(2)],
