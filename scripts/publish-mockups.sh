@@ -12,7 +12,7 @@ SRC=~/Desktop/v9bet
 DST=~/Documents/v9bet/sp-mockups
 MSG=${1:?commit message}
 
-PAGES=(auth-flow-tailwind.html setup-flow-tailwind.html settings-tailwind.html signup-flow-tailwind.html login-flow-tailwind.html ui-kit.html ui-guideline.html)
+PAGES=(auth-flow-tailwind.html setup-flow-tailwind.html settings-tailwind.html signup-flow-tailwind.html login-flow-tailwind.html ui-kit.html ui-guideline.html profile-settings-flow-wireframe.html)
 SHARED=(variables.css theme.js tailwind.config.js test-panel.js)
 for f in $PAGES $SHARED; do cp "$SRC/$f" "$DST/$f"; done
 rsync -a "$SRC/assets/" "$DST/assets/"

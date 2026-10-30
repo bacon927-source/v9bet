@@ -170,6 +170,49 @@ const SOC = (ic, t, sub='', last=false) => `<div class="socbtn"><span class="ic"
 /* ---------- screen definitions ---------- */
 const screens = [
 {
+  group:"P · Profile", id:"profile", title:"Profile (the member's home)",
+  states:["Everything done","Setup not finished","New member · nothing yet"],
+  render:(s)=>{
+    const box=(inner,extra='')=>`<div style="border:1px solid var(--line);border-radius:12px;padding:12px;margin:8px 0;${extra}">${inner}</div>`;
+    const bar=(pct)=>`<div style="height:6px;border-radius:3px;background:var(--fill);border:1px solid var(--line);overflow:hidden;margin:6px 0"><div style="width:${pct}%;height:100%;background:var(--solid)"></div></div>`;
+    const money=s===2?'0':'1,250,000';
+    return `
+    <div class="scr-title"><span class="x">✕</span>${s===1?'bacon927':'Pei Chen'}<span style="position:absolute;right:0;top:0;color:var(--muted);font-weight:400">⚙︎</span></div>
+    <div class="scr-step">Account ID: bacon927</div>
+    ${s===1?box(`<div style="display:flex;justify-content:space-between;align-items:center"><b>Finish setting up your account</b><span class="st wait">2 left</span></div>${bar(60)}<div class="hint" style="margin:0">Personal information · Bank account / USDT</div>${CTA('Continue')}`,'border-style:dashed'):''}
+    ${box(`<div style="display:flex;justify-content:space-between"><b>🥉 Bronze</b><span class="hint" style="margin:0">Valid until 31 Oct 2026</span></div>
+      <div class="kv" style="border:0;padding:4px 0"><span>Points</span><b>${s===2?'0':'120,000'}</b></div>${bar(s===2?0:30)}
+      <div class="hint" style="margin:0">${s===2?'400,000':'280,000'} more to Silver</div>`)}
+    ${box(`<div class="hint" style="margin:0">Balance (VND)</div><div style="font-size:26px;font-weight:700;margin:2px 0 6px">${money}</div>
+      <div class="kv"><span>Withdrawable</span><b>${s===2?'0':'1,000,000'}</b></div>
+      <div class="kv" style="border:0"><span>Turnover left</span><b>${s===2?'0':'250,000'}</b></div>
+      <div class="row" style="margin-top:6px"><div class="cta" style="margin:0">Deposit</div><div class="cta ghost" style="margin:0">Withdraw</div></div>`)}
+    <div class="row">
+      ${box(`<div style="text-align:center">✉️<div style="font-size:12px">Inbox ${s===2?'':'<span class="st bad">3</span>'}</div></div>`,'margin:0')}
+      ${box(`<div style="text-align:center">🎟️<div style="font-size:12px">My bets</div></div>`,'margin:0')}
+      ${box(`<div style="text-align:center">🎁<div style="font-size:12px">Promotions</div></div>`,'margin:0')}
+    </div>
+    <div class="grp">Your offers</div>
+    <div class="ph" style="height:110px">Offer banners (carousel)</div>
+    <div class="li"><span class="ic">👥</span><span class="g">Refer a friend<small>${s===2?'Invite friends, earn rewards':'This month: 120,000 VND · 2 friends joined'}</small></span><span class="rt">›</span></div>
+    <div class="hint">＊ Language and Log out live in Settings (⚙︎) now — not repeated here.</div>`;
+  },
+  spec:{
+    goal:"Profile is the member's home: who they are, their level, their money, and shortcuts — settings sit behind ⚙︎ (Settings, the iPhone way). Wireframe first (10-30, user: \"我們開始來做 profile…我們先做 wireframe\").",
+    states:["everything done","setup not finished → a 'Finish setting up your account' card on top, showing what is left; Continue opens only the missing steps (same rule as Setup)","new member · nothing yet → zero balance, no points, empty Inbox, referral invite"],
+    fields:["display_name / account_id","tier{name, points, next_tier, points_to_next, valid_until}","wallet{currency, balance, withdrawable, turnover_left}","inbox_unread","setup{steps_left[]}","offers[]","referral{month_earned, joined_count}"],
+    api:"GET /profile → { account_id, display_name, tier, wallet, inbox_unread, setup, referral }\nGET /promotions/eligible (offers carousel)",
+    notes:[
+      "FROM v1 (what the current page has, top to bottom): ✕ · username · ⚙︎ with a red dot; Bronze card (Current Points, progress to Silver, 'To Unlock Silver Level: 400,000', valid until); a big arc gauge with Balance, Withdrawable Amount, Remaining Churn; promotion notification + Inbox; Statement (Unsettled · Cash Out); Your Offers carousel; Refer A Friend (Current Month Earned, Today's Commission, referees successful / pending / invalid); Language; Log Out.",
+      "KEPT: tier card, balance + withdrawable + turnover, Inbox, Statement (as My bets), offers carousel, refer a friend.",
+      "CHANGED (proposals to confirm): the arc gauge goes — it takes half the screen and shows no range; the balance is one big number instead. 'Remaining Churn' is called 'Turnover left' (the usual term). Deposit / Withdraw buttons added under the balance. Inbox, My bets and Promotions become one row of three shortcuts (v1 had a promotion-notification card and an Inbox card). Refer a friend collapses to one row; the detail opens one page down.",
+      "MOVED: Language and Log out are in Settings now (Display › Language; Settings first page › Log out), so Profile does not repeat them. The ⚙︎ red dot means something in Settings needs attention (e.g. 2FA off) — to confirm.",
+      "SETUP NOT FINISHED: an existing member who skipped steps, or a new one who pressed Set up later, sees a card on top with what is left; Continue runs only those steps (RULES / Setup personas).",
+      "Header: v1 shows the username; new members have no name yet, so the Account ID shows until a name is added."
+    ]
+  }
+},
+{
   group:"A · Settings", id:"settings", title:"Settings Home — the iPhone way (10-30)",
   states:["All done","Things not done yet"],
   render:(s)=>`
