@@ -12,7 +12,8 @@ SRC=~/Desktop/v9bet
 DST=~/Documents/v9bet/sp-mockups
 MSG=${1:?commit message}
 
-PAGES=(auth-flow-tailwind.html setup-flow-tailwind.html settings-tailwind.html signup-flow-tailwind.html login-flow-tailwind.html ui-kit.html ui-guideline.html profile-settings-flow-wireframe.html)
+# Built pages only — wireframes are not published here (2026-10-30, user: "wireframe 不要推到 gitlab").
+PAGES=(auth-flow-tailwind.html setup-flow-tailwind.html settings-tailwind.html signup-flow-tailwind.html login-flow-tailwind.html ui-kit.html ui-guideline.html)
 SHARED=(variables.css theme.js tailwind.config.js test-panel.js)
 for f in $PAGES $SHARED; do cp "$SRC/$f" "$DST/$f"; done
 rsync -a "$SRC/assets/" "$DST/assets/"
