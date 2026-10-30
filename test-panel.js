@@ -418,7 +418,7 @@
       <div class="sticky bottom-0 -mx-3 mt-auto flex flex-col gap-2 p-3 bg-sheet border-t border-edge">
         <div class="flex flex-wrap items-center gap-2">
           ${seg('data-theme-choice', 'Theme', [['system', 'System'], ['light', 'Light'], ['dark', 'Dark']])}
-          ${seg('data-size-choice', 'Text size', [['default', 'Text'], ['large', 'Large text']])}
+          ${seg('data-size-choice', 'Text size', [['default', '<span class="text-[0.6875rem] font-semibold" aria-label="Default text" title="Default text">A</span>'], ['large', '<span class="text-[0.9375rem] font-semibold" aria-label="Large text" title="Large text">A</span>']])}
         </div>
         <div class="flex items-center gap-4">
           <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" role="switch" class="tp-spacing sr-only"><span class="toggle"></span><span class="text-ink">Spacing</span></label>
