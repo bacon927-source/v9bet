@@ -177,11 +177,13 @@ const screens = [
     const bar=(pct)=>`<div style="height:6px;border-radius:3px;background:var(--fill);border:1px solid var(--line);overflow:hidden;margin:6px 0"><div style="width:${pct}%;height:100%;background:var(--solid)"></div></div>`;
     const money=s===2?'0':'1,250,000';
     return `
-    <div class="scr-title" style="min-height:22px"><span class="x">✕</span><span style="position:absolute;right:0;top:0;color:var(--muted);font-weight:400">⚙︎</span></div>
+    <div class="scr-title" style="min-height:22px"><span class="x">👛</span><span style="position:absolute;right:0;top:0;color:var(--muted);font-weight:400">⚙︎<sup style="color:#b56">•</sup> &nbsp;🎧</span></div>
     ${s===1?box(`<div style="display:flex;justify-content:space-between;align-items:center"><b>Finish setting up your account</b><span class="st wait">2 left</span></div>${bar(60)}<div class="hint" style="margin:0">Personal information · Bank account / USDT</div>${CTA('Continue')}`,'border-style:dashed'):''}
-    ${box(`<div style="display:flex;justify-content:space-between"><b>🥉 Bronze</b><span class="hint" style="margin:0">Valid until 31 Oct 2026</span></div>
-      <div class="kv" style="border:0;padding:4px 0"><span>Points</span><b>${s===2?'0':'120,000'}</b></div>${bar(s===2?0:30)}
-      <div class="hint" style="margin:0">${s===2?'400,000':'280,000'} more to Silver</div>`)}
+    ${s===0?`<div class="hint" style="margin:0 0 -4px">🎁 You have 1 unclaimed reward <b>›</b></div>`:''}
+    ${box(`<div style="display:flex;justify-content:space-between;align-items:center"><div><b>🥉 Bronze</b><div class="hint" style="margin:0">${s===2?'Place your first bet to start earning points':'120,000 points'}</div></div><div class="ph" style="width:52px;height:52px;margin:0">art</div></div>
+      ${s===2?'':`${bar(30)}<div style="display:flex;justify-content:space-between" class="hint"><span>280,000 more to Silver</span><b>Levels ›</b></div>`}
+      ${s===1?`<div class="hint" style="margin:6px 0 0;color:#a70">⏱ 120,000 points expire on 31 Oct</div>`:''}
+      <div class="hint" style="margin:8px 0 0;border-top:1px dashed var(--line);padding-top:6px">${s===2?'Reach Silver at 400,000 points: ':'At Silver: '}+0.2% rebate · birthday bonus <span class="st">sample</span></div>`)}
     ${box(`<div class="hint" style="margin:0">Balance (VND)</div><div style="font-size:26px;font-weight:700;margin:2px 0 6px">${money}</div>
       <div class="kv"><span>Withdrawable</span><b>${s===2?'0':'1,000,000'}</b></div>
       <div class="kv" style="border:0"><span>Turnover left</span><b>${s===2?'0':'250,000'}</b></div>
@@ -206,7 +208,7 @@ const screens = [
       "KEPT: tier card, balance + withdrawable + turnover, Inbox, Statement (as My bets), offers carousel, refer a friend.",
       "CHANGED (proposals to confirm): the arc gauge goes — it takes half the screen and shows no range; the balance is one big number instead. 'Remaining Churn' is called 'Turnover left' (the usual term). Deposit / Withdraw buttons added under the balance. Inbox, My bets and Promotions become one row of three shortcuts (v1 had a promotion-notification card and an Inbox card). Refer a friend collapses to one row; the detail opens one page down.",
       "MOVED: Language and Log out are in Settings now (Display › Language; Settings first page › Log out), so Profile does not repeat them. The ⚙︎ red dot means something in Settings needs attention (e.g. 2FA off) — to confirm.",
-      "SETUP NOT FINISHED: an existing member who skipped steps, or a new one who pressed Set up later, sees a card on top with what is left; Continue runs only those steps (RULES / Setup personas).",
+      "HEADER, from the VIP draft (10-30, user: \"對，用新版\"): 👛 wallet on the left, ⚙︎ Settings (red dot when something there needs attention) and 🎧 support on the right, nothing in the middle; Profile is a tab of the bottom bar, so no ✕.","TIER CARD (10-30, user ok): points under the tier name; bar + \"280,000 more to Silver\" + Levels › (the tier page); one line of what the next tier gives (sample perks until business supplies them); the expiry line only within 30 days of expiry (amber); a new member sees \"Place your first bet to start earning points\" instead of 0 (0%). From the VIP draft: \"You have 1 unclaimed reward ›\" above the card when there is one.","NOT ON PROFILE (10-30, user): Language, Log out and the app version are in Settings; no About links, no social media links, no feedback box — Profile only holds what is about the member.","SETUP NOT FINISHED: an existing member who skipped steps, or a new one who pressed Set up later, sees a card on top with what is left; Continue runs only those steps (RULES / Setup personas).",
       "HEADER (10-30, user: \"從 profile 按進去 settings…所以我們不用把 pei chen 這訊息放前面？logout 也不用\"): only ✕ and ⚙︎ — no name or Account ID here. Settings (one tap, ⚙︎) opens on the member card with the name and Account ID, and has Log out at the bottom, so Profile repeats neither. v1 showed the username here."
     ]
   }
@@ -225,7 +227,7 @@ const screens = [
     <div class="grp"></div>
     <div class="li"><span class="ic">🗂️</span><span class="g">History</span><span class="rt">›</span></div>
     <div class="li"><span class="ic">💬</span><span class="g">Help &amp; Support</span><span class="rt">›</span></div>
-    <div class="li"><span class="ic">ℹ️</span><span class="g">About</span><span class="rt">›</span></div>
+    <div class="li"><span class="ic">ℹ️</span><span class="g">About</span><span class="rt">v1.2 ›</span></div>
     <div class="link" style="color:#c33"><b>Log out</b></div>
     <div class="hint">＊ 10-30 (user: \"setting 我們學 iphone 第一層放設定，account related security more 下一層才放他們細項\" / \"好 按 iphone 分\"): the first page lists only the groups, each showing what it is set to now; the details are one page down — Profile card → Account (Account ID, Personal information, Identity verification, Bank / USDT); Sign-in &amp; Security (Email, Phone, Password, Passkeys · Linked Google / LINE / Zalo · 2FA, Active session, Auto log out); Notifications (Push, Message channel); Display (Theme, Text size, Language). The old one long page with Account related / Security / Preferences / More is replaced. Web: settings-tailwind.html. Choices one page down (Message channel, Theme, Text size) are iPhone list rows in one card with a ✓ on the chosen one — no radio circles, same look as Sign-in &amp; Security (10-30, user: \"左右好像 style 有點不一樣\"); Setup keeps its option cards.</div>`,
   spec:{
