@@ -97,7 +97,9 @@
       ]],
       ['2 Account ID', [
         ['step-2', 'Account ID', 'setup'],
-        ['account-id-error', 'Error', 'setup'],
+        ['account-id-error', 'Error · letters and numbers', 'setup'],
+        ['account-id-short', 'Error · too short', 'setup'],
+        ['account-id-taken', 'Error · already taken', 'setup'],
       ]],
       ['3 Personal information', [
         ['step-3', 'Personal information', 'setup'],

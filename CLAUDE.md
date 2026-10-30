@@ -174,6 +174,7 @@ raw 路徑：`https://raw.githubusercontent.com/flutter/agent-plugins/main/skill
 
 ## 規格以哪裡為準
 
+- **業務規則（UAT）：`RULES.md`**——OTP（驗證碼有效時間、重送等待、次數上限、錯幾次重來）和 Account ID（6–15、只能英文數字、不可重複）。畫面和程式照這份；mockup 還沒跟上的地方寫在每段最後
 - Wireframe 與 Dev Notes：`index.html` 第 ① 區的 12 個 flow 頁
 - `v9bet-full-wireframe.html` 和 `v9bet-flows-composition.html` **已過時**，不要當規格
 - 交接與決策脈絡：`HANDOFF.md`（未進版控）

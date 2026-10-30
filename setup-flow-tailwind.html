@@ -56,8 +56,10 @@
         <div class="page-body flex-1">
           <div class="step-hero"><h1>Create your Account ID</h1><p>You can use it to log in.</p></div>
           <div class="field">
-            <input id="account-id" type="text" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder=" " aria-describedby="account-id-error">
+            <input id="account-id" type="text" maxlength="15" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder=" " aria-describedby="account-id-hint account-id-error">
             <label for="account-id">Account ID</label><fieldset aria-hidden="true"><legend><span>Account ID</span></legend></fieldset>
+            <!-- The rule, said before they type (2026-10-30, user; RULES.md › Account ID). -->
+            <p class="hint" id="account-id-hint">6–15 letters or numbers. No spaces or symbols.</p>
             <p class="error-text" id="account-id-error" hidden></p>
           </div>
         </div>
@@ -359,11 +361,15 @@
   $('back').addEventListener('click', () => { const i = order.indexOf(current); if (i > 0) showStep(order[i - 1]); });
   // "Set up later" leaves this step for later and moves on.
   document.querySelectorAll('.skip').forEach((a) => a.addEventListener('click', (e) => { e.preventDefault(); next(); }));
+  const TAKEN = ['player01', 'v9bet888']; // demo: Account IDs someone already has
   steps.forEach((form) => form.addEventListener('submit', (e) => {
     e.preventDefault();
     if (form.dataset.step === '2') {
       const id = $('account-id').value.trim();
-      if (!/^[A-Za-z0-9]+$/.test(id)) { setError('account-id', 'Letters and numbers only.'); return; }
+      // RULES.md › Account ID: 6–15, A–Z a–z 0–9 only, not already taken.
+      if (!/^[A-Za-z0-9]*$/.test(id)) { setError('account-id', 'Letters and numbers only.'); return; }
+      if (id.length < 6 || id.length > 15) { setError('account-id', 'Use 6–15 letters or numbers.'); return; }
+      if (TAKEN.includes(id.toLowerCase())) { setError('account-id', 'This Account ID is already taken.'); return; }
     }
     next();
   }));
@@ -622,6 +628,8 @@
     ]],
     ['2 Account ID', [
       ['account-id-error', 'Error · letters and numbers', () => { showStep(2); fill('account-id', 'V9 test'); steps[1].requestSubmit(); }],
+      ['account-id-short', 'Error · too short', () => { showStep(2); fill('account-id', 'v9a'); steps[1].requestSubmit(); }],
+      ['account-id-taken', 'Error · already taken', () => { showStep(2); fill('account-id', 'player01'); steps[1].requestSubmit(); }],
     ]],
     ['4 Bank account / USDT', [
       ['bank-picker', 'Choose bank (sheet)', () => { personal(); showStep(4); openSheet('sheet-bank'); }],

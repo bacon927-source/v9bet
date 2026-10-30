@@ -159,6 +159,8 @@ const screens = [
   render:()=>`
     <div class="scr-title">Unified OTP Rules</div>
     <div class="scr-step">Source: Unified OTP docx + design mockups (Jul 16)</div>
+    <div class="grp">UAT rules (10-30, from the user — the source now; RULES.md)</div>
+    <div class="hint" style="margin:0 2px 8px">6-digit code, valid 3 min, timed from when it is generated · Resend after a 60 s countdown · sends 1–3: wait 60 s each; after the 4th: wait 180 s; after the 5th: limit reached → contact Customer Service · a resend makes the old code invalid · 3 wrong entries → get a new code · a used code cannot be reused, and success resets the send count. The mockups still show 00:32 and a 03:00 wait — not yet changed to these numbers.</div>
     <div class="grp">Entry points that require OTP</div>
     <div class="checklist">
       ${ci(1,"First-time add phone / email","",false)}
