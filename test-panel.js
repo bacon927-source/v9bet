@@ -91,7 +91,7 @@
         ['as-line', 'New · LINE', 'setup'],
         ['as-zalo', 'New · Zalo (no email)', 'setup'],
         ['as-email', 'New · Email', 'setup'],
-        ['as-phone', 'New · Phone (one-time code)', 'setup'],
+        ['as-phone', 'New · Phone', 'setup'],
       ]],
       ['1 Currency', [
         ['arrive', 'Before Setup · new member', 'setup'],
