@@ -348,6 +348,23 @@
   // information, so their Setup is shorter and the bar counts only their steps.
   let order = ORDER;
   let current = 1;
+  /* Browser back (2026-10-30, user on a phone: "用 browser back 回去 怎麼回去不是
+     step 的頁面"): every step, page and sheet is a history entry, so the phone's
+     back goes one step back, and closes an open sheet first. */
+  let restoring = false;
+  const remember = (view) => {
+    if (restoring || (history.state && history.state.view === view)) return;
+    if (history.state && history.state.view) history.pushState({ view }, ''); else history.replaceState({ view }, '');
+  };
+  window.addEventListener('popstate', (e) => {
+    const v = e.state && e.state.view; if (!v) return;
+    restoring = true;
+    try {
+      if (v.startsWith('step-')) showStep(Number(v.slice(5)));
+      else if (v.startsWith('sheet:')) openSheet(v.slice(6));
+      else showPage(v);
+    } finally { restoring = false; }
+  });
   const showStep = (n) => {
     current = n;
     closeSheets();
@@ -356,6 +373,7 @@
     const pct = Math.round((order.indexOf(n) + 1) / order.length * 100);
     $('bar-done').style.width = pct + '%'; $('bar').setAttribute('aria-valuenow', pct); $('pct').textContent = pct + '%';
     window.scrollTo(0, 0);
+    remember('step-' + n);
   };
   const next = () => { const i = order.indexOf(current); if (i < order.length - 1) showStep(order[i + 1]); else toLobby(); };
   $('back').addEventListener('click', () => { const i = order.indexOf(current); if (i > 0) showStep(order[i - 1]); });
@@ -437,10 +455,12 @@
 
   /* ── Sheets ── */
   const SHEETS = ['sheet-bank', 'sheet-phone', 'sheet-code'];
-  function openSheet(id) { SHEETS.forEach((s) => { $(s).hidden = s !== id; }); $('scrim').hidden = false; }
+  function openSheet(id) { SHEETS.forEach((s) => { $(s).hidden = s !== id; }); $('scrim').hidden = false; remember('sheet:' + id); }
   function closeSheets() { SHEETS.forEach((s) => { $(s).hidden = true; }); $('scrim').hidden = true; clearInterval(timer); }
-  document.querySelectorAll('.sheet-close').forEach((b) => b.addEventListener('click', closeSheets));
-  $('scrim').addEventListener('click', closeSheets);
+  // ✕ and the scrim close a sheet the way the phone's back does, so the history stays in step.
+  const dismissSheet = () => { if (history.state && String(history.state.view).startsWith('sheet:')) history.back(); else closeSheets(); };
+  document.querySelectorAll('.sheet-close').forEach((b) => b.addEventListener('click', dismissSheet));
+  $('scrim').addEventListener('click', dismissSheet);
 
   /* ── Contacts: what is verified drives Security and the message channels ── */
   const verified = { 'sec-email': true, 'sec-phone': false };
@@ -542,6 +562,7 @@
     closeSheets(); steps.forEach((s) => { s.hidden = true; }); $('topbar').hidden = true;
     ['lobby', 'intro', 'welcome'].forEach((p) => { $(p).hidden = p !== id; });
     window.scrollTo(0, 0);
+    remember(id);
   };
   const showIntro = () => {
     $('intro-title').textContent = isNew ? 'Your account is ready' : 'We’ve improved V9Bet';

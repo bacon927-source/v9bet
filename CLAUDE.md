@@ -183,6 +183,8 @@ raw 路徑：`https://raw.githubusercontent.com/flutter/agent-plugins/main/skill
 
 ## Tailwind（web 端）
 
+- **手機的返回要能一步一步回去**（使用者 10-30：「用 browser back 回去 怎麼回去不是 step 的頁面」）：同一頁裡切換的步驟、畫面、面板都要記一筆瀏覽紀錄（`history.pushState`），按返回回到上一步；開著面板時按返回先關面板，面板的 ✕ 和遮罩也走 `history.back()`，紀錄才不會亂。Setup、Login 已照做；Settings 用網址切換，本來就對
+
 **不要寫死色碼，也不要在 Tailwind 裡另立一套色票。** `tailwind.config.js` 的 theme 一律指向 `variables.css` 的 CSS 變數，這樣深／淺模式切換、改 token 兩邊會一起動。
 
 ```js

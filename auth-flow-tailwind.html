@@ -396,6 +396,7 @@
     $('exists-to').textContent = `We sent a code to ${mask(email)}. Enter it to log in to your account.`;
     existsCells.forEach((c) => { c.value = ''; }); $('exists-submit').disabled = true;
     $('exists-scrim').hidden = false; $('sheet-exists').hidden = false;
+    remember('sheet:exists');
   };
   const closeExists = () => { $('exists-scrim').hidden = true; $('sheet-exists').hidden = true; };
 
@@ -411,12 +412,13 @@
       + sections.map((h) => `<div class="flex flex-col gap-1"><p class="text-base/7 font-bold text-ink">${h}</p><p class="text-sm/6 text-ink-secondary">Text from Legal.</p></div>`).join('');
     $('legal-body').scrollTop = 0;
     $('legal-scrim').hidden = false; $('sheet-legal').hidden = false;
+    remember('sheet:legal');
   };
   const closeLegal = () => { $('legal-scrim').hidden = true; $('sheet-legal').hidden = true; };
   // The links sit inside the consent label: opening one must not tick the box.
   document.querySelectorAll('[data-legal]').forEach((a) => a.addEventListener('click', (e) => { e.preventDefault(); openLegal(a.dataset.legal); }));
-  $('legal-close').addEventListener('click', closeLegal);
-  $('legal-scrim').addEventListener('click', closeLegal);
+  $('legal-close').addEventListener('click', () => dismiss(closeLegal)());
+  $('legal-scrim').addEventListener('click', () => dismiss(closeLegal)());
   existsCells.forEach((cell, i) => cell.addEventListener('input', () => {
     const digits = cell.value.replace(/\D/g, '').split('');
     cell.value = digits[0] || '';
@@ -424,8 +426,8 @@
     if (digits.length) existsCells[Math.min(i + digits.length, 5)].focus();
     $('exists-submit').disabled = existsCells.some((c) => !c.value);
   }));
-  $('exists-close').addEventListener('click', closeExists);
-  $('exists-scrim').addEventListener('click', closeExists);
+  $('exists-close').addEventListener('click', () => dismiss(closeExists)());
+  $('exists-scrim').addEventListener('click', () => dismiss(closeExists)());
   $('form-exists').addEventListener('submit', (e) => { e.preventDefault(); closeExists(); land('Lobby', 'Logged in'); });
 
   /* ?ref= prefills the referral code and says where it came from. It stays
@@ -517,7 +519,22 @@
   const showScreen = (id) => {
     ['screen-entry', 'screen-code', 'screen-done', 'screen-social-add-email'].forEach((s) => { $(s).hidden = s !== id; });
     $('code-skip').hidden = !(id === 'screen-code' && social === 'new');
+    remember('screen:' + id);
   };
+  /* Browser back (2026-10-30, user on a phone): every screen and sheet is a history
+     entry, so the phone's back goes one screen back, and closes an open sheet first. */
+  let restoring = false;
+  function remember(view) {
+    if (restoring || (history.state && history.state.view === view)) return;
+    if (history.state && history.state.view) history.pushState({ view }, ''); else history.replaceState({ view }, '');
+  }
+  window.addEventListener('popstate', (e) => {
+    const v = e.state && e.state.view; if (!v || !v.startsWith('screen:')) return;
+    restoring = true;
+    try { closeExists(); closeLegal(); clearInterval(timer); showScreen(v.slice(7)); } finally { restoring = false; }
+  });
+  // ✕ and the scrim close a sheet the way the phone's back does.
+  const dismiss = (close) => () => { if (history.state && String(history.state.view).startsWith('sheet:')) history.back(); else close(); };
 
   /* ── Test panel ── */
   const fill = (id, value) => { $(id).value = value; $(id).dispatchEvent(new Event('input')); };
