@@ -170,34 +170,22 @@ const SOC = (ic, t, sub='', last=false) => `<div class="socbtn"><span class="ic"
 /* ---------- screen definitions ---------- */
 const screens = [
 {
-  group:"A · Settings", id:"settings", title:"Settings Home",
-  states:["Setup incomplete","All done"],
+  group:"A · Settings", id:"settings", title:"Settings Home — the iPhone way (10-30)",
+  states:["All done","Things not done yet"],
   render:(s)=>`
-    <div class="scr-title"><span class="x">←</span>Settings</div>
-    <div class="scr-step">Home › Profile › Settings</div>
-    <div class="grp">Account related</div>
-    <div class="li"><span class="ic">🪪</span><span class="g">Personal information</span><span class="rt">${s===0?'<span class="st bad">Not added</span>':'Complete'} ›</span></div>
-    <div class="li"><span class="ic">🆔</span><span class="g">Identity verification<small>${s===0?'Higher withdrawal limits':'Name / DOB locked'}</small></span><span class="rt">${s===0?'Level 1 <span class="st wait">Verify</span>':'Level 2 <span class="st ok">✓</span>'} ›</span></div>
-    <div class="li"><span class="ic">🏦</span><span class="g">Manage bank account / USDT</span><span class="rt">${s===0?'<span class="st bad">Not added</span>':'2 accounts'} ›</span></div>
-    <div class="li"><span class="ic">📱</span><span class="g">Phone number</span><span class="rt">+84 91***233 <span class="st ok">✓</span> ›</span></div>
-    <div class="li"><span class="ic">✉️</span><span class="g">Email<small>${s===0?'Also usable as Account ID':''}</small></span><span class="rt">${s===0?'<span class="st wait">Add</span>':'ba*****on@… <span class="st ok">✓</span>'} ›</span></div>
-    <div class="li"><span class="ic">🔑</span><span class="g">${s===0?'Set a password<small>Not set — signed up with OTP only</small>':'Change password'}</span><span class="rt">${s===0?'':''} ›</span></div>
-    <div class="grp">Security</div>
-    <div class="hint" style="margin:0 2px 4px">Verify both your phone number and email address to protect against unnecessary access and easy account recovery.</div>
-    ${s===0?`<div class="li"><span class="ic">👤</span><span class="g">Face ID / biometric / passkey<small>Not a setup item since 09-20</small></span><span class="rt"><b>Set up ›</b></span></div>`:tog("Enable Face ID / biometrics", true)}
-    <div class="li"><span class="ic">💻</span><span class="g">Active session<small>Only one device at a time</small></span><span class="rt">This device ›</span></div>
-    ${tog("Auto log out <small>after 30 min inactivity</small>", false)}
-    <div class="grp">Preferences</div>
-    ${s===0?`<div class="li"><span class="ic">🔔</span><span class="g">Push notifications</span><span class="rt"><b>Allow ›</b></span></div>`:tog("Push notifications", true)}
-    <div class="li"><span class="ic">🌙</span><span class="g">Theme</span><span class="rt">${s===0?'':''}Dark ›</span></div>
-    <div class="li"><span class="ic">🌐</span><span class="g">Language</span><span class="rt">Tiếng Việt ›</span></div>
-    <div class="li"><span class="ic">💬</span><span class="g">Message channel<small>How we contact you</small></span><span class="rt">${s===0?'<b>Choose ›</b>':'Zalo · default ›'}</span></div>
-    <div class="li"><span class="ic">🎯</span><span class="g">Product preferences</span><span class="rt">›</span></div>
-    <div class="grp">More</div>
+    <div class="scr-title">Settings</div>
+    <div class="li"><span class="ic">${s===1?'BA':'PC'}</span><span class="g">${s===1?'Add your name':'Pei Chen'}<small>Account ID: bacon927</small></span><span class="rt">›</span></div>
+    <div class="grp"></div>
+    <div class="li"><span class="ic">🔐</span><span class="g">Sign-in &amp; Security</span><span class="rt">${s===1?'2FA off ':''}›</span></div>
+    <div class="li"><span class="ic">🔔</span><span class="g">Notifications</span><span class="rt">Email ›</span></div>
+    <div class="li"><span class="ic">🌙</span><span class="g">Display</span><span class="rt">Dark ›</span></div>
     <div class="li"><span class="ic">🛡️</span><span class="g">Responsible Gaming</span><span class="rt">›</span></div>
+    <div class="grp"></div>
     <div class="li"><span class="ic">🗂️</span><span class="g">History</span><span class="rt">›</span></div>
-    <div class="li"><span class="ic">🟢</span><span class="g">Account status</span><span class="rt">Active ›</span></div>
-    <div class="link"><b>Log out</b></div>`,
+    <div class="li"><span class="ic">💬</span><span class="g">Help &amp; Support</span><span class="rt">›</span></div>
+    <div class="li"><span class="ic">ℹ️</span><span class="g">About</span><span class="rt">›</span></div>
+    <div class="link" style="color:#c33"><b>Log out</b></div>
+    <div class="hint">＊ 10-30 (user: \"setting 我們學 iphone 第一層放設定，account related security more 下一層才放他們細項\" / \"好 按 iphone 分\"): the first page lists only the groups, each showing what it is set to now; the details are one page down — Profile card → Account (Account ID, Personal information, Identity verification, Bank / USDT); Sign-in &amp; Security (Email, Phone, Password, Passkeys · Linked Google / LINE / Zalo · 2FA, Active session, Auto log out); Notifications (Push, Message channel); Display (Theme, Text size, Language). The old one long page with Account related / Security / Preferences / More is replaced. Web: settings-tailwind.html.</div>`,
   spec:{
     goal:"One Settings home (mirrors the design mockup's setting page). Skipped Setup items are NOT a separate promo card — each one's status (Not added / Add / Not set) lives inline on its own row (Bank/USDT, Email, Password, Push notifications, Theme, Message channel), deep-linking to the SAME screens used during setup. Utility rows people actually came here for stay right at the top, not pushed below a big nudge card.",
     states:["setup incomplete → unfinished rows show their status (Not added / Add / Not set)","all done → rows show their normal value","row status badges (Not added / ✓ / Add)"],
