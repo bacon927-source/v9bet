@@ -173,7 +173,7 @@ const screens = [
     ${s===1?F("Email / Phone number","Required"):F("Account ID / Email")}
     ${s===2?`<div class="ccpop"><div class="cc">🔑 &nbsp;<b>Sign in as v9_user***</b> &nbsp;<small style="color:var(--muted)">Face ID</small></div></div>`:''}
     ${s===0?F("Password","👁")
-      :s===1?`<div class="hint">＊ Enter the email or phone on your account — we'll send a 6-digit code (Email / SMS). Account ID can't receive a code.</div>`
+      :s===1?`<div class="hint">＊ No line under the field (10-30, user: \"不用先寫…往下走，客人就知道了\"): the next screen says where the code went. Account ID can't receive a code, so this tab takes email / phone only.</div>`
       :`<div class="hint">＊ The passkey surfaces in the identifier field's own autofill list — there is no separate "Passkey" tab or button. See security-methods-wireframe.html.</div>`}
     <div class="opt"><span class="sq on"></span><span style="flex:1">Keep me logged in</span></div>
     ${CTA(s===1?"Send code":"Login")}`,
