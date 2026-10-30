@@ -101,7 +101,7 @@
             <div class="flex flex-col gap-2">
               <div class="field">
                 <input id="identifier" type="text" autocomplete="username webauthn" placeholder=" " aria-describedby="hint-otc identifier-error">
-                <label for="identifier" id="identifier-label">Account ID</label><fieldset aria-hidden="true"><legend><span>Account ID</span></legend></fieldset>
+                <label for="identifier" id="identifier-label">Account ID / Email</label><fieldset aria-hidden="true"><legend><span>Account ID / Email</span></legend></fieldset>
                 <!-- +84 🇻🇳 ▾ | — tap to change the country. The default comes from the
                      device's time zone, then its language, then the site's market. -->
                 <span class="field-cc absolute left-3 top-2 z-10 h-[50px] items-center gap-1 text-base text-ink">
@@ -272,11 +272,11 @@
     $(id + '-error').hidden = !message;
   };
   const isEmail = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
-  // Password tab: Account ID only (it may be all digits). One-time code tab:
-  // email or phone, told apart by the @ (2026-10-29).
-  const identifierError = (v, accountId) => {
-    if (accountId) return /^[A-Za-z0-9]+$/.test(v) ? '' : 'Letters and numbers only.';
+  // Password tab: Account ID (it may be all digits) or email. One-time code
+  // tab: email or phone. The @ tells an email apart (2026-10-30).
+  const identifierError = (v, pwdTab) => {
     if (v.includes('@')) return isEmail(v) ? '' : 'Enter a valid email address.';
+    if (pwdTab) return /^[A-Za-z0-9]+$/.test(v) ? '' : 'Letters and numbers only.';
     if (/^\+?[\d\s-]+$/.test(v)) return v.replace(/\D/g, '').length < 9 ? 'Enter a valid phone number.' : '';
     return 'Enter a valid email address.';
   };
@@ -319,8 +319,8 @@
     $('tab-otc').setAttribute('aria-selected', String(mode === 'otc'));
     $('field-pwd').hidden = mode !== 'pwd';
     $('hint-otc').hidden = mode !== 'otc';
-    // Password logs in with the Account ID; a code goes to an email or a phone.
-    const label = mode === 'pwd' ? 'Account ID' : 'Email / Phone';
+    // Password takes an Account ID or email; a code goes to an email or a phone.
+    const label = mode === 'pwd' ? 'Account ID / Email' : 'Email / Phone';
     $('identifier-label').textContent = label;
     $('identifier-label').parentElement.querySelector('fieldset legend span').textContent = label; // the outline gap follows the label
     $('identifier').autocomplete = mode === 'pwd' ? 'username webauthn' : 'username';
@@ -348,8 +348,8 @@
     return COUNTRIES[region] ? region : 'VN'; // the site's market
   };
   /* The country prefix shows only on the One-time code tab, while the field is
-     all digits. The Password tab takes only an Account ID, which may be all
-     digits, so it never shows the prefix. */
+     all digits. The Password tab takes no phone (digits there are an Account
+     ID), so it never shows the prefix. */
   const syncPhone = () => {
     $('identifier').parentElement.toggleAttribute('data-phone', mode === 'otc' && /^\d[\d\s]*$/.test($('identifier').value));
   };
@@ -369,7 +369,7 @@
     const problem = identifierError(id, mode === 'pwd');
     if (problem) { setError('identifier', problem); return; }
     // Demo: the password 000000 is wrong. The message never says which half was wrong.
-    if (mode === 'pwd' && $('password').value === '000000') { setError('password', 'Account ID or password is incorrect.'); return; }
+    if (mode === 'pwd' && $('password').value === '000000') { setError('password', 'Account ID, email or password is incorrect.'); return; }
     if (mode === 'pwd') land('Lobby', 'Logged in');
     else openCode("Verify it's you", $('identifier').value.trim(), 'Log In');
   });
@@ -576,6 +576,7 @@
     ['Log In · errors', [
       ['login-error-phone', 'One-time code · phone too short', () => { setSide('login'); setTab('otc'); fill('identifier', '0913'); show('screen-entry'); $('login-submit').click(); }],
       ['login-error-email', 'One-time code · email', () => { setSide('login'); setTab('otc'); fill('identifier', 'bacon927@gmail'); show('screen-entry'); $('login-submit').click(); }],
+      ['login-error-pwd-email', 'Password · email', () => { setSide('login'); fill('identifier', 'bacon927@gmail'); fill('password', 'secret123'); show('screen-entry'); $('login-submit').click(); }],
       ['login-error-id', 'Account ID', () => { setSide('login'); fill('identifier', 'V9 test'); fill('password', 'secret123'); show('screen-entry'); $('login-submit').click(); }],
       ['login-error-password', 'Wrong password', () => { setSide('login'); fill('identifier', 'bacon927'); fill('password', '000000'); show('screen-entry'); $('login-submit').click(); }],
     ]],

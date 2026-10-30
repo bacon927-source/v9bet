@@ -36,6 +36,7 @@
       ['Errors', [
         ['login-error-phone', 'One-time code · phone too short', 'auth'],
         ['login-error-email', 'One-time code · email', 'auth'],
+        ['login-error-pwd-email', 'Password · email', 'auth'],
         ['login-error-id', 'Account ID', 'auth'],
         ['login-error-password', 'Wrong password', 'auth'],
       ]],

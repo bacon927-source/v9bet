@@ -169,7 +169,7 @@ const screens = [
       ${ci(6,"Change password","2FA · no old password",false)}
       ${ci(7,"Withdrawal","first-time payout account (incl. USDT)",false)}
       ${ci(8,"Claim promotion","after Personal Details",false)}
-      ${ci(9,"Forgot password","Active or Dormant account",false)}
+      ${ci(9,"Log in with One-time code","also how a forgotten password is handled — no Forgot Password (10-29)",false)}
     </div>
     <div class="grp">Sign-up (10-21)</div>
     <div class="opt"><span style="flex:1">Email sign-up</span><small style="color:#b0b0b0">OTP required — verify the email first</small></div>
@@ -183,7 +183,7 @@ const screens = [
   spec:{
     goal:"One shared OTP component (Email / SMS) plugged into every sensitive action; verified-contact status decides the mode.",
     states:["reference only"],
-    fields:["email_status(verified|not)","phone_status(verified|not)","action(add_first|add_secondary|change_contact|set_password|change_password|withdrawal|promo_claim|forgot_password)"],
+    fields:["email_status(verified|not)","phone_status(verified|not)","action(add_first|add_secondary|change_contact|set_password|change_password|withdrawal|promo_claim|login_otc)"],
     api:"Rule matrix enforced server-side on every protected action.",
     notes:["SIGN-UP OTP RULE (10-21, user): Email sign-up needs an OTP — we do not know the address is theirs until a code sent there comes back. Third-party sign-up (Google / LINE / Zalo) needs NO OTP for a brand-new account — the member has just signed in at the provider, which has already established who they are; asking for another code repeats that check (standard OAuth / OpenID Connect sign-in). OTP still applies when the provider account matches an existing member (verify with that account\u2019s contact before linking), and when an email or phone is added later in Setup. OPEN — confirm with IT: Google marks the email it returns as verified (email_verified), so it can count as a verified contact; whether LINE gives the same guarantee for its email is unconfirmed — if not, a LINE member\u2019s email must be verified the first time a code is sent to it (e.g. a withdrawal).","Reward (Jul 16) — REMOVED 10-21 with the rest of the Setup points: adding a phone / email no longer earns anything.","OTP modes this release = Email / SMS only (Select Verification Mode). Zalo ZNS / LINE / WhatsApp delivery = phase 2.","Docx said change password / withdrawal are NOT allowed with no verified contact — the Jul 16 design supersedes this: inline first-time verification serves as the OTP everywhere.","Component params (design): 6-digit code · resend countdown 32s · after 3rd resend the cooldown escalates to 03:00 · 'Invalid OTP entered' error state · masked contacts (091***233 / ta***@gmail.com) · iOS SMS autofill.","Audit log per docx: request time, channel, result, action, attempts, member ID — never the OTP value in plain text."]
   }
@@ -337,43 +337,7 @@ const screens = [
   }
 },
 {
-  group:"D · Recovery", id:"forgot", title:"Forgot Password",
-  states:["Select mode","Enter contact","Reset (after OTP)","Create new password"],
-  render:(s)=>s===0?`
-    <div class="scr-title"><span class="x">✕</span>Select Verification Mode</div>
-    <div class="scr-step">Please choose how you would like to receive your one-time password (OTP)</div>
-    ${OPT("✉️ &nbsp; Send via Email", false)}
-    ${OPT("📱 &nbsp; Send via SMS", true)}
-    ${CTA("Request OTP")}
-    <div class="hint">＊ Works for Active or Dormant accounts.</div>`
-  :s===1?`
-    <div class="scr-title"><span class="x">✕</span>Verify Phone Number</div>
-    <div class="scr-step">Enter the contact registered to your account</div>
-    ${F("+84 ▾ &nbsp; Phone number","Required")}
-    ${CTA("Get OTP",'disabled')}
-    <div class="hint">＊ We never reveal whether an account exists — the code is sent only if the contact matches.</div>`
-  :s===2?`
-    <div class="scr-title"><span class="x">✕</span>Reset Password</div>
-    <div class="scr-step">Account ID: AHHHHHH</div>
-    ${F("New password","👁")}
-    ${F("Confirm new password","👁")}
-    ${CTA("Done",'disabled')}`
-  :`
-    <div class="scr-title"><span class="x">✕</span>Create New Password</div>
-    <div class="scr-step">Account ID: AHHHHHH</div>
-    ${F("••••••••••","●●○ Medium")}
-    ${F("••••••••••","●●○ Medium")}
-    ${CTA("Done")}`,
-  spec:{
-    goal:"Design flow: select mode (Email / SMS) → enter the registered contact → OTP → reset password (Account ID revealed only after the OTP passes) with a strength meter.",
-    states:["select mode","enter contact (mismatch = silent, same UI)","OTP component (shared)","reset form · Done disabled","filled + strength (Medium) → Done","done → login"],
-    fields:["mode(email|sms)","identifier","otp_code","new_password"],
-    api:"POST /auth/forgot/start { mode, identifier } (always 200)\nPOST /auth/forgot/verify { otp_code } ← { account_id }\nPOST /auth/forgot/reset { new_password }\nerr: OTP_WRONG / OTP_EXPIRED / WEAK_PASSWORD",
-    notes:["Account ID is shown ONLY after OTP success — no existence disclosure before (docx).","Password strength meter on the create screen (design).","Recovery contact does not auto-become Verified (business TBD)."]
-  }
-},
-{
-  group:"E · Entry Points", id:"entries", title:"Entry Points",
+  group:"D · Entry Points", id:"entries", title:"Entry Points",
   states:["Set a password (first time)","Change password (2FA)","Withdrawal · new bank account","Withdrawal · new USDT address","Claim promotion"],
   render:(s)=>s===0?`
     <div class="scr-title"><span class="x">←</span>Set a Password</div>
