@@ -135,7 +135,7 @@ module.exports = {
         '.safe-top': { paddingTop: 'env(safe-area-inset-top)' },
         '.safe-bottom': { paddingBottom: `calc(${theme('spacing.4')} + env(safe-area-inset-bottom))` },
         /* Small links and tick rows: the text stays small, the target is 44 tall. */
-        '.tap': { display: 'inline-flex', alignItems: 'center', minHeight: '44px' },
+        '.tap': { display: 'inline-flex', alignItems: 'center', minHeight: '2.75rem' },
       });
 
       /* Icons — one set, Heroicons outline (Tailwind Labs, 24 viewBox,
@@ -148,10 +148,10 @@ module.exports = {
       const ICONS = ['back', 'close', 'chevron-right', 'chevron-down', 'eye', 'eye-crossed', 'check', 'calendar'];
       addComponents({
         '.icon': {
-          display: 'inline-block', flex: 'none', width: '24px', height: '24px', backgroundColor: 'currentColor',
+          display: 'inline-block', flex: 'none', width: '1.5rem', height: '1.5rem', backgroundColor: 'currentColor',
           WebkitMask: 'var(--icon) center / contain no-repeat', mask: 'var(--icon) center / contain no-repeat',
         },
-        '.icon-sm': { width: '16px', height: '16px' },
+        '.icon-sm': { width: '1rem', height: '1rem' },
         ...Object.fromEntries(ICONS.map((name) => ['.icon-' + name, { '--icon': `url("assets/icons/${name}.svg")` }])),
       });
 
@@ -180,8 +180,8 @@ module.exports = {
            so the ✕ gets a full 44 × 44 to tap. Action left, title centred.
            No side padding: it sits inside .page, so the ✕ starts on the same
            16 line as the content and its tap area runs inward, not off-screen. */
-        '.nav-top': { position: 'relative', display: 'flex', alignItems: 'center', height: '44px' },
-        '.nav-top-action': { position: 'relative', zIndex: '10', display: 'flex', alignItems: 'center', width: '44px', height: '44px' },
+        '.nav-top': { position: 'relative', display: 'flex', alignItems: 'center', height: '2.75rem' },
+        '.nav-top-action': { position: 'relative', zIndex: '10', display: 'flex', alignItems: 'center', width: '2.75rem', height: '2.75rem' },
         '.nav-top-title': {
           position: 'absolute', inset: '0', display: 'flex', alignItems: 'center', justifyContent: 'center',
           ...type('title'), fontWeight: '600', color: c('ink.DEFAULT'), pointerEvents: 'none',
@@ -194,17 +194,17 @@ module.exports = {
         '.nav-tabs': {
           position: 'absolute', inset: '0', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: theme('spacing.7'), pointerEvents: 'none',
           '& > *': {
-            pointerEvents: 'auto', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: theme('spacing.1'), minHeight: '44px',
+            pointerEvents: 'auto', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: theme('spacing.1'), minHeight: '2.75rem',
             ...type('title'), color: c('ink.muted'),
           },
-          '& > *::after': { content: '""', width: '16px', height: '3px', borderRadius: theme('borderRadius.sm'), backgroundColor: 'transparent' },
+          '& > *::after': { content: '""', flex: 'none', width: '1rem', height: '3px', borderRadius: theme('borderRadius.sm'), backgroundColor: 'transparent' },
           '& > [aria-current="page"]': { color: c('ink.DEFAULT'), fontWeight: '600' },
           '& > [aria-current="page"]::after': { backgroundColor: c('brand-2.DEFAULT') },
         },
 
         /* Button — 46 tall pill. Grey until the form can be sent. */
         '.btn': {
-          display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', height: '46px',
+          display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', height: '2.875rem',
           borderRadius: pill, backgroundColor: c('brand.DEFAULT'), color: c('ink.onBrand'),
           ...type('button'), fontWeight: '500', letterSpacing: '-0.408px',
           '&:disabled': { backgroundColor: c('disabled.DEFAULT'), color: c('disabled.ink'), cursor: 'not-allowed' },
@@ -213,7 +213,7 @@ module.exports = {
 
         /* Link row — the line under the button that leads to the other screen. */
         '.link-row': {
-          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.3em', height: '46px',
+          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.3em', height: '2.875rem',
           ...type('body'), color: c('ink.DEFAULT'),
           '& a': { fontWeight: '700', color: c('brand-2.DEFAULT') },
         },
@@ -229,7 +229,7 @@ module.exports = {
         '.field': {
           position: 'relative', paddingTop: theme('spacing.2'),
           '& > input': {
-            display: 'block', width: '100%', height: '50px',
+            display: 'block', width: '100%', height: '3.125rem',
             border: 'none', borderRadius: theme('borderRadius.xl'),
             backgroundColor: c('input'), padding: `0 ${theme('spacing.3')}`,
             ...type('field'), color: c('ink.DEFAULT'), outline: 'none',
@@ -243,7 +243,7 @@ module.exports = {
              The legend is 11 tall, so the fieldset starts 5.5 higher to put the
              border line exactly on the box's top edge. */
           '& > fieldset': {
-            position: 'absolute', left: '0', right: '0', top: `calc(${theme('spacing.2')} - 5.5px)`, height: 'calc(50px + 5.5px)',
+            position: 'absolute', left: '0', right: '0', top: `calc(${theme('spacing.2')} - 5.5px)`, height: 'calc(3.125rem + 5.5px)',
             margin: '0', padding: `0 ${theme('spacing.2')}`, minWidth: '0', pointerEvents: 'none',
             border: `1px solid ${c('edge.DEFAULT')}`, borderRadius: theme('borderRadius.xl'),
           },
@@ -264,7 +264,7 @@ module.exports = {
           '& > input[aria-invalid="true"] ~ .hint': { display: 'none' },
           '& > input:-webkit-autofill': { WebkitTextFillColor: c('ink.DEFAULT'), boxShadow: `inset 0 0 0 100px ${c('app')}` },
           '& > label': {
-            position: 'absolute', left: theme('spacing.3'), top: theme('spacing.2'), height: '50px', display: 'flex', alignItems: 'center',
+            position: 'absolute', left: theme('spacing.3'), top: theme('spacing.2'), height: '3.125rem', display: 'flex', alignItems: 'center',
             ...type('body'), color: c('ink.muted'),
             pointerEvents: 'none', transition: 'top .12s ease, left .12s ease, font-size .12s ease, transform .12s ease',
           },
@@ -280,21 +280,23 @@ module.exports = {
         },
         /* Trailing slot: an icon or a short note at the right edge of the box. */
         '.field-trail': {
-          position: 'absolute', right: theme('spacing.2'), top: theme('spacing.2'), height: '50px', display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: theme('spacing[1.5]'),
+          position: 'absolute', right: theme('spacing.2'), top: theme('spacing.2'), height: '3.125rem', display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: theme('spacing[1.5]'),
           ...type('micro'), color: c('ink.secondary'),
         },
         '.field:has(> .field-trail) > input': { paddingRight: theme('spacing.10') },
         '.field-trail[hidden]': { display: 'none' },
         /* The icon is 16px; the thing you tap is 44. */
-        'button.field-trail': { minWidth: '44px', right: '0', paddingRight: theme('spacing.2'), color: c('ink.DEFAULT') },
+        'button.field-trail': { minWidth: '2.75rem', right: '0', paddingRight: theme('spacing.2'), color: c('ink.DEFAULT') },
 
         /* Tabs — text over a 2px rule; the selected one turns green.
            State lives in aria-selected, so scripts flip one attribute. */
         '.tabs': { display: 'flex' },
         '.tab': {
           flex: '1 1 0%', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: theme('spacing.1'),
-          height: '44px', paddingTop: theme('spacing.2'), fontSize: type('body').fontSize, lineHeight: type('body').lineHeight, color: c('ink.navOff'),
-          '&::after': { content: '""', width: '100%', height: '2px', backgroundColor: 'currentColor' },
+          minHeight: '2.75rem', paddingTop: theme('spacing.2'), fontSize: type('body').fontSize, lineHeight: type('body').lineHeight, color: c('ink.navOff'),
+          // At least 44, and the 2px rule never gives way: with Large text the label is taller
+          // and a fixed 44 squeezed the rule to nothing (2026-10-30).
+          '&::after': { content: '""', flex: 'none', width: '100%', height: '2px', backgroundColor: 'currentColor' },
           '&[aria-selected="true"]': { color: c('brand-2.DEFAULT') },
           ...colourEase,
         },
@@ -303,9 +305,9 @@ module.exports = {
            empty when off; on: a 2px green ring and a 10px dot. Put it right
            after a visually hidden radio inside a label (Figma: Radio). */
         '.tick': {
-          flex: 'none', width: '22px', height: '22px', borderRadius: pill,
+          flex: 'none', width: '1.375rem', height: '1.375rem', borderRadius: pill,
           border: `1.5px solid ${c('edge.DEFAULT')}`, display: 'grid', placeItems: 'center',
-          '&::after': { content: '""', width: '10px', height: '10px', borderRadius: pill, backgroundColor: 'transparent' },
+          '&::after': { content: '""', width: '0.625rem', height: '0.625rem', borderRadius: pill, backgroundColor: 'transparent' },
         },
         'input:checked + .tick': { borderWidth: '2px', borderColor: c('brand-2.DEFAULT') },
         'input:checked + .tick::after': { backgroundColor: c('brand-2.DEFAULT') },
@@ -359,7 +361,7 @@ module.exports = {
           ...type('body-sm'), color: c('ink.secondary'),
         },
         '.social-btn-icon': {
-          width: '48px', height: '48px', borderRadius: pill, overflow: 'hidden', display: 'grid', placeItems: 'center',
+          width: '3rem', height: '3rem', borderRadius: pill, overflow: 'hidden', display: 'grid', placeItems: 'center',
           backgroundColor: c('provider'),
           // A hairline edge, so a white logo still reads as a circle on a white page.
           boxShadow: `0 0 0 1px ${c('edge.subtle')}`,
@@ -384,7 +386,7 @@ module.exports = {
         '.otp': {
           display: 'flex', justifyContent: 'center', gap: theme('spacing.3'),
           '& > input': {
-            flex: '0 1 42px', minWidth: '0', width: '42px', height: '44px', padding: '0', textAlign: 'center',
+            flex: '0 1 2.625rem', minWidth: '0', width: '2.625rem', height: '2.75rem', padding: '0', textAlign: 'center',
             border: `1px solid ${c('edge.empty')}`, borderRadius: theme('borderRadius.xl'),
             backgroundColor: c('input'), ...type('button'), letterSpacing: '-0.408px',
             color: c('ink.DEFAULT'), caretColor: c('brand-2.DEFAULT'), outline: 'none',
@@ -413,7 +415,7 @@ module.exports = {
            A row that opens a page is an <a>; a row with a toggle is a <label>
            so the whole row flips it. Long titles truncate, they do not wrap. */
         '.list-row': {
-          display: 'flex', alignItems: 'center', gap: theme('spacing.2'), width: '100%', minHeight: '50px', padding: `0 ${theme('spacing.4')}`,
+          display: 'flex', alignItems: 'center', gap: theme('spacing.2'), width: '100%', minHeight: '3.125rem', padding: `0 ${theme('spacing.4')}`,
           backgroundColor: c('card'), textAlign: 'left', cursor: 'pointer',
           ...type('body'), color: c('ink.DEFAULT'),
           '& > .list-row-title': { flex: '1 1 0%', minWidth: '0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' },
@@ -425,13 +427,13 @@ module.exports = {
            promotions only). Put it right after a visually hidden checkbox
            with role="switch": it takes effect at once, no Save button. */
         '.toggle': {
-          flex: 'none', display: 'flex', alignItems: 'center', width: '40px', height: '24px', padding: `0 ${theme('spacing[0.5]')}`,
+          flex: 'none', display: 'flex', alignItems: 'center', width: '2.5rem', height: '1.5rem', padding: `0 ${theme('spacing[0.5]')}`,
           borderRadius: pill, backgroundColor: c('disabled.DEFAULT'), transition: `background-color 200ms ${theme('transitionTimingFunction.in-out')}`, /* Catalyst switch: duration-200 ease-in-out */
-          '&::after': { content: '""', width: '20px', height: '20px', borderRadius: pill, backgroundColor: '#fff', boxShadow: '0 1px 2px rgb(0 0 0 / 0.05), 0 0 0 1px rgb(0 0 0 / 0.05)', /* Catalyst: a white knob, shadow-sm + ring-black/5, in both themes (2026-10-30; it was ink — black on light) */ transition: `transform 200ms ${theme('transitionTimingFunction.in-out')}` },
+          '&::after': { content: '""', width: '1.25rem', height: '1.25rem', borderRadius: pill, backgroundColor: '#fff', boxShadow: '0 1px 2px rgb(0 0 0 / 0.05), 0 0 0 1px rgb(0 0 0 / 0.05)', /* Catalyst: a white knob, shadow-sm + ring-black/5, in both themes (2026-10-30; it was ink — black on light) */ transition: `transform 200ms ${theme('transitionTimingFunction.in-out')}` },
           '@media (prefers-reduced-motion: reduce)': { '&, &::after': { transition: 'none' } },
         },
         'input:checked + .toggle': { backgroundColor: c('brand-2.DEFAULT') },
-        'input:checked + .toggle::after': { transform: 'translateX(16px)' },
+        'input:checked + .toggle::after': { transform: 'translateX(1rem)' },
         'input:focus-visible + .toggle': { outline: `2px solid ${c('edge.focus')}`, outlineOffset: '2px' },
 
         /* Option card — pick one of two to four, each with a line of
@@ -441,7 +443,7 @@ module.exports = {
           display: 'flex', alignItems: 'center', gap: theme('spacing.3'), width: '100%', padding: theme('spacing.3'),
           border: `1px solid ${c('edge.DEFAULT')}`, borderRadius: theme('borderRadius.xl'), cursor: 'pointer',
           ...type('body'), color: c('ink.DEFAULT'),
-          '& > img, & > svg': { flex: 'none', width: '22px', height: '22px' },
+          '& > img, & > svg': { flex: 'none', width: '1.375rem', height: '1.375rem' },
           '&:has(> input:disabled)': { opacity: '.5', cursor: 'not-allowed' },
         },
         '.option-card-text': { flex: '1 1 0%', minWidth: '0', display: 'flex', flexDirection: 'column' },
@@ -487,7 +489,7 @@ module.exports = {
           ...type('body'), color: c('ink.DEFAULT'),
         },
         '.checklist-row-marker': {
-          position: 'relative', flex: 'none', width: '22px', height: '22px', borderRadius: pill,
+          position: 'relative', flex: 'none', width: '1.375rem', height: '1.375rem', borderRadius: pill,
           border: `1px solid ${c('edge.DEFAULT')}`, display: 'grid', placeItems: 'center',
           ...type('micro'), color: c('ink.secondary'),
         },
@@ -496,7 +498,7 @@ module.exports = {
         '.checklist-row[data-done]': {
           color: c('ink.secondary'),
           '& .checklist-row-marker': { borderColor: c('brand-2.DEFAULT'), color: 'transparent' },
-          '& .checklist-row-marker::after': { content: '""', position: 'absolute', width: '12px', height: '12px', borderRadius: pill, backgroundColor: c('brand-2.DEFAULT') },
+          '& .checklist-row-marker::after': { content: '""', position: 'absolute', width: '0.75rem', height: '0.75rem', borderRadius: pill, backgroundColor: c('brand-2.DEFAULT') },
         },
 
         /* Sheet — rises from the bottom over a 60% black scrim, for one thing
@@ -512,9 +514,9 @@ module.exports = {
         },
         '.sheet-header': {
           position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: theme('spacing.2'), paddingTop: theme('spacing.1'),
-          '&::before': { content: '""', width: '36px', height: '5px', borderRadius: pill, backgroundColor: c('sheet.handle') },
-          '& > h2': { display: 'flex', alignItems: 'center', minHeight: '40px', padding: `0 ${theme('spacing.14')}`, textAlign: 'center', ...type('title'), fontWeight: '600', color: c('ink.DEFAULT') },
-          '& > .sheet-close': { position: 'absolute', top: theme('spacing.1'), right: theme('spacing[1.5]'), display: 'grid', placeItems: 'center', width: '44px', height: '44px', color: c('ink.DEFAULT') },
+          '&::before': { content: '""', width: '2.25rem', height: '0.3125rem', borderRadius: pill, backgroundColor: c('sheet.handle') },
+          '& > h2': { display: 'flex', alignItems: 'center', minHeight: '2.5rem', padding: `0 ${theme('spacing.14')}`, textAlign: 'center', ...type('title'), fontWeight: '600', color: c('ink.DEFAULT') },
+          '& > .sheet-close': { position: 'absolute', top: theme('spacing.1'), right: theme('spacing[1.5]'), display: 'grid', placeItems: 'center', width: '2.75rem', height: '2.75rem', color: c('ink.DEFAULT') },
         },
         '.sheet-body': {
           display: 'flex', flexDirection: 'column', gap: theme('spacing.4'),
@@ -524,7 +526,7 @@ module.exports = {
         /* Status mark — the 48 green ring with a tick that opens a result page.
            Bad news does not get one. */
         '.status-mark': {
-          flex: 'none', display: 'grid', placeItems: 'center', width: '48px', height: '48px', borderRadius: pill,
+          flex: 'none', display: 'grid', placeItems: 'center', width: '3rem', height: '3rem', borderRadius: pill,
           border: `2px solid ${c('brand-2.DEFAULT')}`, color: c('brand-2.DEFAULT'),
         },
       });

@@ -40,7 +40,7 @@
   4. 可點的範圍至少 44：小連結和勾選列用 `.tap`，輸入框右側的圖示按鈕 44 寬
   5. 開關開的時候是綠色；紫色 `--color-promo-accent` 只給優惠類
   6. 三層底色：頁面 #1A1C1F、卡片 `--surface-1` #23262B、面板 `--surface-2` #282C31
-  7. 字級用 Tailwind 的刻度（2026-10-27 使用者：「可以按 Tailwind」「不要考慮 v1，v1 沒有規則可言」）：`text-xs/5` 12/20、`text-sm/6` 14/24、`text-base/7` 16/28（內文）、`text-base` 16/24（按鈕、輸入框）、`text-lg` 18/28（標題）、金額 `text-3xl` 30/36。頁面直接寫這些 Tailwind class，不另建字級名稱。**字級一律 rem**（使用者 10-30：「好 rem」）：`variables.css` 的字級變數照 Tailwind 寫 rem（1rem＝16），所以字會跟著手機／瀏覽器的字體大小；Setup › Display 的「Large」只是把根字級設成 112.5%（16→18），全部字一起放大，不另列放大版數字
+  7. 字級用 Tailwind 的刻度（2026-10-27 使用者：「可以按 Tailwind」「不要考慮 v1，v1 沒有規則可言」）：`text-xs/5` 12/20、`text-sm/6` 14/24、`text-base/7` 16/28（內文）、`text-base` 16/24（按鈕、輸入框）、`text-lg` 18/28（標題）、金額 `text-3xl` 30/36。頁面直接寫這些 Tailwind class，不另建字級名稱。**字級一律 rem**（使用者 10-30：「好 rem」）：`variables.css` 的字級變數照 Tailwind 寫 rem（1rem＝16），所以字會跟著手機／瀏覽器的字體大小；Setup › Display 的「Large」只是把根字級設成 112.5%（16→18），全部字一起放大，不另列放大版數字。**元件尺寸也用 rem，跟 Tailwind 一樣**（使用者 10-30：「元件不能因為字放大而不見」「framework 怎麼處理」）：Tailwind 除了 1px 細線都是 rem，所以放大時字、間距、元件一起照比例放大，像瀏覽器縮放。`tailwind.config.js` 裡的高度寬度（頂列 44、按鈕 46、欄位 50、圖示 24…）都寫 rem（44＝2.75rem），正常字級下數字完全不變；只有 1px 線、邊框、2–3px 的底線留 px。有字的框不要寫死高度，用 min-height（分頁原本寫死 44，放大後底線被擠掉）；細線加 `flex: none` 不讓它被壓
   8. Profile 把餘額和待處理事項放最前面，其餘收成清單列
 - **下面「視覺」一節（黃綠分工、綠場、Be Vietnam Pro、8-point grid）是先前的新視覺方向，已被這個決定取代**，留著只是記錄；跟 v1 衝突時以 v1 為準
 - 我先前自己開的兩個 Figma 檔（V9Bet UI Kit、V9Bet Mobile Web UI Kit）都是新視覺，**不是現在的設計來源**
