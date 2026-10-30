@@ -18,7 +18,7 @@
 
   // Roles (2026-10-30): each starts where that member starts — Log In or Sign Up —
   // and the flow carries on into that member's Setup (setup-flow #as-…).
-  const ROLES = [['existing', '舊客'], ['google', '新客 · Google'], ['line', '新客 · LINE'], ['zalo', '新客 · Zalo'], ['email', '新客 · Email'], ['phone', '新客 · 電話']];
+  const ROLES = [['existing', 'Existing'], ['google', 'New · Google'], ['line', 'New · LINE'], ['zalo', 'New · Zalo'], ['email', 'New · Email'], ['phone', 'New · Phone']];
   const setRole = (k) => { try { if (k) sessionStorage.setItem('tp-role', k); else sessionStorage.removeItem('tp-role'); } catch (e) { /* this jump only */ } };
   // [tab, [[subgroup, [[key, label, page]]]]] — page null = in Figma, not built yet.
   const CATALOG = [
@@ -53,7 +53,9 @@
       ['Form', [
         ['signup', 'Default', 'auth'],
         ['signup-ready', 'Ready', 'auth'],
+        ['signup-typing-phone', 'Typing a phone number', 'auth'],
         ['signup-invite', 'From invite link', 'auth'],
+        ['signup-error-phone', 'Phone too short', 'auth'],
         ['signup-error-email', 'Error · email', 'auth'],
       ]],
       ['Verify email', [
@@ -375,43 +377,43 @@
     const nav = document.createElement('nav');
     nav.hidden = true;
     nav.setAttribute('aria-label', 'Test panel');
-    nav.className = `fixed left-4 top-4 z-[60] w-[min(380px,calc(100vw-32px))] max-h-[calc(100dvh-112px)] overflow-y-auto flex flex-col gap-4 px-4 pt-4 rounded-xl bg-app border border-brand-2 text-sm/6 shadow-2xl`;
-    const btn = 'grid place-items-center h-11 rounded-xl bg-card border border-edge font-semibold text-ink disabled:opacity-40';
-    const chip = 'inline-flex items-center min-h-11 px-3 rounded-xl bg-card border border-edge font-semibold text-ink aria-[current=true]:border-brand-2 aria-[current=true]:text-brand-2';
+    nav.className = `fixed left-4 top-4 z-[60] w-[min(380px,calc(100vw-32px))] max-h-[calc(100dvh-112px)] overflow-y-auto flex flex-col gap-3 px-3 pt-3 rounded-xl bg-app border border-brand-2 text-xs/5 shadow-2xl`;
+    const btn = 'grid place-items-center h-9 px-2.5 rounded-lg bg-card border border-edge font-semibold text-ink disabled:opacity-40';
+    const chip = 'inline-flex items-center min-h-9 px-2.5 rounded-lg bg-card border border-edge font-semibold text-ink aria-[current=true]:border-brand-2 aria-[current=true]:text-brand-2';
     nav.innerHTML = `
       <div class="flex items-start gap-2">
         <div class="flex-1">
-          <p class="text-base/7 font-semibold text-ink">測試面板</p>
-          <p class="text-ink-secondary">只給看稿用，不是產品的一部分。已做 ${BUILT.length} / ${ALL} 個畫面。</p>
+          <p class="text-sm/6 font-semibold text-ink">Test panel</p>
+          <p class="text-ink-secondary">For review only, not part of the product. ${BUILT.length} of ${ALL} screens built.</p>
         </div>
         <button type="button" class="tp-close grid place-items-center size-11 -mr-2 -mt-2 text-ink" aria-label="Close test panel"><span class="icon icon-close" aria-hidden="true"></span></button>
       </div>
       <div class="flex items-center justify-between gap-3">
-        <span class="font-semibold text-ink">主題</span>
-        <div class="flex h-9 p-1 rounded-full bg-card border border-edge" role="radiogroup" aria-label="Theme">${[['system', '跟系統'], ['light', '淺色'], ['dark', '深色']].map(([v, l]) =>
+        <span class="font-semibold text-ink">Theme</span>
+        <div class="flex h-8 p-0.5 rounded-full bg-card border border-edge" role="radiogroup" aria-label="Theme">${[['system', 'System'], ['light', 'Light'], ['dark', 'Dark']].map(([v, l]) =>
           `<button type="button" role="radio" data-theme-choice="${v}" aria-checked="false" class="px-3 rounded-full transition text-ink-secondary aria-checked:bg-selected aria-checked:text-ink aria-checked:font-semibold">${l}</button>`).join('')}</div>
       </div>
       <div class="flex items-center justify-between gap-3">
-        <span class="font-semibold text-ink">字體大小</span>
-        <div class="flex h-9 p-1 rounded-full bg-card border border-edge" role="radiogroup" aria-label="Text size">${[['default', '正常'], ['large', '放大']].map(([v, l]) =>
+        <span class="font-semibold text-ink">Text size</span>
+        <div class="flex h-8 p-0.5 rounded-full bg-card border border-edge" role="radiogroup" aria-label="Text size">${[['default', 'Default'], ['large', 'Large']].map(([v, l]) =>
           `<button type="button" role="radio" data-size-choice="${v}" aria-checked="false" class="px-3 rounded-full transition text-ink-secondary aria-checked:bg-selected aria-checked:text-ink aria-checked:font-semibold">${l}</button>`).join('')}</div>
       </div>
       <div class="flex flex-col gap-2">
-        <p class="font-semibold text-ink">角色 <span class="font-normal text-ink-secondary">（從這個人的起點開始走）</span></p>
+        <p class="font-semibold text-ink">Roles <span class="font-normal text-ink-secondary">— start where this member starts</span></p>
         <div class="flex flex-wrap gap-2">${ROLES.map(([k, l]) => `<button type="button" data-role="${k}" class="${chip}">${l}</button>`).join('')}</div>
       </div>
-      <label class="flex items-center justify-between gap-3 h-11 px-3 rounded-xl bg-card border border-edge cursor-pointer">
-        <span class="font-semibold text-ink">顯示間距 <span class="font-normal text-ink-secondary">（Spacing）</span></span>
+      <label class="flex items-center justify-between gap-3 h-9 px-3 rounded-lg bg-card border border-edge cursor-pointer">
+        <span class="font-semibold text-ink">Show spacing</span>
         <input type="checkbox" role="switch" class="tp-spacing sr-only"><span class="toggle"></span>
       </label>
-      <label class="flex items-center justify-between gap-3 h-11 px-3 rounded-xl bg-card border border-edge cursor-pointer">
-        <span class="font-semibold text-ink">顯示字型 <span class="font-normal text-ink-secondary">（Typography）</span></span>
+      <label class="flex items-center justify-between gap-3 h-9 px-3 rounded-lg bg-card border border-edge cursor-pointer">
+        <span class="font-semibold text-ink">Show typography</span>
         <input type="checkbox" role="switch" class="tp-type sr-only"><span class="toggle"></span>
       </label>
       <div class="flex flex-col gap-2">
-        <p class="font-semibold text-brand-2">跳到流程</p>
+        <p class="font-semibold text-brand-2">Jump to flow</p>
         <span class="relative">
-          <select class="tp-section w-full h-11 pl-3 pr-9 appearance-none rounded-xl bg-card border border-edge font-semibold text-ink">
+          <select class="tp-section w-full h-9 pl-3 pr-9 appearance-none rounded-lg bg-card border border-edge font-semibold text-ink">
             ${CATALOG.map((t, i) => `<option value="${i}">${t[0]}（${itemsOf(t).length}）</option>`).join('')}
           </select>
           <span class="icon icon-sm icon-chevron-down absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" aria-hidden="true"></span>
@@ -426,15 +428,21 @@
               ${subs.length > 1 ? `<p class="text-xs/5 text-ink-muted">${sub}</p>` : ''}
               <div class="flex flex-wrap gap-2">${items.map(([key, label, p]) => p
                 ? `<button type="button" data-state="${key}" data-page="${p}" class="${chip}">${label}</button>`
-                : `<span class="px-3 py-2 rounded-xl border border-dashed border-edge-subtle text-ink-muted" title="還沒做成網頁">${label}（還沒做）</span>`).join('')}</div>
+                : `<span class="px-3 py-2 rounded-xl border border-dashed border-edge-subtle text-ink-muted" title="Not built as a web page yet">${label} (not built)</span>`).join('')}</div>
             </div>`).join('')}
         </section>`).join('')}
-      <div class="sticky bottom-0 -mx-4 mt-auto grid grid-cols-[1fr_auto_1fr_auto] items-center gap-2 p-4 bg-sheet border-t border-edge">
-        <button type="button" class="tp-prev ${btn}">‹ 上一個</button>
+      <div class="sticky bottom-0 -mx-3 mt-auto grid grid-cols-[1fr_auto_1fr_auto] items-center gap-2 p-3 bg-sheet border-t border-edge">
+        <button type="button" class="tp-prev ${btn}">‹ Prev</button>
         <span class="tp-count text-ink-secondary tabular-nums"></span>
-        <button type="button" class="tp-next ${btn}">下一個 ›</button>
-        <button type="button" class="tp-copy ${btn} px-3 text-brand-2">複製連結</button>
+        <button type="button" class="tp-next ${btn}">Next ›</button>
+        <button type="button" class="tp-copy ${btn} text-brand-2">Copy link</button>
       </div>`;
+    // The panel is a review tool, not the product: it keeps its size when the page
+    // is set to Large text (zoom undoes the 112.5% root).
+    const keep = document.createElement('style');
+    keep.textContent = ':root[data-text-size="large"] nav[aria-label="Test panel"], :root[data-text-size="large"] .tp-open { zoom: 0.8889; }';
+    open.classList.add('tp-open');
+    document.head.append(keep);
     document.body.append(open, nav);
 
     let current = null;
@@ -455,7 +463,7 @@
         const [section, subs] = CATALOG[g];
         const sub = subs.find(([, items]) => items.some(([k, , p]) => p === page && k === current));
         const item = itemsOf(CATALOG[g]).find(([k, , p]) => p === page && k === current);
-        nav.querySelector('.tp-where').textContent = `目前：${section} › ${subs.length > 1 ? sub[0] + ' › ' : ''}${item[1]}`;
+        nav.querySelector('.tp-where').textContent = `Now: ${section} › ${subs.length > 1 ? sub[0] + ' › ' : ''}${item[1]}`;
       }
     };
     const go = (key) => {
@@ -520,8 +528,8 @@
     nav.querySelector('.tp-next').addEventListener('click', () => { const i = index(); if (i >= 0 && i < BUILT.length - 1) visit(BUILT[i + 1]); });
     nav.querySelector('.tp-copy').addEventListener('click', (e) => {
       const b = e.currentTarget;
-      const done = (text) => { b.textContent = text; setTimeout(() => { b.textContent = '複製連結'; }, 1500); };
-      navigator.clipboard.writeText(location.href).then(() => done('已複製'), () => done('請從網址列複製'));
+      const done = (text) => { b.textContent = text; setTimeout(() => { b.textContent = 'Copy link'; }, 1500); };
+      navigator.clipboard.writeText(location.href).then(() => done('Copied'), () => done('Copy from the address bar'));
     });
     window.addEventListener('hashchange', () => go(location.hash.slice(1)));
 

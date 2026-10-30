@@ -25,7 +25,7 @@
      typing a phone number). */
   .field-cc { display: none; }
   .field[data-phone] > .field-cc { display: flex; }
-  .field[data-phone] > input { padding-left: 112px; }
+  .field[data-phone] > input { padding-left: 7rem; }
 </style>
 </head>
 
@@ -69,13 +69,23 @@
 
           <div class="divider-label" id="divider">or log in with</div>
 
-          <!-- Section: Sign Up form (12 inside, 8 between fields). Email and a
-               code is the whole registration. -->
+          <!-- Section: Sign Up form (12 inside, 8 between fields). An email or a
+               phone, and a code, is the whole registration (2026-10-30, user:
+               "我們註冊可以讓客人用 email phone number"). Digits bring up the
+               country prefix, as on the One-time code tab. -->
           <form class="flex flex-col gap-3" id="form-signup" hidden novalidate>
             <div class="flex flex-col gap-2">
               <div class="field">
-                <input id="email" type="email" inputmode="email" autocomplete="email" placeholder=" " aria-describedby="email-error">
-                <label for="email">Email</label><fieldset aria-hidden="true"><legend><span>Email</span></legend></fieldset>
+                <input id="email" type="text" inputmode="email" autocomplete="username" placeholder=" " aria-describedby="email-error">
+                <label for="email">Email / Phone</label><fieldset aria-hidden="true"><legend><span>Email / Phone</span></legend></fieldset>
+                <span class="field-cc absolute left-3 top-2 z-10 h-[3.125rem] items-center gap-1 text-base text-ink">
+                  <span class="cc-code">+84</span><img class="cc-flag size-[1.375rem]" src="assets/flags/vn.svg" alt="">
+                  <span class="icon icon-sm icon-chevron-down text-ink-secondary" aria-hidden="true"></span>
+                  <span class="ml-2 h-6 w-px bg-edge" aria-hidden="true"></span>
+                  <select class="cc-pick absolute inset-0 opacity-0 cursor-pointer" aria-label="Country code">
+                    <option value="VN">Vietnam +84</option><option value="TH">Thailand +66</option>
+                  </select>
+                </span>
                 <p class="error-text" id="email-error" hidden></p>
               </div>
               <div class="field">
@@ -289,7 +299,7 @@
     $('seg-login').setAttribute('aria-selected', String(side === 'login'));
     $('form-signup').hidden = side !== 'signup';
     $('form-login').hidden = side !== 'login';
-    $('divider').textContent = side === 'signup' ? 'or sign up with email' : 'or log in with';
+    $('divider').textContent = side === 'signup' ? 'or sign up with' : 'or log in with';
     // "Last used" belongs to logging in: it is the method this browser used last time.
     $('last-used').hidden = side !== 'login' || !lastUsed;
     $('social-google').toggleAttribute('data-last-used', side === 'login' && lastUsed);
@@ -301,11 +311,17 @@
   const syncSignup = () => { $('signup-submit').disabled = !$('terms').checked || !$('email').value.trim(); };
   $('terms').addEventListener('change', syncSignup);
   $('email').addEventListener('input', syncSignup);
+  // Email or phone, told apart by the @; digits are a phone (no Account ID at sign-up).
+  const isPhone = (v) => /^\+?[\d\s-]+$/.test(v);
+  $('email').addEventListener('input', () => { $('email').parentElement.toggleAttribute('data-phone', /^\d[\d\s]*$/.test($('email').value)); });
   $('form-signup').addEventListener('submit', (e) => {
     e.preventDefault();
-    const email = $('email').value.trim();
-    if (!isEmail(email)) { setError('email', 'Enter a valid email address.'); return; }
-    openCode('Verify email', email, 'Verify');
+    const v = $('email').value.trim();
+    const problem = v.includes('@') ? (isEmail(v) ? '' : 'Enter a valid email address.')
+      : isPhone(v) ? (v.replace(/\D/g, '').length < 9 ? 'Enter a valid phone number.' : '')
+      : 'Enter a valid email or phone number.';
+    if (problem) { setError('email', problem); return; }
+    openCode(isPhone(v) ? 'Verify phone number' : 'Verify email', v, 'Verify');
   });
 
   /* Log In: Password or One-time code. */
@@ -337,6 +353,7 @@
     $('cc-select').value = key; $('cc-code').textContent = COUNTRIES[key].code; $('cc-flag').src = COUNTRIES[key].flag;
     document.querySelectorAll('.cc-code').forEach((el) => { el.textContent = COUNTRIES[key].code; });
     document.querySelectorAll('.cc-flag').forEach((el) => { el.src = COUNTRIES[key].flag; });
+    document.querySelectorAll('.cc-pick').forEach((el) => { el.value = key; });
   };
   const defaultCountry = () => {
     const zone = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
@@ -352,6 +369,7 @@
     $('identifier').parentElement.toggleAttribute('data-phone', mode === 'otc' && /^\d[\d\s]*$/.test($('identifier').value));
   };
   $('identifier').addEventListener('input', syncPhone);
+  document.querySelectorAll('.cc-pick').forEach((el) => el.addEventListener('change', () => { setCountry(el.value); $('email').focus(); }));
   $('cc-select').addEventListener('change', () => { setCountry($('cc-select').value); $('identifier').focus(); });
   setCountry(defaultCountry());
   $('password').addEventListener('input', syncLogin);
@@ -400,6 +418,7 @@
     $('code-submit').textContent = action;
     // Only the email the member typed at Sign Up can be wrong; say how to fix it.
     $('wrong-address').hidden = !(side === 'signup' && !social);
+    $('wrong-address').textContent = to.includes('@') ? 'Wrong address? Close this and start again.' : 'Wrong number? Close this and start again.';
     resetCode(); startCountdown(); show('screen-code'); cells[0].focus();
   };
 
@@ -556,7 +575,7 @@
     line: () => { lastUsed = false; setSide('signup'); show('screen-entry'); },
     zalo: () => { lastUsed = false; setSide('signup'); show('screen-entry'); },
     email: () => { lastUsed = false; setSide('signup'); show('screen-entry'); },
-    phone: () => { lastUsed = false; setSide('login'); setTab('otc'); show('screen-entry'); },
+    phone: () => { lastUsed = false; setSide('signup'); show('screen-entry'); },
   };
   const loginCode = () => { setSide('login'); setTab('otc'); fill('identifier', '0912345233'); openCode("Verify it's you", '0912345233', 'Log In'); };
   const STATES = [
@@ -567,6 +586,8 @@
       ['signup-terms', 'Terms of Service (sheet)', () => { setSide('signup'); fill('email', 'bacon927@gmail.com'); show('screen-entry'); openLegal('terms'); }],
       ['signup-privacy', 'Privacy Policy (sheet)', () => { setSide('signup'); fill('email', 'bacon927@gmail.com'); show('screen-entry'); openLegal('privacy'); }],
       ['signup-exists', 'Account exists (sheet)', () => { setSide('signup'); fill('email', 'bacon927@gmail.com'); $('terms').checked = true; syncSignup(); show('screen-entry'); openExists('bacon927@gmail.com'); }],
+      ['signup-typing-phone', 'Typing a phone number', () => { setSide('signup'); fill('email', '0913'); show('screen-entry'); $('email').focus(); }],
+      ['signup-error-phone', 'Error · phone too short', () => { setSide('signup'); fill('email', '0913'); $('terms').checked = true; syncSignup(); show('screen-entry'); $('signup-submit').click(); }],
       ['signup-error-email', 'Error · email', () => { setSide('signup'); fill('email', 'bacon927@gmail'); $('terms').checked = true; syncSignup(); show('screen-entry'); $('signup-submit').click(); }],
     ]],
     ['Verify email', [
