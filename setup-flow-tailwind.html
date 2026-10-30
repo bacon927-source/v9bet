@@ -218,9 +218,9 @@
           <div class="flex flex-col gap-2">
             <p class="group-label" id="theme-label">Theme</p>
             <div class="card" role="radiogroup" aria-labelledby="theme-label">
-              <label class="list-row min-h-14 py-2"><input type="radio" name="theme" value="system" class="peer sr-only" checked><span class="flex min-w-0 flex-1 flex-col"><span class="truncate">Follow system</span><span class="text-sm/6 text-ink-secondary truncate">Matches your device</span></span><span class="icon icon-sm icon-check !text-brand-2 !hidden peer-checked:!inline-block" aria-hidden="true"></span></label>
-              <label class="list-row min-h-14 py-2"><input type="radio" name="theme" value="dark" class="peer sr-only"><span class="flex min-w-0 flex-1 flex-col"><span class="truncate">Dark</span><span class="text-sm/6 text-ink-secondary truncate">Always dark</span></span><span class="icon icon-sm icon-check !text-brand-2 !hidden peer-checked:!inline-block" aria-hidden="true"></span></label>
-              <label class="list-row min-h-14 py-2"><input type="radio" name="theme" value="light" class="peer sr-only"><span class="flex min-w-0 flex-1 flex-col"><span class="truncate">Light</span><span class="text-sm/6 text-ink-secondary truncate">Always light</span></span><span class="icon icon-sm icon-check !text-brand-2 !hidden peer-checked:!inline-block" aria-hidden="true"></span></label>
+              <label class="list-row min-h-14 py-2"><input type="radio" name="theme" value="system" class="peer sr-only" checked><span class="flex min-w-0 flex-1 flex-col"><span class="truncate">Follow system</span></span><span class="icon icon-sm icon-check !text-brand-2 !hidden peer-checked:!inline-block" aria-hidden="true"></span></label>
+              <label class="list-row min-h-14 py-2"><input type="radio" name="theme" value="dark" class="peer sr-only"><span class="flex min-w-0 flex-1 flex-col"><span class="truncate">Dark</span></span><span class="icon icon-sm icon-check !text-brand-2 !hidden peer-checked:!inline-block" aria-hidden="true"></span></label>
+              <label class="list-row min-h-14 py-2"><input type="radio" name="theme" value="light" class="peer sr-only"><span class="flex min-w-0 flex-1 flex-col"><span class="truncate">Light</span></span><span class="icon icon-sm icon-check !text-brand-2 !hidden peer-checked:!inline-block" aria-hidden="true"></span></label>
             </div>
           </div>
           <!-- Text size (2026-10-30): Default or Large; it changes the page at once. -->
@@ -228,7 +228,7 @@
             <p class="group-label" id="size-label">Text size</p>
             <div class="card" role="radiogroup" aria-labelledby="size-label">
               <label class="list-row min-h-14 py-2"><input type="radio" name="text-size" value="default" class="peer sr-only" checked><span class="flex min-w-0 flex-1 flex-col"><span class="truncate">Default</span></span><span class="icon icon-sm icon-check !text-brand-2 !hidden peer-checked:!inline-block" aria-hidden="true"></span></label>
-              <label class="list-row min-h-14 py-2"><input type="radio" name="text-size" value="large" class="peer sr-only"><span class="flex min-w-0 flex-1 flex-col"><span class="truncate">Large</span><span class="text-sm/6 text-ink-secondary truncate">Bigger text, easier to read</span></span><span class="icon icon-sm icon-check !text-brand-2 !hidden peer-checked:!inline-block" aria-hidden="true"></span></label>
+              <label class="list-row min-h-14 py-2"><input type="radio" name="text-size" value="large" class="peer sr-only"><span class="flex min-w-0 flex-1 flex-col"><span class="truncate">Large</span></span><span class="icon icon-sm icon-check !text-brand-2 !hidden peer-checked:!inline-block" aria-hidden="true"></span></label>
             </div>
           </div>
         </div>
@@ -480,7 +480,12 @@
   /* ── Sheets ── */
   const SHEETS = ['sheet-bank', 'sheet-phone', 'sheet-code'];
   function openSheet(id) { SHEETS.forEach((s) => { $(s).hidden = s !== id; }); $('scrim').hidden = false; remember('sheet:' + id); }
-  function closeSheets() { SHEETS.forEach((s) => { $(s).hidden = true; }); $('scrim').hidden = true; clearInterval(timer); }
+  function closeSheets() {
+    SHEETS.forEach((s) => { $(s).hidden = true; }); $('scrim').hidden = true; clearInterval(timer);
+    // SMS was picked but no phone got verified: back to the channel that was in force.
+    const sms = document.querySelector('input[name="channel"][value="sms"]');
+    if (sms && sms.checked && !verified['sec-phone'] && typeof lastChannel !== 'undefined') chooseChannel(lastChannel);
+  }
   // ✕ and the scrim close a sheet the way the phone's back does, so the history stays in step.
   const dismissSheet = () => { if (history.state && String(history.state.view).startsWith('sheet:')) history.back(); else closeSheets(); };
   document.querySelectorAll('.sheet-close').forEach((b) => b.addEventListener('click', dismissSheet));
@@ -517,12 +522,17 @@
     document.querySelector(`[data-link-sub="${key}"]`).textContent = on ? 'Linked' : 'Not linked';
     document.querySelector(`[data-link="${key}"]`).hidden = on;
   };
-  const link = (key) => { setLinked(key, true); document.querySelector(`input[name="channel"][value="${key}"]`).checked = true; toast(`${MESSENGERS[key]} linked`); };
+  // The channel in force. SMS chosen without a phone only becomes it once the phone is
+  // verified; closing the phone sheet before that goes back to this one (2026-10-30).
+  var lastChannel = 'email'; // var + function: closeSheets may run before this line on load
+  function chooseChannel(key) { document.querySelector(`input[name="channel"][value="${key}"]`).checked = true; lastChannel = key; }
+  const link = (key) => { setLinked(key, true); chooseChannel(key); toast(`${MESSENGERS[key]} linked`); };
   document.querySelectorAll('[data-link]').forEach((b) => b.addEventListener('click', (e) => { e.preventDefault(); link(b.dataset.link); }));
   document.querySelectorAll('input[name="channel"]').forEach((r) => r.addEventListener('change', () => {
     if (!r.checked) return;
     if (r.value === 'sms' && !verified['sec-phone']) { fill('add-phone', ''); openSheet('sheet-phone'); }
     else if (MESSENGERS[r.value] && !linked[r.value]) link(r.value);
+    else lastChannel = r.value;
   }));
   $('add-phone').addEventListener('input', () => { $('add-phone-code').hidden = !$('add-phone').value.trim(); });
   $('add-phone-code').addEventListener('click', () => { fill('sec-phone', $('add-phone').value); openCode('sec-phone'); });
@@ -568,7 +578,9 @@
     e.preventDefault();
     // Demo: 000000 is the wrong code; any other six digits pass.
     if (cells.map((c) => c.value).join('') === '000000') { $('otp').setAttribute('data-invalid', ''); $('code-error').hidden = false; return; }
-    closeSheets(); markVerified(codeFor);
+    markVerified(codeFor);
+    if (codeFor === 'sec-phone' && document.querySelector('input[name="channel"][value="sms"]').checked) lastChannel = 'sms';
+    closeSheets();
   });
 
   /* ── Step 8: theme applies at once (theme.js) ── */
@@ -614,7 +626,7 @@
     $('twofa').checked = false; $('contacts').hidden = true;
     verified['sec-email'] = true; verified['sec-phone'] = false;
     fill('sec-email', SIGNUP_EMAIL); markVerified('sec-email');
-    document.querySelector('input[name="channel"][value="email"]').checked = true; Object.keys(MESSENGERS).forEach((k) => setLinked(k, false));
+    chooseChannel('email'); Object.keys(MESSENGERS).forEach((k) => setLinked(k, false));
     // Step 8 shows whatever theme is in force (the test panel can change it too).
     syncThemeStep();
     order = ORDER; isNew = true;
@@ -642,7 +654,7 @@
     if (p.phone) { fill('sec-phone', p.phone); markVerified('sec-phone'); }
     p.linked.forEach((k) => setLinked(k, true));
     // No email on the account: the channel starts on the app they signed up with.
-    if (!p.email && p.linked[0]) document.querySelector(`input[name="channel"][value="${p.linked[0]}"]`).checked = true;
+    if (!p.email && p.linked[0]) chooseChannel(p.linked[0]);
     syncChannels();
     order = ORDER.filter((n) => !p.done.includes(n));
     isNew = p.isNew;
@@ -684,7 +696,7 @@
     ['5 Notifications', [
       ['sms-add-phone', 'SMS → add phone (sheet)', () => { showStep(7); const r = document.querySelector('input[name="channel"][value="sms"]'); r.checked = true; r.dispatchEvent(new Event('change')); fill('add-phone', '091 456 7233'); }],
       ['sms-code', 'SMS → phone code (sheet)', () => { showStep(7); document.querySelector('input[name="channel"][value="sms"]').checked = true; fill('sec-phone', '091 456 7233'); openCode('sec-phone'); }],
-      ['channel-line', 'LINE linked and chosen', () => { showStep(7); setLinked('line', true); document.querySelector('input[name="channel"][value="line"]').checked = true; }],
+      ['channel-line', 'LINE linked and chosen', () => { showStep(7); setLinked('line', true); chooseChannel('line'); }],
     ]],
     ['After', [
       ['welcome', 'Welcome to V9Bet (page)', () => showPage('welcome')],
