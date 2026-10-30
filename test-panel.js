@@ -73,7 +73,7 @@
     ]],
     ['Social', [
       ['Matches an existing account', [
-        ['social-linked', 'Welcome back', 'auth'],
+        ['social-linked', 'Straight to Lobby (LINE now linked)', 'auth'],
       ]],
       ['New member', [
         ['social-new-email', 'Gave an email → Verify email', 'auth'],
