@@ -182,7 +182,6 @@
     ['.field > input', 'Field box', 'h'],
     ['[role="tablist"].w-60', 'Segmented control', 'wh'],
     ['.otp > input', 'Code cell', 'wh'],
-    ['.option-card', 'Option card', 'h'],
     ['.list-row', 'List row', 'h'],
     ['.social-btn-icon', 'Social icon', 'wh'],
     ['.tab', 'Tab', 'h'],
@@ -376,39 +375,19 @@
     const nav = document.createElement('nav');
     nav.hidden = true;
     nav.setAttribute('aria-label', 'Test panel');
-    nav.className = `fixed left-4 top-4 z-[60] w-[min(380px,calc(100vw-32px))] max-h-[calc(100dvh-112px)] overflow-y-auto flex flex-col gap-3 px-3 pt-3 rounded-xl bg-app border border-brand-2 text-xs/5 shadow-2xl`;
+    nav.className = `fixed left-4 top-4 bottom-4 z-[60] w-[min(380px,calc(100vw-32px))] overflow-y-auto flex flex-col gap-3 px-3 pt-3 rounded-xl bg-app border border-brand-2 text-xs/5 shadow-2xl`;
     const btn = 'grid place-items-center h-9 px-2.5 rounded-lg bg-card border border-edge font-semibold text-ink disabled:opacity-40';
     const chip = 'inline-flex items-center min-h-9 px-2.5 rounded-lg bg-card border border-edge font-semibold text-ink aria-[current=true]:border-brand-2 aria-[current=true]:text-brand-2';
+    const mini = 'inline-flex items-center h-7 px-2 rounded-md bg-card border border-edge font-semibold text-ink aria-[current=true]:border-brand-2 aria-[current=true]:text-brand-2';
+    const seg = (attr, label, opts) => `<div class="flex h-7 p-0.5 rounded-full bg-card border border-edge" role="radiogroup" aria-label="${label}">${opts.map(([v, l]) =>
+      `<button type="button" role="radio" ${attr}="${v}" aria-checked="false" class="px-2 rounded-full transition text-ink-secondary aria-checked:bg-selected aria-checked:text-ink aria-checked:font-semibold">${l}</button>`).join('')}</div>`;
+    /* Screens in the middle, every control in one compact footer (2026-10-30, user:
+       "把上面控制和下面切頁面放一起，不用太大"). */
     nav.innerHTML = `
-      <div class="flex items-start gap-2">
-        <div class="flex-1">
-          <p class="text-sm/6 font-semibold text-ink">Test panel</p>
-          <p class="text-ink-secondary">For review only, not part of the product. ${BUILT.length} of ${ALL} screens built.</p>
-        </div>
-        <button type="button" class="tp-close grid place-items-center size-11 -mr-2 -mt-2 text-ink" aria-label="Close test panel"><span class="icon icon-close" aria-hidden="true"></span></button>
+      <div class="flex items-center gap-2">
+        <p class="flex-1 text-sm/6 font-semibold text-ink">Test panel <span class="font-normal text-ink-secondary">· review only · ${BUILT.length}/${ALL} built</span></p>
+        <button type="button" class="tp-close grid place-items-center size-9 -mr-1.5 text-ink" aria-label="Close test panel"><span class="icon icon-close" aria-hidden="true"></span></button>
       </div>
-      <div class="flex items-center justify-between gap-3">
-        <span class="font-semibold text-ink">Theme</span>
-        <div class="flex h-8 p-0.5 rounded-full bg-card border border-edge" role="radiogroup" aria-label="Theme">${[['system', 'System'], ['light', 'Light'], ['dark', 'Dark']].map(([v, l]) =>
-          `<button type="button" role="radio" data-theme-choice="${v}" aria-checked="false" class="px-3 rounded-full transition text-ink-secondary aria-checked:bg-selected aria-checked:text-ink aria-checked:font-semibold">${l}</button>`).join('')}</div>
-      </div>
-      <div class="flex items-center justify-between gap-3">
-        <span class="font-semibold text-ink">Text size</span>
-        <div class="flex h-8 p-0.5 rounded-full bg-card border border-edge" role="radiogroup" aria-label="Text size">${[['default', 'Default'], ['large', 'Large']].map(([v, l]) =>
-          `<button type="button" role="radio" data-size-choice="${v}" aria-checked="false" class="px-3 rounded-full transition text-ink-secondary aria-checked:bg-selected aria-checked:text-ink aria-checked:font-semibold">${l}</button>`).join('')}</div>
-      </div>
-      <div class="flex flex-col gap-2">
-        <p class="font-semibold text-ink">Roles <span class="font-normal text-ink-secondary">— start where this member starts</span></p>
-        <div class="flex flex-wrap gap-2">${ROLES.map(([k, l]) => `<button type="button" data-role="${k}" class="${chip}">${l}</button>`).join('')}</div>
-      </div>
-      <label class="flex items-center justify-between gap-3 min-h-8 cursor-pointer">
-        <span class="font-semibold text-ink">Show spacing</span>
-        <input type="checkbox" role="switch" class="tp-spacing sr-only"><span class="toggle"></span>
-      </label>
-      <label class="flex items-center justify-between gap-3 min-h-8 cursor-pointer">
-        <span class="font-semibold text-ink">Show typography</span>
-        <input type="checkbox" role="switch" class="tp-type sr-only"><span class="toggle"></span>
-      </label>
       ${CATALOG.map(([section, subs], i) => `
         <section class="flex flex-col gap-3" data-section="${i}">
           <p class="font-semibold text-brand-2">${section}</p>
@@ -420,17 +399,30 @@
                 : `<span class="px-3 py-2 rounded-xl border border-dashed border-edge-subtle text-ink-muted" title="Not built as a web page yet">${label} (not built)</span>`).join('')}</div>
             </div>`).join('')}
         </section>`).join('')}
-      <!-- Footer, always in reach, one line (2026-10-30): jump to a flow, then prev / count / next. -->
-      <div class="sticky bottom-0 -mx-3 mt-auto flex items-center gap-1.5 p-3 bg-sheet border-t border-edge">
-        <span class="relative flex-1 min-w-0">
-          <select class="tp-section w-full h-9 pl-3 pr-8 appearance-none rounded-lg bg-card border border-edge font-semibold text-ink truncate" aria-label="Jump to flow">
-            ${CATALOG.map((t, i) => `<option value="${i}">${t[0]} (${itemsOf(t).length})</option>`).join('')}
-          </select>
-          <span class="icon icon-sm icon-chevron-down absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" aria-hidden="true"></span>
-        </span>
-        <button type="button" class="tp-prev grid place-items-center size-9 flex-none rounded-lg bg-card border border-edge font-semibold text-ink disabled:opacity-40" aria-label="Previous screen">‹</button>
-        <span class="tp-count text-ink-secondary tabular-nums whitespace-nowrap"></span>
-        <button type="button" class="tp-next grid place-items-center size-9 flex-none rounded-lg bg-card border border-edge font-semibold text-ink disabled:opacity-40" aria-label="Next screen">›</button>
+      <div class="sticky bottom-0 -mx-3 mt-auto flex flex-col gap-2 p-3 bg-sheet border-t border-edge">
+        <div class="flex flex-wrap items-center gap-2">
+          ${seg('data-theme-choice', 'Theme', [['system', 'System'], ['light', 'Light'], ['dark', 'Dark']])}
+          ${seg('data-size-choice', 'Text size', [['default', 'Text'], ['large', 'Large text']])}
+        </div>
+        <div class="flex flex-wrap items-center gap-1.5">
+          <span class="text-ink-secondary mr-0.5">Start as</span>
+          ${ROLES.map(([k, l]) => `<button type="button" data-role="${k}" class="${mini}">${l}</button>`).join('')}
+        </div>
+        <div class="flex items-center gap-4">
+          <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" role="switch" class="tp-spacing sr-only"><span class="toggle"></span><span class="text-ink">Spacing</span></label>
+          <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" role="switch" class="tp-type sr-only"><span class="toggle"></span><span class="text-ink">Typography</span></label>
+        </div>
+        <div class="flex items-center gap-1.5">
+          <span class="relative flex-1 min-w-0">
+            <select class="tp-section w-full h-9 pl-3 pr-8 appearance-none rounded-lg bg-card border border-edge font-semibold text-ink truncate" aria-label="Jump to flow">
+              ${CATALOG.map((t, i) => `<option value="${i}">${t[0]} (${itemsOf(t).length})</option>`).join('')}
+            </select>
+            <span class="icon icon-sm icon-chevron-down absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" aria-hidden="true"></span>
+          </span>
+          <button type="button" class="tp-prev grid place-items-center size-9 flex-none rounded-lg bg-card border border-edge font-semibold text-ink disabled:opacity-40" aria-label="Previous screen">‹</button>
+          <span class="tp-count text-ink-secondary tabular-nums whitespace-nowrap"></span>
+          <button type="button" class="tp-next grid place-items-center size-9 flex-none rounded-lg bg-card border border-edge font-semibold text-ink disabled:opacity-40" aria-label="Next screen">›</button>
+        </div>
       </div>`;
     // The panel is a review tool, not the product: it keeps its size when the page
     // is set to Large text (zoom undoes the 112.5% root).
@@ -458,6 +450,7 @@
     const go = (key) => {
       if (!handlers[key]) return false;
       reset(); handlers[key](); current = key; sync(); redraw();
+      if (!nav.hidden) showCurrent();
       return true;
     };
     // A screen on this page opens in place; one on the other page opens that page.
@@ -496,21 +489,20 @@
       const s = e.target.closest('[data-state]');
       if (s) visit(BUILT.find(([k, , p]) => k === s.dataset.state && p === s.dataset.page));
     });
-    const toggle = (show, firstLoad) => {
-      nav.hidden = !show; open.setAttribute('aria-expanded', String(show)); remember(show);
-      if (!show) return;
-      // Sized at once, before it scrolls to where you are, so nothing moves under
-      // your finger after it opens. Only on first load is it measured again a moment
-      // later: Tailwind may not have placed the round button yet.
-      fit();
-      if (firstLoad) setTimeout(() => fit(), 300);
+    /* Same place and size on every page (2026-10-30, user: "還是不好用，跳來跳去"):
+       pinned to the left, top to bottom of the screen, whatever the page. The round
+       button hides while it is open; ✕ or Esc closes it. Its list keeps where it was
+       scrolled across pages, and only moves to bring the current screen into view. */
+    const toggle = (show) => { nav.hidden = !show; open.hidden = show; open.setAttribute('aria-expanded', String(show)); remember(show); };
+    const savedScroll = () => { try { return Number(sessionStorage.getItem('tp-scroll')) || 0; } catch (e) { return 0; } };
+    nav.addEventListener('scroll', () => { try { sessionStorage.setItem('tp-scroll', String(nav.scrollTop)); } catch (e) { /* storage blocked */ } }, { passive: true });
+    const showCurrent = () => {
+      const b = nav.querySelector('[data-state][aria-current="true"]'); if (!b) return;
+      const n = nav.getBoundingClientRect(), r = b.getBoundingClientRect(), foot = nav.querySelector('.sticky').getBoundingClientRect().height;
+      if (r.top < n.top + 8) nav.scrollTop -= n.top + 8 - r.top;
+      else if (r.bottom > n.bottom - foot - 8) nav.scrollTop += r.bottom - (n.bottom - foot - 8);
     };
-    open.addEventListener('click', () => { toggle(nav.hidden); const g = sectionOf(current); if (!nav.hidden && g >= 0) scrollTo(g); });
-    // The panel stops 8 above the round button, so the two never overlap.
-    // Measured each time it opens: the button's place is only known once Tailwind has styled the page.
-    const fit = () => { nav.style.maxHeight = `${Math.max(240, open.getBoundingClientRect().top - 16 - 8)}px`; };
-    window.addEventListener('resize', () => { if (!nav.hidden) fit(); });
-    // Three ways out: the ✕, Esc, or the round button again.
+    open.addEventListener('click', () => { toggle(true); nav.scrollTop = savedScroll(); showCurrent(); });
     nav.querySelector('.tp-close').addEventListener('click', () => { toggle(false); open.focus(); });
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !nav.hidden) { toggle(false); open.focus(); } });
     nav.querySelector('.tp-prev').addEventListener('click', () => { const i = index(); if (i > 0) visit(BUILT[i - 1]); });
@@ -544,11 +536,14 @@
     window.addEventListener('resize', redraw);
     document.fonts?.ready.then(redraw);
 
-    if (remembered()) toggle(true, true);
+    if (remembered()) toggle(true);
     const opened = go(location.hash.slice(1));
     if (!opened) current = fallback || null;
     sync();
-    if (!nav.hidden && sectionOf(current) >= 0) scrollTo(sectionOf(current));
+    // Put the list back where it was. Again once Tailwind has styled the page — before
+    // that the list isn't scrollable yet and the browser drops the scroll.
+    const restore = () => { if (nav.hidden) return; nav.scrollTop = savedScroll(); showCurrent(); };
+    restore(); requestAnimationFrame(restore); setTimeout(restore, 300); window.addEventListener('load', restore, { once: true });
     return opened;
   }
 
