@@ -428,7 +428,8 @@ module.exports = {
            with role="switch": it takes effect at once, no Save button. */
         '.toggle': {
           flex: 'none', display: 'flex', alignItems: 'center', width: '2.5rem', height: '1.5rem', padding: `0 ${theme('spacing[0.5]')}`,
-          borderRadius: pill, backgroundColor: c('disabled.DEFAULT'), transition: `background-color 200ms ${theme('transitionTimingFunction.in-out')}`, /* Catalyst switch: duration-200 ease-in-out */
+          // Catalyst's switch: a hairline ring (black/5 light, white/10 dark) so the off track shows on any background.
+          borderRadius: pill, backgroundColor: c('disabled.DEFAULT'), boxShadow: `inset 0 0 0 1px ${v('color-sheet-ring')}`, transition: `background-color 200ms ${theme('transitionTimingFunction.in-out')}`, /* Catalyst switch: duration-200 ease-in-out */
           '&::after': { content: '""', width: '1.25rem', height: '1.25rem', borderRadius: pill, backgroundColor: '#fff', boxShadow: '0 1px 2px rgb(0 0 0 / 0.05), 0 0 0 1px rgb(0 0 0 / 0.05)', /* Catalyst: a white knob, shadow-sm + ring-black/5, in both themes (2026-10-30; it was ink — black on light) */ transition: `transform 200ms ${theme('transitionTimingFunction.in-out')}` },
           '@media (prefers-reduced-motion: reduce)': { '&, &::after': { transition: 'none' } },
         },

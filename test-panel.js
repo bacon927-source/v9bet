@@ -400,11 +400,11 @@
         <p class="font-semibold text-ink">Roles <span class="font-normal text-ink-secondary">— start where this member starts</span></p>
         <div class="flex flex-wrap gap-2">${ROLES.map(([k, l]) => `<button type="button" data-role="${k}" class="${chip}">${l}</button>`).join('')}</div>
       </div>
-      <label class="flex items-center justify-between gap-3 h-9 px-3 rounded-lg bg-card border border-edge cursor-pointer">
+      <label class="flex items-center justify-between gap-3 min-h-8 cursor-pointer">
         <span class="font-semibold text-ink">Show spacing</span>
         <input type="checkbox" role="switch" class="tp-spacing sr-only"><span class="toggle"></span>
       </label>
-      <label class="flex items-center justify-between gap-3 h-9 px-3 rounded-lg bg-card border border-edge cursor-pointer">
+      <label class="flex items-center justify-between gap-3 min-h-8 cursor-pointer">
         <span class="font-semibold text-ink">Show typography</span>
         <input type="checkbox" role="switch" class="tp-type sr-only"><span class="toggle"></span>
       </label>
