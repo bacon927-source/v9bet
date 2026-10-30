@@ -419,20 +419,17 @@
                 : `<span class="px-3 py-2 rounded-xl border border-dashed border-edge-subtle text-ink-muted" title="Not built as a web page yet">${label} (not built)</span>`).join('')}</div>
             </div>`).join('')}
         </section>`).join('')}
-      <!-- Footer, always in reach (2026-10-30): jump to a flow, where you are, prev / next. -->
-      <div class="sticky bottom-0 -mx-3 mt-auto flex flex-col gap-2 p-3 bg-sheet border-t border-edge">
-        <span class="relative">
-          <select class="tp-section w-full h-9 pl-3 pr-9 appearance-none rounded-lg bg-card border border-edge font-semibold text-ink" aria-label="Jump to flow">
+      <!-- Footer, always in reach, one line (2026-10-30): jump to a flow, then prev / count / next. -->
+      <div class="sticky bottom-0 -mx-3 mt-auto flex items-center gap-1.5 p-3 bg-sheet border-t border-edge">
+        <span class="relative flex-1 min-w-0">
+          <select class="tp-section w-full h-9 pl-3 pr-8 appearance-none rounded-lg bg-card border border-edge font-semibold text-ink truncate" aria-label="Jump to flow">
             ${CATALOG.map((t, i) => `<option value="${i}">${t[0]} (${itemsOf(t).length})</option>`).join('')}
           </select>
-          <span class="icon icon-sm icon-chevron-down absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" aria-hidden="true"></span>
+          <span class="icon icon-sm icon-chevron-down absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" aria-hidden="true"></span>
         </span>
-        <p class="tp-where text-ink-secondary truncate"></p>
-        <div class="grid grid-cols-[1fr_auto_1fr] items-center gap-2">
-          <button type="button" class="tp-prev ${btn}">‹ Prev</button>
-          <span class="tp-count text-ink-secondary tabular-nums"></span>
-          <button type="button" class="tp-next ${btn}">Next ›</button>
-        </div>
+        <button type="button" class="tp-prev grid place-items-center size-9 flex-none rounded-lg bg-card border border-edge font-semibold text-ink disabled:opacity-40" aria-label="Previous screen">‹</button>
+        <span class="tp-count text-ink-secondary tabular-nums whitespace-nowrap"></span>
+        <button type="button" class="tp-next grid place-items-center size-9 flex-none rounded-lg bg-card border border-edge font-semibold text-ink disabled:opacity-40" aria-label="Next screen">›</button>
       </div>`;
     // The panel is a review tool, not the product: it keeps its size when the page
     // is set to Large text (zoom undoes the 112.5% root).
@@ -455,13 +452,7 @@
       let role = null; try { role = sessionStorage.getItem('tp-role'); } catch (e) { /* none */ }
       nav.querySelectorAll('[data-role]').forEach((b) => b.setAttribute('aria-current', String(b.dataset.role === role)));
       const g = sectionOf(current);
-      if (g >= 0) {
-        nav.querySelector('.tp-section').value = String(g);
-        const [section, subs] = CATALOG[g];
-        const sub = subs.find(([, items]) => items.some(([k, , p]) => p === page && k === current));
-        const item = itemsOf(CATALOG[g]).find(([k, , p]) => p === page && k === current);
-        nav.querySelector('.tp-where').textContent = `Now: ${section} › ${subs.length > 1 ? sub[0] + ' › ' : ''}${item[1]}`;
-      }
+      if (g >= 0) nav.querySelector('.tp-section').value = String(g);
     };
     const go = (key) => {
       if (!handlers[key]) return false;
