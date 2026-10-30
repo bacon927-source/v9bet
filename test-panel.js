@@ -94,24 +94,13 @@
         ['bank-filled', 'Filled', 'setup'],
         ['usdt', 'USDT', 'setup'],
       ]],
-      ['5 Password', [
-        ['step-5', 'Set a password', 'setup'],
-      ]],
-      ['6 Security', [
-        ['step-6', '2FA off', 'setup'],
-        ['security-on', '2FA on · phone empty', 'setup'],
-        ['security-no-email', '2FA on · no email yet', 'setup'],
-        ['security-phone', 'Phone not verified', 'setup'],
-        ['security-code', 'Phone code (sheet)', 'setup'],
-        ['security-code-invalid', 'Phone code · invalid', 'setup'],
-        ['security-done', 'Both verified', 'setup'],
-      ]],
-      ['7 Notifications', [
+      ['5 Notifications', [
         ['step-7', 'Notifications', 'setup'],
         ['sms-add-phone', 'SMS → add phone (sheet)', 'setup'],
         ['sms-code', 'SMS → phone code (sheet)', 'setup'],
+        ['channel-line', 'LINE linked', 'setup'],
       ]],
-      ['8 Theme', [
+      ['6 Theme', [
         ['step-8', 'Theme', 'setup'],
       ]],
       ['After Setup', [

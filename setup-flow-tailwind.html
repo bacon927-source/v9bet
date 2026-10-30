@@ -39,7 +39,7 @@
       </div>
 
       <!-- ── 1 · Currency ── -->
-      <form class="step flex-1 flex flex-col" data-step="1" data-pct="13" novalidate>
+      <form class="step flex-1 flex flex-col" data-step="1" novalidate>
         <div class="page-body flex-1">
           <div class="step-hero"><h1>Choose account currency</h1><p>Currency cannot be changed once set.</p></div>
           <fieldset class="flex flex-col gap-2">
@@ -52,7 +52,7 @@
       </form>
 
       <!-- ── 2 · Account ID ── -->
-      <form class="step flex-1 flex flex-col" data-step="2" data-pct="25" hidden novalidate>
+      <form class="step flex-1 flex flex-col" data-step="2" hidden novalidate>
         <div class="page-body flex-1">
           <div class="step-hero"><h1>Create your Account ID</h1><p>You can use it to log in.</p></div>
           <div class="field">
@@ -65,7 +65,7 @@
       </form>
 
       <!-- ── 3 · Personal information ── -->
-      <form class="step flex-1 flex flex-col" data-step="3" data-pct="38" hidden novalidate>
+      <form class="step flex-1 flex flex-col" data-step="3" hidden novalidate>
         <div class="page-body flex-1">
           <div class="step-hero"><h1>Personal information</h1><p>Needed for promo claims and withdrawals.</p></div>
           <div class="flex flex-col gap-2">
@@ -96,7 +96,7 @@
       </form>
 
       <!-- ── 4 · Bank account / USDT ── -->
-      <form class="step flex-1 flex flex-col" data-step="4" data-pct="50" hidden novalidate>
+      <form class="step flex-1 flex flex-col" data-step="4" hidden novalidate>
         <div class="page-body flex-1">
           <div class="step-hero"><h1>Bank account / USDT</h1><p>Needed before withdrawal.</p></div>
           <div class="flex flex-col gap-3">
@@ -134,8 +134,8 @@
         <div class="action-bar"><button type="submit" class="btn">Save</button><a href="#" class="link-row skip">Set up later</a></div>
       </form>
 
-      <!-- ── 5 · Password ── -->
-      <form class="step flex-1 flex flex-col" data-step="5" data-pct="63" hidden novalidate>
+      <!-- ── 5 · Password — out of Setup for now (2026-10-30), see ORDER ── -->
+      <form class="step flex-1 flex flex-col" data-step="5" hidden novalidate>
         <div class="page-body flex-1">
           <div class="step-hero"><h1>Set a password</h1><p>Another way to log in.</p></div>
           <div class="flex flex-col gap-2">
@@ -154,8 +154,8 @@
         <div class="action-bar"><button type="submit" class="btn">Continue</button><a href="#" class="link-row skip">Set up later</a></div>
       </form>
 
-      <!-- ── 6 · Security ── -->
-      <form class="step flex-1 flex flex-col" data-step="6" data-pct="75" hidden novalidate>
+      <!-- ── 6 · Security — out of Setup for now (2026-10-30); its email and phone fields still hold the contacts Notifications uses ── -->
+      <form class="step flex-1 flex flex-col" data-step="6" hidden novalidate>
         <div class="page-body flex-1">
           <div class="step-hero"><h1>Security</h1><p>Keep your account safe.</p></div>
           <div class="flex flex-col gap-3">
@@ -184,7 +184,7 @@
       </form>
 
       <!-- ── 7 · Notifications + message channel ── -->
-      <form class="step flex-1 flex flex-col" data-step="7" data-pct="88" hidden novalidate>
+      <form class="step flex-1 flex flex-col" data-step="7" hidden novalidate>
         <div class="page-body flex-1">
           <div class="step-hero"><h1>Notifications</h1><p>Know the moment there’s a deposit or withdrawal update, a bet result or a security alert.</p></div>
           <div class="card">
@@ -195,7 +195,11 @@
             <div class="flex flex-col gap-2">
               <label class="option-card"><input type="radio" name="channel" value="email" class="sr-only" checked><span class="tick"></span><span class="option-card-text">Email<span class="option-card-sub" id="ch-email-sub"></span></span></label>
               <label class="option-card"><input type="radio" name="channel" value="sms" class="sr-only"><span class="tick"></span><span class="option-card-text">SMS<span class="option-card-sub ch-phone-sub"></span></span></label>
-              <label class="option-card"><input type="radio" name="channel" value="zalo" class="sr-only"><span class="tick"></span><span class="option-card-text">Zalo / LINE<span class="option-card-sub ch-phone-sub"></span></span></label>
+              <!-- Zalo, LINE and Telegram are separate (2026-10-30): each is linked
+                   to the account first (Link opens that app), then it can be chosen. -->
+              <label class="option-card"><input type="radio" name="channel" value="zalo" class="sr-only"><span class="tick"></span><span class="option-card-text">Zalo<span class="option-card-sub" data-link-sub="zalo">Not linked</span></span><button type="button" class="font-semibold text-brand-2 px-2 min-h-11" data-link="zalo">Link</button></label>
+              <label class="option-card"><input type="radio" name="channel" value="line" class="sr-only"><span class="tick"></span><span class="option-card-text">LINE<span class="option-card-sub" data-link-sub="line">Not linked</span></span><button type="button" class="font-semibold text-brand-2 px-2 min-h-11" data-link="line">Link</button></label>
+              <label class="option-card"><input type="radio" name="channel" value="telegram" class="sr-only"><span class="tick"></span><span class="option-card-text">Telegram<span class="option-card-sub" data-link-sub="telegram">Not linked</span></span><button type="button" class="font-semibold text-brand-2 px-2 min-h-11" data-link="telegram">Link</button></label>
             </div>
             <p class="hint">Verification codes, security alerts and payment updates are always sent, whatever you choose here.</p>
           </fieldset>
@@ -204,7 +208,7 @@
       </form>
 
       <!-- ── 8 · Theme ── -->
-      <form class="step flex-1 flex flex-col" data-step="8" data-pct="100" hidden novalidate>
+      <form class="step flex-1 flex flex-col" data-step="8" hidden novalidate>
         <div class="page-body flex-1">
           <div class="step-hero"><h1>Theme</h1><p>Dark, light, or match your device.</p></div>
           <fieldset class="flex flex-col gap-2">
@@ -227,7 +231,7 @@
       <!-- ── Sheets ── -->
       <div class="sheet-scrim" id="scrim" hidden></div>
 
-      <!-- Bank picker: search and the v1 logo grid. -->
+      <!-- Bank picker: search, then one row per bank — logo left, name right, A–Z (2026-10-30). -->
       <section class="sheet md:max-w-[440px] md:mx-auto" id="sheet-bank" role="dialog" aria-modal="true" aria-labelledby="sheet-bank-title" hidden>
         <div class="sheet-header"><h2 id="sheet-bank-title">Choose your bank</h2><button type="button" class="sheet-close" aria-label="Close"><span class="icon icon-close" aria-hidden="true"></span></button></div>
         <div class="sheet-body">
@@ -235,7 +239,7 @@
             <input id="bank-search" type="search" autocomplete="off" placeholder=" ">
             <label for="bank-search">Search bank</label><fieldset aria-hidden="true"><legend><span>Search bank</span></legend></fieldset>
           </div>
-          <div class="grid grid-cols-3 gap-3" id="bank-grid"></div>
+          <ul role="list" class="divide-y divide-edge-subtle" id="bank-grid"></ul>
         </div>
       </section>
 
@@ -317,18 +321,22 @@
   }));
 
   /* ── Steps ── */
+  // Setup runs these steps in this order. 5 Set a password and 6 Security are out
+  // for now (2026-10-30, user: 先拿掉); their forms stay in the page because
+  // Notifications keeps the member's email and phone in step 6's fields.
+  const ORDER = [1, 2, 3, 4, 7, 8];
   let current = 1;
   const showStep = (n) => {
     current = n;
     closeSheets();
     steps.forEach((s) => { s.hidden = Number(s.dataset.step) !== n; });
     $('lobby').hidden = true; $('topbar').hidden = false;
-    const pct = steps[n - 1].dataset.pct;
+    const pct = Math.round((ORDER.indexOf(n) + 1) / ORDER.length * 100);
     $('bar-done').style.width = pct + '%'; $('bar').setAttribute('aria-valuenow', pct); $('pct').textContent = pct + '%';
     window.scrollTo(0, 0);
   };
-  const next = () => (current < 8 ? showStep(current + 1) : toLobby());
-  $('back').addEventListener('click', () => { if (current > 1) showStep(current - 1); });
+  const next = () => { const i = ORDER.indexOf(current); if (i < ORDER.length - 1) showStep(ORDER[i + 1]); else toLobby(); };
+  $('back').addEventListener('click', () => { const i = ORDER.indexOf(current); if (i > 0) showStep(ORDER[i - 1]); });
   // "Set up later" leaves this step for later and moves on.
   document.querySelectorAll('.skip').forEach((a) => a.addEventListener('click', (e) => { e.preventDefault(); next(); }));
   steps.forEach((form) => form.addEventListener('submit', (e) => {
@@ -369,23 +377,36 @@
   $('seg-bank').addEventListener('click', () => setPayout('bank'));
   $('seg-usdt').addEventListener('click', () => setPayout('usdt'));
 
-  // The 24 tiles from v1 (Figma 324:3149). DongA Bank is shown under maintenance there, so it cannot be picked.
+  // The 24 banks from v1 (Figma 324:3149), in the order of their logo files
+  // (assets/banks/bank-01..24.png). DongA Bank is under maintenance, so it cannot be picked.
   const BANKS = ['ACB', 'Agribank', 'Bac A Bank', 'BIDV', 'DongA Bank', 'Eximbank', 'MB', 'LienVietPostBank', 'HDBank', 'MSB', 'Nam A Bank', 'OCB',
     'Ocean Bank', 'Sacombank', 'SCB', 'SHB', 'Shinhan Bank', 'Techcombank', 'VIB', 'Vietcombank', 'VietinBank', 'SeABank', 'TPBank', 'VPBank'];
-  const DOWN = ['DongA Bank'];
-  $('bank-grid').innerHTML = BANKS.map((name, i) => `
-    <button type="button" class="rounded overflow-hidden disabled:cursor-not-allowed" data-bank="${name}" aria-label="${name}" ${DOWN.includes(name) ? 'disabled' : ''}>
-      <img src="assets/banks/bank-${String(i + 1).padStart(2, '0')}.png" alt="" class="w-full h-auto block">
-    </button>`).join('');
+  const DOWN = { 'DongA Bank': 'Maintenance ends at Apr 7, 12:00 PM' };
+  // One row per bank, A–Z: logo left, name right, a check on the chosen one.
+  const renderBanks = () => {
+    const chosen = $('bank').value;
+    $('bank-grid').innerHTML = BANKS
+      .map((name, i) => ({ name, logo: `assets/banks/bank-${String(i + 1).padStart(2, '0')}.png` }))
+      .sort((a, b) => a.name.localeCompare(b.name, 'en', { sensitivity: 'base' }))
+      .map(({ name, logo }) => `
+      <li data-bank="${name}">
+        <button type="button" class="flex w-full items-center gap-3 py-3 text-left disabled:cursor-not-allowed disabled:opacity-50" ${DOWN[name] ? 'disabled' : ''}>
+          <img src="${logo}" alt="" class="h-9 w-16 flex-none rounded-md bg-white object-contain ring-1 ring-edge-subtle">
+          <span class="flex min-w-0 flex-1 flex-col"><span class="text-base text-ink">${name}</span>${DOWN[name] ? `<span class="text-sm/6 text-ink-secondary">${DOWN[name]}</span>` : ''}</span>
+          ${name === chosen ? '<span class="icon icon-sm icon-check text-brand-2" aria-label="Selected"></span>' : ''}
+        </button>
+      </li>`).join('');
+  };
+  renderBanks();
   $('bank-search').addEventListener('input', () => {
     const q = $('bank-search').value.trim().toLowerCase();
     $('bank-grid').querySelectorAll('[data-bank]').forEach((b) => { b.hidden = q && !b.dataset.bank.toLowerCase().includes(q); });
   });
   $('bank-grid').addEventListener('click', (e) => {
-    const b = e.target.closest('[data-bank]'); if (!b || b.disabled) return;
+    const b = e.target.closest('[data-bank]'); if (!b || b.querySelector('button').disabled) return;
     fill('bank', b.dataset.bank); closeSheets();
   });
-  $('bank').addEventListener('click', () => openSheet('sheet-bank'));
+  $('bank').addEventListener('click', () => { renderBanks(); openSheet('sheet-bank'); });
 
   /* ── Sheets ── */
   const SHEETS = ['sheet-bank', 'sheet-phone', 'sheet-code', 'sheet-welcome'];
@@ -415,9 +436,22 @@
   $('twofa').addEventListener('change', () => { $('contacts').hidden = !$('twofa').checked; });
   document.querySelectorAll('[data-get-code]').forEach((b) => b.addEventListener('click', () => openCode(b.dataset.getCode)));
 
-  // Step 7: SMS or Zalo / LINE with no verified phone opens "Add your phone number", then the code.
+  // Step 7: SMS with no verified phone opens "Add your phone number", then the code.
+  // Zalo, LINE and Telegram are linked first: Link (or choosing one not linked yet)
+  // opens that app to connect it — the demo links it at once.
+  const MESSENGERS = { zalo: 'Zalo', line: 'LINE', telegram: 'Telegram' };
+  const linked = { zalo: false, line: false, telegram: false };
+  const setLinked = (key, on) => {
+    linked[key] = on;
+    document.querySelector(`[data-link-sub="${key}"]`).textContent = on ? 'Linked' : 'Not linked';
+    document.querySelector(`[data-link="${key}"]`).hidden = on;
+  };
+  const link = (key) => { setLinked(key, true); document.querySelector(`input[name="channel"][value="${key}"]`).checked = true; toast(`${MESSENGERS[key]} linked`); };
+  document.querySelectorAll('[data-link]').forEach((b) => b.addEventListener('click', (e) => { e.preventDefault(); link(b.dataset.link); }));
   document.querySelectorAll('input[name="channel"]').forEach((r) => r.addEventListener('change', () => {
-    if (r.checked && r.value !== 'email' && !verified['sec-phone']) { fill('add-phone', ''); openSheet('sheet-phone'); }
+    if (!r.checked) return;
+    if (r.value === 'sms' && !verified['sec-phone']) { fill('add-phone', ''); openSheet('sheet-phone'); }
+    else if (MESSENGERS[r.value] && !linked[r.value]) link(r.value);
   }));
   $('add-phone').addEventListener('input', () => { $('add-phone-code').hidden = !$('add-phone').value.trim(); });
   $('add-phone-code').addEventListener('click', () => { fill('sec-phone', $('add-phone').value); openCode('sec-phone'); });
@@ -493,7 +527,7 @@
     $('twofa').checked = false; $('contacts').hidden = true;
     verified['sec-email'] = true; verified['sec-phone'] = false;
     fill('sec-email', SIGNUP_EMAIL); markVerified('sec-email');
-    document.querySelector('input[name="channel"][value="email"]').checked = true;
+    document.querySelector('input[name="channel"][value="email"]').checked = true; Object.keys(MESSENGERS).forEach((k) => setLinked(k, false));
     // Step 8 shows whatever theme is in force (the test panel can change it too).
     syncThemeStep();
   };
@@ -505,10 +539,8 @@
       ['step-2', '2 Account ID', () => showStep(2)],
       ['step-3', '3 Personal', () => { personal(); showStep(3); }],
       ['step-4', '4 Bank', () => { personal(); showStep(4); }],
-      ['step-5', '5 Password', () => showStep(5)],
-      ['step-6', '6 Security', () => showStep(6)],
-      ['step-7', '7 Notifications', () => showStep(7)],
-      ['step-8', '8 Theme', () => showStep(8)],
+      ['step-7', '5 Notifications', () => showStep(7)],
+      ['step-8', '6 Theme', () => showStep(8)],
     ]],
     ['1 Currency', [
       ['arrive', 'Arriving · Account created', () => { showStep(1); toast('Account created'); }],
@@ -521,17 +553,10 @@
       ['bank-filled', 'Bank filled', () => { personal(); showStep(4); fill('bank', 'Vietcombank'); fill('account-number', '0071000123456'); }],
       ['usdt', 'USDT', () => { showStep(4); setPayout('usdt'); }],
     ]],
-    ['6 Security', [
-      ['security-on', '2FA on · phone empty', () => { showStep(6); twofaOn(); }],
-      ['security-phone', '2FA on · phone not verified', () => { showStep(6); twofaOn(); fill('sec-phone', '091 456 7233'); }],
-      ['security-code', 'Phone code (sheet)', () => { showStep(6); twofaOn(); fill('sec-phone', '091 456 7233'); openCode('sec-phone'); }],
-      ['security-code-invalid', 'Phone code · invalid', () => { showStep(6); twofaOn(); fill('sec-phone', '091 456 7233'); openCode('sec-phone'); cells.forEach((c) => { c.value = '0'; }); $('code-submit').disabled = false; $('form-code').requestSubmit(); }],
-      ['security-done', '2FA on · both verified', () => { showStep(6); twofaOn(); fill('sec-phone', '091 456 7233'); markVerified('sec-phone'); }],
-      ['security-no-email', '2FA on · no email yet', () => { showStep(6); twofaOn(); verified['sec-email'] = false; $('sec-email').dataset.verifiedValue = ''; syncContact('sec-email'); }],
-    ]],
-    ['7 Notifications', [
+    ['5 Notifications', [
       ['sms-add-phone', 'SMS → add phone (sheet)', () => { showStep(7); const r = document.querySelector('input[name="channel"][value="sms"]'); r.checked = true; r.dispatchEvent(new Event('change')); fill('add-phone', '091 456 7233'); }],
       ['sms-code', 'SMS → phone code (sheet)', () => { showStep(7); document.querySelector('input[name="channel"][value="sms"]').checked = true; fill('sec-phone', '091 456 7233'); openCode('sec-phone'); }],
+      ['channel-line', 'LINE linked and chosen', () => { showStep(7); setLinked('line', true); document.querySelector('input[name="channel"][value="line"]').checked = true; }],
     ]],
     ['After', [
       ['welcome', 'Lobby + Welcome popup', () => toLobby()],
