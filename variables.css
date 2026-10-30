@@ -102,14 +102,17 @@
      one-step-looser leading (text-base/7, text-sm/6, text-xs/5) because
      Vietnamese stacks tone marks and Thai grows both ways. The class each
      one is in the pages is on the right. Flutter reads the same numbers. */
-  --font-size-display:30px; --leading-display:36px;   /* text-3xl    */
-  --font-size-body:16px;    --leading-body:28px;      /* text-base/7 */
-  --font-size-body-sm:14px; --leading-body-sm:24px;   /* text-sm/6   */
-  --font-size-title:18px;   --leading-title:28px;     /* text-lg     */
-  --font-size-button:16px;  --leading-button:24px;    /* text-base   */
-  --font-size-field:16px;   --leading-field:24px;     /* text-base   */
-  --font-size-field-label:12px; --leading-field-label:20px; /* text-xs/5 */
-  --font-size-micro:12px;   --leading-micro:20px;     /* text-xs/5   */
+  /* In rem, as Tailwind writes them (2026-10-30, user: "好 rem"), so text
+     follows the phone's / browser's own text size and our Large setting.
+     1rem = 16px at the default size; px on the right for Flutter. */
+  --font-size-display:1.875rem; --leading-display:2.25rem;  /* 30/36 text-3xl    */
+  --font-size-body:1rem;        --leading-body:1.75rem;     /* 16/28 text-base/7 */
+  --font-size-body-sm:0.875rem; --leading-body-sm:1.5rem;   /* 14/24 text-sm/6   */
+  --font-size-title:1.125rem;   --leading-title:1.75rem;    /* 18/28 text-lg     */
+  --font-size-button:1rem;      --leading-button:1.5rem;    /* 16/24 text-base   */
+  --font-size-field:1rem;       --leading-field:1.5rem;     /* 16/24 text-base   */
+  --font-size-field-label:0.75rem; --leading-field-label:1.25rem; /* 12/20 text-xs/5 */
+  --font-size-micro:0.75rem;    --leading-micro:1.25rem;    /* 12/20 text-xs/5   */
 }
 
 /* ---- semantic · dark (.dark on <html>) ---- */
@@ -157,17 +160,6 @@
 .num, [data-num] { font-variant-numeric: tabular-nums; }
 
 /* Text size · Large (2026-10-30, user: "加一個字體大小…正常字，和放大一點，二個版本").
-   theme.js sets data-text-size="large" on <html>. The root goes to 112.5%
-   (16 → 18), so every Tailwind rem class grows with it, and each type token
-   moves one step up Tailwind's scale. Default needs nothing. */
-:root[data-text-size="large"] {
-  font-size: 112.5%;
-  --font-size-display:36px; --leading-display:40px;   /* text-4xl      */
-  --font-size-body:18px;    --leading-body:28px;      /* text-lg       */
-  --font-size-body-sm:16px; --leading-body-sm:28px;   /* text-base/7   */
-  --font-size-title:20px;   --leading-title:28px;     /* text-xl       */
-  --font-size-button:18px;  --leading-button:28px;    /* text-lg       */
-  --font-size-field:18px;   --leading-field:28px;     /* text-lg       */
-  --font-size-field-label:14px; --leading-field-label:20px; /* text-sm */
-  --font-size-micro:14px;   --leading-micro:20px;     /* text-sm       */
-}
+   theme.js sets data-text-size="large" on <html>. Everything is in rem, so
+   one rule enlarges all text: 16 → 18 (112.5%). Default needs nothing. */
+:root[data-text-size="large"] { font-size: 112.5%; }

@@ -84,9 +84,11 @@
         ['as-line', 'New · LINE', 'setup'],
         ['as-zalo', 'New · Zalo (no email)', 'setup'],
         ['as-email', 'New · Email', 'setup'],
+        ['as-phone', 'New · Phone (one-time code)', 'setup'],
       ]],
       ['1 Currency', [
-        ['arrive', 'Arriving · Account created', 'setup'],
+        ['arrive', 'Before Setup · new member', 'setup'],
+        ['intro-existing', 'Before Setup · existing member', 'setup'],
         ['step-1', 'Currency', 'setup'],
       ]],
       ['2 Account ID', [
@@ -113,7 +115,8 @@
         ['display-large', 'Large text', 'setup'],
       ]],
       ['After Setup', [
-        ['welcome', 'Lobby + Welcome popup', 'setup'],
+        ['welcome', 'Welcome to V9Bet (new members)', 'setup'],
+        ['lobby', 'Lobby', 'setup'],
       ]],
     ]],
     ['Tutorial', [

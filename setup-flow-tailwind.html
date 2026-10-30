@@ -228,6 +228,44 @@
       </form>
 
       <!-- ── Lobby (not designed yet) ── -->
+      <!-- Before Setup (2026-10-30): one page between sign-up and Setup, the same
+           for every way in. An existing member, the first time Setup is on, gets
+           their own words. It never says "start". -->
+      <section id="intro" class="flex-1 flex flex-col" hidden>
+        <div class="nav-top"></div>
+        <div class="page-body flex-1">
+          <div class="flex flex-col items-center gap-3">
+            <span class="status-mark" id="intro-mark"><span class="icon icon-check size-8" aria-hidden="true"></span></span>
+            <div class="step-hero"><h1 id="intro-title"></h1><p id="intro-why"></p></div>
+          </div>
+        </div>
+        <div class="action-bar"><button type="button" class="btn" id="intro-continue">Continue</button></div>
+      </section>
+
+      <!-- After Setup (2026-10-30): Welcome to V9Bet is a full page, not a sheet.
+           New members only — the offers are new-member offers. -->
+      <section id="welcome" class="flex-1 flex flex-col" hidden>
+        <div class="nav-top">
+          <button type="button" aria-label="Close" class="nav-top-action" id="welcome-close"><span class="icon icon-close size-7" aria-hidden="true"></span></button>
+        </div>
+        <div class="page-body flex-1">
+          <div class="step-hero"><h1>Welcome to V9Bet</h1><p>Here are your new-member offers.</p></div>
+          <div class="flex flex-col gap-3">
+            <div class="flex flex-col gap-1 p-4 rounded-xl border border-edge">
+              <p class="text-sm/6 text-brand-2">New member offer</p>
+              <p class="text-base/7 font-bold">100% First Deposit Bonus</p>
+              <p class="text-sm/6 text-ink-secondary">For Sports / Live, turnover x10 · applied automatically at your first deposit</p>
+            </div>
+            <div class="flex flex-col gap-1 p-4 rounded-xl border border-edge">
+              <p class="text-sm/6 text-brand-2">Mission</p>
+              <p class="text-base/7 font-bold">Make your first deposit</p>
+              <p class="text-sm/6 text-ink-secondary">Unlock 1 free bet</p>
+            </div>
+          </div>
+        </div>
+        <div class="action-bar"><button type="button" class="btn" id="welcome-deposit">Go to Deposit</button></div>
+      </section>
+
       <section id="lobby" class="flex-1 flex flex-col" hidden>
         <div class="page-body flex-1">
           <div class="flex-1 grid place-items-center rounded-xl border border-dashed border-edge text-base/7 text-ink-muted">Lobby</div>
@@ -280,23 +318,6 @@
       </section>
 
       <!-- Welcome popup over the lobby. -->
-      <section class="sheet md:max-w-[440px] md:mx-auto" id="sheet-welcome" role="dialog" aria-modal="true" aria-labelledby="sheet-welcome-title" hidden>
-        <div class="sheet-header"><h2 id="sheet-welcome-title">Welcome to V9Bet</h2><button type="button" class="sheet-close" aria-label="Close"><span class="icon icon-close" aria-hidden="true"></span></button></div>
-        <div class="sheet-body">
-          <p class="text-base/7 text-ink-secondary">Your account is ready. Here are your new-member offers.</p>
-          <div class="flex flex-col gap-1 p-4 rounded-xl border border-edge">
-            <p class="text-sm/6 text-brand-2">New member offer</p>
-            <p class="text-base/7 font-bold">100% First Deposit Bonus</p>
-            <p class="text-sm/6 text-ink-secondary">For Sports / Live, turnover x10 · applied automatically at your first deposit</p>
-          </div>
-          <div class="flex flex-col gap-1 p-4 rounded-xl border border-edge">
-            <p class="text-sm/6 text-brand-2">Mission</p>
-            <p class="text-base/7 font-bold">Make your first deposit</p>
-            <p class="text-sm/6 text-ink-secondary">Unlock 1 free bet</p>
-          </div>
-          <button type="button" class="btn">Go to Deposit</button>
-        </div>
-      </section>
 
       <!-- Toast (v1): light blue, black text, 16 above the action bar. -->
       <div class="fixed bottom-24 inset-x-4 md:mx-auto md:max-w-[408px] z-30 rounded-md bg-[var(--v1-blue-light)] px-4 py-3 text-base/7 font-semibold text-black" id="toast" role="status" hidden></div>
@@ -340,7 +361,7 @@
     current = n;
     closeSheets();
     steps.forEach((s) => { s.hidden = Number(s.dataset.step) !== n; });
-    $('lobby').hidden = true; $('topbar').hidden = false;
+    ['lobby', 'intro', 'welcome'].forEach((id) => { $(id).hidden = true; }); $('topbar').hidden = false;
     const pct = Math.round((order.indexOf(n) + 1) / order.length * 100);
     $('bar-done').style.width = pct + '%'; $('bar').setAttribute('aria-valuenow', pct); $('pct').textContent = pct + '%';
     window.scrollTo(0, 0);
@@ -419,7 +440,7 @@
   $('bank').addEventListener('click', () => { renderBanks(); openSheet('sheet-bank'); });
 
   /* ── Sheets ── */
-  const SHEETS = ['sheet-bank', 'sheet-phone', 'sheet-code', 'sheet-welcome'];
+  const SHEETS = ['sheet-bank', 'sheet-phone', 'sheet-code'];
   function openSheet(id) { SHEETS.forEach((s) => { $(s).hidden = s !== id; }); $('scrim').hidden = false; }
   function closeSheets() { SHEETS.forEach((s) => { $(s).hidden = true; }); $('scrim').hidden = true; clearInterval(timer); }
   document.querySelectorAll('.sheet-close').forEach((b) => b.addEventListener('click', closeSheets));
@@ -519,12 +540,23 @@
   document.querySelectorAll('input[name="text-size"]').forEach((r) => r.addEventListener('change', () => setTextSize(r.value)));
   syncThemeStep();
 
-  /* ── Lobby + Welcome ── */
-  function toLobby() {
-    steps.forEach((s) => { s.hidden = true; });
-    $('topbar').hidden = true; $('lobby').hidden = false;
-    openSheet('sheet-welcome');
-  }
+  /* ── Before Setup · Welcome · Lobby ── */
+  let isNew = true; // a new member sees Welcome to V9Bet after Setup; an existing one goes to the lobby
+  const showPage = (id) => {
+    closeSheets(); steps.forEach((s) => { s.hidden = true; }); $('topbar').hidden = true;
+    ['lobby', 'intro', 'welcome'].forEach((p) => { $(p).hidden = p !== id; });
+    window.scrollTo(0, 0);
+  };
+  const showIntro = () => {
+    $('intro-title').textContent = isNew ? 'Your account is ready' : 'We’ve improved V9Bet';
+    $('intro-why').textContent = isNew ? 'A few quick settings and you’re all set.' : 'Please complete the following settings for your account.';
+    $('intro-mark').hidden = !isNew;
+    showPage('intro');
+  };
+  $('intro-continue').addEventListener('click', () => showStep(order[0]));
+  function toLobby() { showPage(isNew ? 'welcome' : 'lobby'); }
+  $('welcome-close').addEventListener('click', () => showPage('lobby'));
+  $('welcome-deposit').addEventListener('click', () => showPage('lobby')); // Deposit is not designed here
 
   /* ── Toast ── */
   let toastTimer;
@@ -544,7 +576,7 @@
     document.querySelector('input[name="channel"][value="email"]').checked = true; Object.keys(MESSENGERS).forEach((k) => setLinked(k, false));
     // Step 8 shows whatever theme is in force (the test panel can change it too).
     syncThemeStep();
-    order = ORDER;
+    order = ORDER; isNew = true;
   };
   const personal = () => { fill('full-name', 'Pei Chen'); setDob('1992-04-18'); };
 
@@ -559,6 +591,7 @@
     'line':          { isNew: true,  done: [], email: SIGNUP_EMAIL, linked: ['line'] },
     'zalo':          { isNew: true,  done: [], email: '',           linked: ['zalo'] },
     'email':         { isNew: true,  done: [], email: SIGNUP_EMAIL, linked: [] },
+    'phone':         { isNew: true,  done: [], email: '', phone: '0914567233', linked: [] }, // came in with a one-time code to a phone
   };
   const startAs = (key) => {
     const p = PERSONAS[key];
@@ -569,11 +602,11 @@
     if (p.phone) { fill('sec-phone', p.phone); markVerified('sec-phone'); }
     p.linked.forEach((k) => setLinked(k, true));
     // No email on the account: the channel starts on the app they signed up with.
-    if (!p.email && p.linked[0]) document.querySelector(`input[name="channel"][value="${p.linked[0]}"]`).checked = true;
+    if (!p.email) document.querySelector(`input[name="channel"][value="${p.linked[0] || 'sms'}"]`).checked = true;
     syncChannels();
     order = ORDER.filter((n) => !p.done.includes(n));
-    showStep(order[0]);
-    if (p.isNew) toast('Account created');
+    isNew = p.isNew;
+    showIntro();
   };
   const twofaOn = () => { $('twofa').checked = true; $('contacts').hidden = false; };
   const STATES = [
@@ -584,6 +617,7 @@
       ['as-line', 'New · LINE', () => startAs('line')],
       ['as-zalo', 'New · Zalo (no email)', () => startAs('zalo')],
       ['as-email', 'New · Email', () => startAs('email')],
+      ['as-phone', 'New · Phone (one-time code)', () => startAs('phone')],
     ]],
     ['Steps', [
       ['step-1', '1 Currency', () => showStep(1)],
@@ -595,7 +629,8 @@
       ['display-large', '6 Display · Large text', () => { setTextSize('large'); showStep(8); syncThemeStep(); }],
     ]],
     ['1 Currency', [
-      ['arrive', 'Arriving · Account created', () => { showStep(1); toast('Account created'); }],
+      ['arrive', 'Before Setup · new member', () => showIntro()],
+      ['intro-existing', 'Before Setup · existing member', () => { order = ORDER.filter((n) => n > 2); isNew = false; showIntro(); }],
     ]],
     ['2 Account ID', [
       ['account-id-error', 'Error · letters and numbers', () => { showStep(2); fill('account-id', 'V9 test'); steps[1].requestSubmit(); }],
@@ -611,7 +646,8 @@
       ['channel-line', 'LINE linked and chosen', () => { showStep(7); setLinked('line', true); document.querySelector('input[name="channel"][value="line"]').checked = true; }],
     ]],
     ['After', [
-      ['welcome', 'Lobby + Welcome popup', () => toLobby()],
+      ['welcome', 'Welcome to V9Bet (page)', () => showPage('welcome')],
+      ['lobby', 'Lobby', () => showPage('lobby')],
     ]],
   ];
   // A #state opens that state; with none, the member arrives from sign-up on step 1.
