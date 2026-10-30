@@ -291,14 +291,19 @@ module.exports = {
 
         /* Tabs — text over a 2px rule; the selected one turns green.
            State lives in aria-selected, so scripts flip one attribute. */
-        '.tabs': { display: 'flex' },
+        /* Tailwind's underline tabs (2026-10-30, user: the grey rule sat right against the
+           green one): one 1px hairline under the row, and only the chosen tab draws its
+           2px green rule, laid over the hairline (-mb-px). The others draw none. */
+        '.tabs': { display: 'flex', borderBottom: `1px solid ${c('edge.subtle')}` },
         '.tab': {
           flex: '1 1 0%', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: theme('spacing.1'),
           minHeight: '2.75rem', paddingTop: theme('spacing.2'), fontSize: type('body').fontSize, lineHeight: type('body').lineHeight, color: c('ink.navOff'),
           // At least 44, and the 2px rule never gives way: with Large text the label is taller
           // and a fixed 44 squeezed the rule to nothing (2026-10-30).
-          '&::after': { content: '""', flex: 'none', width: '100%', height: '2px', backgroundColor: 'currentColor' },
+          marginBottom: '-1px',
+          '&::after': { content: '""', flex: 'none', width: '100%', height: '2px', backgroundColor: 'transparent' },
           '&[aria-selected="true"]': { color: c('brand-2.DEFAULT') },
+          '&[aria-selected="true"]::after': { backgroundColor: 'currentColor' },
           ...colourEase,
         },
 
