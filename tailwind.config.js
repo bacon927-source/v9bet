@@ -427,7 +427,7 @@ module.exports = {
         '.toggle': {
           flex: 'none', display: 'flex', alignItems: 'center', width: '40px', height: '24px', padding: `0 ${theme('spacing[0.5]')}`,
           borderRadius: pill, backgroundColor: c('disabled.DEFAULT'), transition: `background-color 200ms ${theme('transitionTimingFunction.in-out')}`, /* Catalyst switch: duration-200 ease-in-out */
-          '&::after': { content: '""', width: '20px', height: '20px', borderRadius: pill, backgroundColor: c('ink.DEFAULT'), transition: `transform 200ms ${theme('transitionTimingFunction.in-out')}` },
+          '&::after': { content: '""', width: '20px', height: '20px', borderRadius: pill, backgroundColor: '#fff', boxShadow: '0 1px 2px rgb(0 0 0 / 0.05), 0 0 0 1px rgb(0 0 0 / 0.05)', /* Catalyst: a white knob, shadow-sm + ring-black/5, in both themes (2026-10-30; it was ink — black on light) */ transition: `transform 200ms ${theme('transitionTimingFunction.in-out')}` },
           '@media (prefers-reduced-motion: reduce)': { '&, &::after': { transition: 'none' } },
         },
         'input:checked + .toggle': { backgroundColor: c('brand-2.DEFAULT') },

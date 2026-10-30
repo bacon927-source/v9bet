@@ -369,7 +369,7 @@
     nav.setAttribute('aria-label', 'Test panel');
     nav.className = `fixed left-4 top-4 z-[60] w-[min(380px,calc(100vw-32px))] max-h-[calc(100dvh-112px)] overflow-y-auto flex flex-col gap-4 px-4 pt-4 rounded-xl bg-app border border-brand-2 text-sm/6 shadow-2xl`;
     const btn = 'grid place-items-center h-11 rounded-xl bg-card border border-edge font-semibold text-ink disabled:opacity-40';
-    const chip = 'px-3 py-2 rounded-xl bg-card border border-edge font-semibold text-ink aria-[current=true]:border-brand-2 aria-[current=true]:text-brand-2';
+    const chip = 'inline-flex items-center min-h-11 px-3 rounded-xl bg-card border border-edge font-semibold text-ink aria-[current=true]:border-brand-2 aria-[current=true]:text-brand-2';
     nav.innerHTML = `
       <div class="flex items-start gap-2">
         <div class="flex-1">
@@ -462,6 +462,9 @@
     nav.querySelectorAll('[data-theme-choice]').forEach((b) => b.addEventListener('click', () => {
       if (window.setTheme) setTheme(b.dataset.themeChoice);
       syncThemeChoice();
+      document.querySelectorAll('input[name="theme"]').forEach((r) => { r.checked = r.value === b.dataset.themeChoice; });
+    }));
+    syncThemeChoice();
     // Text size: the same choice Setup › Display makes (theme.js).
     const syncSizeChoice = () => nav.querySelectorAll('[data-size-choice]').forEach((b) => b.setAttribute('aria-checked', String(b.dataset.sizeChoice === (window.getTextSize ? getTextSize() : 'default'))));
     nav.querySelectorAll('[data-size-choice]').forEach((b) => b.addEventListener('click', () => {
@@ -470,18 +473,19 @@
       document.querySelectorAll('input[name="text-size"]').forEach((r) => { r.checked = r.value === b.dataset.sizeChoice; });
     }));
     syncSizeChoice();
-      document.querySelectorAll('input[name="theme"]').forEach((r) => { r.checked = r.value === b.dataset.themeChoice; });
-    }));
-    syncThemeChoice();
     nav.querySelector('.tp-section').addEventListener('change', (e) => scrollTo(Number(e.target.value)));
     nav.addEventListener('click', (e) => {
       const s = e.target.closest('[data-state]');
       if (s) visit(BUILT.find(([k, , p]) => k === s.dataset.state && p === s.dataset.page));
     });
-    const toggle = (show) => {
+    const toggle = (show, firstLoad) => {
       nav.hidden = !show; open.setAttribute('aria-expanded', String(show)); remember(show);
-      // Again a moment later: on first load Tailwind may not have placed the button yet.
-      if (show) { requestAnimationFrame(() => fit()); setTimeout(() => fit(), 300); }
+      if (!show) return;
+      // Sized at once, before it scrolls to where you are, so nothing moves under
+      // your finger after it opens. Only on first load is it measured again a moment
+      // later: Tailwind may not have placed the round button yet.
+      fit();
+      if (firstLoad) setTimeout(() => fit(), 300);
     };
     open.addEventListener('click', () => { toggle(nav.hidden); const g = sectionOf(current); if (!nav.hidden && g >= 0) scrollTo(g); });
     // The panel stops 8 above the round button, so the two never overlap.
@@ -527,7 +531,7 @@
     window.addEventListener('resize', redraw);
     document.fonts?.ready.then(redraw);
 
-    if (remembered()) toggle(true);
+    if (remembered()) toggle(true, true);
     const opened = go(location.hash.slice(1));
     if (!opened) current = fallback || null;
     sync();
