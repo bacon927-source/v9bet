@@ -213,7 +213,7 @@ colors: { brand: { DEFAULT: 'var(--color-brand-primary)' } }
 
 ### 圖示只用一套
 
-**Heroicons outline**（Tailwind 團隊出的那一套，24 畫布、線寬 1.5；2026-10-26 使用者：「我們這版 icon 要換一下」，取代原本 v1 的 Flaticon `fi-br`）。每個 icon 都是 24 框、圖形在中間 20 內、跟著框縮放：頂列 28（`size-7`，✕ 和返回）、單獨 24、輸入框裡 20（`size-5`）、文字旁 16（`size-4`）；顏色跟著文字。缺的圖示去 Heroicons 找同名的（heroicons.com），不要混別套或自己畫（國旗例外，是我們自己的）。返回只放箭頭，不寫「Back」。程式用 `.icon .icon-<name>`，加新圖示要同時加進 `tailwind.config.js` 的 `ICONS` 和 Figma 的 `icon/<name>`。
+**Heroicons outline**（Tailwind 團隊出的那一套，24 畫布、線寬 1.5；2026-10-26 使用者：「我們這版 icon 要換一下」，取代原本 v1 的 Flaticon `fi-br`）。每個 icon 都是 24 框、圖形在中間 20 內、跟著框縮放：頂列 28（`size-7`，✕ 和返回）、單獨 24、輸入框裡 20（`size-5`）、文字旁 16（`size-4`）；顏色跟著文字。缺的圖示去 Heroicons 找同名的（heroicons.com），不要混別套或自己畫（國旗例外，是我們自己的）。返回只放箭頭，不寫「Back」。程式用 `.icon .icon-<name>`，加新圖示要同時加進 `tailwind.config.js` 的 `ICONS` 和 Figma 的 `icon/<name>`。目前有：back、close、chevron-right、chevron-down、eye、eye-crossed、check、calendar、envelope、chat-bubble-left-ellipsis。
 
 ### 第三方品牌圖示找官方檔，不要手畫
 
