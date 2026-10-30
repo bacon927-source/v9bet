@@ -581,7 +581,6 @@
     'line':          { isNew: true,  done: [], email: SIGNUP_EMAIL, linked: ['line'] },
     'zalo':          { isNew: true,  done: [], email: '',           linked: ['zalo'] },
     'email':         { isNew: true,  done: [], email: SIGNUP_EMAIL, linked: [] },
-    'phone':         { isNew: true,  done: [], email: '', phone: '0914567233', linked: [] }, // came in with a one-time code to a phone (sign-up is email only)
   };
   const startAs = (key) => {
     const p = PERSONAS[key];
@@ -592,7 +591,7 @@
     if (p.phone) { fill('sec-phone', p.phone); markVerified('sec-phone'); }
     p.linked.forEach((k) => setLinked(k, true));
     // No email on the account: the channel starts on the app they signed up with.
-    if (!p.email) document.querySelector(`input[name="channel"][value="${p.linked[0] || 'sms'}"]`).checked = true;
+    if (!p.email && p.linked[0]) document.querySelector(`input[name="channel"][value="${p.linked[0]}"]`).checked = true;
     syncChannels();
     order = ORDER.filter((n) => !p.done.includes(n));
     isNew = p.isNew;
@@ -607,7 +606,6 @@
       ['as-line', 'New · LINE', () => startAs('line')],
       ['as-zalo', 'New · Zalo (no email)', () => startAs('zalo')],
       ['as-email', 'New · Email', () => startAs('email')],
-      ['as-phone', 'New · Phone', () => startAs('phone')],
     ]],
     ['Steps', [
       ['step-1', '1 Currency', () => showStep(1)],

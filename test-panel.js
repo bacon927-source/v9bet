@@ -18,7 +18,7 @@
 
   // Roles (2026-10-30): each starts where that member starts — Log In or Sign Up —
   // and the flow carries on into that member's Setup (setup-flow #as-…).
-  const ROLES = [['existing', 'Existing'], ['google', 'New · Google'], ['line', 'New · LINE'], ['zalo', 'New · Zalo'], ['email', 'New · Email'], ['phone', 'New · Phone']];
+  const ROLES = [['existing', 'Existing'], ['google', 'New · Google'], ['line', 'New · LINE'], ['zalo', 'New · Zalo'], ['email', 'New · Email']];
   const setRole = (k) => { try { if (k) sessionStorage.setItem('tp-role', k); else sessionStorage.removeItem('tp-role'); } catch (e) { /* this jump only */ } };
   // [tab, [[subgroup, [[key, label, page]]]]] — page null = in Figma, not built yet.
   const CATALOG = [
@@ -89,7 +89,6 @@
         ['as-line', 'New · LINE', 'setup'],
         ['as-zalo', 'New · Zalo (no email)', 'setup'],
         ['as-email', 'New · Email', 'setup'],
-        ['as-phone', 'New · Phone', 'setup'],
       ]],
       ['1 Currency', [
         ['arrive', 'Before Setup · new member', 'setup'],
