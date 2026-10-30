@@ -538,7 +538,12 @@
 
   /* ── Test panel ── */
   const fill = (id, value) => { $(id).value = value; $(id).dispatchEvent(new Event('input')); };
-  const typeCode = (code) => { cells.forEach((c, i) => { c.value = code[i] || ''; }); $('code-submit').disabled = cells.some((c) => !c.value); };
+  // Fills the code as typing would, and leaves the cursor where typing would: on the
+  // next empty cell, or the last one when all six are in (2026-10-30, user: "ready 為什麼會停在第一個欄位").
+  const typeCode = (code) => {
+    cells.forEach((c, i) => { c.value = code[i] || ''; }); $('code-submit').disabled = cells.some((c) => !c.value);
+    (cells.find((c) => !c.value) || cells[cells.length - 1]).focus();
+  };
   const fresh = () => {
     clearInterval(timer); $('toast').hidden = true;
     ['email', 'referral', 'identifier', 'password'].forEach((id) => fill(id, ''));
