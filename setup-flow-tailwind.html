@@ -70,8 +70,10 @@
           <div class="step-hero"><h1>Personal information</h1><p>Needed for promo claims and withdrawals.</p></div>
           <div class="flex flex-col gap-2">
             <div class="field">
-              <input id="full-name" type="text" autocomplete="name" placeholder=" ">
+              <input id="full-name" type="text" autocomplete="name" placeholder=" " aria-describedby="full-name-hint">
               <label for="full-name">Full Name</label><fieldset aria-hidden="true"><legend><span>Full Name</span></legend></fieldset>
+              <!-- Payouts go only to an account in this name (2026-10-30, from v1). -->
+              <p class="hint" id="full-name-hint">Enter your name exactly as it appears on your bank account.</p>
             </div>
             <!-- A picker: the device's own calendar opens on top of the field. -->
             <div class="field">
@@ -79,7 +81,6 @@
               <label for="dob-picker">Date of Birth</label><fieldset aria-hidden="true"><legend><span>Date of Birth</span></legend></fieldset>
               <span class="field-trail"><span class="icon icon-sm icon-calendar text-ink" aria-hidden="true"></span></span>
               <input id="dob-picker" type="date" autocomplete="bday" class="absolute inset-x-0 top-2 h-[3.125rem] w-full opacity-0 cursor-pointer dark:[color-scheme:dark]">
-              <p class="hint">You must be 21 or older.</p>
             </div>
             <!-- A picker: the native list opens on top of the field. -->
             <div class="field">
@@ -374,7 +375,8 @@
   // Shown in the device's date order (18/04/1992 in Vietnam and Thailand).
   const showDate = (iso) => iso ? new Intl.DateTimeFormat(undefined, { day: '2-digit', month: '2-digit', year: 'numeric' }).format(new Date(iso + 'T00:00')) : '';
   // Members must be 21 or older (2026-10-29), so the calendar stops 21 years ago and
-  // a later date cannot be picked — no error (2026-10-30). Some phones (older
+  // a later date cannot be picked — no error, and no line under the field either
+  // (2026-10-30, user: "21y 不用寫"). Some phones (older
   // iPhones) let one through anyway; it is pulled back to the latest allowed day.
   const today = new Date();
   const adultBy = `${today.getFullYear() - 21}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;

@@ -387,7 +387,7 @@ const screens = [
     <div class="row">${F("Date of birth", s===1?"18/04/1992 📅":"📅")}${F("Gender ▾","optional")}</div>
     ${CTA("Save", s===1?'':'disabled')}`,
   spec:{
-    goal:"Step-1 item ② (split from the old Profile+Payout): identity fields only — full name (payout match), DOB 21+, gender. Date of birth opens the device calendar, shown in the device's date order; the calendar stops 21 years ago, so an under-21 date cannot be picked — no error (10-29/10-30).",
+    goal:"Step-1 item ② (split from the old Profile+Payout): identity fields only — full name (payout match), DOB 21+, gender. Full name carries a note under it — \"Enter your name exactly as it appears on your bank account.\" (10-30, from v1: payouts only go to an account in this name). No \"21 or older\" line under the date (10-30, user: \"21y 不用寫\"). Date of birth opens the device calendar, shown in the device's date order; the calendar stops 21 years ago, so an under-21 date cannot be picked — no error (10-29/10-30).",
     states:["empty (Save disabled)","filled → Save","underage error","done → next item (Bank / USDT)"],
     fields:["full_name","dob","gender?"],
     api:"PUT /account/profile",
