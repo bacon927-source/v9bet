@@ -42,11 +42,14 @@
       <form class="step flex-1 flex flex-col" data-step="1" novalidate>
         <div class="page-body flex-1">
           <div class="step-hero"><h1>Choose account currency</h1><p>Currency cannot be changed once set.</p></div>
-          <fieldset class="flex flex-col gap-2">
-            <legend class="sr-only">Account currency</legend>
-            <label class="option-card"><input type="radio" name="currency" value="VND" class="sr-only" checked><span class="tick"></span><img src="assets/flags/vn.svg" alt=""><span class="option-card-text">VND</span></label>
-            <label class="option-card"><input type="radio" name="currency" value="THB" class="sr-only"><span class="tick"></span><img src="assets/flags/th.svg" alt=""><span class="option-card-text">THB</span></label>
-          </fieldset>
+          <!-- Choices are the iPhone list — one card, a ✓ on the chosen row — as in Settings (2026-10-30, user: "setup 現在帶框的，也要改成這樣"). -->
+          <div class="flex flex-col gap-2">
+            <p class="sr-only" id="currency-label">Account currency</p>
+            <div class="card" role="radiogroup" aria-labelledby="currency-label">
+              <label class="list-row min-h-14 py-2"><input type="radio" name="currency" value="VND" class="peer sr-only" checked><img src="assets/flags/vn.svg" alt="" class="size-[1.375rem] flex-none"><span class="flex min-w-0 flex-1 flex-col"><span class="truncate">VND</span></span><span class="icon icon-sm icon-check !text-brand-2 !hidden peer-checked:!inline-block" aria-hidden="true"></span></label>
+              <label class="list-row min-h-14 py-2"><input type="radio" name="currency" value="THB" class="peer sr-only"><img src="assets/flags/th.svg" alt="" class="size-[1.375rem] flex-none"><span class="flex min-w-0 flex-1 flex-col"><span class="truncate">THB</span></span><span class="icon icon-sm icon-check !text-brand-2 !hidden peer-checked:!inline-block" aria-hidden="true"></span></label>
+            </div>
+          </div>
         </div>
         <div class="action-bar"><button type="submit" class="btn">Confirm Currency</button></div>
       </form>
@@ -193,19 +196,17 @@
           <div class="card">
             <label class="list-row"><span class="list-row-title">Push notifications</span><input type="checkbox" role="switch" class="sr-only" checked><span class="toggle"></span></label>
           </div>
-          <fieldset class="flex flex-col gap-3">
-            <legend class="group-label mb-3">Message channel</legend>
-            <div class="flex flex-col gap-2">
-              <label class="option-card"><input type="radio" name="channel" value="email" class="sr-only" checked><span class="tick"></span><span class="icon icon-envelope size-[1.375rem] text-ink-secondary" aria-hidden="true"></span><span class="option-card-text">Email<span class="option-card-sub" id="ch-email-sub"></span></span></label>
-              <label class="option-card"><input type="radio" name="channel" value="sms" class="sr-only"><span class="tick"></span><span class="icon icon-chat-bubble-left-ellipsis size-[1.375rem] text-ink-secondary" aria-hidden="true"></span><span class="option-card-text">SMS<span class="option-card-sub ch-phone-sub"></span></span></label>
-              <!-- Zalo, LINE and Telegram are separate (2026-10-30): each is linked
-                   to the account first (Link opens that app), then it can be chosen. -->
-              <label class="option-card"><input type="radio" name="channel" value="zalo" class="sr-only"><span class="tick"></span><img src="assets/social/zalo.webp" alt=""><span class="option-card-text">Zalo<span class="option-card-sub" data-link-sub="zalo">Not linked</span></span><button type="button" class="font-semibold text-brand-2 px-2 min-h-11" data-link="zalo">Link</button></label>
-              <label class="option-card"><input type="radio" name="channel" value="line" class="sr-only"><span class="tick"></span><img src="assets/social/line.png" alt=""><span class="option-card-text">LINE<span class="option-card-sub" data-link-sub="line">Not linked</span></span><button type="button" class="font-semibold text-brand-2 px-2 min-h-11" data-link="line">Link</button></label>
-              <label class="option-card"><input type="radio" name="channel" value="telegram" class="sr-only"><span class="tick"></span><img src="assets/social/telegram.svg" alt=""><span class="option-card-text">Telegram<span class="option-card-sub" data-link-sub="telegram">Not linked</span></span><button type="button" class="font-semibold text-brand-2 px-2 min-h-11" data-link="telegram">Link</button></label>
+          <div class="flex flex-col gap-2">
+            <p class="group-label" id="channel-label">Message channel</p>
+            <div class="card" role="radiogroup" aria-labelledby="channel-label">
+              <label class="list-row min-h-14 py-2"><input type="radio" name="channel" value="email" class="peer sr-only" checked><span class="icon icon-envelope size-[1.375rem] !text-ink-secondary" aria-hidden="true"></span><span class="flex min-w-0 flex-1 flex-col"><span class="truncate">Email</span><span class="text-sm/6 text-ink-secondary truncate" id="ch-email-sub"></span></span><span class="icon icon-sm icon-check !text-brand-2 !hidden peer-checked:!inline-block" aria-hidden="true"></span></label>
+              <label class="list-row min-h-14 py-2"><input type="radio" name="channel" value="sms" class="peer sr-only"><span class="icon icon-chat-bubble-left-ellipsis size-[1.375rem] !text-ink-secondary" aria-hidden="true"></span><span class="flex min-w-0 flex-1 flex-col"><span class="truncate">SMS</span><span class="ch-phone-sub text-sm/6 text-ink-secondary truncate"></span></span><span class="icon icon-sm icon-check !text-brand-2 !hidden peer-checked:!inline-block" aria-hidden="true"></span></label>
+              <label class="list-row min-h-14 py-2"><input type="radio" name="channel" value="zalo" class="peer sr-only"><img src="assets/social/zalo.webp" alt="" class="size-[1.375rem] flex-none"><span class="flex min-w-0 flex-1 flex-col"><span class="truncate">Zalo</span><span class="text-sm/6 text-ink-secondary truncate" data-link-sub="zalo">Not linked</span></span><button type="button" class="font-semibold text-brand-2 px-2 min-h-11" data-link="zalo">Link</button><span class="icon icon-sm icon-check !text-brand-2 !hidden peer-checked:!inline-block" aria-hidden="true"></span></label>
+              <label class="list-row min-h-14 py-2"><input type="radio" name="channel" value="line" class="peer sr-only"><img src="assets/social/line.png" alt="" class="size-[1.375rem] flex-none"><span class="flex min-w-0 flex-1 flex-col"><span class="truncate">LINE</span><span class="text-sm/6 text-ink-secondary truncate" data-link-sub="line">Not linked</span></span><button type="button" class="font-semibold text-brand-2 px-2 min-h-11" data-link="line">Link</button><span class="icon icon-sm icon-check !text-brand-2 !hidden peer-checked:!inline-block" aria-hidden="true"></span></label>
+              <label class="list-row min-h-14 py-2"><input type="radio" name="channel" value="telegram" class="peer sr-only"><img src="assets/social/telegram.svg" alt="" class="size-[1.375rem] flex-none"><span class="flex min-w-0 flex-1 flex-col"><span class="truncate">Telegram</span><span class="text-sm/6 text-ink-secondary truncate" data-link-sub="telegram">Not linked</span></span><button type="button" class="font-semibold text-brand-2 px-2 min-h-11" data-link="telegram">Link</button><span class="icon icon-sm icon-check !text-brand-2 !hidden peer-checked:!inline-block" aria-hidden="true"></span></label>
             </div>
             <p class="hint">Verification codes, security alerts and payment updates are always sent, whatever you choose here.</p>
-          </fieldset>
+          </div>
         </div>
         <div class="action-bar"><button type="submit" class="btn">Continue</button><a href="#" class="link-row skip">Set up later</a></div>
       </form>
@@ -214,18 +215,22 @@
       <form class="step flex-1 flex flex-col" data-step="8" hidden novalidate>
         <div class="page-body flex-1">
           <div class="step-hero"><h1>Display</h1><p>Theme and text size.</p></div>
-          <fieldset class="flex flex-col gap-2">
-            <legend class="group-label mb-3">Theme</legend>
-            <label class="option-card"><input type="radio" name="theme" value="system" class="sr-only" checked><span class="tick"></span><span class="option-card-text">Follow system<span class="option-card-sub">Matches your device</span></span></label>
-            <label class="option-card"><input type="radio" name="theme" value="dark" class="sr-only"><span class="tick"></span><span class="option-card-text">Dark<span class="option-card-sub">Always dark</span></span></label>
-            <label class="option-card"><input type="radio" name="theme" value="light" class="sr-only"><span class="tick"></span><span class="option-card-text">Light<span class="option-card-sub">Always light</span></span></label>
-          </fieldset>
+          <div class="flex flex-col gap-2">
+            <p class="group-label" id="theme-label">Theme</p>
+            <div class="card" role="radiogroup" aria-labelledby="theme-label">
+              <label class="list-row min-h-14 py-2"><input type="radio" name="theme" value="system" class="peer sr-only" checked><span class="flex min-w-0 flex-1 flex-col"><span class="truncate">Follow system</span><span class="text-sm/6 text-ink-secondary truncate">Matches your device</span></span><span class="icon icon-sm icon-check !text-brand-2 !hidden peer-checked:!inline-block" aria-hidden="true"></span></label>
+              <label class="list-row min-h-14 py-2"><input type="radio" name="theme" value="dark" class="peer sr-only"><span class="flex min-w-0 flex-1 flex-col"><span class="truncate">Dark</span><span class="text-sm/6 text-ink-secondary truncate">Always dark</span></span><span class="icon icon-sm icon-check !text-brand-2 !hidden peer-checked:!inline-block" aria-hidden="true"></span></label>
+              <label class="list-row min-h-14 py-2"><input type="radio" name="theme" value="light" class="peer sr-only"><span class="flex min-w-0 flex-1 flex-col"><span class="truncate">Light</span><span class="text-sm/6 text-ink-secondary truncate">Always light</span></span><span class="icon icon-sm icon-check !text-brand-2 !hidden peer-checked:!inline-block" aria-hidden="true"></span></label>
+            </div>
+          </div>
           <!-- Text size (2026-10-30): Default or Large; it changes the page at once. -->
-          <fieldset class="flex flex-col gap-2">
-            <legend class="group-label mb-3">Text size</legend>
-            <label class="option-card"><input type="radio" name="text-size" value="default" class="sr-only" checked><span class="tick"></span><span class="option-card-text">Default</span></label>
-            <label class="option-card"><input type="radio" name="text-size" value="large" class="sr-only"><span class="tick"></span><span class="option-card-text">Large<span class="option-card-sub">Bigger text, easier to read</span></span></label>
-          </fieldset>
+          <div class="flex flex-col gap-2">
+            <p class="group-label" id="size-label">Text size</p>
+            <div class="card" role="radiogroup" aria-labelledby="size-label">
+              <label class="list-row min-h-14 py-2"><input type="radio" name="text-size" value="default" class="peer sr-only" checked><span class="flex min-w-0 flex-1 flex-col"><span class="truncate">Default</span></span><span class="icon icon-sm icon-check !text-brand-2 !hidden peer-checked:!inline-block" aria-hidden="true"></span></label>
+              <label class="list-row min-h-14 py-2"><input type="radio" name="text-size" value="large" class="peer sr-only"><span class="flex min-w-0 flex-1 flex-col"><span class="truncate">Large</span><span class="text-sm/6 text-ink-secondary truncate">Bigger text, easier to read</span></span><span class="icon icon-sm icon-check !text-brand-2 !hidden peer-checked:!inline-block" aria-hidden="true"></span></label>
+            </div>
+          </div>
         </div>
         <div class="action-bar"><button type="submit" class="btn">Save</button><a href="#" class="link-row skip">Set up later</a></div>
       </form>
