@@ -311,8 +311,7 @@ const screens = [
     <div class="grp">Step 2 · Security &amp; payout <span class="badge">can skip</span></div>
     <div class="checklist">
       ${ci(3,"Bank account / USDT","needed before withdrawal",s>1&&!nc)}
-      ${nc?'':ci(4,"Add contact details","email / phone",s>1)}
-      ${ci(5,"Set a password","optional",s>1&&!nc)}
+      <div class="hint">＊ Set a password and Security (2FA, email / phone) are out of Setup for now (10-30, user: "set password 在setup時拿掉" / "2fa在setup 時拿掉"). They stay in Settings.</div>
     </div>
     <div class="grp">Step 3 · Preferences <span class="badge">can skip</span></div>
     <div class="checklist">
@@ -400,7 +399,7 @@ const screens = [
     <div class="scr-title"><span class="x">←</span>Bank Account / USDT<span class="badge">Optional</span></div>
     <div class="scr-step" style="margin-top:8px">Where your withdrawals get paid out — you can add this later</div>
     <div class="state-tabs" style="margin-bottom:8px"><button class="${s===0?'on':''}">Bank account</button><button class="${s===1?'on':''}">USDT</button></div>
-    ${s===0?F("Bank ▾")+F("Bank account number")+F("Account holder name","auto: from Personal Info · locked"):F("USDT network ▾ (TRC20/ERC20)")+F("USDT wallet address")}
+    ${s===0?F("Bank ▾ (sheet: A–Z list, logo left · name right)")+F("Bank account number")+F("Account holder name","auto: from Personal Info · locked"):F("USDT network ▾ (TRC20/ERC20)")+F("USDT wallet address")}
     ${CTA("Save")}
     <div class="link"><b>Later</b></div>`,
   spec:{
@@ -441,7 +440,7 @@ const screens = [
   }
 },
 {
-  group:"B · Account Setup", id:"password", title:"Set a Password", step:"Step 2 · Security (can skip)",
+  group:"B · Account Setup", id:"password", title:"Set a Password — out of Setup for now (10-30)", step:"Settings only — taken out of Setup 10-30",
   states:["Set password","Too weak / mismatch"],
   render:(s)=>`
     <div class="scr-title"><span class="x">←</span>Set Login Security</div>
@@ -476,7 +475,7 @@ const screens = [
 },
 {
   group:"B · Account Setup", id:"channel", title:"Message Channel", step:"Step 3 · Preferences (can skip)",
-  states:["Default (Email)","Social messaging → pick app","No phone yet → blocker","Opt out (confirm)","Saved"],
+  states:["Default (Email)","LINE linked and chosen","No phone yet → blocker","Opt out (confirm)","Saved"],
   render:(s)=>s===2?`
     <div class="scr-title"><span class="x">←</span>Message Channel</div>
     <div class="err">SMS and social messaging need a verified phone number. You signed up with email, so there's no phone on the account yet.</div>
@@ -500,14 +499,10 @@ const screens = [
     <div class="scr-step" style="margin-top:8px">How should we send you promotions and updates?</div>
     ${OPT("✉️ &nbsp; Email <small style='color:#b0b0b0'>default · ba*****on@gmail.com</small>", s===0)}
     ${OPT("📨 &nbsp; SMS <small style='color:#b0b0b0'>needs a phone number</small>", false)}
-    ${OPT("💬 &nbsp; Social messaging", s===1)}
-    ${s===1?`<div class="ccpop">
-      <div class="cc">🟢 WhatsApp<small>uses your phone</small></div>
-      <div class="cc on">💬 Zalo<small>VN · uses your phone ✓</small></div>
-      <div class="cc">✈️ Telegram<small>@username</small></div>
-      <div class="cc">🟩 LINE<small>TH · LINE ID</small></div>
-    </div>
-    ${F("Telegram / LINE ID","only if you pick those two")}`:''}
+    ${OPT("💬 &nbsp; Zalo <small style='color:#b0b0b0'>Not linked</small> &nbsp; <b style='float:right'>Link</b>", false)}
+    ${OPT("🟩 &nbsp; LINE <small style='color:#b0b0b0'>"+(s===1?"Linked":"Not linked")+"</small>"+(s===1?"":" &nbsp; <b style='float:right'>Link</b>"), s===1)}
+    ${OPT("✈️ &nbsp; Telegram <small style='color:#b0b0b0'>Not linked</small> &nbsp; <b style='float:right'>Link</b>", false)}
+    <div class="hint">＊ 10-30 (user: "加一個telegram, 然後把zalo 和line分開，放一個link 的 button"): Zalo, LINE and Telegram are separate rows. Each is linked first — Link (or choosing one not linked yet) opens that app to connect it — then it can be chosen. No phone or ID typed here.</div>
     ${OPT("🔕 &nbsp; Don't send me messages", false)}
     <div class="hint">＊ SMS and social messaging require a verified phone number. Security &amp; transaction messages are always sent.</div>
     ${CTA("Save channel")}
