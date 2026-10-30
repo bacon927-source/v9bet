@@ -452,7 +452,10 @@
       .map(({ name, logo }) => `
       <li data-bank="${name}">
         <button type="button" class="flex w-full items-center gap-3 py-3 text-left disabled:cursor-not-allowed disabled:opacity-50" ${DOWN[name] ? 'disabled' : ''}>
-          <img src="${logo}" alt="" class="h-9 w-16 flex-none rounded-md bg-white object-contain ring-1 ring-edge-subtle">
+          ${DOWN[name]
+            // Under maintenance: a plain grey tile, no cover and no text on it (2026-10-30, user: "你放 grayout 就好").
+            ? '<span class="h-9 w-16 flex-none rounded-md bg-selected ring-1 ring-edge-subtle" aria-hidden="true"></span>'
+            : `<img src="${logo}" alt="" class="h-9 w-16 flex-none rounded-md bg-white object-contain ring-1 ring-edge-subtle">`}
           <span class="flex min-w-0 flex-1 flex-col"><span class="text-base text-ink">${name}</span>${DOWN[name] ? `<span class="text-sm/6 text-ink-secondary">${DOWN[name]}</span>` : ''}</span>
           ${name === chosen ? '<span class="icon icon-sm icon-check text-brand-2" aria-label="Selected"></span>' : ''}
         </button>
