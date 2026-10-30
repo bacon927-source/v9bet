@@ -408,16 +408,6 @@
         <span class="font-semibold text-ink">Show typography</span>
         <input type="checkbox" role="switch" class="tp-type sr-only"><span class="toggle"></span>
       </label>
-      <div class="flex flex-col gap-2">
-        <p class="font-semibold text-brand-2">Jump to flow</p>
-        <span class="relative">
-          <select class="tp-section w-full h-9 pl-3 pr-9 appearance-none rounded-lg bg-card border border-edge font-semibold text-ink">
-            ${CATALOG.map((t, i) => `<option value="${i}">${t[0]}（${itemsOf(t).length}）</option>`).join('')}
-          </select>
-          <span class="icon icon-sm icon-chevron-down absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" aria-hidden="true"></span>
-        </span>
-        <p class="tp-where text-ink-secondary"></p>
-      </div>
       ${CATALOG.map(([section, subs], i) => `
         <section class="flex flex-col gap-3" data-section="${i}">
           <p class="font-semibold text-brand-2">${section}</p>
@@ -429,11 +419,20 @@
                 : `<span class="px-3 py-2 rounded-xl border border-dashed border-edge-subtle text-ink-muted" title="Not built as a web page yet">${label} (not built)</span>`).join('')}</div>
             </div>`).join('')}
         </section>`).join('')}
-      <div class="sticky bottom-0 -mx-3 mt-auto grid grid-cols-[1fr_auto_1fr_auto] items-center gap-2 p-3 bg-sheet border-t border-edge">
-        <button type="button" class="tp-prev ${btn}">‹ Prev</button>
-        <span class="tp-count text-ink-secondary tabular-nums"></span>
-        <button type="button" class="tp-next ${btn}">Next ›</button>
-        <button type="button" class="tp-copy ${btn} text-brand-2">Copy link</button>
+      <!-- Footer, always in reach (2026-10-30): jump to a flow, where you are, prev / next. -->
+      <div class="sticky bottom-0 -mx-3 mt-auto flex flex-col gap-2 p-3 bg-sheet border-t border-edge">
+        <span class="relative">
+          <select class="tp-section w-full h-9 pl-3 pr-9 appearance-none rounded-lg bg-card border border-edge font-semibold text-ink" aria-label="Jump to flow">
+            ${CATALOG.map((t, i) => `<option value="${i}">${t[0]} (${itemsOf(t).length})</option>`).join('')}
+          </select>
+          <span class="icon icon-sm icon-chevron-down absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" aria-hidden="true"></span>
+        </span>
+        <p class="tp-where text-ink-secondary truncate"></p>
+        <div class="grid grid-cols-[1fr_auto_1fr] items-center gap-2">
+          <button type="button" class="tp-prev ${btn}">‹ Prev</button>
+          <span class="tp-count text-ink-secondary tabular-nums"></span>
+          <button type="button" class="tp-next ${btn}">Next ›</button>
+        </div>
       </div>`;
     // The panel is a review tool, not the product: it keeps its size when the page
     // is set to Large text (zoom undoes the 112.5% root).
@@ -524,11 +523,6 @@
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !nav.hidden) { toggle(false); open.focus(); } });
     nav.querySelector('.tp-prev').addEventListener('click', () => { const i = index(); if (i > 0) visit(BUILT[i - 1]); });
     nav.querySelector('.tp-next').addEventListener('click', () => { const i = index(); if (i >= 0 && i < BUILT.length - 1) visit(BUILT[i + 1]); });
-    nav.querySelector('.tp-copy').addEventListener('click', (e) => {
-      const b = e.currentTarget;
-      const done = (text) => { b.textContent = text; setTimeout(() => { b.textContent = 'Copy link'; }, 1500); };
-      navigator.clipboard.writeText(location.href).then(() => done('Copied'), () => done('Copy from the address bar'));
-    });
     window.addEventListener('hashchange', () => go(location.hash.slice(1)));
 
     // Spacing overlay: on/off is remembered across pages; it redraws after
