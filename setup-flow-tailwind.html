@@ -210,12 +210,18 @@
       <!-- ── 8 · Theme ── -->
       <form class="step flex-1 flex flex-col" data-step="8" hidden novalidate>
         <div class="page-body flex-1">
-          <div class="step-hero"><h1>Theme</h1><p>Dark, light, or match your device.</p></div>
+          <div class="step-hero"><h1>Display</h1><p>Theme and text size.</p></div>
           <fieldset class="flex flex-col gap-2">
-            <legend class="sr-only">Theme</legend>
+            <legend class="group-label mb-3">Theme</legend>
             <label class="option-card"><input type="radio" name="theme" value="system" class="sr-only" checked><span class="tick"></span><span class="option-card-text">Follow system<span class="option-card-sub">Matches your device</span></span></label>
             <label class="option-card"><input type="radio" name="theme" value="dark" class="sr-only"><span class="tick"></span><span class="option-card-text">Dark<span class="option-card-sub">Always dark</span></span></label>
             <label class="option-card"><input type="radio" name="theme" value="light" class="sr-only"><span class="tick"></span><span class="option-card-text">Light<span class="option-card-sub">Always light</span></span></label>
+          </fieldset>
+          <!-- Text size (2026-10-30): Default or Large; it changes the page at once. -->
+          <fieldset class="flex flex-col gap-2">
+            <legend class="group-label mb-3">Text size</legend>
+            <label class="option-card"><input type="radio" name="text-size" value="default" class="sr-only" checked><span class="tick"></span><span class="option-card-text">Default</span></label>
+            <label class="option-card"><input type="radio" name="text-size" value="large" class="sr-only"><span class="tick"></span><span class="option-card-text">Large<span class="option-card-sub">Bigger text, easier to read</span></span></label>
           </fieldset>
         </div>
         <div class="action-bar"><button type="submit" class="btn">Save</button><a href="#" class="link-row skip">Set up later</a></div>
@@ -501,8 +507,12 @@
   });
 
   /* ── Step 8: theme applies at once (theme.js) ── */
-  const syncThemeStep = () => { document.querySelector(`input[name="theme"][value="${getTheme()}"]`).checked = true; };
+  const syncThemeStep = () => {
+    document.querySelector(`input[name="theme"][value="${getTheme()}"]`).checked = true;
+    document.querySelector(`input[name="text-size"][value="${getTextSize()}"]`).checked = true;
+  };
   document.querySelectorAll('input[name="theme"]').forEach((r) => r.addEventListener('change', () => setTheme(r.value)));
+  document.querySelectorAll('input[name="text-size"]').forEach((r) => r.addEventListener('change', () => setTextSize(r.value)));
   syncThemeStep();
 
   /* ── Lobby + Welcome ── */
@@ -540,7 +550,8 @@
       ['step-3', '3 Personal', () => { personal(); showStep(3); }],
       ['step-4', '4 Bank', () => { personal(); showStep(4); }],
       ['step-7', '5 Notifications', () => showStep(7)],
-      ['step-8', '6 Theme', () => showStep(8)],
+      ['step-8', '6 Display', () => showStep(8)],
+      ['display-large', '6 Display · Large text', () => { setTextSize('large'); showStep(8); syncThemeStep(); }],
     ]],
     ['1 Currency', [
       ['arrive', 'Arriving · Account created', () => { showStep(1); toast('Account created'); }],

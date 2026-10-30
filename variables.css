@@ -155,3 +155,19 @@
 
 /* Money always lines up in columns. */
 .num, [data-num] { font-variant-numeric: tabular-nums; }
+
+/* Text size · Large (2026-10-30, user: "加一個字體大小…正常字，和放大一點，二個版本").
+   theme.js sets data-text-size="large" on <html>. The root goes to 112.5%
+   (16 → 18), so every Tailwind rem class grows with it, and each type token
+   moves one step up Tailwind's scale. Default needs nothing. */
+:root[data-text-size="large"] {
+  font-size: 112.5%;
+  --font-size-display:36px; --leading-display:40px;   /* text-4xl      */
+  --font-size-body:18px;    --leading-body:28px;      /* text-lg       */
+  --font-size-body-sm:16px; --leading-body-sm:28px;   /* text-base/7   */
+  --font-size-title:20px;   --leading-title:28px;     /* text-xl       */
+  --font-size-button:18px;  --leading-button:28px;    /* text-lg       */
+  --font-size-field:18px;   --leading-field:28px;     /* text-lg       */
+  --font-size-field-label:14px; --leading-field-label:20px; /* text-sm */
+  --font-size-micro:14px;   --leading-micro:20px;     /* text-sm       */
+}

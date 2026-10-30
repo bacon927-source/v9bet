@@ -100,8 +100,9 @@
         ['sms-code', 'SMS → phone code (sheet)', 'setup'],
         ['channel-line', 'LINE linked', 'setup'],
       ]],
-      ['6 Theme', [
-        ['step-8', 'Theme', 'setup'],
+      ['6 Display', [
+        ['step-8', 'Display', 'setup'],
+        ['display-large', 'Large text', 'setup'],
       ]],
       ['After Setup', [
         ['welcome', 'Lobby + Welcome popup', 'setup'],
@@ -371,6 +372,11 @@
         <div class="flex h-9 p-1 rounded-full bg-card border border-edge" role="radiogroup" aria-label="Theme">${[['system', '跟系統'], ['light', '淺色'], ['dark', '深色']].map(([v, l]) =>
           `<button type="button" role="radio" data-theme-choice="${v}" aria-checked="false" class="px-3 rounded-full transition text-ink-secondary aria-checked:bg-selected aria-checked:text-ink aria-checked:font-semibold">${l}</button>`).join('')}</div>
       </div>
+      <div class="flex items-center justify-between gap-3">
+        <span class="font-semibold text-ink">字體大小</span>
+        <div class="flex h-9 p-1 rounded-full bg-card border border-edge" role="radiogroup" aria-label="Text size">${[['default', '正常'], ['large', '放大']].map(([v, l]) =>
+          `<button type="button" role="radio" data-size-choice="${v}" aria-checked="false" class="px-3 rounded-full transition text-ink-secondary aria-checked:bg-selected aria-checked:text-ink aria-checked:font-semibold">${l}</button>`).join('')}</div>
+      </div>
       <label class="flex items-center justify-between gap-3 h-11 px-3 rounded-xl bg-card border border-edge cursor-pointer">
         <span class="font-semibold text-ink">顯示間距 <span class="font-normal text-ink-secondary">（Spacing）</span></span>
         <input type="checkbox" role="switch" class="tp-spacing sr-only"><span class="toggle"></span>
@@ -445,6 +451,14 @@
     nav.querySelectorAll('[data-theme-choice]').forEach((b) => b.addEventListener('click', () => {
       if (window.setTheme) setTheme(b.dataset.themeChoice);
       syncThemeChoice();
+    // Text size: the same choice Setup › Display makes (theme.js).
+    const syncSizeChoice = () => nav.querySelectorAll('[data-size-choice]').forEach((b) => b.setAttribute('aria-checked', String(b.dataset.sizeChoice === (window.getTextSize ? getTextSize() : 'default'))));
+    nav.querySelectorAll('[data-size-choice]').forEach((b) => b.addEventListener('click', () => {
+      if (window.setTextSize) setTextSize(b.dataset.sizeChoice);
+      syncSizeChoice();
+      document.querySelectorAll('input[name="text-size"]').forEach((r) => { r.checked = r.value === b.dataset.sizeChoice; });
+    }));
+    syncSizeChoice();
       document.querySelectorAll('input[name="theme"]').forEach((r) => { r.checked = r.value === b.dataset.themeChoice; });
     }));
     syncThemeChoice();
