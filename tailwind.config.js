@@ -36,6 +36,7 @@ module.exports = {
           muted:     v('color-text-muted'),
           tertiary:  v('color-text-tertiary'),
           onBrand:   v('color-text-on-brand'),
+          onBrand2:  v('color-text-on-brand-secondary'),
           onError:   v('color-text-on-error'),
           navOff:    v('color-text-nav-inactive'),
         },
@@ -321,7 +322,7 @@ module.exports = {
           flex: 'none', width: theme('spacing.5'), height: theme('spacing.5'), borderRadius: theme('borderRadius.DEFAULT'),
           border: `1.5px solid ${c('edge.DEFAULT')}`, display: 'grid', placeItems: 'center',
           '&::after': {
-            content: '""', width: theme('spacing.4'), height: theme('spacing.4'), backgroundColor: '#fff', opacity: '0',
+            content: '""', width: theme('spacing.4'), height: theme('spacing.4'), backgroundColor: c('ink.onBrand2'), opacity: '0',
             maskImage: 'url("assets/icons/check.svg")', WebkitMaskImage: 'url("assets/icons/check.svg")',
             maskSize: 'contain', WebkitMaskSize: 'contain', maskRepeat: 'no-repeat', WebkitMaskRepeat: 'no-repeat',
           },

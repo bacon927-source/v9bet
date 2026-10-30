@@ -54,6 +54,9 @@
   --color-text-disabled:var(--zinc-500); /* was 400 — too faint on the zinc-200 disabled button */
   --color-text-nav-inactive:var(--zinc-500);
   --color-text-on-brand:var(--zinc-900);
+  /* On the green (a ticked checkbox): white on light's emerald-700; near-black on
+     dark's bright #00DA87, where white was too faint (2026-10-30, user). */
+  --color-text-on-brand-secondary:var(--white);
   --color-text-on-error:var(--white);
 
   /* One zinc step darker than Tailwind's usual 200 / 300 (2026-10-30 user:
@@ -154,6 +157,7 @@
   --color-status-info-subtle:rgba(96,165,250,.16);
   --color-money-up:var(--emerald-400);
   --color-money-down:var(--red-400);
+  --color-text-on-brand-secondary:var(--zinc-950);
 }
 
 /* Money always lines up in columns. */
