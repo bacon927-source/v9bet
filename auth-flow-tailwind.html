@@ -368,7 +368,7 @@
     if (problem) { setError('identifier', problem); return; }
     // Demo: the password 000000 is wrong. The message never says which half was wrong.
     if (mode === 'pwd' && $('password').value === '000000') { setError('password', 'Account ID, email or password is incorrect.'); return; }
-    if (mode === 'pwd') land('Lobby', 'Logged in');
+    if (mode === 'pwd') { if (role() === 'existing') toSetup(); else land('Lobby', 'Logged in'); }
     else openCode("Verify it's you", $('identifier').value.trim(), 'Log In');
   });
 
@@ -480,7 +480,7 @@
     clearInterval(timer);
     if (social === 'new') { toSetup(); return; }
     // Sign Up carries on into Setup (setup-flow-tailwind.html opens on step 1 with "Account created").
-    if (side === 'signup') location.href = 'setup-flow-tailwind.html';
+    if (side === 'signup' || role()) toSetup();
     else land('Lobby', 'Logged in');
   });
 
@@ -512,11 +512,15 @@
     }
   };
   const SOCIAL_EMAIL = 'bacon927@gmail.com';
-  document.querySelectorAll('[data-social]').forEach((b) => b.addEventListener('click', () => startSocial(b.dataset.social, DEMO_ROUTE[b.dataset.social])));
+  // A role picked in the test panel decides what the provider answers: a new member
+  // through LINE gets the new-member route, not the demo's account match.
+  const ROLE_ROUTE = { google: { google: 'new-email' }, line: { line: 'new-email' }, zalo: { zalo: 'new-no-email' } };
+  document.querySelectorAll('[data-social]').forEach((b) => b.addEventListener('click', () => startSocial(b.dataset.social, (ROLE_ROUTE[role()] || {})[b.dataset.social] || DEMO_ROUTE[b.dataset.social])));
   $('linked-continue').addEventListener('click', () => { social = null; land('Lobby', 'Logged in'); });
   document.querySelectorAll('.social-close').forEach((b) => b.addEventListener('click', () => { social = null; showScreen('screen-entry'); }));
   // Skip: a new member goes straight in without verifying an email.
-  const toSetup = () => { location.href = 'setup-flow-tailwind.html'; };
+  // Into Setup; with a role from the test panel, as that member (#as-…).
+  const toSetup = () => { location.href = 'setup-flow-tailwind.html' + (role() ? '#as-' + role() : ''); };
   document.querySelectorAll('.social-skip').forEach((b) => b.addEventListener('click', () => { clearInterval(timer); toSetup(); }));
   $('add-email').addEventListener('input', () => { setError('add-email', ''); $('add-email-submit').disabled = !$('add-email').value.trim(); });
   $('form-add-email').addEventListener('submit', (e) => {
@@ -542,6 +546,18 @@
     lastUsed = true; setTab('pwd'); closeExists(); closeLegal(); $('ref-note').hidden = true;
   };
   const signupCode = () => { setSide('signup'); fill('email', 'bacon927@gmail.com'); openCode('Verify email', 'bacon927@gmail.com', 'Verify'); };
+  /* Role shortcuts (test panel, 2026-10-30): each role starts where that member
+     starts; the role stays in this tab (sessionStorage 'tp-role') so the flow
+     ends in that member's Setup. */
+  const role = () => { try { return sessionStorage.getItem('tp-role'); } catch (e) { return null; } };
+  const ROLE_START = {
+    existing: () => { setSide('login'); setTab('pwd'); show('screen-entry'); },
+    google: () => { lastUsed = false; setSide('signup'); show('screen-entry'); },
+    line: () => { lastUsed = false; setSide('signup'); show('screen-entry'); },
+    zalo: () => { lastUsed = false; setSide('signup'); show('screen-entry'); },
+    email: () => { lastUsed = false; setSide('signup'); show('screen-entry'); },
+    phone: () => { lastUsed = false; setSide('login'); setTab('otc'); show('screen-entry'); },
+  };
   const loginCode = () => { setSide('login'); setTab('otc'); fill('identifier', '0912345233'); openCode("Verify it's you", '0912345233', 'Log In'); };
   const STATES = [
     ['Sign Up', [
@@ -592,9 +608,10 @@
       ['after-login', 'Lobby + Logged in', () => { side = 'login'; land('Lobby', 'Logged in'); }],
     ]],
   ];
+  const roleHandlers = Object.fromEntries(Object.entries(ROLE_START).map(([k, fn]) => ['role-' + k, fn]));
   TestPanel.init({
     page: 'auth',
-    handlers: Object.fromEntries(STATES.flatMap(([, items]) => items).map(([key, , fn]) => [key, fn])),
+    handlers: { ...Object.fromEntries(STATES.flatMap(([, items]) => items).map(([key, , fn]) => [key, fn])), ...roleHandlers },
     reset: fresh,
     fallback: new URLSearchParams(location.search).get('mode') === 'signup' ? 'signup' : 'login',
     buttonClass: 'bottom-24', panelClass: 'bottom-40',

@@ -16,6 +16,10 @@
   const SETTINGS = 'settings-tailwind.html';
   const PAGES = { auth: AUTH, setup: SETUP, settings: SETTINGS };
 
+  // Roles (2026-10-30): each starts where that member starts — Log In or Sign Up —
+  // and the flow carries on into that member's Setup (setup-flow #as-…).
+  const ROLES = [['existing', '舊客'], ['google', '新客 · Google'], ['line', '新客 · LINE'], ['zalo', '新客 · Zalo'], ['email', '新客 · Email'], ['phone', '新客 · 電話']];
+  const setRole = (k) => { try { if (k) sessionStorage.setItem('tp-role', k); else sessionStorage.removeItem('tp-role'); } catch (e) { /* this jump only */ } };
   // [tab, [[subgroup, [[key, label, page]]]]] — page null = in Figma, not built yet.
   const CATALOG = [
     ['Login', [
@@ -392,6 +396,10 @@
         <div class="flex h-9 p-1 rounded-full bg-card border border-edge" role="radiogroup" aria-label="Text size">${[['default', '正常'], ['large', '放大']].map(([v, l]) =>
           `<button type="button" role="radio" data-size-choice="${v}" aria-checked="false" class="px-3 rounded-full transition text-ink-secondary aria-checked:bg-selected aria-checked:text-ink aria-checked:font-semibold">${l}</button>`).join('')}</div>
       </div>
+      <div class="flex flex-col gap-2">
+        <p class="font-semibold text-ink">角色 <span class="font-normal text-ink-secondary">（從這個人的起點開始走）</span></p>
+        <div class="flex flex-wrap gap-2">${ROLES.map(([k, l]) => `<button type="button" data-role="${k}" class="${chip}">${l}</button>`).join('')}</div>
+      </div>
       <label class="flex items-center justify-between gap-3 h-11 px-3 rounded-xl bg-card border border-edge cursor-pointer">
         <span class="font-semibold text-ink">顯示間距 <span class="font-normal text-ink-secondary">（Spacing）</span></span>
         <input type="checkbox" role="switch" class="tp-spacing sr-only"><span class="toggle"></span>
@@ -439,6 +447,8 @@
       nav.querySelector('.tp-prev').disabled = i <= 0;
       nav.querySelector('.tp-next').disabled = i < 0 || i >= BUILT.length - 1;
       nav.querySelectorAll('[data-state]').forEach((b) => b.setAttribute('aria-current', String(b.dataset.page === page && b.dataset.state === current)));
+      let role = null; try { role = sessionStorage.getItem('tp-role'); } catch (e) { /* none */ }
+      nav.querySelectorAll('[data-role]').forEach((b) => b.setAttribute('aria-current', String(b.dataset.role === role)));
       const g = sectionOf(current);
       if (g >= 0) {
         nav.querySelector('.tp-section').value = String(g);
@@ -455,6 +465,7 @@
     };
     // A screen on this page opens in place; one on the other page opens that page.
     const visit = ([key, , p]) => {
+      setRole(null); // a single screen, not a role's journey
       if (p === page) { if (location.hash.slice(1) === key) go(key); else location.hash = key; }
       else location.href = `${PAGES[p]}#${key}`;
     };
@@ -477,6 +488,14 @@
     syncSizeChoice();
     nav.querySelector('.tp-section').addEventListener('change', (e) => scrollTo(Number(e.target.value)));
     nav.addEventListener('click', (e) => {
+      const r = e.target.closest('[data-role]');
+      if (r) {
+        setRole(r.dataset.role);
+        const key = 'role-' + r.dataset.role;
+        if (page === 'auth') { if (location.hash.slice(1) === key) go(key); else location.hash = key; }
+        else location.href = `${PAGES.auth}#${key}`;
+        return;
+      }
       const s = e.target.closest('[data-state]');
       if (s) visit(BUILT.find(([k, , p]) => k === s.dataset.state && p === s.dataset.page));
     });
