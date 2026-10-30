@@ -415,7 +415,7 @@ const screens = [
     ${s===1?CTA("Confirm withdrawal")
      :`<div class="sheet"><b style="font-size:14px">🔒 OTP verification required</b>
       <div class="hint" style="margin:4px 0">${s===0?'First withdrawal to this account':'No verified contact — verify one now (serves as OTP)'}</div>
-      ${s===0?OPT("✉️ &nbsp; Send via email to c***@gmail.com",false)+OPT("📱 &nbsp; Send via SMS to 091***233",true):OPT("✉️ &nbsp; Send via Email",false)+OPT("📱 &nbsp; Send via SMS",true)+F("Email / Phone number","Required")}
+      ${s===0?OPT("✉️ &nbsp; Send via email to c***@gmail.com",false)+OPT("📱 &nbsp; Send via SMS to +84 91***233",true):OPT("✉️ &nbsp; Send via Email",false)+OPT("📱 &nbsp; Send via SMS",true)+F("Email / Phone number","Required")}
       ${CTA("Request OTP")}<div class="link"><b>Cancel</b></div></div>`}`,
   spec:{
     goal:"Step 2: confirm summary; OTP sheet appears ONLY when the payout account / USDT address is used for the first time (or nothing is verified yet).",

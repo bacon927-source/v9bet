@@ -51,16 +51,18 @@
   --color-text-secondary:var(--zinc-600);
   --color-text-muted:var(--zinc-500);
   --color-text-tertiary:var(--zinc-500);
-  --color-text-disabled:var(--zinc-400);
+  --color-text-disabled:var(--zinc-500); /* was 400 — too faint on the zinc-200 disabled button */
   --color-text-nav-inactive:var(--zinc-500);
   --color-text-on-brand:var(--zinc-900);
   --color-text-on-error:var(--white);
 
-  --color-border-subtle:var(--zinc-200);
-  --color-border-default:var(--zinc-300);
-  --color-border-strong:var(--zinc-400);
+  /* One zinc step darker than Tailwind's usual 200 / 300 (2026-10-30 user:
+     "只要是白底，灰色地方都不太清楚"): at 300 a field outline was 1.5:1 on white. */
+  --color-border-subtle:var(--zinc-300);
+  --color-border-default:var(--zinc-400);
+  --color-border-strong:var(--zinc-500);
   --color-border-focus:var(--zinc-900);
-  --color-border-empty:var(--zinc-300);
+  --color-border-empty:var(--zinc-400);
 
   --color-brand-primary:var(--brand-yellow);
   --color-brand-hover:var(--brand-yellow);

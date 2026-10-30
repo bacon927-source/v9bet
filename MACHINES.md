@@ -42,6 +42,7 @@
 **明天先問使用者的**：
 1. ~~密碼頁要不要放雙重驗證~~ → 10-21 已決定：密碼和 2FA 都在 Security 一頁；2FA 開關打開後，電話和 email 都驗證過才算開好。**還要問**：開好之後要不要再走驗證器 App（裝 App、掃 QR、輸入碼、存備援碼），還是簡訊／email 碼就夠
 2. 幣別頁的文字要改成什麼
+20. **給 IT：第三方 email 對到舊帳號就直接綁定**（10-30 使用者：「line 登入…可以跟 google 一樣嗎？只要 match 一樣 email 就做 verified 然後綁定為我們的」）：Google、LINE 回來的 email 對到我們的帳號，就直接綁定並登入，不寄驗證碼，並把我們帳號上那個 email 標成已驗證。請 IT 確認：只在對方說這個 email 已驗證時才這樣做（Google 的 `email_verified`；LINE 要看 ID token 的 email 是否一定驗證過），否則有人可以用別人的 email 開 LINE 帳號來綁。Zalo 不給 email，不會走這條。另外電話顯示一律帶國碼、拿掉開頭的 0（`+84 91***233`），簡訊和畫面都照這個格式。
 19. **給 IT：登入方式分開**（10-29 使用者：「password 只能用 account，one time code 可以用 email and phone number」；取代同一天「全數字兩邊查」的版本）：
     - **Password 分頁收 Account ID 或 Email**（10-30 使用者：「password 我們加一個email」）：有 `@` 當 email 查，其他當 Account ID 查（英文字＋數字，可以全數字）。不收電話，所以不用猜全數字是不是電話。密碼錯時報「Account ID, email or password is incorrect.」，不說是哪一個錯。
     - **One-time code 分頁只收 Email／Phone**：有 `@` 是 email；全數字是電話，前端帶國碼送出（國碼預設看裝置時區 → 語言 → 網站市場，不用 IP）。

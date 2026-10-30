@@ -331,10 +331,12 @@ module.exports = {
         /* Divider with a label between two rules (2026-10-26, the Preline
            pattern): 12 above and below inside it (py-3), 24 between each rule
            and the label (gap-6). The page's gap-4 between sections adds the
-           rest, so the rule sits 28 from what is above and below. */
+           rest, so the rule sits 28 from what is above and below. The rule is
+           border/default at full strength, as in Figma (2026-10-30: at half
+           strength it was too faint on the light theme). */
         '.divider-label': {
           display: 'flex', alignItems: 'center', gap: theme('spacing.6'), paddingBlock: theme('spacing.3'), ...type('body-sm'), color: c('ink.secondary'),
-          '&::before, &::after': { content: '""', flex: '1 1 0%', height: '1px', backgroundColor: c('edge.DEFAULT'), opacity: '.5' },
+          '&::before, &::after': { content: '""', flex: '1 1 0%', height: '1px', backgroundColor: c('edge.DEFAULT') },
         },
 
         /* Divider without a label — one plain rule between two groups that need
@@ -343,7 +345,7 @@ module.exports = {
            Use <div class="divider" role="separator"></div>. */
         '.divider': {
           display: 'flex', paddingBlock: theme('spacing.3'),
-          '&::before': { content: '""', flex: '1 1 0%', height: '1px', backgroundColor: c('edge.DEFAULT'), opacity: '.5' },
+          '&::before': { content: '""', flex: '1 1 0%', height: '1px', backgroundColor: c('edge.DEFAULT') },
         },
         /* Social sign-in — a 48 circle carrying the provider's official icon,
            name underneath. data-last-used adds the ring; the badge says why. */

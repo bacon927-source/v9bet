@@ -89,6 +89,7 @@ V9Bet 是一家做了十年的博弈品牌，**招牌就是黃色和綠色**。�
 - **切換照 Tailwind 的 dark mode**（`darkMode: 'selector'`）：`theme.js` 在 `<html>` 加 `.dark`——客人在 Setup › Theme 選了就照選的，沒選就跟手機系統（而且跟著即時變）。每頁 `<head>` 都要先載入 `theme.js`，避免先閃一下錯的顏色。
 - **顏色一律用語意變數**（`bg-app`、`bg-card`、`text-ink`、`border-edge`…），淺色寫在 `:root`、深色寫在 `.dark`，頁面不用寫 `dark:`。
 - **灰色用 Tailwind 的 zinc**（使用者選的）：頁面底 white／zinc-900、卡片 zinc-50／zinc-800、面板 white／zinc-900（＋ 1px 細線）、主要字 zinc-900／white、次要字 zinc-600／zinc-400、框線 zinc-300／zinc-700、細線 zinc-200／zinc-800、分段選中 zinc-200／zinc-600。
+- **淺色的框線和不能按的字比 Tailwind 常用的深一級**（使用者 10-30：「只要是白底，灰色地方都不太清楚」）：細線 zinc-300、框線（欄位、方框、圓圈、分隔線、標籤外框）zinc-400、強框線 zinc-500、不能按的字 zinc-500。原本 zinc-200／300 在白底只有 1.5:1。分隔線不再加 50% 透明。深色不變。
 - **品牌色保留**（Tailwind 沒有品牌色）：黃 `#FFBC00` 兩種模式都一樣；綠 `#00DA87` 在深色用，淺色時綠字對比不夠，改用 Tailwind `emerald-700`。
 - **面板（sheet）照 Tailwind 官方元件（Catalyst）**（使用者 10-27：「照 Tailwind 官方」）：底色跟頁面同色（white／zinc-900），用一圈 1px 細線分開（zinc-950 10%／white 10%），後面遮罩 zinc-950 25%／50%。條款／隱私面板也一樣跟著主題（「follow framework」）。
 - **動畫照 Tailwind 官方元件**（使用者 10-27：「照官方」）：面板往上 3rem 滑入＋淡入、遮罩淡入，100ms ease-out；開關圓鈕 200ms ease-in-out；按鈕、分頁、切換鈕只做顏色漸變（Tailwind `transition`，150ms）。手機開了「減少動態效果」就全部關掉（motion-safe）。關閉時不做動畫。

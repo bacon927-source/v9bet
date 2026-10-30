@@ -165,23 +165,12 @@
       </section>
 
       <!-- ── Third-party sign-in (Figma: Sign Up · social) ───────────────── -->
-      <!-- Back from Google / LINE / Zalo the server routes the member: a match on
-           an existing account → Account found + one code (no skip) → linked;
-           a new member with an email → Verify email (can skip); a new member
-           with none → Add your email (can skip). New members land in Setup. -->
-      <section id="screen-social-found" hidden>
-        <div class="nav-top">
-          <button type="button" aria-label="Close" class="nav-top-action social-close"><span class="icon icon-close size-7" aria-hidden="true"></span></button>
-        </div>
-        <div class="page-body">
-          <div class="step-hero"><h1>You already have an account</h1><p id="found-why"></p></div>
-          <div class="flex flex-col gap-3">
-            <p class="text-center text-sm/6 text-ink-secondary">We’ll send a code to confirm it’s you.</p>
-            <button type="button" class="btn" id="found-send">Send code</button>
-          </div>
-        </div>
-      </section>
-
+      <!-- Back from Google / LINE / Zalo the server routes the member: the
+           provider's email matches an existing account → linked straight away,
+           no code (2026-10-30: LINE the same as Google; that email counts as
+           verified); a new member with an email → Verify email (can skip); a
+           new member with none → Add your email (can skip). New members land
+           in Setup. -->
       <section id="screen-social-linked" hidden>
         <div class="nav-top"></div>
         <div class="page-body">
@@ -261,9 +250,18 @@
 <script>
   const $ = (id) => document.getElementById(id);
   const show = (id) => showScreen(id);
+  // A phone shows its country code and drops the leading 0: 0912345233 → +84 91***233
+  // (2026-10-30). Typed with +xx, that code is kept; otherwise the one on the field.
+  const maskPhone = (v) => {
+    const t = v.replace(/[\s-]/g, '');
+    const typed = t.match(/^\+(\d{2})(\d+)$/); // +84 / +66: two digits
+    const code = typed ? '+' + typed[1] : $('cc-code').textContent;
+    const d = (typed ? typed[2] : t).replace(/^0/, '');
+    return `${code} ${d.slice(0, 2)}***${d.slice(-3)}`;
+  };
   const mask = (v) => v.includes('@')
     ? v.replace(/^(.{2}).*(.{2}@.*)$/, (_, a, b) => a + '*****' + b)
-    : v.replace(/^(.{3}).*(.{3})$/, '$1***$2');
+    : maskPhone(v);
 
   /* Field errors (Figma: Login · error · …). Checked on submit, cleared as soon as the value changes. */
   const setError = (id, message) => {
@@ -480,7 +478,6 @@
       $('otp').setAttribute('data-invalid', ''); $('code-error').hidden = false; return;
     }
     clearInterval(timer);
-    if (social === 'link') { $('linked-why').textContent = `You’re logged in as v9_user***. ${provider} is now linked to this account.`; showScreen('screen-social-linked'); return; }
     if (social === 'new') { toSetup(); return; }
     // Sign Up carries on into Setup (setup-flow-tailwind.html opens on step 1 with "Account created").
     if (side === 'signup') location.href = 'setup-flow-tailwind.html';
@@ -499,16 +496,15 @@
   /* ── Third-party sign-in ── */
   // The demo stands in for the server's answer: Google returns a new member with
   // an email, LINE matches an existing account by its email, Zalo gives no email.
-  let social = null; // null | 'new' | 'link' — where the shared code screen leads
+  let social = null; // null | 'new' — a new member on the shared code screen
   let provider = 'Google';
   const PROVIDERS = { google: 'Google', line: 'LINE', zalo: 'Zalo' };
   const DEMO_ROUTE = { google: 'new-email', line: 'match', zalo: 'new-no-email' };
   const startSocial = (key, route) => {
     provider = PROVIDERS[key];
     if (route === 'match') {
-      social = 'link';
-      $('found-why').textContent = `The email on this ${provider} account is already used by v9_user***.`;
-      showScreen('screen-social-found');
+      $('linked-why').textContent = `You’re logged in as v9_user***. ${provider} is now linked to this account.`;
+      showScreen('screen-social-linked');
     } else if (route === 'new-email') {
       social = 'new'; openCode('Verify email', SOCIAL_EMAIL, 'Verify');
     } else {
@@ -517,7 +513,6 @@
   };
   const SOCIAL_EMAIL = 'bacon927@gmail.com';
   document.querySelectorAll('[data-social]').forEach((b) => b.addEventListener('click', () => startSocial(b.dataset.social, DEMO_ROUTE[b.dataset.social])));
-  $('found-send').addEventListener('click', () => openCode("Verify it's you", SOCIAL_EMAIL, 'Verify and Link'));
   $('linked-continue').addEventListener('click', () => { social = null; land('Lobby', 'Logged in'); });
   document.querySelectorAll('.social-close').forEach((b) => b.addEventListener('click', () => { social = null; showScreen('screen-entry'); }));
   // Skip: a new member goes straight in without verifying an email.
@@ -531,7 +526,7 @@
   });
 
   const showScreen = (id) => {
-    ['screen-entry', 'screen-code', 'screen-done', 'screen-social-found', 'screen-social-linked', 'screen-social-add-email'].forEach((s) => { $(s).hidden = s !== id; });
+    ['screen-entry', 'screen-code', 'screen-done', 'screen-social-linked', 'screen-social-add-email'].forEach((s) => { $(s).hidden = s !== id; });
     $('code-skip').hidden = !(id === 'screen-code' && social === 'new');
   };
 
@@ -591,9 +586,7 @@
       ['social-new-email', 'New · gave an email → Verify email', () => startSocial('google', 'new-email')],
       ['social-new-no-email', 'New · no email → Add your email', () => startSocial('zalo', 'new-no-email')],
       ['social-add-email-error', 'Add your email · error', () => { startSocial('zalo', 'new-no-email'); fill('add-email', 'bacon927@gmail'); $('form-add-email').requestSubmit(); }],
-      ['social-found', 'Match · You already have an account', () => startSocial('line', 'match')],
-      ['social-verify', 'Match · Verify it\'s you', () => { startSocial('line', 'match'); $('found-send').click(); }],
-      ['social-linked', 'Match · Welcome back', () => { startSocial('line', 'match'); $('found-send').click(); typeCode('123456'); $('form-code').requestSubmit(); }],
+      ['social-linked', 'Match · Welcome back', () => startSocial('line', 'match')],
     ]],
     ['After', [
       ['after-login', 'Lobby + Logged in', () => { side = 'login'; land('Lobby', 'Logged in'); }],

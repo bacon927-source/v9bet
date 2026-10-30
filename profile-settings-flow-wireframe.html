@@ -179,7 +179,7 @@ const screens = [
     <div class="li"><span class="ic">🪪</span><span class="g">Personal information</span><span class="rt">${s===0?'<span class="st bad">Not added</span>':'Complete'} ›</span></div>
     <div class="li"><span class="ic">🆔</span><span class="g">Identity verification<small>${s===0?'Higher withdrawal limits':'Name / DOB locked'}</small></span><span class="rt">${s===0?'Level 1 <span class="st wait">Verify</span>':'Level 2 <span class="st ok">✓</span>'} ›</span></div>
     <div class="li"><span class="ic">🏦</span><span class="g">Manage bank account / USDT</span><span class="rt">${s===0?'<span class="st bad">Not added</span>':'2 accounts'} ›</span></div>
-    <div class="li"><span class="ic">📱</span><span class="g">Phone number</span><span class="rt">091***233 <span class="st ok">✓</span> ›</span></div>
+    <div class="li"><span class="ic">📱</span><span class="g">Phone number</span><span class="rt">+84 91***233 <span class="st ok">✓</span> ›</span></div>
     <div class="li"><span class="ic">✉️</span><span class="g">Email<small>${s===0?'Also usable as Account ID':''}</small></span><span class="rt">${s===0?'<span class="st wait">Add</span>':'ba*****on@… <span class="st ok">✓</span>'} ›</span></div>
     <div class="li"><span class="ic">🔑</span><span class="g">${s===0?'Set a password<small>Not set — signed up with OTP only</small>':'Change password'}</span><span class="rt">${s===0?'':''} ›</span></div>
     <div class="grp">Security</div>
@@ -240,7 +240,7 @@ const screens = [
   states:["Phone (verified)","Email (add)","Set a password (first time)","Change password (existing)"],
   render:(s)=>s===0?`
     <div class="scr-title"><span class="x">←</span>Phone Number</div>
-    ${F("+84 &nbsp; 091***233 &nbsp; ✓","verified")}
+    ${F("+84 &nbsp; +84 91***233 &nbsp; ✓","verified")}
     ${CTA("Change phone number",'ghost')}
     <div class="hint">＊ Verify your current number first to change to a new one (same-type OTP). If you no longer have access to it, please contact Customer Service.</div>
     <div class="hint">＊ Verified phone is the KYC anchor — no direct edit after verification.</div>`

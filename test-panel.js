@@ -68,8 +68,6 @@
     ]],
     ['Social', [
       ['Matches an existing account', [
-        ['social-found', 'You already have an account', 'auth'],
-        ['social-verify', "Verify it's you", 'auth'],
         ['social-linked', 'Welcome back', 'auth'],
       ]],
       ['New member', [
@@ -89,7 +87,6 @@
       ]],
       ['3 Personal information', [
         ['step-3', 'Personal information', 'setup'],
-        ['dob-under-21', 'Error · under 21', 'setup'],
       ]],
       ['4 Bank account / USDT', [
         ['step-4', 'Bank account', 'setup'],

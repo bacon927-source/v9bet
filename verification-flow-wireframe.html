@@ -174,7 +174,7 @@ const screens = [
     <div class="grp">Sign-up (10-21)</div>
     <div class="opt"><span style="flex:1">Email sign-up</span><small style="color:#b0b0b0">OTP required — verify the email first</small></div>
     <div class="opt"><span style="flex:1">Third-party sign-up (Google / LINE / Zalo)</span><small style="color:#b0b0b0">no OTP — the provider already proved who they are</small></div>
-    <div class="hint">＊ Third-party still uses OTP in two cases: a LINE / Zalo account matches an existing member (code to that account's contact before linking — Google with a verified email matching our verified email links automatically, 10-26), and an email or phone added later in Setup (first-time add).</div>
+    <div class="hint">＊ Third-party still uses OTP when an email or phone is added later in Setup (first-time add). A Google or LINE email that matches an existing member links straight away with no code and counts as verified (10-30).</div>
     <div class="grp">OTP mode by verified-contact status</div>
     <div class="opt"><span style="flex:1">Both verified</span><small style="color:#b0b0b0">member selects (Email / SMS)</small></div>
     <div class="opt"><span style="flex:1">Only one verified</span><small style="color:#b0b0b0">auto — no picker</small></div>
@@ -185,7 +185,7 @@ const screens = [
     states:["reference only"],
     fields:["email_status(verified|not)","phone_status(verified|not)","action(add_first|add_secondary|change_contact|set_password|change_password|withdrawal|promo_claim|login_otc)"],
     api:"Rule matrix enforced server-side on every protected action.",
-    notes:["SIGN-UP OTP RULE (10-21, user): Email sign-up needs an OTP — we do not know the address is theirs until a code sent there comes back. Third-party sign-up (Google / LINE / Zalo) needs NO OTP for a brand-new account — the member has just signed in at the provider, which has already established who they are; asking for another code repeats that check (standard OAuth / OpenID Connect sign-in). OTP still applies when the provider account matches an existing member (verify with that account\u2019s contact before linking), and when an email or phone is added later in Setup. OPEN — confirm with IT: Google marks the email it returns as verified (email_verified), so it can count as a verified contact; whether LINE gives the same guarantee for its email is unconfirmed — if not, a LINE member\u2019s email must be verified the first time a code is sent to it (e.g. a withdrawal).","Reward (Jul 16) — REMOVED 10-21 with the rest of the Setup points: adding a phone / email no longer earns anything.","OTP modes this release = Email / SMS only (Select Verification Mode). Zalo ZNS / LINE / WhatsApp delivery = phase 2.","Docx said change password / withdrawal are NOT allowed with no verified contact — the Jul 16 design supersedes this: inline first-time verification serves as the OTP everywhere.","Component params (design): 6-digit code · resend countdown 32s · after 3rd resend the cooldown escalates to 03:00 · 'Invalid OTP entered' error state · masked contacts (091***233 / ta***@gmail.com) · iOS SMS autofill.","Audit log per docx: request time, channel, result, action, attempts, member ID — never the OTP value in plain text."]
+    notes:["SIGN-UP OTP RULE (10-21, user): Email sign-up needs an OTP — we do not know the address is theirs until a code sent there comes back. Third-party sign-up (Google / LINE / Zalo) needs NO OTP for a brand-new account — the member has just signed in at the provider, which has already established who they are; asking for another code repeats that check (standard OAuth / OpenID Connect sign-in). OTP still applies when an email or phone is added later in Setup; a provider email matching an existing member links with no code (10-30). OPEN — confirm with IT: Google marks the email it returns as verified (email_verified), so it can count as a verified contact; whether LINE gives the same guarantee for its email is unconfirmed — if not, a LINE member\u2019s email must be verified the first time a code is sent to it (e.g. a withdrawal).","Reward (Jul 16) — REMOVED 10-21 with the rest of the Setup points: adding a phone / email no longer earns anything.","OTP modes this release = Email / SMS only (Select Verification Mode). Zalo ZNS / LINE / WhatsApp delivery = phase 2.","Docx said change password / withdrawal are NOT allowed with no verified contact — the Jul 16 design supersedes this: inline first-time verification serves as the OTP everywhere.","Component params (design): 6-digit code · resend countdown 32s · after 3rd resend the cooldown escalates to 03:00 · 'Invalid OTP entered' error state · masked contacts (+84 91***233 / ta***@gmail.com) · iOS SMS autofill.","Audit log per docx: request time, channel, result, action, attempts, member ID — never the OTP value in plain text."]
   }
 },
 {
@@ -195,12 +195,12 @@ const screens = [
     <div class="scr-title"><span class="x">✕</span>Select Verification Mode</div>
     <div class="scr-step">Please choose how you would like to receive your one-time password (OTP)</div>
     ${OPT("✉️ &nbsp; Send via email to c***@gmail.com", false)}
-    ${OPT("📱 &nbsp; Send via SMS to 091***233", true)}
+    ${OPT("📱 &nbsp; Send via SMS to +84 91***233", true)}
     ${CTA("Request OTP")}`
   :s===1?`
     <div class="scr-title"><span class="x">✕</span>Security Verification</div>
     <div class="scr-step">Only one contact verified — no picker, the code goes there automatically</div>
-    ${OPT("📱 &nbsp; SMS to 091***233 <small style='color:#b0b0b0'>verified</small>", true)}
+    ${OPT("📱 &nbsp; SMS to +84 91***233 <small style='color:#b0b0b0'>verified</small>", true)}
     ${CTA("Request OTP")}
     <div class="hint">＊ Mirrors the design: "either one verified" goes straight into the OTP screens.</div>`
   :`
@@ -215,7 +215,7 @@ const screens = [
     states:["both verified → radio picker + Request OTP","one verified → auto (straight to OTP)","none verified → picker without values → First-time Verify","cancelled → back to the action"],
     fields:["action","mode(email|sms)","stepup_token"],
     api:"POST /auth/otp/start { action, mode }\n← { stepup_token, masked_contact }\nerr: RATE_LIMITED",
-    notes:["Exception — changing a contact skips this picker: the first OTP goes to the CURRENT contact of the type being changed (same-type rule).","Masked display everywhere: 091***233 / c***@gmail.com.","Green primary button per design (Request OTP)."]
+    notes:["Exception — changing a contact skips this picker: the first OTP goes to the CURRENT contact of the type being changed (same-type rule).","Masked display everywhere: +84 91***233 / c***@gmail.com. A phone always shows its country code and drops the leading 0 — 0912345233 becomes +84 91***233; a number typed with +66 keeps +66 (10-30).","Green primary button per design (Request OTP)."]
   }
 },
 {
@@ -250,7 +250,7 @@ const screens = [
       : ['_','_','_','_','_','_'].map(n=>cell(n,'')).join('');
     return `
     <div class="scr-title"><span class="x">✕</span>Enter Code</div>
-    <div class="scr-step">We sent code verification to<br><b>091***233</b></div>
+    <div class="scr-step">We sent code verification to<br><b>+84 91***233</b></div>
     <div class="otpcells">${cells}</div>
     ${s===3?`<div class="err">Invalid OTP entered</div>`:''}
     ${s===2?`<div class="link"><b>Resend OTP</b></div>`
@@ -300,7 +300,7 @@ const screens = [
   :s===1?`
     <div class="scr-title"><span class="x">✕</span>Add Contact</div>
     <div class="scr-step">One contact already verified — verify it first (OTP), then add the new one</div>
-    ${OPT("📱 &nbsp; SMS to 091***233 <small style='color:#b0b0b0'>verified</small>", true)}
+    ${OPT("📱 &nbsp; SMS to +84 91***233 <small style='color:#b0b0b0'>verified</small>", true)}
     ${CTA("Request OTP")}
     <div class="hint">＊ After this OTP: enter the new email / phone → separate OTP → saved as Verified. Once verified it is a full login method, same as the one already on the account.</div>`
   :s===2?`
