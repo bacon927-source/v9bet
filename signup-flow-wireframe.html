@@ -524,16 +524,9 @@ const screens = [
   group:"C · Finish", id:"welcome", title:"Welcome + Offers", step:"After setup · full page · new members only (10-30)",
   states:["Default"],
   render:()=>`
-    <div class="scr-title"><span class="x">✕</span>Welcome to V9Bet</div>
-    <div class="scr-step">Here are your new-member offers.</div>
-    <div class="promo"><span class="tag">New member offer</span>
-      <div style="font-weight:700;margin:8px 0 2px">100% First Deposit Bonus</div>
-      <div class="hint" style="margin:0">For Sports / Live, turnover x10 · auto-applied at your first deposit</div></div>
-    <div class="promo"><span class="tag">Mission</span>
-      <div style="font-weight:700;margin:8px 0 2px">Make your first deposit</div>
-      <div class="hint" style="margin:0">Unlock free bet x1</div></div>
-    ${CTA("Go to Deposit")}
-    <div class="hint">＊ 10-30 (user: \"welcome to v9bet 是一整頁的\" / \"放在 setup 結束\"): a full page, not a sheet, at the end of Setup — new members only; an existing member goes straight to Home. ✕ also goes to Home. \"Your account is ready\" moved to the page before Setup.</div>`,
+    <div class="scr-title"><span class="x">✕</span></div>
+    <div class="ph" style="height:420px">🖼️<br><small>Welcome banner — one full-page image from marketing</small></div>
+    <div class="hint">＊ 10-30 (user: \"這一頁會是 banner\" / \"Go to Deposit 不用，整頁一張 banner\"): the whole page is one banner; tapping it opens the offer, ✕ goes to Home. No button, no text cards. New members only, at the end of Setup.</div>`,
   spec:{
     goal:"Welcome the new member and instantly surface applicable offers → drive to deposit. FIRST of the two finish screens (09-17).",
     states:["has applicable offers (list)","no offers (empty copy)","offers loading / error"],

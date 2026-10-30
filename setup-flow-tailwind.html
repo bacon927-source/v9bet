@@ -242,28 +242,16 @@
         <div class="action-bar"><button type="button" class="btn" id="intro-continue">Continue</button></div>
       </section>
 
-      <!-- After Setup (2026-10-30): Welcome to V9Bet is a full page, not a sheet.
-           New members only — the offers are new-member offers. -->
+      <!-- After Setup (2026-10-30): Welcome to V9Bet is one full-page banner from
+           marketing (user: "這一頁會是 banner" / "整頁一張 banner", no button). ✕ goes
+           to the lobby; tapping the banner opens the offer. New members only. -->
       <section id="welcome" class="flex-1 flex flex-col" hidden>
         <div class="nav-top">
           <button type="button" aria-label="Close" class="nav-top-action" id="welcome-close"><span class="icon icon-close size-7" aria-hidden="true"></span></button>
         </div>
         <div class="page-body flex-1">
-          <div class="step-hero"><h1>Welcome to V9Bet</h1><p>Here are your new-member offers.</p></div>
-          <div class="flex flex-col gap-3">
-            <div class="flex flex-col gap-1 p-4 rounded-xl border border-edge">
-              <p class="text-sm/6 text-brand-2">New member offer</p>
-              <p class="text-base/7 font-bold">100% First Deposit Bonus</p>
-              <p class="text-sm/6 text-ink-secondary">For Sports / Live, turnover x10 · applied automatically at your first deposit</p>
-            </div>
-            <div class="flex flex-col gap-1 p-4 rounded-xl border border-edge">
-              <p class="text-sm/6 text-brand-2">Mission</p>
-              <p class="text-base/7 font-bold">Make your first deposit</p>
-              <p class="text-sm/6 text-ink-secondary">Unlock 1 free bet</p>
-            </div>
-          </div>
+          <button type="button" id="welcome-banner" aria-label="Welcome to V9Bet — new-member offers" class="flex-1 grid place-items-center rounded-xl border border-dashed border-edge text-base/7 text-ink-muted">Welcome banner</button>
         </div>
-        <div class="action-bar"><button type="button" class="btn" id="welcome-deposit">Go to Deposit</button></div>
       </section>
 
       <section id="lobby" class="flex-1 flex flex-col" hidden>
@@ -556,7 +544,7 @@
   $('intro-continue').addEventListener('click', () => showStep(order[0]));
   function toLobby() { showPage(isNew ? 'welcome' : 'lobby'); }
   $('welcome-close').addEventListener('click', () => showPage('lobby'));
-  $('welcome-deposit').addEventListener('click', () => showPage('lobby')); // Deposit is not designed here
+  $('welcome-banner').addEventListener('click', () => showPage('lobby')); // the offer page is not designed here
 
   /* ── Toast ── */
   let toastTimer;
