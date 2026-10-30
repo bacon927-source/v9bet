@@ -1,7 +1,7 @@
 /* Test panel — for reviewing only, not part of the product.
  *
  * One list of every screen in Figma (📱 Screens, in its order), shared by
- * auth-flow-tailwind.html and setup-flow-tailwind.html. Open it on either page
+ * auth-flow-tailwind.html, setup-flow-tailwind.html and settings-tailwind.html. Open it on any page
  * and every screen is there: a state on this page opens in place, a state on
  * the other page opens that page at #state. Screens not built as a web page
  * yet are listed greyed out, so the panel always mirrors Figma.
@@ -13,7 +13,8 @@
 (function () {
   const AUTH = 'auth-flow-tailwind.html';
   const SETUP = 'setup-flow-tailwind.html';
-  const PAGES = { auth: AUTH, setup: SETUP };
+  const SETTINGS = 'settings-tailwind.html';
+  const PAGES = { auth: AUTH, setup: SETUP, settings: SETTINGS };
 
   // [tab, [[subgroup, [[key, label, page]]]]] — page null = in Figma, not built yet.
   const CATALOG = [
@@ -126,13 +127,16 @@
       ]],
     ]],
     ['Settings', [
-      ['Account & Settings', [
-        ['account', 'Account', null],
-        ['settings', 'Settings', null],
-        ['settings-2fa', 'Two-factor authentication', null],
-        ['settings-passkeys', 'Passkeys', null],
-        ['settings-notifications', 'Notifications', null],
-        ['settings-bank', 'Bank account / USDT', null],
+      ['First page (groups only, the iPhone way)', [
+        ['settings-home', 'Settings', 'settings'],
+        ['settings-gaps', 'Settings · things not done yet', 'settings'],
+      ]],
+      ['One page down', [
+        ['settings-account', 'Account', 'settings'],
+        ['settings-account-gaps', 'Account · not added yet', 'settings'],
+        ['settings-security', 'Sign-in & Security', 'settings'],
+        ['settings-notifications', 'Notifications', 'settings'],
+        ['settings-display', 'Display', 'settings'],
       ]],
     ]],
     ['Profile', [
@@ -417,13 +421,11 @@
                 : `<span class="px-3 py-2 rounded-xl border border-dashed border-edge-subtle text-ink-muted" title="還沒做成網頁">${label}（還沒做）</span>`).join('')}</div>
             </div>`).join('')}
         </section>`).join('')}
-      <div class="sticky bottom-0 -mx-4 mt-auto flex flex-col gap-2 p-4 bg-sheet border-t border-edge">
-        <div class="grid grid-cols-[1fr_auto_1fr] items-center gap-2">
-          <button type="button" class="tp-prev ${btn}">‹ 上一個</button>
-          <span class="tp-count text-ink-secondary tabular-nums"></span>
-          <button type="button" class="tp-next ${btn}">下一個 ›</button>
-        </div>
-        <button type="button" class="tp-copy ${btn} text-brand-2">複製這一張的連結</button>
+      <div class="sticky bottom-0 -mx-4 mt-auto grid grid-cols-[1fr_auto_1fr_auto] items-center gap-2 p-4 bg-sheet border-t border-edge">
+        <button type="button" class="tp-prev ${btn}">‹ 上一個</button>
+        <span class="tp-count text-ink-secondary tabular-nums"></span>
+        <button type="button" class="tp-next ${btn}">下一個 ›</button>
+        <button type="button" class="tp-copy ${btn} px-3 text-brand-2">複製連結</button>
       </div>`;
     document.body.append(open, nav);
 
@@ -499,8 +501,8 @@
     nav.querySelector('.tp-next').addEventListener('click', () => { const i = index(); if (i >= 0 && i < BUILT.length - 1) visit(BUILT[i + 1]); });
     nav.querySelector('.tp-copy').addEventListener('click', (e) => {
       const b = e.currentTarget;
-      const done = (text) => { b.textContent = text; setTimeout(() => { b.textContent = '複製這一張的連結'; }, 1500); };
-      navigator.clipboard.writeText(location.href).then(() => done('已複製'), () => done('複製失敗，請從網址列複製'));
+      const done = (text) => { b.textContent = text; setTimeout(() => { b.textContent = '複製連結'; }, 1500); };
+      navigator.clipboard.writeText(location.href).then(() => done('已複製'), () => done('請從網址列複製'));
     });
     window.addEventListener('hashchange', () => go(location.hash.slice(1)));
 

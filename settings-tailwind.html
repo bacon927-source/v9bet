@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>V9Bet · Settings (Tailwind)</title>
+
+<!-- Settings, split the way iPhone does it (2026-10-30, user: "好 按 iphone 分"):
+     the first page only lists the groups, each with what it is set to now;
+     the details live one page down. Figma: 📱 Screens › Settings. -->
+<link rel="stylesheet" href="variables.css">
+<script src="theme.js"></script>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>var module = {};</script>
+<script src="tailwind.config.js"></script>
+<script>tailwind.config = module.exports;</script>
+<script src="test-panel.js"></script>
+<style>
+  /* Pages are switched with the hidden attribute; flex utilities would otherwise override it. */
+  [hidden] { display: none !important; }
+</style>
+</head>
+
+<body class="bg-app text-ink font-sans antialiased">
+  <div class="min-h-[100dvh] flex justify-center bg-app">
+    <div class="page relative w-full md:max-w-[440px] md:border-x md:border-edge-subtle min-h-[100dvh]">
+
+      <!-- ── Settings · the first page: groups only ── -->
+      <section data-view="settings" class="flex flex-col">
+        <div class="nav-top"><span class="nav-top-title">Settings</span></div>
+        <div class="page-body">
+          <!-- Who you are: opens Account. -->
+          <div class="card">
+            <a href="#account" class="list-row min-h-[4.5rem]">
+              <span class="grid place-items-center size-12 flex-none rounded-full bg-selected text-base/7 font-semibold text-ink" aria-hidden="true" data-initials>PC</span>
+              <span class="flex flex-col min-w-0 flex-1"><span class="font-semibold truncate" data-name>Pei Chen</span><span class="text-sm/6 text-ink-secondary truncate">Account ID: <span data-account-id>bacon927</span></span></span>
+              <span class="icon icon-sm icon-chevron-right" aria-hidden="true"></span>
+            </a>
+          </div>
+          <div class="card">
+            <a href="#security" class="list-row"><span class="list-row-title">Sign-in &amp; Security</span><span class="list-row-value" data-value="security"></span><span class="icon icon-sm icon-chevron-right" aria-hidden="true"></span></a>
+            <a href="#notifications" class="list-row"><span class="list-row-title">Notifications</span><span class="list-row-value" data-value="channel"></span><span class="icon icon-sm icon-chevron-right" aria-hidden="true"></span></a>
+            <a href="#display" class="list-row"><span class="list-row-title">Display</span><span class="list-row-value" data-value="display"></span><span class="icon icon-sm icon-chevron-right" aria-hidden="true"></span></a>
+            <a href="#more-responsible" class="list-row"><span class="list-row-title">Responsible Gaming</span><span class="icon icon-sm icon-chevron-right" aria-hidden="true"></span></a>
+          </div>
+          <div class="card">
+            <a href="#more-history" class="list-row"><span class="list-row-title">History</span><span class="icon icon-sm icon-chevron-right" aria-hidden="true"></span></a>
+            <a href="#more-help" class="list-row"><span class="list-row-title">Help &amp; Support</span><span class="icon icon-sm icon-chevron-right" aria-hidden="true"></span></a>
+            <a href="#more-about" class="list-row"><span class="list-row-title">About</span><span class="icon icon-sm icon-chevron-right" aria-hidden="true"></span></a>
+          </div>
+          <div class="card">
+            <button type="button" class="list-row justify-center !text-error" id="logout">Log out</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── Account ── -->
+      <section data-view="account" class="flex flex-col" hidden>
+        <div class="nav-top"><a href="#settings" class="nav-top-action" aria-label="Back"><span class="icon icon-back size-7" aria-hidden="true"></span></a><span class="nav-top-title">Account</span></div>
+        <div class="page-body">
+          <div class="card">
+            <div class="list-row cursor-default"><span class="list-row-title">Account ID</span><span class="list-row-value" data-account-id>bacon927</span></div>
+            <a href="#more-personal" class="list-row"><span class="list-row-title">Personal information</span><span class="list-row-value" data-value="personal"></span><span class="icon icon-sm icon-chevron-right" aria-hidden="true"></span></a>
+            <a href="#more-identity" class="list-row"><span class="list-row-title">Identity verification</span><span class="list-row-value">Level 1</span><span class="icon icon-sm icon-chevron-right" aria-hidden="true"></span></a>
+            <a href="#more-bank" class="list-row"><span class="list-row-title">Bank account / USDT</span><span class="list-row-value" data-value="bank"></span><span class="icon icon-sm icon-chevron-right" aria-hidden="true"></span></a>
+          </div>
+          <p class="hint">Currency: VND. It cannot be changed once set.</p>
+        </div>
+      </section>
+
+      <!-- ── Sign-in & Security ── -->
+      <section data-view="security" class="flex flex-col" hidden>
+        <div class="nav-top"><a href="#settings" class="nav-top-action" aria-label="Back"><span class="icon icon-back size-7" aria-hidden="true"></span></a><span class="nav-top-title">Sign-in &amp; Security</span></div>
+        <div class="page-body">
+          <div class="flex flex-col gap-2">
+            <p class="group-label">Sign-in</p>
+            <div class="card">
+              <a href="#more-email" class="list-row"><span class="list-row-title">Email</span><span class="list-row-value" data-value="email"></span><span class="icon icon-sm icon-chevron-right" aria-hidden="true"></span></a>
+              <a href="#more-phone" class="list-row"><span class="list-row-title">Phone number</span><span class="list-row-value" data-value="phone"></span><span class="icon icon-sm icon-chevron-right" aria-hidden="true"></span></a>
+              <a href="#more-password" class="list-row"><span class="list-row-title">Password</span><span class="list-row-value" data-value="password"></span><span class="icon icon-sm icon-chevron-right" aria-hidden="true"></span></a>
+              <a href="#more-passkeys" class="list-row"><span class="list-row-title">Passkeys</span><span class="list-row-value">Set up</span><span class="icon icon-sm icon-chevron-right" aria-hidden="true"></span></a>
+            </div>
+          </div>
+          <div class="flex flex-col gap-2">
+            <p class="group-label">Linked accounts</p>
+            <div class="card">
+              <a href="#more-google" class="list-row"><span class="list-row-title">Google</span><span class="list-row-value" data-linked="google"></span><span class="icon icon-sm icon-chevron-right" aria-hidden="true"></span></a>
+              <a href="#more-line" class="list-row"><span class="list-row-title">LINE</span><span class="list-row-value" data-linked="line"></span><span class="icon icon-sm icon-chevron-right" aria-hidden="true"></span></a>
+              <a href="#more-zalo" class="list-row"><span class="list-row-title">Zalo</span><span class="list-row-value" data-linked="zalo"></span><span class="icon icon-sm icon-chevron-right" aria-hidden="true"></span></a>
+            </div>
+          </div>
+          <div class="flex flex-col gap-2">
+            <p class="group-label">Security</p>
+            <div class="card">
+              <label class="list-row"><span class="list-row-title">Two-factor authentication</span><input type="checkbox" role="switch" class="sr-only" id="twofa"><span class="toggle"></span></label>
+              <a href="#more-sessions" class="list-row"><span class="list-row-title">Active session</span><span class="list-row-value">This device</span><span class="icon icon-sm icon-chevron-right" aria-hidden="true"></span></a>
+              <label class="list-row"><span class="list-row-title">Auto log out after 30 min</span><input type="checkbox" role="switch" class="sr-only" id="autologout"><span class="toggle"></span></label>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── Notifications ── -->
+      <section data-view="notifications" class="flex flex-col" hidden>
+        <div class="nav-top"><a href="#settings" class="nav-top-action" aria-label="Back"><span class="icon icon-back size-7" aria-hidden="true"></span></a><span class="nav-top-title">Notifications</span></div>
+        <div class="page-body">
+          <div class="card">
+            <label class="list-row"><span class="list-row-title">Push notifications</span><input type="checkbox" role="switch" class="sr-only" id="push" checked><span class="toggle"></span></label>
+          </div>
+          <fieldset class="flex flex-col gap-3">
+            <legend class="group-label mb-3">Message channel</legend>
+            <div class="flex flex-col gap-2">
+              <label class="option-card"><input type="radio" name="channel" value="email" class="sr-only"><span class="tick"></span><span class="option-card-text">Email<span class="option-card-sub" data-value="email"></span></span></label>
+              <label class="option-card"><input type="radio" name="channel" value="sms" class="sr-only"><span class="tick"></span><span class="option-card-text">SMS<span class="option-card-sub" data-value="phone"></span></span></label>
+              <label class="option-card"><input type="radio" name="channel" value="zalo" class="sr-only"><span class="tick"></span><span class="option-card-text">Zalo<span class="option-card-sub" data-linked="zalo"></span></span><button type="button" class="font-semibold text-brand-2 px-2 min-h-11" data-link="zalo">Link</button></label>
+              <label class="option-card"><input type="radio" name="channel" value="line" class="sr-only"><span class="tick"></span><span class="option-card-text">LINE<span class="option-card-sub" data-linked="line"></span></span><button type="button" class="font-semibold text-brand-2 px-2 min-h-11" data-link="line">Link</button></label>
+              <label class="option-card"><input type="radio" name="channel" value="telegram" class="sr-only"><span class="tick"></span><span class="option-card-text">Telegram<span class="option-card-sub" data-linked="telegram"></span></span><button type="button" class="font-semibold text-brand-2 px-2 min-h-11" data-link="telegram">Link</button></label>
+            </div>
+            <p class="hint">Verification codes, security alerts and payment updates are always sent, whatever you choose here.</p>
+          </fieldset>
+        </div>
+      </section>
+
+      <!-- ── Display ── -->
+      <section data-view="display" class="flex flex-col" hidden>
+        <div class="nav-top"><a href="#settings" class="nav-top-action" aria-label="Back"><span class="icon icon-back size-7" aria-hidden="true"></span></a><span class="nav-top-title">Display</span></div>
+        <div class="page-body">
+          <fieldset class="flex flex-col gap-2">
+            <legend class="group-label mb-3">Theme</legend>
+            <label class="option-card"><input type="radio" name="theme" value="system" class="sr-only"><span class="tick"></span><span class="option-card-text">Follow system<span class="option-card-sub">Matches your device</span></span></label>
+            <label class="option-card"><input type="radio" name="theme" value="dark" class="sr-only"><span class="tick"></span><span class="option-card-text">Dark<span class="option-card-sub">Always dark</span></span></label>
+            <label class="option-card"><input type="radio" name="theme" value="light" class="sr-only"><span class="tick"></span><span class="option-card-text">Light<span class="option-card-sub">Always light</span></span></label>
+          </fieldset>
+          <fieldset class="flex flex-col gap-2">
+            <legend class="group-label mb-3">Text size</legend>
+            <label class="option-card"><input type="radio" name="text-size" value="default" class="sr-only"><span class="tick"></span><span class="option-card-text">Default</span></label>
+            <label class="option-card"><input type="radio" name="text-size" value="large" class="sr-only"><span class="tick"></span><span class="option-card-text">Large<span class="option-card-sub">Bigger text, easier to read</span></span></label>
+          </fieldset>
+          <div class="card">
+            <a href="#more-language" class="list-row"><span class="list-row-title">Language</span><span class="list-row-value">English</span><span class="icon icon-sm icon-chevron-right" aria-hidden="true"></span></a>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── A detail page that is not designed yet ── -->
+      <section data-view="more" class="flex flex-col flex-1" hidden>
+        <div class="nav-top"><a href="#settings" class="nav-top-action" id="more-back" aria-label="Back"><span class="icon icon-back size-7" aria-hidden="true"></span></a><span class="nav-top-title" id="more-title"></span></div>
+        <div class="page-body flex-1">
+          <div class="flex-1 grid place-items-center rounded-xl border border-dashed border-edge text-base/7 text-ink-muted">Not designed yet</div>
+        </div>
+      </section>
+
+      <section data-view="out" class="flex flex-col flex-1" hidden>
+        <div class="page-body flex-1">
+          <div class="flex-1 grid place-items-center rounded-xl border border-dashed border-edge text-base/7 text-ink-muted">Logged out → Log In</div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+<script>
+  const $ = (id) => document.getElementById(id);
+  const views = [...document.querySelectorAll('[data-view]')];
+
+  /* What the member has — the demo stands in for the server. Two members:
+     everything done, and a new one with gaps (what Setup skipped). */
+  const MEMBERS = {
+    done:   { name: 'Pei Chen', id: 'bacon927', personal: 'Pei Chen', bank: 'Vietcombank ••3456', email: 'ba*****27@gmail.com', phone: '+84 91***233', password: 'Set', linked: { google: true, line: false, zalo: false, telegram: false }, twofa: true, channel: 'email' },
+    gaps:   { name: '', id: 'bacon927', personal: 'Not added', bank: 'Not added', email: 'ba*****27@gmail.com', phone: 'Add', password: 'Not set', linked: { google: true, line: false, zalo: false, telegram: false }, twofa: false, channel: 'email' },
+  };
+  let member = MEMBERS.done;
+
+  const THEME = { system: 'Follow system', dark: 'Dark', light: 'Light' };
+  const CHANNEL = { email: 'Email', sms: 'SMS', zalo: 'Zalo', line: 'LINE', telegram: 'Telegram' };
+  // The first page shows what each group is set to now, the iPhone way.
+  const paint = () => {
+    const m = member;
+    document.querySelectorAll('[data-name]').forEach((e) => { e.textContent = m.name || 'Add your name'; });
+    document.querySelectorAll('[data-initials]').forEach((e) => { e.textContent = m.name ? m.name.split(' ').map((w) => w[0]).join('').slice(0, 2) : m.id.slice(0, 2).toUpperCase(); });
+    document.querySelectorAll('[data-account-id]').forEach((e) => { e.textContent = m.id; });
+    const values = {
+      security: m.twofa ? '' : '2FA off',
+      channel: CHANNEL[document.querySelector('input[name="channel"]:checked')?.value || m.channel],
+      display: THEME[getTheme()] + (getTextSize() === 'large' ? ' · Large text' : ''),
+      personal: m.personal, bank: m.bank, email: m.email, phone: m.phone, password: m.password,
+    };
+    document.querySelectorAll('[data-value]').forEach((e) => { e.textContent = values[e.dataset.value] ?? ''; });
+    document.querySelectorAll('[data-linked]').forEach((e) => { e.textContent = m.linked[e.dataset.linked] ? 'Linked' : 'Not linked'; });
+    document.querySelectorAll('[data-link]').forEach((b) => { b.hidden = !!m.linked[b.dataset.link]; });
+  };
+
+  /* One page at a time, from the hash: #settings, #account, #security,
+     #notifications, #display; #more-… is a detail page not designed yet. */
+  const TITLES = { responsible: 'Responsible Gaming', history: 'History', help: 'Help & Support', about: 'About', personal: 'Personal information', identity: 'Identity verification', bank: 'Bank account / USDT', email: 'Email', phone: 'Phone number', password: 'Password', passkeys: 'Passkeys', google: 'Google', line: 'LINE', zalo: 'Zalo', sessions: 'Active session', language: 'Language' };
+  const PARENT = { responsible: 'settings', history: 'settings', help: 'settings', about: 'settings', personal: 'account', identity: 'account', bank: 'account', email: 'security', phone: 'security', password: 'security', passkeys: 'security', google: 'security', line: 'security', zalo: 'security', sessions: 'security', language: 'display' };
+  const show = (name) => {
+    let view = name;
+    if (name.startsWith('more-')) {
+      const k = name.slice(5); view = 'more';
+      $('more-title').textContent = TITLES[k] || ''; $('more-back').href = '#' + (PARENT[k] || 'settings');
+    }
+    if (!views.some((v) => v.dataset.view === view)) view = 'settings';
+    views.forEach((v) => { v.hidden = v.dataset.view !== view; });
+    paint(); window.scrollTo(0, 0);
+  };
+
+  $('twofa').addEventListener('change', () => { member.twofa = $('twofa').checked; paint(); });
+  document.querySelectorAll('input[name="channel"]').forEach((r) => r.addEventListener('change', paint));
+  document.querySelectorAll('[data-link]').forEach((b) => b.addEventListener('click', (e) => {
+    e.preventDefault(); member.linked[b.dataset.link] = true;
+    document.querySelector(`input[name="channel"][value="${b.dataset.link}"]`).checked = true; paint();
+  }));
+  // Theme and text size are the same choices as Setup › Display (theme.js) and take effect at once.
+  const syncDisplay = () => {
+    document.querySelector(`input[name="theme"][value="${getTheme()}"]`).checked = true;
+    document.querySelector(`input[name="text-size"][value="${getTextSize()}"]`).checked = true;
+  };
+  document.querySelectorAll('input[name="theme"]').forEach((r) => r.addEventListener('change', () => { setTheme(r.value); paint(); }));
+  document.querySelectorAll('input[name="text-size"]').forEach((r) => r.addEventListener('change', () => { setTextSize(r.value); paint(); }));
+  $('logout').addEventListener('click', () => show('out'));
+
+  /* ── Test panel ── */
+  const load = (key) => {
+    member = JSON.parse(JSON.stringify(MEMBERS[key]));
+    $('twofa').checked = member.twofa; $('autologout').checked = false; $('push').checked = true;
+    document.querySelector(`input[name="channel"][value="${member.channel}"]`).checked = true;
+    syncDisplay(); paint();
+  };
+  const reset = () => load('done');
+  // State keys differ from the page hashes (#settings, #account…), so following a
+  // link inside Settings never resets the demo member.
+  const STATES = [
+    ['settings-home', 'Settings', () => show('settings')],
+    ['settings-gaps', 'Settings · things not done yet', () => { load('gaps'); show('settings'); }],
+    ['settings-account', 'Account', () => show('account')],
+    ['settings-account-gaps', 'Account · not added yet', () => { load('gaps'); show('account'); }],
+    ['settings-security', 'Sign-in & Security', () => show('security')],
+    ['settings-notifications', 'Notifications', () => show('notifications')],
+    ['settings-display', 'Display', () => show('display')],
+  ];
+  const handlers = Object.fromEntries(STATES.map(([k, , fn]) => [k, fn]));
+  // The panel owns the hash for its states; every other hash is a page in Settings.
+  const opened = TestPanel.init({ page: 'settings', handlers, reset, fallback: 'settings-home', buttonClass: 'bottom-6', panelClass: 'bottom-20' });
+  window.addEventListener('hashchange', () => { const h = location.hash.slice(1); if (!handlers[h]) show(h || 'settings'); });
+  if (!opened) { reset(); const h = location.hash.slice(1); show(handlers[h] ? 'settings' : (h || 'settings')); }
+</script>
+</body>
+</html>
