@@ -166,23 +166,23 @@ const SOC = (ic, t, sub='', last=false) => `<div class="socbtn"><span class="ic"
 const screens = [
 {
   group:"A · Sign Up", id:"signup", title:"Sign Up",
-  states:["Default","Ready to submit","Account exists → popup","Referral from invite link","Typing a phone number"],
+  states:["Default","Ready to submit","Account exists → popup","Referral from invite link"],
   render:(s)=>`
     <div class="scr-title"><span class="authsw"><span class="on">Sign up</span><span class="div"></span><span class="off">Login</span></span><span class="x" style="left:auto;right:0">✕</span></div>
-    <div class="scr-step">Sign up with your email or phone</div>
+    <div class="scr-step">Sign up with your email</div>
     <div class="socrow" style="margin-top:14px">
       <div class="sic"><span class="c">G</span><small>Google</small></div>
       <div class="sic"><span class="c" style="font-size:10px">LINE</span><small>LINE</small></div>
       <div class="sic"><span class="c" style="font-size:9px">Zalo</span><small>Zalo</small></div>
     </div>
     <div class="or">or sign up with</div>
-    ${s===4?F("+84 ▾ │ 0913","Email / Phone"):F("Email / Phone","Required")}
+    ${F("Email address","Required")}
     ${s===3
       ? `<div class="field" style="border-style:solid;color:var(--ink)"><span>V9-8KQ2MN</span><small>From invite link ✓</small></div>`
       : F("Referral code","Optional")}
     <div class="opt"><span class="sq ${s===1||s===3?'on':''}"></span>
       <span style="flex:1">I am 21+ and agree to the <b style="text-decoration:underline">Terms</b> and <b style="text-decoration:underline">Privacy Policy</b></span></div>
-    <div class="hint">＊ We send a 6-digit code to this email or phone — that code is the whole verification. No password to choose, nothing else to fill in. Digits bring up the country prefix (+84 ▾, +66), as on the One-time code tab (10-30, user: \"我們註冊可以讓客人用 email phone number\").</div>
+    <div class="hint">＊ We send a 6-digit code to this inbox — that code is the whole verification. No password to choose, nothing else to fill in. EMAIL ONLY (10-30, user: \"for sign up 只能用 email 做\"): a phone number is not taken here; a member with a phone logs in with a one-time code.</div>
     ${CTA("Sign Up", s>=1?'':'disabled')}
     ${s===2?`<div class="scrim"><div class="modal">
       <div style="text-align:right;color:var(--muted);margin:-4px -4px 0">✕</div>
@@ -194,7 +194,7 @@ const screens = [
       <div class="link"><b>Use a different email</b></div>
     </div></div>`:''}`,
   spec:{
-    goal:"Sign-up = email OR phone + OTP (10-30, user: \"我們註冊可以讓客人用 email phone number\" / \"改回來\" — replaces the 08-30 email-only rule). \"@\" means email; digits are a phone with the country prefix; anything else: \"Enter a valid email or phone number.\" Phone too short: \"Enter a valid phone number.\" The code screen says \"Verify phone number\" / \"Wrong number?\" for a phone. No password, no Account ID. One optional extra: a referral code field under the email. 3rd-party via icon row: Google / LINE / Zalo (consent implicit at tap).",
+    goal:"Sign-up = email + OTP only (10-30: confirmed again — \"for sign up 只能用 email 做\"; a short-lived email-or-phone version the same day was undone). No phone, no password, no Account ID. One optional extra: a referral code field under the email. 3rd-party via icon row: Google / LINE / Zalo (consent implicit at tap).",
     states:["default (button disabled until Terms checked)","Terms checked → submittable","email already registered → popup: code sent, confirm to log in","referral code prefilled from ?ref= invite link, marked applied (still editable)","invalid email format → inline error","referral code not found / expired → inline error under that field only; Sign Up stays enabled","submitting loading","social icon tap → Google / LINE / Zalo OAuth branch"],
     fields:["email","referral_code (optional)","accept_terms(bool)","method(email|google|line|zalo)"],
     api:"POST /register/start\n→ { email, referral_code?, accept_terms }\n← { register_token, otp_sent:true }\nerr: INVALID_EMAIL / RATE_LIMITED\n← { exists:true, otp_sent:true } when the address already has an account\nGET /referral/validate?code= → { valid, inviter_display? } (on blur; never blocks submit)\nerr: REFERRAL_NOT_FOUND / REFERRAL_EXPIRED — warn, do not fail registration\nGET auth.&lt;stable&gt;/oauth/{provider} → session_token (central auth domain)",
@@ -311,7 +311,7 @@ const screens = [
     <div class="grp">Step 2 · Security &amp; payout <span class="badge">can skip</span></div>
     <div class="checklist">
       ${ci(3,"Bank account / USDT","needed before withdrawal",s>1&&!nc)}
-      <div class="hint">＊ BEFORE SETUP (10-30, user: \"在 sign up 到 setup 中間會有一頁跟客人說 setup 開始，但不用寫開始\" / \"要跟舊客說明我們要更優化所以請做以下 setup\"): one full page between sign-up and Setup, the same for every way in — \"Your account is ready · A few quick settings and you’re all set.\" → Continue. An existing member, the first time Setup is on: \"We’ve improved V9Bet · Please complete the following settings for your account.\" No \"start\" anywhere. Personas also include New · Phone (signed up with a phone number — sign-up takes email or phone, 10-30).</div>
+      <div class="hint">＊ BEFORE SETUP (10-30, user: \"在 sign up 到 setup 中間會有一頁跟客人說 setup 開始，但不用寫開始\" / \"要跟舊客說明我們要更優化所以請做以下 setup\"): one full page between sign-up and Setup, the same for every way in — \"Your account is ready · A few quick settings and you’re all set.\" → Continue. An existing member, the first time Setup is on: \"We’ve improved V9Bet · Please complete the following settings for your account.\" No \"start\" anywhere. Personas also include New · Phone (came in with a one-time code to a phone — sign-up itself is email only).</div>
       <div class="hint">＊ ONLY WHAT IS MISSING (10-30, user): every member goes through Setup once — a new member right after sign-up, an existing member the first time Setup is switched on — and sees only the steps not done yet; the progress bar counts their own steps. An existing member already has a currency and an Account ID, so starts at Personal information (25% → 50% → 75% → 100%); one who also has personal info and a bank sees only Notifications and Display (50% → 100%). Personas in the test panel: Existing ×2, New · Google / LINE / Zalo / Email.</div>
       <div class="hint">＊ Set a password and Security (2FA, email / phone) are out of Setup for now (10-30, user: "set password 在setup時拿掉" / "2fa在setup 時拿掉"). They stay in Settings.</div>
     </div>
@@ -517,7 +517,7 @@ const screens = [
     states:["default pre-selected (market / sign-up method)","social messaging → sub-picker + ID field for Telegram / LINE","SMS or social picked but phone NOT verified → blocker → verify (or fall back to Email)","opt out → confirm sheet (critical messages still delivered)","saved → confirmation + points"],
     fields:["channel(sms|email|social|none)","social_app(whatsapp|zalo|telegram|line)?","social_handle? (telegram|line only)","phone_verified(bool)","default_source(market|signup_method)"],
     api:"GET /account/message-channel → { channel, social_app?, handle?, default }\nPUT /account/message-channel { channel, social_app?, handle? }\nerr: PHONE_NOT_VERIFIED / HANDLE_IN_USE / INVALID_FORMAT",
-    notes:["Default is EMAIL for an email sign-up; a phone sign-up starts on SMS (10-30: sign-up takes email or phone again). Was (08-30): sign-up is email-only, so every new member has exactly one verified contact and it is their inbox. The old 'signed up with phone → SMS' branch is gone with the phone sign-up path. The default applies until the member changes it.","Verification gate: choosing SMS or ANY social app requires a verified phone (WhatsApp / Zalo are keyed to the number; Telegram / LINE still need the number as the account anchor). A brand-new member has none, so this blocker is now the COMMON case rather than an edge one — it must read as an invitation to add a number (Setup item 5), never as an error. Falling back to Email is always available.","Market overlay (VN → Zalo, TH → LINE) can pre-select social where reach is better, but only once a phone exists — until then it cannot override the Email default.","Opt-out ≠ silence: OTP, login / security alerts and deposit-withdrawal status are transactional and always delivered. Only promotions, campaigns and non-critical updates stop.","Telegram / LINE need a handle; WhatsApp / Zalo reuse the verified phone number — the ID field only appears for the two that need it.","Same screen is reused in Profile & Settings › Preferences › Message channel; consent record (channel + timestamp) is written on save.","The choice drives the Notifications topic toggles."]
+    notes:["Default is always EMAIL (08-30, still true 10-30): sign-up is email-only, so every new member has exactly one verified contact and it is their inbox. The old 'signed up with phone → SMS' branch is gone with the phone sign-up path. The default applies until the member changes it.","Verification gate: choosing SMS or ANY social app requires a verified phone (WhatsApp / Zalo are keyed to the number; Telegram / LINE still need the number as the account anchor). A brand-new member has none, so this blocker is now the COMMON case rather than an edge one — it must read as an invitation to add a number (Setup item 5), never as an error. Falling back to Email is always available.","Market overlay (VN → Zalo, TH → LINE) can pre-select social where reach is better, but only once a phone exists — until then it cannot override the Email default.","Opt-out ≠ silence: OTP, login / security alerts and deposit-withdrawal status are transactional and always delivered. Only promotions, campaigns and non-critical updates stop.","Telegram / LINE need a handle; WhatsApp / Zalo reuse the verified phone number — the ID field only appears for the two that need it.","Same screen is reused in Profile & Settings › Preferences › Message channel; consent record (channel + timestamp) is written on save.","The choice drives the Notifications topic toggles."]
   }
 },
 {

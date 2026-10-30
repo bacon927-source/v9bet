@@ -47,7 +47,7 @@
 20. **給 IT：第三方 email 對到舊帳號就直接綁定**（10-30 使用者：「line 登入…可以跟 google 一樣嗎？只要 match 一樣 email 就做 verified 然後綁定為我們的」）：Google、LINE 回來的 email 對到我們的帳號，就直接綁定並登入，不寄驗證碼，並把我們帳號上那個 email 標成已驗證。請 IT 確認：只在對方說這個 email 已驗證時才這樣做（Google 的 `email_verified`；LINE 要看 ID token 的 email 是否一定驗證過），否則有人可以用別人的 email 開 LINE 帳號來綁。Zalo 不給 email，不會走這條。另外電話顯示一律帶國碼、拿掉開頭的 0（`+84 91***233`），簡訊和畫面都照這個格式。
 19. **給 IT：登入方式分開**（10-29 使用者：「password 只能用 account，one time code 可以用 email and phone number」；取代同一天「全數字兩邊查」的版本）：
     - **Password 分頁收 Account ID 或 Email**（10-30 使用者：「password 我們加一個email」）：有 `@` 當 email 查，其他當 Account ID 查（英文字＋數字，可以全數字）。不收電話，所以不用猜全數字是不是電話。密碼錯時報「Account ID, email or password is incorrect.」，不說是哪一個錯。
-    - **註冊也收 Email 或電話**（10-30 使用者：「我們註冊可以讓客人用 email phone number」）：有 `@` 是 email，全數字是電話（前端帶國碼），寄驗證碼到那個 email 或電話。
+    - **註冊只收 Email**（10-30 使用者：「for sign up 只能用 email 做」）：電話不能註冊；有電話的會員用 One-time code 登入。
     - **One-time code 分頁只收 Email／Phone**：有 `@` 是 email；全數字是電話，前端帶國碼送出（國碼預設看裝置時區 → 語言 → 網站市場，不用 IP）。
     - **沒有忘記密碼**（10-29 使用者：「remove Forgot PW」）：忘記密碼的人用 One-time code 登入，登入後再到設定改密碼。只有 Account ID、沒有 email／電話的舊帳號忘了密碼就進不來，要請 IT 看有多少、怎麼處理（例如找客服）。
     - 請 IT 確認：以前用電話＋密碼登入的會員，之後改用 Account ID／Email＋密碼或 One-time code 登入，有沒有問題。
