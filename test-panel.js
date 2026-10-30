@@ -18,7 +18,10 @@
 
   // Roles (2026-10-30): each starts where that member starts — Log In or Sign Up —
   // and the flow carries on into that member's Setup (setup-flow #as-…).
-  const ROLES = [['existing', 'Existing'], ['google', 'New · Google'], ['line', 'New · LINE'], ['zalo', 'New · Zalo'], ['email', 'New · Email']];
+  // [key, short name, the way in (badge)] — shown as people along the top of the panel.
+  const GOOGLE = '<svg width="100%" height="100%" viewBox="0 0 48 48"><path fill="#4285F4" d="M46.6 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.5 3-2.2 5.5-4.7 7.2v6h7.6c4.4-4.1 7-10.1 7-17.7Z"/><path fill="#34A853" d="M24 47c6.3 0 11.6-2.1 15.5-5.7l-7.6-6c-2.1 1.4-4.8 2.3-7.9 2.3-6.1 0-11.2-4.1-13.1-9.6h-7.8v6.1C7.3 41.9 15 47 24 47Z"/><path fill="#FBBC05" d="M10.9 27.9c-.5-1.4-.7-2.9-.7-4.4s.3-3.1.7-4.4v-6.1H3.1A23 23 0 0 0 1 23.5c0 3.7.9 7.2 2.5 10.2z"/><path fill="#EA4335" d="M24 10.2c3.4 0 6.5 1.2 8.9 3.5l6.7-6.7C35.6 3.2 30.3 1 24 1 15 1 7.3 6.1 3.9 13.5l7.8 6.1c1.9-5.6 7-9.4 13.1-9.4Z"/></svg>';
+  const ROLES = [['existing', 'Existing', null], ['google', 'Google', GOOGLE], ['line', 'LINE', '<img src="assets/social/line.png" alt="" class="size-full">'],
+    ['zalo', 'Zalo', '<img src="assets/social/zalo.webp" alt="" class="size-full">'], ['email', 'Email', '<span class="icon icon-envelope size-full text-black"></span>']];
   const setRole = (k) => { try { if (k) sessionStorage.setItem('tp-role', k); else sessionStorage.removeItem('tp-role'); } catch (e) { /* this jump only */ } };
   // [tab, [[subgroup, [[key, label, page]]]]] — page null = in Figma, not built yet.
   const CATALOG = [
@@ -375,7 +378,7 @@
     const nav = document.createElement('nav');
     nav.hidden = true;
     nav.setAttribute('aria-label', 'Test panel');
-    nav.className = `fixed left-4 top-4 bottom-4 z-[60] w-[min(380px,calc(100vw-32px))] overflow-y-auto flex flex-col gap-3 px-3 pt-3 rounded-xl bg-app border border-brand-2 text-xs/5 shadow-2xl`;
+    nav.className = `fixed left-4 top-4 bottom-4 z-[60] w-[min(380px,calc(100vw-32px))] overflow-y-auto flex flex-col gap-3 px-3 rounded-xl bg-app border border-brand-2 text-xs/5 shadow-2xl`;
     const btn = 'grid place-items-center h-9 px-2.5 rounded-lg bg-card border border-edge font-semibold text-ink disabled:opacity-40';
     const chip = 'inline-flex items-center min-h-9 px-2.5 rounded-lg bg-card border border-edge font-semibold text-ink aria-[current=true]:border-brand-2 aria-[current=true]:text-brand-2';
     const mini = 'inline-flex items-center h-7 px-2 rounded-md bg-card border border-edge font-semibold text-ink aria-[current=true]:border-brand-2 aria-[current=true]:text-brand-2';
@@ -384,9 +387,22 @@
     /* Screens in the middle, every control in one compact footer (2026-10-30, user:
        "把上面控制和下面切頁面放一起，不用太大"). */
     nav.innerHTML = `
-      <div class="flex items-center gap-2">
-        <p class="flex-1 text-sm/6 font-semibold text-ink">Test panel <span class="font-normal text-ink-secondary">· review only · ${BUILT.length}/${ALL} built</span></p>
-        <button type="button" class="tp-close grid place-items-center size-9 -mr-1.5 text-ink" aria-label="Close test panel"><span class="icon icon-close" aria-hidden="true"></span></button>
+      <!-- Who you are reviewing as: people along the top, like tabs (2026-10-30, user:
+           "roles 我們用人頭來表示，上面用一個 tab 活潑一點"). Each starts where that member starts. -->
+      <div class="sticky top-0 z-10 -mx-3 flex flex-col gap-2 px-3 pt-3 pb-2 bg-sheet border-b border-edge">
+        <div class="flex items-center gap-2">
+          <p class="flex-1 text-sm/6 font-semibold text-ink">Test panel <span class="font-normal text-ink-secondary">· review only · ${BUILT.length}/${ALL} built</span></p>
+          <button type="button" class="tp-close grid place-items-center size-9 -mr-1.5 text-ink" aria-label="Close test panel"><span class="icon icon-close" aria-hidden="true"></span></button>
+        </div>
+        <div class="flex justify-between gap-1" role="tablist" aria-label="Start as">
+          ${ROLES.map(([k, l, badge]) => `<button type="button" role="tab" data-role="${k}" aria-current="false" title="${badge ? 'New member · ' + l : 'Existing member'}" class="group flex flex-1 flex-col items-center gap-1 py-1 rounded-lg text-ink-secondary aria-[current=true]:text-brand-2">
+            <span class="relative grid place-items-center size-10 rounded-full ${badge ? 'bg-card border border-edge text-ink' : 'bg-brand-2 text-ink-onBrand2'} group-aria-[current=true]:ring-2 group-aria-[current=true]:ring-brand-2 group-aria-[current=true]:ring-offset-2 group-aria-[current=true]:ring-offset-sheet">
+              <span class="icon icon-user size-6" aria-hidden="true"></span>
+              ${badge ? `<span class="absolute -right-1 -bottom-1 grid place-items-center size-[1.125rem] p-0.5 rounded-full bg-white overflow-hidden" aria-hidden="true">${badge}</span>` : ''}
+            </span>
+            <span class="text-[0.6875rem]/4 font-semibold">${l}</span>
+          </button>`).join('')}
+        </div>
       </div>
       ${CATALOG.map(([section, subs], i) => `
         <section class="flex flex-col gap-3" data-section="${i}">
@@ -403,10 +419,6 @@
         <div class="flex flex-wrap items-center gap-2">
           ${seg('data-theme-choice', 'Theme', [['system', 'System'], ['light', 'Light'], ['dark', 'Dark']])}
           ${seg('data-size-choice', 'Text size', [['default', 'Text'], ['large', 'Large text']])}
-        </div>
-        <div class="flex flex-wrap items-center gap-1.5">
-          <span class="text-ink-secondary mr-0.5">Start as</span>
-          ${ROLES.map(([k, l]) => `<button type="button" data-role="${k}" class="${mini}">${l}</button>`).join('')}
         </div>
         <div class="flex items-center gap-4">
           <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" role="switch" class="tp-spacing sr-only"><span class="toggle"></span><span class="text-ink">Spacing</span></label>
