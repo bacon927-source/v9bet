@@ -465,6 +465,7 @@ const screens = [
     <div class="scr-title"><span class="x">←</span>Display</div>
     <div class="scr-step">Theme and text size.</div>
     <div class="grp">Theme</div>${OPT("⚙️ Follow system",true)}${OPT("🌙 Dark",false)}${OPT("☀️ Light",false)}
+    <div class="hint">＊ 10-30: every choice in Setup and Settings is the iPhone list — one card, a ✓ on the chosen row — and theme / text size have no explanation lines.</div>
     <div class="grp">Text size</div>${OPT("Default",s===0)}${OPT("Large <small style='color:#b0b0b0'>Bigger text, easier to read</small>",s===1)}
     <div class="hint">＊ TEXT SIZE (10-30, user: \"加一個字體大小…正常字，和放大一點，二個版本\" / \"好 rem\"): all type is in rem, as Tailwind writes it, so text already follows the phone's own text size; Large sets the root to 112.5% (16 → 18) and every size grows with it — text, spacing and component sizes alike, like browser zoom, because they are all rem (only 1px lines stay px). Nothing with text has a fixed height, so nothing gets squeezed (the tab rule did, 10-30). Changes the page at once; kept in this browser.</div>
     <div class="hint">＊ No language picker here (09-17) — the interface is already in the right language by the time this screen is reached.</div>

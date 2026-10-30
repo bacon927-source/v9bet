@@ -438,18 +438,7 @@ module.exports = {
         'input:checked + .toggle::after': { transform: 'translateX(1rem)' },
         'input:focus-visible + .toggle': { outline: `2px solid ${c('edge.focus')}`, outlineOffset: '2px' },
 
-        /* Option card — pick one of two to four, each with a line of
-           explanation. The whole card is the <label>; the tick turns green,
-           the outline does not change. A disabled option drops to 50%. */
-        '.option-card': {
-          display: 'flex', alignItems: 'center', gap: theme('spacing.3'), width: '100%', padding: theme('spacing.3'),
-          border: `1px solid ${c('edge.DEFAULT')}`, borderRadius: theme('borderRadius.xl'), cursor: 'pointer',
-          ...type('body'), color: c('ink.DEFAULT'),
-          '& > img, & > svg': { flex: 'none', width: '1.375rem', height: '1.375rem' },
-          '&:has(> input:disabled)': { opacity: '.5', cursor: 'not-allowed' },
-        },
-        '.option-card-text': { flex: '1 1 0%', minWidth: '0', display: 'flex', flexDirection: 'column' },
-        '.option-card-sub': { ...type('micro'), color: c('ink.secondary') },
+        /* (Option card removed 2026-10-30: choices are list rows in a .card — see ui-kit › List choice.) */
 
         /* Action bar — pins the one main button to the bottom of a long or
            guided page, with at most one text link under it. Short pages do

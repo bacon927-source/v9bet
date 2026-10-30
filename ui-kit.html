@@ -341,41 +341,18 @@ npx tailwindcss -c tailwind.config.js -i app.css -o dist/app.css --minify</pre>
 &lt;/div&gt;</pre>
         </article>
         <article id="option-card" class="flex flex-col gap-[15px] scroll-mt-[20px]">
-          <div class="flex flex-wrap items-baseline gap-x-[10px] gap-y-[5px]"><h3 class="text-base/7 font-semibold">Option card</h3><span class="font-mono text-xs/5 text-ink-secondary">.option-card</span></div>
-          <p class="text-base/7 text-ink-secondary">Pick one of two to four options that each need a line of explanation. The whole card is the label; the tick turns green and the outline stays.</p>
-          <div class="grid gap-[20px] md:grid-cols-[360px_1fr] items-start">
-            <div class="rounded-xl border border-edge-subtle p-[15px] flex flex-col gap-3"><fieldset class="flex flex-col gap-3">
-  <legend class="sr-only">Account currency</legend>
-  <label class="option-card">
-    <input type="radio" name="kit-currency" value="VND" class="sr-only" checked>
-    <span class="tick"></span>
-    <img src="assets/flags/vn.svg" alt="">
-    <span class="option-card-text">VND — Vietnamese Dong<span class="option-card-sub">USDT supported</span></span>
-  </label>
-  <label class="option-card">
-    <input type="radio" name="kit-currency" value="THB" class="sr-only">
-    <span class="tick"></span>
-    <img src="assets/flags/th.svg" alt="">
-    <span class="option-card-text">THB — Thai Baht<span class="option-card-sub">USDT supported</span></span>
-  </label>
-</fieldset><label class="option-card"><input type="radio" name="kit-otp" class="sr-only" disabled><span class="tick"></span><span class="option-card-text">SMS<span class="option-card-sub">Add a phone number first</span></span></label></div>
-            <div class="flex flex-col gap-[15px] min-w-0"><div class="overflow-x-auto"><table class="w-full text-sm/6 text-ink-secondary"><thead><tr><th class="text-left font-semibold text-ink py-[8px] pr-[15px] whitespace-nowrap">Class / attribute</th><th class="text-left font-semibold text-ink py-[8px] pr-[15px] whitespace-nowrap">What it does</th></tr></thead><tbody><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top"><code class="font-mono text-xs/5 text-ink">.option-card</code></td><td class="py-[8px] pr-[15px] align-top">Outlined box, radius 12, 12 padding. The &lt;label&gt; around a radio.</td></tr><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top"><code class="font-mono text-xs/5 text-ink">input + .tick</code></td><td class="py-[8px] pr-[15px] align-top">Same tick as elsewhere; it follows the radio.</td></tr><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top"><code class="font-mono text-xs/5 text-ink">img / svg</code></td><td class="py-[8px] pr-[15px] align-top">Optional flag or logo, 22, between the tick and the name.</td></tr><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top"><code class="font-mono text-xs/5 text-ink">.option-card-text · .option-card-sub</code></td><td class="py-[8px] pr-[15px] align-top">Name in white (15) and the explanation underneath (13, secondary).</td></tr><tr class="border-t border-edge-subtle"><td class="py-[8px] pr-[15px] align-top"><code class="font-mono text-xs/5 text-ink">input:disabled</code></td><td class="py-[8px] pr-[15px] align-top">The card drops to 50%. Say why in the sub line.</td></tr></tbody></table></div></div>
-          </div>
-          <pre class="overflow-x-auto rounded-xl border border-edge-subtle p-[10px] font-mono text-xs/5 text-ink-secondary whitespace-pre">&lt;fieldset class=&quot;flex flex-col gap-2&quot;&gt;
-  &lt;legend class=&quot;sr-only&quot;&gt;Account currency&lt;/legend&gt;
-  &lt;label class=&quot;option-card&quot;&gt;
-    &lt;input type=&quot;radio&quot; name=&quot;currency&quot; value=&quot;VND&quot; class=&quot;sr-only&quot; checked&gt;
-    &lt;span class=&quot;tick&quot;&gt;&lt;/span&gt;
-    &lt;img src=&quot;assets/flags/vn.svg&quot; alt=&quot;&quot;&gt;
-    &lt;span class=&quot;option-card-text&quot;&gt;VND — Vietnamese Dong&lt;span class=&quot;option-card-sub&quot;&gt;USDT supported&lt;/span&gt;&lt;/span&gt;
+          <div class="flex flex-wrap items-baseline gap-x-[10px] gap-y-[5px]"><h3 class="text-base/7 font-semibold">List choice</h3><span class="font-mono text-xs/5 text-ink-secondary">.card + .list-row + radio</span></div>
+          <p class="text-base/7 text-ink-secondary">Pick one of a few: one card, a row per choice, a green ✓ on the chosen row (the iPhone list). Replaces the Option card (2026-10-30), in Setup and in Settings alike. An app that is not linked yet shows “Link” instead of the ✓.</p>
+          <div class="grid gap-[20px] md:grid-cols-[360px_1fr] items-start"><div class="rounded-xl border border-edge-subtle p-[15px]"><div class="flex flex-col gap-2"><p class="group-label" id="kit-cur">Account currency</p><div class="card" role="radiogroup" aria-labelledby="kit-cur"><label class="list-row min-h-14 py-2"><input type="radio" name="kit-currency" value="VND" class="peer sr-only" checked><img src="assets/flags/vn.svg" alt="" class="size-[1.375rem] flex-none"><span class="flex min-w-0 flex-1 flex-col"><span class="truncate">VND</span></span><span class="icon icon-sm icon-check !text-brand-2 !hidden peer-checked:!inline-block" aria-hidden="true"></span></label><label class="list-row min-h-14 py-2"><input type="radio" name="kit-currency" value="THB" class="peer sr-only"><img src="assets/flags/th.svg" alt="" class="size-[1.375rem] flex-none"><span class="flex min-w-0 flex-1 flex-col"><span class="truncate">THB</span></span><span class="icon icon-sm icon-check !text-brand-2 !hidden peer-checked:!inline-block" aria-hidden="true"></span></label></div></div></div></div>
+          <pre class="overflow-x-auto rounded-xl border border-edge-subtle p-[10px] font-mono text-xs/5 text-ink-secondary whitespace-pre">&lt;div class=&quot;card&quot; role=&quot;radiogroup&quot; aria-labelledby=&quot;currency-label&quot;&gt;
+  &lt;label class=&quot;list-row min-h-14 py-2&quot;&gt;
+    &lt;input type=&quot;radio&quot; name=&quot;currency&quot; value=&quot;VND&quot; class=&quot;peer sr-only&quot; checked&gt;
+    &lt;img src=&quot;assets/flags/vn.svg&quot; alt=&quot;&quot; class=&quot;size-[1.375rem] flex-none&quot;&gt;
+    &lt;span class=&quot;flex min-w-0 flex-1 flex-col&quot;&gt;&lt;span class=&quot;truncate&quot;&gt;VND&lt;/span&gt;&lt;/span&gt;
+    &lt;span class=&quot;icon icon-sm icon-check !text-brand-2 !hidden peer-checked:!inline-block&quot; aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;
   &lt;/label&gt;
-  &lt;label class=&quot;option-card&quot;&gt;
-    &lt;input type=&quot;radio&quot; name=&quot;currency&quot; value=&quot;THB&quot; class=&quot;sr-only&quot;&gt;
-    &lt;span class=&quot;tick&quot;&gt;&lt;/span&gt;
-    &lt;img src=&quot;assets/flags/th.svg&quot; alt=&quot;&quot;&gt;
-    &lt;span class=&quot;option-card-text&quot;&gt;THB — Thai Baht&lt;span class=&quot;option-card-sub&quot;&gt;USDT supported&lt;/span&gt;&lt;/span&gt;
-  &lt;/label&gt;
-&lt;/fieldset&gt;</pre>
+  …
+&lt;/div&gt;</pre>
         </article>
         <article id="step-hero" class="flex flex-col gap-[15px] scroll-mt-[20px]">
           <div class="flex flex-wrap items-baseline gap-x-[10px] gap-y-[5px]"><h3 class="text-base/7 font-semibold">Step progress · Step hero</h3><span class="font-mono text-xs/5 text-ink-secondary">.nav-top-progress · .step-hero · .points</span></div>
