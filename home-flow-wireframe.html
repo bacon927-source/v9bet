@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>V9Bet · Home Flow — Wireframe</title>
+<title>V9Bet · Lobby — Wireframe</title>
 <style>
   :root{
     --ink:#2b2b2b; --line:#c9c9c9; --line2:#9a9a9a; --muted:#8a8a8a;
@@ -168,8 +168,8 @@
 <div class="app">
   <!-- LEFT: flow nav -->
   <aside>
-    <h1>Home Flow</h1>
-    <p class="sub">Low-fidelity wireframe · Mobile / App first · Desktop centered<br>Pre-login · logged-in (default / new member) · desktop top menu<br>Aligns with the existing 10-module Home Composition (v9bet-home-composition.html)</p>
+    <h1>Lobby</h1>
+    <p class="sub">Low-fidelity wireframe · Mobile web<br>Logged in · logged out · Games tab<br>First pass from v1, 2026-11-02. Changes are proposals: see Dev Notes.</p>
     <div id="nav"></div>
     <div class="legend">
       Grayscale wireframe only, no visual design.<br>
@@ -204,111 +204,166 @@ const CTA = (t, mod='') => `<div class="cta ${mod}">${t}</div>`;
 const OPT = (t, sel=false, kind='dot') => `<div class="opt ${sel?'sel':''}"><span class="${kind} ${sel?'on':''}"></span><span style="flex:1">${t}</span></div>`;
 const SOC = (ic, t, sub='', last=false) => `<div class="socbtn"><span class="ic">${ic}</span><span>${t}</span>${last?`<span class="last">Last used</span>`:sub?`<small>${sub}</small>`:''}</div>`;
 
+/* ---------- lobby pieces ---------- */
+const TAB = (on) => `<div class="tabbar">${[['🏠','Home'],['🎮','Games'],['🧾','Statement'],['🔔','Notification'],['👤','Profile']].map(([i,t])=>`<div class="${t===on?'on':''}"><span class="d">${i}</span>${t}</div>`).join('')}</div>`;
+const CHAT = `<div style="display:flex;justify-content:flex-end;pointer-events:none"><span style="width:44px;height:44px;border-radius:50%;background:var(--solid);color:#fff;display:grid;place-items:center;font-size:18px;box-shadow:0 2px 8px rgba(0,0,0,.25)">💬</span></div>`;
+const BOTTOM = (on) => `<div style="position:sticky;bottom:-10px;z-index:2">${CHAT}${TAB(on)}</div>`;
+const SEC = (t, more=true) => `<div style="display:flex;justify-content:space-between;align-items:baseline;margin:16px 0 6px"><b>${t}</b>${more?'<span class="hint" style="margin:0">More ›</span>':''}</div>`;
+const TILES = (a) => `<div class="scrollrow">${a.map(x=>`<span class="tile">${x}</span>`).join('')}</div>`;
+const SHORTCUTS = `<div class="scrollrow" style="gap:6px">${[['⚽','Sports'],['🃏','Live Casino'],['🎰','Slots'],['🐓','Cockfight'],['🎮','E-sports'],['🖥','Virtual'],['🎟️','Lottery'],['♠️','Cards'],['⚡','Turbo']].map(([i,t])=>`<span style="flex:0 0 58px;text-align:center;font-size:10px;color:#666"><span style="display:grid;place-items:center;width:44px;height:44px;margin:0 auto 3px;border:1px dashed var(--line2);border-radius:12px;background:var(--fill);font-size:17px">${i}</span>${t}</span>`).join('')}</div>`;
+const ODD = (l) => `<span style="flex:1;border:1px solid var(--line2);border-radius:6px;padding:4px 0;text-align:center;font-size:10px;color:var(--muted)">${l}<b style="display:block;font-size:13px;color:var(--ink)">0.94</b></span>`;
+const MATCH = (live) => `<div style="flex:0 0 268px;border:1px solid var(--line2);border-radius:10px;padding:10px;background:#fff">
+    <div class="hint" style="margin:0 0 6px;display:flex;justify-content:space-between"><span>England Premier League</span><span>${live?'▶ HT 20:00':'Tonight 21:00'}</span></div>
+    <div style="display:flex;justify-content:space-between;font-size:12.5px"><span>Team A</span><b>${live?'1':''}</b></div>
+    <div style="display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:8px"><span>Team B</span><b>${live?'0':''}</b></div>
+    <div style="display:flex;gap:6px">${ODD('1')}${ODD('Draw')}${ODD('2')}</div></div>`;
+const SPORTS = `<div class="scrollrow">${MATCH(true)}${MATCH(false)}</div>`;
+const COCK = `<div class="ph" style="height:128px;margin:0">[ Live stream · LIVE ] · Play Now</div>`;
+const LIVE_CASINO = TILES(['Blackjack<br>NEW','Roulette','Baccarat','Sic Bo']);
+const SLOTS = `<div class="ph" style="height:46px;margin:0 0 8px">Jackpot · 12,000,000,000 VND</div>${TILES(['Legendary Beasts<br>NEW','Fortune Dogs<br>NEW','Candy Tower','Game'])}`;
+const FOOT = `<div class="hint" style="border-top:1px dashed var(--line);padding-top:8px;margin-top:18px">Footer: Products · Promotions · About · Community · Licence · Vietnam / Thailand</div>`;
+const GETAPP = `<div class="marq" style="display:flex;align-items:center;gap:8px;margin:0 0 8px;white-space:normal"><span>✕</span><span style="flex:1">Get the V9Bet app</span><b>Get it</b></div>`;
+const NOTICE = `<div style="border:1px solid var(--line2);border-radius:10px;padding:9px 11px;margin:8px 0;font-size:12px"><div style="display:flex;justify-content:space-between"><b>Scheduled maintenance</b><span>✕</span></div><span style="color:var(--muted)">Today 02:00–04:00. Deposits may be delayed.</span></div>`;
+
 /* ---------- screen definitions ---------- */
 const screens = [
 {
-  group:"A · Home", id:"prelogin", title:"Home · Pre-login",
+  group:"A · Lobby", id:"member", title:"Lobby · Logged in",
+  states:["Returning member","New member","New member · tour","Setup not finished","Announcement"],
+  render:(s)=>{
+    const fresh = s===1||s===2;
+    const tour = s===2;
+    return `
+    ${GETAPP}
+    <div class="hometop" style="position:relative;z-index:1">
+      <span class="logo">V9BET</span><span class="sp"></span>
+      <span class="balancechip" style="font-variant-numeric:tabular-nums">₫${fresh?'0':'1,250,000'}</span>
+      <span style="background:var(--solid);color:#fff;border-radius:16px;padding:5px 11px;font-size:11.5px;font-weight:600;${tour?'outline:3px solid #fff;box-shadow:0 0 0 5px var(--solid)':''}">Deposit</span>
+    </div>
+    ${tour?`<div style="border:1px solid var(--solid);border-radius:12px;padding:10px 12px;background:#fff;margin:4px 0 8px;position:relative;z-index:1"><b>Add money here</b><div class="hint" style="margin:2px 0 6px">Your balance is always at the top.</div><div style="display:flex;justify-content:space-between;font-size:12px"><span style="color:var(--muted)">1 / 3 · Skip</span><b>Next</b></div></div>`:''}
+    <div style="${tour?'opacity:.3':''}">
+    ${s===4?NOTICE:''}
+    ${s===3?`<div class="li" style="border-style:dashed"><span class="g">Finish setting up<small>2 steps left</small></span><span class="rt">›</span></div>`:''}
+    <div class="ph" style="height:118px;margin-top:0">[ What's Happening · banner carousel ]</div>
+    ${SHORTCUTS}
+    ${fresh?'':`${SEC('Continue playing',false)}${TILES(['Baccarat','Sweet Bonanza','EPL · Team A v B'])}`}
+    ${fresh?'':`<div class="li" style="margin-top:14px"><span class="ic">🎁</span><span class="g">My Offers<small>2 available · 1 in progress</small></span><span class="rt">›</span></div>`}
+    ${SEC('Sports')}${SPORTS}
+    ${SEC('Cockfight')}${COCK}
+    ${SEC('Live Casino')}${LIVE_CASINO}
+    ${SEC('Slots')}${SLOTS}
+    ${SEC('Turbo Games')}${TILES(['Game','Game','Game','Game'])}
+    ${SEC('Recent winners',false)}
+    <div class="kv"><span>Ab**78 · Candy Tower</span><b>100,000,000</b></div>
+    <div class="kv"><span>Ng**12 · Baccarat</span><b>24,000,000</b></div>
+    ${FOOT}
+    </div>
+    ${BOTTOM('Home')}`;
+  },
+  spec:{
+    goal:"Get a member into a game or to Deposit from the first screen. Balance and Deposit stay at the top; games start right under one banner. First pass from v1 (2026-11-02), every change below is a proposal to confirm.",
+    states:["returning member: Continue playing + My Offers","new member: zero balance, no history, so those two rows do not appear","new member · tour: coach marks run once, after the full-page Welcome banner is closed","setup not finished: one row that opens only the missing steps","announcement: maintenance notice, closable, only when one is live"],
+    fields:["wallet{currency, balance}","unread_count","setup{steps_left[]}","announcement?","banners[]","recent[]","offers{available, in_progress}","sports_matches[]","product_rows[]{product, games[]}","jackpot","recent_winners[]","app_banner_dismissed (browser)"],
+    api:"GET /lobby → { wallet, setup, announcement, banners, recent, offers, rows, jackpot, winners }\nOdds and jackpot update live: poll or socket per row, only while the row is on screen.",
+    notes:[
+      "FROM v1 (logged in, top to bottom, frame 6628:232693): app download bar; ☰ · logo · balance · wallet; 'Good morning' + Inbox + Promotions notices (355 tall); What's Happening; My Offers; Live Stream with video and four odds tables (923 tall); People's Choice; Cockfight; Live Casino; Slots with jackpot + Winner List; Slots again; Turbo Games; footer. Bottom bar: Games · Profile · Statement · Notification · Live Chat.",
+      "KEPT: download bar, balance at the top, What's Happening, My Offers, Sports, Cockfight, Live Casino, Slots with jackpot, winners, Turbo Games, footer.",
+      "CHANGED: the greeting and notice block goes. It pushes every game below the fold, and the same items already live in Notification and Profile.",
+      "CHANGED: Live Stream + People's Choice become one Sports row of compact match cards (score + 1 / Draw / 2). Tapping a card opens the match, where video and the other markets live.",
+      "CHANGED: shortcut row added under the banner (v1 only reaches products through the menu). The second Slots row is dropped. My Offers is one row, because Profile already has the offers carousel.",
+      "CHANGED: Deposit is a button beside the balance (v1 has a wallet icon). It is the one primary action on this page. ☰ goes, because the Games tab opens the same menu.",
+      "ADDED: Continue playing, only with history (for a new member the row is not shown at all).",
+      "BOTTOM BAR: Home added, because v1 only returns home through the logo. Live Chat is the floating button at bottom right, the same as Profile (10-30). Profile moves to the end, by convention.",
+      "ENTRY: Sign Up → Setup → Welcome banner (full page, 10-30) → this lobby → tour. Log In and a matched third-party login land here directly. Toasts such as 'Logged in' appear here.",
+      "TOUR: FIGMA.md says stops wait for this design. Proposed three: Deposit → Games tab → Statement tab. 'Get the app' is not a stop, because the download bar already covers mobile web.",
+      "DOWNLOAD BAR: mobile web only, never in the app. ✕ remembers the choice in this browser.",
+      "LONG BALANCE: v1's sample is 312,444,000,000 VND. The header needs that to fit at 360 beside Deposit: to confirm how (shortening money vs a smaller size) in the built version.",
+      "IMAGES: every tile and banner is a real image slot. Rows scroll sideways and load lazily, because this page is long and customers are mostly on mid-range Android.",
+      "OPEN: (1) Is product order fixed, or by market and by member? (2) Does Cockfight show in both Vietnam and Thailand? (3) Keep recent winners? Masked names and amounts need legal and business sign-off. (4) Do missions, check-in or the red packet event (v1 menu: 'Next Schedule') get a slot here?"
+    ]
+  }
+},
+{
+  group:"A · Lobby", id:"guest", title:"Lobby · Logged out",
   states:["Default"],
   render:()=>`
-    <div class="hometop"><span class="logo">V9BET</span><span class="sp"></span><span class="ic">🌐</span><span class="ic">☰</span></div>
-    <div class="marq">🎏 Lucky-themed greeting · this week's promos scrolling…</div>
-    <div class="ph" style="height:100px">[ Hero banner / carousel ]</div>
-    <div class="grp">Products</div>
-    <div class="gridP"><span class="gi">⚽<br>Sports</span><span class="gi">🃏<br>Live</span><span class="gi">🎰<br>Slots</span><span class="gi">🎟️<br>Lottery</span></div>
-    <div style="border:2px solid var(--solid);border-radius:12px;padding:10px 12px;margin:10px 0;background:#fff">
-      <b>🎁 Sign up now for a welcome gift</b>
-      ${CTA("Sign Up")}
-      <div class="link">Already have an account? <b>Login</b></div>
-    </div>
-    <div class="grp">Live winners</div>
-    <div class="scrollrow"><span class="tile">v9_***12<br>+₫2.4M</span><span class="tile">bacon***<br>+₫850K</span><span class="tile">ng***hu<br>+₫12M</span></div>
-    <div class="tabbar"><div class="on"><span class="d">🏠</span>Home</div><div><span class="d">🎮</span>Products</div><div><span class="d">🎁</span>Promos</div><div><span class="d">✉️</span>Messages</div><div><span class="d">👤</span>Account</div></div>
-    <div class="hint">＊ Tapping Messages / Account while logged out routes to Login (Password tab: Account ID / Email · One-time code tab: Email / Phone).</div>`,
+    ${GETAPP}
+    <div class="hometop"><span class="logo">V9BET</span><span class="sp"></span><span style="font-size:12px;font-weight:600;padding:5px 4px">Log In</span><span style="background:var(--solid);color:#fff;border-radius:16px;padding:5px 11px;font-size:11.5px;font-weight:600">Sign Up</span></div>
+    <div class="ph" style="height:118px;margin-top:0">[ What's Happening · banner carousel ]</div>
+    ${SHORTCUTS}
+    <div class="kv" style="margin-top:10px"><span>Average time</span><span>Deposit <b>3 min</b> · Withdrawal <b>10 min</b></span></div>
+    ${SEC('Offers')}${TILES(['Welcome offer','First deposit','Rebate'])}
+    ${SEC('Sports')}${SPORTS}
+    ${SEC('Cockfight')}${COCK}
+    ${SEC('Live Casino')}${LIVE_CASINO}
+    ${SEC('Slots')}${SLOTS}
+    ${SEC('More games',false)}${TILES(['Virtual Sports','E-sports','Lottery','Cards','Turbo'])}
+    ${SEC('News & Sponsorships')}${TILES(['Article','Article','Sponsor'])}
+    <div class="li" style="margin-top:14px"><span class="g">Who is V9Bet<small>Deposit methods · about us</small></span><span class="rt">⌄</span></div>
+    ${FOOT}
+    ${BOTTOM('Home')}`,
   spec:{
-    goal:"Logged-out home: lucky-themed greeting, hero, product shortcuts, prominent sign-up CTA, social proof (live winners), bottom tab that gates Messages/Account behind Login.",
+    goal:"Show a visitor what is here and why to trust it, with Sign Up always in reach. Same layout as the member lobby, so nothing moves after logging in.",
     states:["default"],
-    fields:["geo_locale","market_promos[]"],
-    api:"GET /home/public → { marquee, hero, live_winners[] }",
-    notes:["Maps to existing Home Composition modules 1–4,7,10 (v9bet-home-composition.html) — this page focuses on the sign-up/login entry, not full module layout.","Sign Up / Login here are the SAME single-field forms as signup-flow-wireframe.html / login-flow-wireframe.html — no separate pre-login variant.","Search (see growth-support-wireframe.html) is reachable via the 🌐/search icon even logged out; results for promos/products are public, account-specific results require login."]
+    fields:["market / language","banners[]","processing_times{deposit, withdrawal}","public_offers[]","rows[]","news[]"],
+    api:"GET /lobby/public → { banners, processing_times, offers, rows, news, seo }",
+    notes:[
+      "FROM v1 (logged out, frame 39756:322386, 6,660 tall): download bar; Log In / Sign Up; What's Happening; Processing time; Your offers; Sports with SEO copy; Cockfight; Live Casino; Slots; Virtual Sports; E-sports; Other Games; News & Collections; Sponsorships; deposit methods; Who is V9bet; footer.",
+      "CHANGED: SEO paragraphs leave the product sections and collect in one closed 'Who is V9Bet' block near the bottom. The text must stay in the page HTML when closed, so search engines can still read it: confirm with SEO before building.",
+      "CHANGED: Virtual Sports, E-sports and Other Games become one 'More games' row. 'Your offers' is called 'Offers', because a visitor has no account.",
+      "BEHAVIOUR: Statement, Notification, Profile, a game and a bet slip all open Log In and come back to where the visitor was. Browsing does not need an account.",
+      "Sign Up is the primary action in the header. Log In and Sign Up open the existing pages (auth-flow-tailwind.html).",
+      "Live Chat stays available logged out: to confirm."
+    ]
   }
 },
 {
-  group:"A · Home", id:"loggedin", title:"Home · Logged-in",
-  states:["Default (with activity)","Unread message badge"],
-  render:(s)=>`
-    <div class="hometop"><span class="logo">V9BET</span><span class="sp"></span><span class="balancechip">💰 ₫1,250,000</span><span class="ic">🔍</span><span class="ic">✉️${s===1?'<span class="dot"></span>':''}</span></div>
-    <div class="ph" style="height:90px">[ Personalized hero — continue playing / recommended ]</div>
-    <div class="grp">For you</div>
-    <div class="scrollrow"><span class="tile">★ Baccarat<small>favourite</small></span><span class="tile">Sweet Bonanza<small>recent</small></span><span class="tile">★ EPL<small>favourite</small></span></div>
-    <div class="grp">Missions &amp; check-in</div>
-    <div class="li"><span class="ic">📅</span><span class="g">Daily check-in · day 5/7<small>Streak reward at day 7</small></span><span class="rt">›</span></div>
-    <div class="grp">Your offers</div>
-    <div class="li"><span class="ic">🎁</span><span class="g">100% First Deposit Bonus<small>churn 25% done</small></span><span class="rt">›</span></div>
-    <div class="grp">Products</div>
-    <div class="gridP"><span class="gi">⚽<br>Sports</span><span class="gi">🃏<br>Live</span><span class="gi">🎰<br>Slots</span><span class="gi">🎟️<br>Lottery</span></div>
-    <div class="tabbar"><div class="on"><span class="d">🏠</span>Home</div><div><span class="d">🎮</span>Products</div><div><span class="d">🎁</span>Promos</div><div><span class="d">✉️</span>Messages</div><div><span class="d">👤</span>Account</div></div>
-    <div class="hint">＊ A Live Status Bubble (see status-bubble-wireframe.html) can float over this page while a deposit / withdrawal / KYC is in flight — right-edge lane, never in the bottom-tab zone.</div>`,
-  spec:{
-    goal:"Logged-in home: balance chip, search, message-channel-aware notification bell, personalized 'For you' (favourites + recently played), missions/check-in, claimable offers, product grid.",
-    states:["default with activity","unread message badge (dot) — respects the member's chosen Message Channel"],
-    fields:["balance","unread_count","favourites[]","recent[]","missions[]","claimable_offers[]"],
-    api:"GET /home → { balance, favourites, recent, missions, offers }",
-    notes:["'For you' row = History/Favourites data (growth-support-wireframe.html); no duplicate logic, just surfaced here.","Notification bell reflects unread Message Center count regardless of the member's outbound Message Channel (SMS/Email/social) — in-app inbox is separate from that preference.","AI Live Chat FAB and the Live Status Bubble share the bottom-right zone (see status-bubble-wireframe.html placement rules) — this page is where they most often appear.","Maps to Home Composition modules 1,2,5,6,7,8,9,10 — this page adds the account-state-aware chrome (balance, bell, personalization) on top of that module layout."]
-  }
-},
-{
-  group:"A · Home", id:"newmember", title:"Home · New Member (empty)",
-  states:["Just finished sign-up"],
-  render:()=>`
-    <div class="hometop"><span class="logo">V9BET</span><span class="sp"></span><span class="balancechip">💰 ₫0</span><span class="ic">🔍</span><span class="ic">✉️</span></div>
-    <div style="border:2px solid var(--solid);border-radius:12px;padding:12px 14px;margin:8px 0;background:#fff">
-      <b>Finish setting up</b>
-      ${CTA("Set up account")}
-    </div>
-    <div class="grp">Popular right now</div>
-    <div class="scrollrow"><span class="tile">EPL<br>live now</span><span class="tile">Sweet Bonanza</span><span class="tile">Baccarat</span></div>
-    <div class="grp">Products</div>
-    <div class="gridP"><span class="gi">⚽<br>Sports</span><span class="gi">🃏<br>Live</span><span class="gi">🎰<br>Slots</span><span class="gi">🎟️<br>Lottery</span></div>
-    <div class="tabbar"><div class="on"><span class="d">🏠</span>Home</div><div><span class="d">🎮</span>Products</div><div><span class="d">🎁</span>Promos</div><div><span class="d">✉️</span>Messages</div><div><span class="d">👤</span>Account</div></div>
-    <div class="hint">＊ No favourites / recent yet — 'For you' is replaced by a generic 'Popular right now' row until the member has activity.</div>`,
-  spec:{
-    goal:"First home view right after sign-up / social welcome: no personalization data yet, so a 'Finish setting up' card (only when Setup items were skipped) takes the top slot instead of 'For you'.",
-    states:["just finished sign-up, no favourites/recent","Welcome + offers popup over this page (new sign-ups only), then the coach-mark tour"],
-    fields:["setup_progress"],
-    api:"GET /home (same endpoint; empty favourites/recent arrays swap the row)",
-    notes:["10-21 (user): Setup ends HERE — Welcome + new-member offers is a popup over this page, not a page of its own, and the coach-mark tour starts after it is closed. The Setup points were removed the same day: this card has no points and no progress bar, it only reopens Setup at the first skipped item.","Once favourites/recent exist, this card demotes below the fold and 'For you' takes over (see Home · Logged-in)."]
-  }
-},
-{
-  group:"B · Desktop", id:"desktop", title:"Home · Desktop Top Menu",
+  group:"A · Lobby", id:"games", title:"Games tab",
   states:["Default"],
   render:()=>`
-    <div class="desktopbar"><span class="logo">V9BET</span><div class="menu"><span>Sports</span><span>Live Casino</span><span>Slots</span><span>Lottery</span><span>Cards</span><span>Promotions</span></div><span class="balancechip">💰 ₫1,250,000</span><span class="ic">🔍</span><span class="ic">✉️</span><span class="ic">👤</span></div>
-    <div class="ph" style="height:80px">[ Hero banner — centered, max-width layout ]</div>
-    <div class="grp">Products</div>
-    <div class="gridP"><span class="gi">⚽<br>Sports</span><span class="gi">🃏<br>Live</span><span class="gi">🎰<br>Slots</span><span class="gi">🎟️<br>Lottery</span></div>
-    <div class="hint">＊ Desktop: left vertical menu → TOP menu (docx59); page content centered, not full-bleed (docx53). No bottom tab bar — account/wallet/messages/Live Chat live in the top-right icon cluster instead.</div>`,
+    <div class="scr-title">Games</div>
+    <div class="grp">Sports</div>
+    <div class="li"><span class="ic">⚽</span><span class="g">Sports</span><span class="rt">›</span></div>
+    <div class="li"><span class="ic">🖥</span><span class="g">Virtual Sports</span><span class="rt">›</span></div>
+    <div class="li"><span class="ic">🎮</span><span class="g">E-sports</span><span class="rt">›</span></div>
+    <div class="grp">Casino</div>
+    <div class="li"><span class="ic">🃏</span><span class="g">Live Casino</span><span class="rt">›</span></div>
+    <div class="li"><span class="ic">🐓</span><span class="g">Cockfight</span><span class="rt">›</span></div>
+    <div class="li"><span class="ic">🎰</span><span class="g">Slots</span><span class="rt">›</span></div>
+    <div class="grp">More games</div>
+    <div class="li"><span class="ic">🎟️</span><span class="g">Lottery</span><span class="rt">›</span></div>
+    <div class="li"><span class="ic">♠️</span><span class="g">Card Game</span><span class="rt">›</span></div>
+    <div class="li"><span class="ic">⚡</span><span class="g">Turbo Game</span><span class="rt">›</span></div>
+    <div class="grp">V9Bet</div>
+    <div class="li"><span class="ic">🎁</span><span class="g">Promotions</span><span class="rt">›</span></div>
+    <div class="li"><span class="ic">📰</span><span class="g">News &amp; Collections</span><span class="rt">›</span></div>
+    <div class="li"><span class="ic">🤝</span><span class="g">Partnership Program</span><span class="rt">›</span></div>
+    ${BOTTOM('Games')}`,
   spec:{
-    goal:"Desktop breakpoint: top horizontal menu replaces the mobile bottom tab bar; account-related icons (search, messages, account) move to the top-right, page content is centered.",
-    states:["default"],
-    fields:[],
-    api:"Same /home endpoint; layout only changes by breakpoint.",
-    notes:["This mirrors v9bet-home-composition.html's Desktop/Mobile toggle — that page shows the full module composition; this page focuses on the header/navigation change only.","RWD breakpoint rules live in v9bet-foundations.html."]
+    goal:"Every product in one list, so a customer who knows what they want does not have to scroll the lobby.",
+    states:["default","a product under maintenance shows a label and cannot open (v1 'Product- Maintenance' 4483:176223): to draw when products are designed"],
+    fields:["products[]{id, name, group, maintenance}"],
+    api:"GET /products → { products }",
+    notes:[
+      "FROM v1 (menu 4864:183520): balance header; red packet event banner; Sports · Virtual Sports · e-Sports; Live Casino · Slots; Lottery · Card Game · Turbo Game; Promotions; Refer A Friend · Partnership Program · News & Collections · VIP; Download App.",
+      "CHANGED: a tab instead of a full-screen menu, with the bottom bar still visible. Cockfight added, because v1 has it on the home page but not in the menu.",
+      "MOVED: Refer A Friend and VIP are in Profile already (tier card, referral row), so they are not repeated. Download App is the bar at the top of the lobby.",
+      "OPEN: where the red packet event banner goes, and whether each product opens its own lobby page (next wireframe)."
+    ]
   }
 },
 {
-  group:"C · Reference", id:"map", title:"Module Map (cross-references)",
+  group:"B · Reference", id:"map", title:"Lobby blocks · where they lead",
   states:["Overview"],
   render:()=>`
-    <div class="scr-title">Where each module comes from</div>
-    ${[["1–4,7,10","Hero, marquee, product shortcuts, bottom tab","Home Composition (existing) + this page's pre-login/logged-in chrome"],["5","'For you' personalized row","growth-support-wireframe.html · Favourites & Recently Played"],["6","Missions / check-in","v9bet-campaign-flow.html · floating 悬浮球 / campaign screens"],["7 (offers)","Claimable offers row","promotion-flow-wireframe.html · Promotions List"],["9","AI Live Chat FAB","v9bet-components.html · shared FAB, z30"],["—","Live Status Bubble overlay","status-bubble-wireframe.html · z30, same lane as FAB"],["—","Search icon","growth-support-wireframe.html · Search"],["—","Notification bell","History · Message Center (existing) + Settings · Message Channel"],["—","Balance chip","wallet-flow-wireframe.html · Wallet Home"]].map(r=>`<div class="li"><span class="ic" style="font-size:9px">${r[0]}</span><span class="g">${r[1]}<small>${r[2]}</small></span></div>`).join('')}
-    <div class="hint">＊ This Home flow does not re-implement any of the above — it only defines the account-state-aware chrome (logged-out / logged-in / new-member) and how they slot into the existing 10-module composition.</div>`,
+    <div class="scr-title">Where each block leads</div>
+    ${[["Balance","Wallet","wallet-flow-wireframe.html"],["Deposit","Deposit","wallet-flow-wireframe.html"],["Finish setting up","Setup, missing steps only","setup-flow-tailwind.html"],["My Offers","Promotions · My rewards","promotion-flow-wireframe.html"],["Banner","The offer or event","promotion-flow-wireframe.html"],["Shortcut / More","Product page","Not designed yet"],["Match card","Match page + bet slip","Not designed yet"],["Game tile","Game opens · logged out → Log In","Not designed yet"],["Statement tab","Statement","history-flow-wireframe.html"],["Notification tab","Inbox","history-flow-wireframe.html"],["Profile tab","Profile","profile-settings-flow-wireframe.html"],["💬","Live Chat","growth-support-wireframe.html"]].map(r=>`<div class="li"><span class="g">${r[0]}<small>${r[1]}</small></span><span class="rt" style="font-size:10.5px;max-width:150px;white-space:normal">${r[2]}</span></div>`).join('')}`,
   spec:{
-    goal:"Reference: which existing page owns each piece of the home screen, so nothing here gets rebuilt twice.",
+    goal:"Reference: where each lobby block goes, and what is still undrawn.",
     states:["reference only"],
     fields:[],
     api:"—",
-    notes:["Single source of truth per module — this page links out rather than duplicating logic.","If a module's behavior changes, update its owning page; this map may need a one-line edit, not a rebuild."]
+    notes:["Next to draw after the lobby is agreed: product page, match page, game opening.","A Live Status Bubble (status-bubble-wireframe.html) can float over the lobby during a deposit, withdrawal or KYC, in the same right-hand lane as Live Chat.","Desktop is not part of this pass (2026-10-20: mobile web only, centred at 440 wide). The older 'Home' screens and the desktop top menu that used to be on this page are in git history; v9bet-home-composition.html is the older module list."]
   }
 },
 ];
