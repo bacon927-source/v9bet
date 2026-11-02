@@ -1,0 +1,562 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>V9Bet · AI Lobby — Wireframe</title>
+<style>
+  :root{
+    --ink:#2b2b2b; --line:#c9c9c9; --line2:#9a9a9a; --muted:#8a8a8a;
+    --paper:#ffffff; --bg:#ececed; --fill:#f3f3f4; --solid:#3a3a3a;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font:14px/1.5 -apple-system,"Noto Sans TC",Arial,sans-serif;color:var(--ink);background:var(--bg)}
+  /* ---- layout ---- */
+  .app{display:grid;grid-template-columns:260px 1fr 340px;min-height:100vh}
+  aside{background:var(--paper);border-right:1px solid var(--line);padding:16px;overflow:auto}
+  main{padding:24px;display:flex;flex-direction:column;align-items:center;gap:14px}
+  .spec{background:var(--paper);border-left:1px solid var(--line);padding:16px;overflow:auto}
+  h1{font-size:15px;margin:0 0 4px}
+  .sub{color:var(--muted);font-size:12px;margin:0 0 14px}
+  .navlist{display:flex;flex-direction:column;gap:2px}
+  .nav{display:flex;gap:8px;align-items:center;border:1px solid transparent;border-radius:6px;padding:7px 8px;cursor:pointer;font-size:13px}
+  .nav:hover{background:var(--fill)}
+  .nav.active{background:#e3e3e6;border-color:var(--line2);font-weight:600}
+  .nav .num{width:20px;height:20px;flex:0 0 20px;border:1px solid var(--line2);border-radius:50%;display:grid;place-items:center;font-size:11px;color:var(--muted)}
+  .nav.active .num{background:var(--solid);color:#fff;border-color:var(--solid)}
+  .group-title{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:14px 0 6px}
+  /* ---- phone ---- */
+  .stage{display:flex;flex-direction:column;align-items:center;gap:10px}
+  .toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:center}
+  .btn{border:1px solid var(--line2);background:#fff;border-radius:6px;padding:6px 12px;font-size:12px;cursor:pointer}
+  .btn:hover{background:var(--fill)}
+  .state-tabs{display:flex;gap:4px;border:1px solid var(--line);border-radius:8px;padding:3px;background:#fff}
+  .state-tabs button{border:0;background:none;padding:5px 10px;border-radius:6px;font-size:12px;cursor:pointer;color:var(--muted)}
+  .state-tabs button.on{background:var(--solid);color:#fff}
+  .phone{width:380px;border:2px solid var(--ink);border-radius:28px;background:var(--paper);padding:10px;box-shadow:0 6px 24px rgba(0,0,0,.12)}
+  .notch{height:20px;display:flex;justify-content:center}
+  .notch::after{content:"";width:120px;height:18px;background:var(--ink);border-radius:0 0 12px 12px}
+  .screen{height:680px;overflow:auto;border:1px solid var(--line);border-radius:18px;padding:18px;background:#fff}
+  .screen::-webkit-scrollbar{width:6px}.screen::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px}
+  .scr-title{text-align:center;font-weight:700;font-size:16px;margin:2px 0 4px;position:relative}
+  .scr-title .x{position:absolute;left:0;top:0;color:var(--muted);font-weight:400}
+  .scr-step{text-align:center;color:var(--muted);font-size:12px;margin-bottom:14px}
+  /* wireframe primitives */
+  .field{border:1px dashed var(--line2);border-radius:10px;padding:13px 14px;color:var(--muted);margin:10px 0;display:flex;justify-content:space-between;align-items:center;background:var(--fill)}
+  .field small{color:#b0b0b0}
+  .row{display:flex;gap:10px}
+  .row>*{flex:1}
+  .opt{border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin:8px 0;display:flex;align-items:center;gap:12px}
+  .opt.sel{border-color:var(--solid);border-width:2px}
+  .dot{width:18px;height:18px;border:1px solid var(--line2);border-radius:50%;flex:0 0 18px}
+  .dot.on{border-color:var(--solid);border-width:5px}
+  .sq{width:18px;height:18px;border:1px solid var(--line2);border-radius:4px;flex:0 0 18px}
+  .sq.on{background:var(--solid)}
+  .ph{height:90px;border:1px dashed var(--line2);border-radius:10px;display:grid;place-items:center;color:#b6b6b6;background:var(--fill);margin:10px 0}
+  .cta{background:var(--solid);color:#fff;text-align:center;border-radius:24px;padding:14px;margin:16px 0 8px;font-weight:600}
+  .cta.ghost{background:#fff;color:var(--muted);border:1px solid var(--line2)}
+  .cta.disabled{background:#cfcfcf;color:#fff}
+  .link{text-align:center;color:#666;font-size:13px;margin-top:8px}
+  .link b{color:var(--ink);text-decoration:underline}
+  .hint{font-size:12px;color:var(--muted);margin:6px 2px}
+  .badge{display:inline-block;font-size:10px;border:1px solid var(--line2);border-radius:4px;padding:1px 6px;color:var(--muted);vertical-align:middle;margin-left:6px}
+  .badge.req{border-color:#b56;color:#b56}
+  .otpcells{display:flex;gap:8px;justify-content:center;margin:18px 0}
+  .otpcells span{width:42px;height:52px;border:1px solid var(--line2);border-radius:8px;display:grid;place-items:center;font-size:20px;color:var(--muted)}
+  .otpcells span.f{border-color:var(--solid);border-width:2px}
+  .err{border:1px solid #c98;background:#fbf2ef;color:#a55;border-radius:8px;padding:10px 12px;font-size:12px;margin:8px 0}
+  .checklist .ci{display:flex;align-items:center;gap:12px;border:1px solid var(--line);border-radius:10px;padding:12px;margin:8px 0}
+  .checklist .ci .num{width:22px;height:22px;border:1px solid var(--line2);border-radius:50%;display:grid;place-items:center;font-size:11px;color:var(--muted);flex:0 0 22px}
+  .checklist .ci.done .num{background:var(--solid);color:#fff;border-color:var(--solid)}
+  .checklist .ci .g{flex:1}
+  .checklist .ci .g small{color:var(--muted);font-size:11px;display:block}
+  .checklist .ci .pts{background:#fef6e0;border:1px solid #eccb7a;color:#8a6d1a;font-size:10.5px;font-weight:800;border-radius:12px;padding:3px 9px;margin-left:6px;white-space:nowrap;flex:0 0 auto}
+  .dots{display:flex;gap:6px;justify-content:center;margin:14px 0}
+  .dots i{width:7px;height:7px;border-radius:50%;background:var(--line2)}
+  .dots i.on{background:var(--solid);width:18px;border-radius:4px}
+  .promo{border:1px dashed var(--line2);border-radius:12px;padding:14px;margin:10px 0;background:var(--fill)}
+  .promo .tag{font-size:10px;border:1px solid var(--line2);border-radius:4px;padding:1px 6px;color:var(--muted)}
+  /* social login */
+  .or{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:11px;margin:14px 0 4px}
+  .or::before,.or::after{content:"";flex:1;height:1px;background:var(--line)}
+  .socbtn{display:flex;align-items:center;gap:10px;border:1px solid var(--line2);border-radius:10px;padding:11px 14px;margin:8px 0;font-size:13px;background:#fff;cursor:pointer}
+  .socbtn .ic{width:22px;height:22px;border:1px solid var(--line2);border-radius:50%;display:grid;place-items:center;font-size:11px;color:var(--muted);flex:0 0 22px}
+  .socbtn small{margin-left:auto;color:#b0b0b0;font-size:10px}
+  .socbtn .last{margin-left:auto;font-size:9px;border:1px solid var(--solid);border-radius:4px;padding:1px 5px;color:var(--solid)}
+  .ccpop{border:1px solid var(--line2);border-radius:10px;background:#fff;box-shadow:0 6px 18px rgba(0,0,0,.08);margin:-4px 0 10px;overflow:hidden}
+  .ccpop .cc{padding:11px 14px;font-size:13px;display:flex;align-items:center;gap:8px;color:#444}
+  .ccpop .cc.on{background:var(--fill);font-weight:700}
+  .ccpop .cc small{margin-left:auto;color:#b0b0b0}
+  .mtabs{display:flex;border:1px solid var(--line2);border-radius:10px;overflow:hidden;margin:10px 0;font-size:13px;text-align:center}
+  .mtabs span{flex:1;padding:9px 0;color:var(--muted);background:var(--fill)}
+  .mtabs span.on{background:#fff;color:#222;font-weight:700;box-shadow:inset 0 -2px 0 var(--solid)}
+  .socrow .sic{position:relative}
+  .socrow .lu{position:absolute;top:-9px;left:50%;transform:translateX(-50%);font-size:8px;border:1px solid var(--solid);color:var(--solid);background:#fff;border-radius:4px;padding:0 4px;white-space:nowrap}
+  .pbar{height:8px;background:#e5e5e5;border-radius:4px;overflow:hidden;margin:4px 0 2px}
+  .pbar i{display:block;height:100%;background:var(--solid)}
+  .pbar-lbl{display:flex;justify-content:space-between;font-size:10.5px;color:var(--muted);margin-bottom:4px}
+  .socrow{display:flex;justify-content:center;gap:26px;margin:12px 0 4px}
+  .socrow .sic{display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer}
+  .socrow .c{width:46px;height:46px;border:1px solid var(--line2);border-radius:50%;display:grid;place-items:center;font-size:14px;font-weight:700;color:var(--muted);background:#fff}
+  .socrow small{font-size:10px;color:var(--muted)}
+  /* spec panel */
+  .spec h2{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:18px 0 6px}
+  .spec h2:first-child{margin-top:0}
+  .spec ul{margin:0;padding-left:16px}
+  .spec li{margin:4px 0;font-size:12.5px}
+  .stlist{display:flex;flex-wrap:wrap;gap:6px}
+  .pill{font-size:11px;border:1px solid var(--line2);border-radius:12px;padding:2px 9px;background:var(--fill)}
+  .api{font-family:ui-monospace,Menlo,monospace;font-size:11px;background:var(--fill);border:1px solid var(--line);border-radius:6px;padding:8px;white-space:pre-wrap;color:#555}
+  .legend{font-size:11px;color:var(--muted);border-top:1px solid var(--line);margin-top:14px;padding-top:10px}
+  .grp{font-size:11px;font-weight:700;color:#555;margin:12px 0 2px;display:flex;align-items:center;gap:6px}
+  .li{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:10px;padding:11px 12px;margin:6px 0;font-size:13px}
+  .li .ic{width:26px;height:26px;border:1px solid var(--line2);border-radius:7px;display:grid;place-items:center;font-size:13px;flex:0 0 26px;background:var(--fill)}
+  .li .g{flex:1}
+  .li .g small{display:block;color:var(--muted);font-size:11px}
+  .li .rt{color:var(--muted);font-size:12px;white-space:nowrap;text-align:right}
+  .li .rt b{color:var(--ink)}
+  .st{display:inline-block;font-size:9.5px;border:1px solid var(--line2);border-radius:4px;padding:0 5px;color:var(--muted);vertical-align:middle;margin-left:4px}
+  .st.ok{border-color:#2a7;color:#2a7}.st.bad{border-color:#b56;color:#b56}.st.wait{border-color:#c93;color:#c93}
+  .kv{display:flex;justify-content:space-between;align-items:center;font-size:12.5px;padding:8px 0;border-bottom:1px dashed var(--line)}
+  .kv span:first-child{color:var(--muted)}
+  .chips{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+  .chip{font-size:11px;border:1px solid var(--line2);border-radius:14px;padding:3px 10px;color:#666;background:#fff}
+  .chip.on{background:var(--solid);color:#fff;border-color:var(--solid)}
+  .amt{text-align:center;font-size:26px;font-weight:800;margin:6px 0 2px}
+  .amt small{display:block;font-size:11px;font-weight:400;color:var(--muted)}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:8px 0}
+  .grid3 .g{border:1px solid var(--line2);border-radius:8px;padding:9px 0;text-align:center;font-size:12.5px;background:#fff}
+  .grid3 .g.on{background:var(--solid);color:#fff;border-color:var(--solid)}
+  .pm{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:8px 0}
+  .pm .p{border:1px solid var(--line2);border-radius:10px;padding:12px 10px;text-align:center;font-size:12px;background:#fff;position:relative}
+  .pm .p.on{border:2px solid var(--solid)}
+  .pm .p .pref{position:absolute;top:-8px;left:8px;font-size:8px;border:1px solid var(--solid);border-radius:4px;padding:0 4px;background:#fff}
+  .pbar{height:7px;background:#e5e5e5;border-radius:4px;overflow:hidden;margin:6px 0}
+  .pbar i{display:block;height:100%;background:var(--solid)}
+  .promocard{border:1px solid var(--line2);border-radius:12px;overflow:hidden;margin:8px 0;background:#fff}
+  .promocard .img{height:110px;background:var(--fill);border-bottom:1px dashed var(--line2);display:grid;place-items:center;color:#b6b6b6;font-size:12px}
+  .promocard .bd{padding:10px 12px;font-size:12.5px}
+  .sheet{border:2px solid var(--solid);border-radius:14px 14px 0 0;padding:12px 14px;margin:14px -18px -18px;background:#fff;box-shadow:0 -6px 18px rgba(0,0,0,.08)}
+  .tc{font-size:11.5px;color:#555;line-height:1.55;margin:6px 0}
+  .tc ol{padding-left:18px;margin:4px 0}
+  .bigico{font-size:44px;text-align:center;margin:26px 0 8px}
+  .prog3{display:flex;gap:5px;margin:10px 0 2px}
+  .prog3 .p{flex:1;font-size:9.5px;text-align:center;padding:5px 0;border:1px solid var(--line2);border-radius:7px;color:var(--muted);background:var(--fill)}
+  .prog3 .p.on{background:var(--solid);border-color:var(--solid);color:#fff;font-weight:700}
+  .prog3 .p.done{border-color:var(--solid);color:var(--solid)}
+  .marq{border:1px solid var(--line2);border-radius:6px;background:var(--fill);padding:6px 10px;font-size:11px;color:#666;white-space:nowrap;overflow:hidden;margin:6px 0}
+  .gridP{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:8px 0}
+  .gridP .gi{border:1px dashed var(--line2);border-radius:8px;background:var(--fill);height:52px;display:grid;place-items:center;color:#888;font-size:11px;text-align:center;flex-direction:column;gap:2px}
+  .hometop{display:flex;align-items:center;gap:10px;margin:2px 0 8px}
+  .hometop .logo{font-weight:800;font-size:15px}
+  .hometop .sp{flex:1}
+  .hometop .ic{width:28px;height:28px;border:1px solid var(--line2);border-radius:8px;display:grid;place-items:center;font-size:12px;color:#666;background:#fff;position:relative}
+  .hometop .ic .dot{position:absolute;top:-3px;right:-3px;width:9px;height:9px;border-radius:50%;background:#b56;border:1.5px solid #fff}
+  .balancechip{display:flex;align-items:center;gap:6px;border:1px solid var(--line2);border-radius:16px;padding:4px 10px;font-size:11.5px;background:#fff}
+  .scrollrow{display:flex;gap:8px;overflow:hidden;margin:6px 0}
+  .tile{flex:0 0 92px;height:64px;border:1px dashed var(--line2);border-radius:8px;background:var(--fill);display:grid;place-items:center;color:#a8a8a8;font-size:10px;text-align:center;padding:4px}
+  .tabbar{display:flex;border:1px solid var(--line2);border-radius:20px;background:#fff;padding:5px 3px;margin-top:8px;box-shadow:0 6px 18px rgba(0,0,0,.08)}
+  .tabbar div{flex:1;text-align:center;padding:4px 0;font-size:9.5px;color:#999}
+  .tabbar div.on{color:var(--solid);font-weight:700}
+  .tabbar .d{width:22px;height:22px;border-radius:50%;margin:0 auto 2px;display:grid;place-items:center;font-size:11px}
+  .desktopbar{border:1px solid var(--line);border-radius:8px;background:#fff;padding:8px 12px;display:flex;align-items:center;gap:14px;margin-bottom:8px}
+  .desktopbar .logo{font-weight:800}
+  .desktopbar .menu{display:flex;gap:11px;flex:1;flex-wrap:wrap;font-size:11px;color:#555}
+</style>
+</head>
+<body>
+<div class="app">
+  <!-- LEFT: flow nav -->
+  <aside>
+    <h1>AI Lobby</h1>
+    <p class="sub">Low-fidelity wireframe · Mobile web<br>Builds on the first-pass lobby (home-flow-wireframe.html)<br>Proposal, 2026-11-02. Sample data only.</p>
+    <div id="nav"></div>
+    <div class="legend">
+      Grayscale wireframe only, no visual design.<br>
+      <span class="badge req">Required</span> = mandatory ·
+      <span class="badge">app only</span> = App only<br>
+      Right panel: spec / states / API fields for Dev.
+    </div>
+  </aside>
+
+  <!-- CENTER: phone -->
+  <main>
+    <div class="toolbar">
+      <button class="btn" id="prev">← Previous</button>
+      <div class="state-tabs" id="states"></div>
+      <button class="btn" id="next">Next →</button>
+    </div>
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="screen" id="screen"></div>
+    </div>
+    <div class="hint" id="bread"></div>
+  </main>
+
+  <!-- RIGHT: spec -->
+  <div class="spec" id="spec"></div>
+</div>
+
+<script>
+/* ---------- wireframe component helpers ---------- */
+const F = (label, sub='') => `<div class="field"><span>${label}</span>${sub?`<small>${sub}</small>`:''}</div>`;
+const CTA = (t, mod='') => `<div class="cta ${mod}">${t}</div>`;
+const OPT = (t, sel=false, kind='dot') => `<div class="opt ${sel?'sel':''}"><span class="${kind} ${sel?'on':''}"></span><span style="flex:1">${t}</span></div>`;
+const SOC = (ic, t, sub='', last=false) => `<div class="socbtn"><span class="ic">${ic}</span><span>${t}</span>${last?`<span class="last">Last used</span>`:sub?`<small>${sub}</small>`:''}</div>`;
+
+/* ---------- lobby pieces ---------- */
+const TAB = (on) => `<div class="tabbar">${[['🏠','Home'],['🎮','Games'],['🧾','Statement'],['🔔','Notification'],['👤','Profile']].map(([i,t])=>`<div class="${t===on?'on':''}"><span class="d">${i}</span>${t}</div>`).join('')}</div>`;
+const CHAT = `<div style="display:flex;justify-content:flex-end;pointer-events:none"><span style="width:44px;height:44px;border-radius:50%;background:var(--solid);color:#fff;display:grid;place-items:center;font-size:18px;box-shadow:0 2px 8px rgba(0,0,0,.25)">💬</span></div>`;
+const BOTTOM = (on) => `<div style="position:sticky;bottom:-10px;z-index:2">${CHAT}${TAB(on)}</div>`;
+const SEC = (t, more=true) => `<div style="display:flex;justify-content:space-between;align-items:baseline;margin:16px 0 6px"><b>${t}</b>${more?'<span class="hint" style="margin:0">More ›</span>':''}</div>`;
+const TILES = (a) => `<div class="scrollrow">${a.map(x=>`<span class="tile">${x}</span>`).join('')}</div>`;
+const SHORTCUTS = `<div class="scrollrow" style="gap:6px">${[['⚽','Sports'],['🃏','Live Casino'],['🎰','Slots'],['🐓','Cockfight'],['🎮','E-sports'],['🖥','Virtual'],['🎟️','Lottery'],['♠️','Cards'],['⚡','Turbo']].map(([i,t])=>`<span style="flex:0 0 58px;text-align:center;font-size:10px;color:#666"><span style="display:grid;place-items:center;width:44px;height:44px;margin:0 auto 3px;border:1px dashed var(--line2);border-radius:12px;background:var(--fill);font-size:17px">${i}</span>${t}</span>`).join('')}</div>`;
+const ODD = (l) => `<span style="flex:1;border:1px solid var(--line2);border-radius:6px;padding:4px 0;text-align:center;font-size:10px;color:var(--muted)">${l}<b style="display:block;font-size:13px;color:var(--ink)">0.94</b></span>`;
+const MATCH = (live) => `<div style="flex:0 0 268px;border:1px solid var(--line2);border-radius:10px;padding:10px;background:#fff">
+    <div class="hint" style="margin:0 0 6px;display:flex;justify-content:space-between"><span>England Premier League</span><span>${live?'▶ HT 20:00':'Tonight 21:00'}</span></div>
+    <div style="display:flex;justify-content:space-between;font-size:12.5px"><span>Team A</span><b>${live?'1':''}</b></div>
+    <div style="display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:8px"><span>Team B</span><b>${live?'0':''}</b></div>
+    <div style="display:flex;gap:6px">${ODD('1')}${ODD('Draw')}${ODD('2')}</div></div>`;
+const SPORTS = `<div class="scrollrow">${MATCH(true)}${MATCH(false)}</div>`;
+const COCK = `<div class="ph" style="height:128px;margin:0">[ Live stream · LIVE ] · Play Now</div>`;
+const LIVE_CASINO = TILES(['Blackjack<br>NEW','Roulette','Baccarat','Sic Bo']);
+const SLOTS = `<div class="ph" style="height:46px;margin:0 0 8px">Jackpot · 12,000,000,000 VND</div>${TILES(['Legendary Beasts<br>NEW','Fortune Dogs<br>NEW','Candy Tower','Game'])}`;
+const FOOT = `<div class="hint" style="border-top:1px dashed var(--line);padding-top:8px;margin-top:18px">Footer: Products · Promotions · About · Community · Licence · Vietnam / Thailand</div>`;
+const GETAPP = `<div class="marq" style="display:flex;align-items:center;gap:8px;margin:0 0 8px;white-space:normal"><span>✕</span><span style="flex:1">Get the V9Bet app</span><b>Get it</b></div>`;
+const NOTICE = `<div style="border:1px solid var(--line2);border-radius:10px;padding:9px 11px;margin:8px 0;font-size:12px"><div style="display:flex;justify-content:space-between"><b>Scheduled maintenance</b><span>✕</span></div><span style="color:var(--muted)">Today 02:00–04:00. Deposits may be delayed.</span></div>`;
+
+/* ---------- AI pieces ---------- */
+const AI = `<span class="badge" style="margin-left:6px">AI</span>`;
+const SECAI = (t, more=true) => `<div style="display:flex;justify-content:space-between;align-items:baseline;margin:16px 0 6px"><span><b>${t}</b>${AI}</span>${more?'<span class="hint" style="margin:0">More ›</span>':''}</div>`;
+const BRIEF = (when, title, body, foot='Open match') => `<div style="flex:0 0 250px;border:1px solid var(--line2);border-radius:10px;padding:10px;background:#fff;display:flex;flex-direction:column;gap:4px">
+    <span class="hint" style="margin:0">${when}</span>
+    <b style="font-size:13px">${title}</b>
+    <span style="font-size:12px;color:#555;flex:1">${body}</span>
+    <b style="font-size:12px;margin-top:4px">${foot} ›</b></div>`;
+const B_MATCH = BRIEF('Tonight 21:00 · Premier League','Team A v Team B','Team A have won 4 of their last 5 at home. Team B are missing their top scorer.');
+const B_LIVE = BRIEF('▶ 63′ · Premier League','Team C 1–0 Team D','Team D have had 12 shots since the break, none on target.');
+const B_CASINO = BRIEF('Live Casino · from 20:00','Two new Baccarat tables','Both have Vietnamese-speaking dealers.','Open Live Casino');
+const B_RECAP = BRIEF('Last night · Champions League','Team E 3–2 Team F','Team E came back from 2–0 down with three goals after the 70th minute.','Read recap');
+const TODAY = (cards, more=true) => `${SECAI('Today',more)}<div class="scrollrow">${cards.join('')}</div>`;
+const FORYOU = `${SECAI('For you')}<div class="hint" style="margin:0 0 4px">Because you played Baccarat</div>${TILES(['Baccarat<br>VIP table','Dragon Tiger','Sic Bo','Baccarat<br>Speed'])}`;
+const ROWS = `${SEC('Sports')}${SPORTS}${SEC('Cockfight')}${COCK}${SEC('Live Casino')}${LIVE_CASINO}${SEC('Slots')}${SLOTS}`;
+const MEMBERTOP = (bal) => `<div class="hometop"><span class="logo">V9BET</span><span class="sp"></span><span class="balancechip" style="font-variant-numeric:tabular-nums">₫${bal}</span><span style="background:var(--solid);color:#fff;border-radius:16px;padding:5px 11px;font-size:11.5px;font-weight:600">Deposit</span></div>`;
+const GUESTTOP = `<div class="hometop"><span class="logo">V9BET</span><span class="sp"></span><span style="font-size:12px;font-weight:600;padding:5px 4px">Log In</span><span style="background:var(--solid);color:#fff;border-radius:16px;padding:5px 11px;font-size:11.5px;font-weight:600">Sign Up</span></div>`;
+const BANNER = `<div class="ph" style="height:118px;margin-top:0">[ What's Happening · banner carousel ]</div>`;
+const ME = (t) => `<div style="display:flex;justify-content:flex-end;margin:10px 0"><span style="max-width:80%;background:var(--solid);color:#fff;border-radius:14px 14px 4px 14px;padding:8px 11px;font-size:12.5px">${t}</span></div>`;
+const BOT = (t) => `<div style="margin:10px 0;font-size:13px">${t}</div>`;
+const ACT = (t) => `<div class="li" style="margin:6px 0"><span class="g">${t}</span><span class="rt">›</span></div>`;
+const ASKSHELL = (body) => `<div style="display:flex;flex-direction:column;min-height:100%">
+    <div class="scr-title"><span class="x">✕</span>Ask V9<span style="position:absolute;right:0;top:2px;font-size:11px;font-weight:600;text-decoration:underline">Talk to a person</span></div>
+    <div style="flex:1">${body}</div>
+    <div style="position:sticky;bottom:-18px;background:#fff;padding:8px 0 4px">
+      <div class="field" style="margin:0;border-radius:24px"><span>Ask anything</span><small>Send</small></div>
+      <div class="hint" style="text-align:center;margin:6px 0 0">AI can make mistakes. It can't predict results.</div>
+    </div></div>`;
+
+/* ---------- screen definitions ---------- */
+const screens = [
+{
+  group:"A · Proposal", id:"overview", title:"Three AI directions",
+  states:["Compare"],
+  render:()=>`
+    <div class="scr-title">Three directions</div>
+    <div class="scr-step">Recommended: A + B first, C after</div>
+    ${[
+      ['A · Today','AI writes short match and game news','Content no one else in the lobby has. The same text for everyone in a market, so it is cheap and fast.','Start here'],
+      ['B · For you','AI picks and explains games','Faster to the right game. Common among big operators, so it keeps us level rather than ahead.','Start here'],
+      ['C · Ask V9','Chat for stats, games and help','Replaces the Live Chat button, with a person one tap away. Highest cost and risk.','Next phase']
+    ].map(r=>`<div class="promo" style="background:#fff;border-style:solid"><div style="display:flex;justify-content:space-between;align-items:center"><b>${r[0]}</b><span class="tag">${r[3]}</span></div><div style="font-size:12.5px;margin:4px 0 2px;font-weight:600">${r[1]}</div><div class="hint" style="margin:0">${r[2]}</div></div>`).join('')}
+    <div class="hint" style="margin-top:12px">Not proposed: AI picks or "who will win", and offers aimed by AI.</div>`,
+  spec:{
+    goal:"Decide which AI goes in the lobby. Today's lobby is the same shelves as competitors, in a hand-set order. The proposal adds something to read and a shorter route to the right game, without making the page longer to reach a game.",
+    states:["A: Today (screens 2, 3)","B: For you (screen 4)","C: Ask V9 (screen 5)"],
+    fields:[],
+    api:"—",
+    notes:[
+      "WHY A LEADS: chat and game recommendations already have ready-made suppliers, so competitors can buy the same thing. Short, correct, local-language match and game content written daily in Vietnamese and Thai is harder to copy well and fits a football-heavy audience. This is our judgement, not tested with customers.",
+      "COMPETITORS, chat: FanDuel took <a href='https://bonus.com/news/fanduel-launches-aceai-ai-sports-betting-assistant-expands-nationwide'>AceAI nationwide on 2026-06-10</a> (stats, markets, add to slip, responsible gaming support). AxiumAI <a href='https://sbcnews.co.uk/sportsbook/2026/03/23/axiumai-axchat/'>sells a chat interface</a> to sportsbooks.",
+      "COMPETITORS, lobby: Entain's Boost Casino <a href='https://europeangaming.eu/portal/latest-news/2026/03/12/200517/entain-zingbrain-ai-how-personalized-recommendations-improved-the-player-experience-on-boost-casino/'>moved to a personalised lobby</a> with ZingBrain, and Hard Rock Bet <a href='https://sports.techopedia.com/news/new-casino-lobby-offers-enhanced-personalization/index.html'>built its own</a>. Supplier uplift figures are their own claims, so they are not used here as targets.",
+      "NOT FOUND: we did not find an operator doing AI match briefs in the lobby. One search does not prove there are none, and it says nothing about Vietnamese or Thai competitors. Check those sites by hand before calling this a differentiator.",
+      "COST (rough, for IT to correct): A is one text per match per language, stored and reused. B needs play history and a ranking service. C is a live model call per message, plus account lookups and safety testing.",
+      "RISK: regulators are looking at this exact area. <a href='https://www.thelines.com/legal-betting/new-york-moves-to-restrict-ai-tailored-gambling-promotions/'>New York has proposed limits</a> on AI-driven promotions and data-based wager suggestions, and <a href='https://focusgn.com/asia-pacific/acma-flags-rapid-ai-adoption-in-online-gambling-alongside-emerging-risks'>Australia's ACMA has flagged</a> hyper-personalisation for vulnerable users. Neither covers our markets, but legal should review all three directions for Vietnam and Thailand. Rules are on screen 6.",
+      "OPEN: (1) Which direction do we take? (2) Is there a sports data feed we are licensed to use for this? (3) Who owns content quality in each language?"
+    ]
+  }
+},
+{
+  group:"B · Lobby", id:"lobby", title:"Lobby with AI",
+  states:["Returning member","New member","Logged out","Long session","AI unavailable"],
+  render:(s)=>{
+    if(s===2) return `${GUESTTOP}${BANNER}${SHORTCUTS}${TODAY([B_MATCH,B_LIVE,B_RECAP])}${SEC('Offers')}${TILES(['Welcome offer','First deposit','Rebate'])}${ROWS}${FOOT}${BOTTOM('Home')}`;
+    if(s===3) return `${MEMBERTOP('1,250,000')}
+      <div class="li" style="align-items:flex-start"><span class="g">You've been playing for 2 hours<small>Time for a break?</small><span style="display:flex;gap:14px;margin-top:6px;font-size:12px;font-weight:600"><span>Take a break</span><span>Set a limit</span></span></span><span class="rt">✕</span></div>
+      ${BANNER}${SHORTCUTS}${SEC('Sports')}${SPORTS}${SEC('Live Casino')}${LIVE_CASINO}${FOOT}${BOTTOM('Home')}`;
+    if(s===4) return `${MEMBERTOP('1,250,000')}${BANNER}${SHORTCUTS}${SEC('Continue playing',false)}${TILES(['Baccarat','Sweet Bonanza','EPL · Team A v B'])}${ROWS}${FOOT}${BOTTOM('Home')}`;
+    const fresh=s===1;
+    return `${MEMBERTOP(fresh?'0':'1,250,000')}${BANNER}${SHORTCUTS}
+      ${TODAY(fresh?[B_MATCH,B_CASINO,B_LIVE]:[B_LIVE,B_MATCH,B_CASINO])}
+      ${fresh?'':`${SEC('Continue playing',false)}${TILES(['Baccarat','Sweet Bonanza','EPL · Team A v B'])}${FORYOU}`}
+      ${ROWS}${FOOT}${BOTTOM('Home')}`;
+  },
+  spec:{
+    goal:"Same lobby as home-flow-wireframe.html, plus one new row of AI-written news directly under the shortcuts, so it is on the first screen. Balance, Deposit, shortcuts and tabs stay where they are.",
+    states:["returning member: order follows what they play; For you appears","new member: most popular first; no For you until they have history","logged out: same text for everyone, nothing personal","long session: Today, For you and Ask's game suggestions go away; a break prompt appears","AI unavailable or personal picks off: the plain lobby, with no empty slot"],
+    fields:["today[]{type, ref_id, kicker, title, body, language, generated_at, expires_at}","for_you{reason, games[]}","session{minutes_played}","ai_flags{today, for_you, ask}"],
+    api:"GET /lobby → { …existing, today, for_you, ai_flags }\nToday is generated ahead of time and cached per market and language, never written while the page loads. Member order is applied on top of the cached cards.",
+    notes:[
+      "ROW: at most 5 cards, swipe sideways, with an image-free layout so it costs little data on mid-range Android. Each card opens the thing it talks about.",
+      "CARD TYPES: before a match, live moment, last night's recap, new table or game. Every number comes from a data feed; AI only writes the sentence around it.",
+      "NO SLOT WITHOUT CONTENT: fewer than 2 good cards hides the whole row. A stale card is removed when expires_at passes (for example, kick-off moved).",
+      "LONG SESSION: 2 hours is a sample. The trigger needs to be set with whoever owns Responsible Gaming. Take a break and Set a limit open the pages in growth-support-wireframe.html. Accounts on a break or self-excluded never get AI content.",
+      "LOGGED OUT: no Ask until logged in, except help questions (to confirm).",
+      "FLOATING BUTTON: stays Live Chat in this phase, as on the first-pass lobby. It becomes Ask V9 only if direction C goes ahead (screen 5).",
+      "LABEL: the small AI tag says who wrote it, and is the only explanation on the lobby.",
+      "SPACING: this is a wireframe. The built version uses .page, .nav-top and the existing section gaps, with a new card component in tailwind.config.js, ui-kit.html and ui-guideline.html."
+    ]
+  }
+},
+{
+  group:"B · Lobby", id:"brief", title:"Today · match brief",
+  states:["Before the match","Live","After the match","Not enough data"],
+  render:(s)=>{
+    const live=s===1, done=s===2, none=s===3;
+    const score = (live||done);
+    const bullets = done
+      ? ['Team A scored twice in the last 15 minutes.','Team B had 61% of possession but 2 shots on target.','Team A are now 3 points clear in 2nd place.']
+      : live
+      ? ['Team A scored on 38′ from their first shot on target.','Team B have had 12 shots since the break, none on target.','Team B have a player on a yellow card.']
+      : ['Team A have won 4 of their last 5 at home.','Team B are missing their top scorer.','The last 3 meetings all had 3 or more goals.'];
+    return `
+    <div class="scr-title"><span class="x">←</span>Premier League</div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin:12px 0;font-weight:600"><span>Team A</span><span style="text-align:center;font-size:${score?'22':'13'}px">${done?'2–0':live?'1–0':'21:00'}<small style="display:block;font-size:11px;font-weight:400;color:var(--muted)">${done?'Full time':live?'▶ 63′':'Tonight'}</small></span><span>Team B</span></div>
+    ${none?'':`<div style="border:1px solid var(--line2);border-radius:10px;padding:12px;margin:10px 0"><b>${done?'What happened':live?'So far':'What to know'}</b>${AI}
+      <ul style="margin:8px 0 8px;padding-left:18px;font-size:13px">${bullets.map(b=>`<li style="margin:4px 0">${b}</li>`).join('')}</ul>
+      <div class="hint" style="margin:0">Written by AI from match data. ${live?'Updated 63′.':'It may contain mistakes.'}</div></div>`}
+    ${done?'':`<div class="grp">Full time result</div><div style="display:flex;gap:6px">${ODD('1')}${ODD('Draw')}${ODD('2')}</div>`}
+    <div class="grp">Last 5</div>
+    <div class="kv"><span>Team A at home</span><b>W W L W W</b></div>
+    <div class="kv"><span>Team B away</span><b>L D W L D</b></div>
+    ${done?'':`<div class="hint" style="margin-top:14px">More markets and bet slip: match page, not designed yet.</div>`}
+    ${BOTTOM('Home')}`;
+  },
+  spec:{
+    goal:"Give a customer the two or three facts worth knowing about this match in ten seconds, in their language. It informs and does not pick a side.",
+    states:["before the match","live: rewrites at goals, cards and half time, not continuously","after the match: no odds on the page","not enough data: AI block hidden, the page still works"],
+    fields:["match{id, teams, status, minute, score}","brief{bullets[], source_facts[], language, generated_at}","form[]","odds{…from the existing feed}"],
+    api:"GET /matches/{id}/brief → { bullets, generated_at }\nBackend: feed facts → model writes sentences → a check confirms each number appears in the facts → publish. Any failure: no brief.",
+    notes:[
+      "This block sits at the top of the match page, which is still to be designed. Today's cards lead here.",
+      "THREE FACTS, ONE LINE EACH. No 'should', 'value', 'likely to win' or any wording that implies a result. Odds stay in their own area and the AI text never mentions them.",
+      "LANGUAGE: Vietnamese and Thai come first. Run a native-speaker review before launch and sample after it, because team names and football terms are where translation-quality problems show. Use text-base/7 line height: tone marks get clipped when lines are tight.",
+      "WRONG FACTS: a wrong injury or score costs trust and can affect someone's money, so the number check blocks publishing. Add a way for operators to pull one brief immediately.",
+      "All sample facts on this page are placeholders.",
+      "OPEN: (1) Which leagues get briefs first? Suggest Premier League, Champions League and the V.League, to limit review work. (2) Does it also cover Cockfight? Probably not: there is little data to write from."
+    ]
+  }
+},
+{
+  group:"B · Lobby", id:"foryou", title:"For you",
+  states:["Row","Why this game","Not interested","Settings"],
+  render:(s)=>{
+    if(s===3) return `<div class="scr-title"><span class="x">←</span>Settings</div>
+      ${tog('Personal picks',true)}
+      <div class="hint">Uses the games you play to choose what you see first. When off, everyone sees the same lobby.</div>
+      <div class="grp">Display</div>${ACT('Theme')}${ACT('Language')}`;
+    if(s===2) return `${SECAI('For you')}<div class="hint" style="margin:0 0 4px">Because you played Baccarat</div>${TILES(['Baccarat<br>VIP table','Sic Bo','Baccarat<br>Speed'])}
+      <div style="border:1px solid var(--solid);border-radius:10px;padding:10px 12px;font-size:12.5px;margin-top:14px;display:flex;justify-content:space-between"><span>We'll show fewer like this</span><b>Undo</b></div>
+      ${BOTTOM('Home')}`;
+    if(s===1) return `<div style="opacity:.35">${FORYOU}</div>
+      <div class="sheet" style="margin-top:210px">
+        <div style="display:flex;justify-content:space-between"><b>Why this game</b><span>✕</span></div>
+        <p style="font-size:13px;margin:8px 0 12px">You played Baccarat this week, and people who like it often play Dragon Tiger.</p>
+        ${ACT('Not interested')}${ACT('Turn off personal picks')}
+      </div>`;
+    return `${FORYOU}${SEC('Continue playing',false)}${TILES(['Baccarat','Sweet Bonanza','EPL · Team A v B'])}
+      <div class="hint" style="margin-top:14px">Long-press a tile, or tap ⋯ in the row title, for "Why this game".</div>${BOTTOM('Home')}`;
+  },
+  spec:{
+    goal:"Shorten the way to a game someone would pick anyway, and say why it is there. One row, explained, and easy to turn off.",
+    states:["row: one reason, four to eight games","why this game: bottom sheet","not interested: removed, with Undo","settings: personal picks on or off"],
+    fields:["for_you{reason_key, reason_text, games[]}","settings.personal_picks (bool)","game_feedback{game_id, not_interested}"],
+    api:"GET /lobby/for-you\nPOST /games/{id}/feedback { not_interested }\nPATCH /settings { personal_picks }",
+    notes:[
+      "SIGNALS ALLOWED: games opened, product, language, time on a game. SIGNALS NOT ALLOWED: wins, losses, stake size, balance, deposit history. Ranking on losses or spending aims at the people most at risk, so it is left out on purpose. It may also reduce uplift compared with what suppliers advertise.",
+      "ONLY THIS ROW MOVES. Shortcuts and tabs never reorder, so people's habits keep working. Product row order is a later test, once we know this row helps.",
+      "NO OFFERS IN THE ROW. No bonus badges or 'hot now' wording generated from a member's behaviour.",
+      "SETTING: lives in Settings (settings-tailwind.html). Row title to be confirmed with the Account / Settings split. Default is on, subject to legal review of consent in each market.",
+      "BUY OR BUILD: ZingBrain and similar suppliers sell this. Before buying, check whether the allowed-signal list above can be enforced, and where member data is stored.",
+      "OPEN: long-press is hard to discover and ⋯ adds clutter. Which one do we keep?"
+    ]
+  }
+},
+{
+  group:"C · Next phase", id:"ask", title:"Ask V9",
+  states:["Start","Match stats","Find a game","My deposit","Asks for a tip","Worried about play"],
+  render:(s)=>{
+    const views=[
+      `<div style="margin:18px 0 14px"><b style="font-size:15px">What can I help with?</b></div>
+       ${ACT("Tonight's matches")}${ACT('Games like Baccarat')}${ACT("Where's my deposit?")}`,
+      `${ME('How have Team A done at home?')}
+       ${BOT('Won 4 of their last 5 at home, with 1 loss.')}
+       <div class="kv"><span>Goals for / against</span><b>11 / 4</b></div>
+       ${ACT('Open Team A v Team B')}`,
+      `${ME('Slots like Candy Tower')}${BOT('These have a similar style:')}
+       ${TILES(['Sweet Bonanza','Sugar Rush','Fruit Party'])}`,
+      `${ME("Where's my deposit?")}${BOT('Your latest deposit is still processing.')}
+       <div style="border:1px solid var(--line2);border-radius:10px;padding:10px 12px;font-size:12.5px"><div class="kv" style="padding-top:0"><span>Amount</span><b style="font-variant-numeric:tabular-nums">₫500,000</b></div><div class="kv"><span>Status</span><b>Processing</b></div><div class="kv" style="border:0;padding-bottom:0"><span>Usually takes</span><b>3 min</b></div></div>
+       ${ACT('Talk to a person')}`,
+      `${ME('Who wins tonight? Give me a sure bet')}
+       ${BOT("I can't predict results, and no bet is a sure thing. Here's what the numbers show:")}
+       <ul style="margin:0;padding-left:18px;font-size:13px"><li>Team A have won 4 of their last 5 at home.</li><li>Team B are missing their top scorer.</li></ul>`,
+      `${ME('I keep losing. How do I win it back?')}
+       ${BOT("Trying to win back losses usually makes them bigger. It's a good moment to stop for today.")}
+       ${ACT('Take a break')}${ACT('Set a limit')}${ACT('Talk to a person')}
+       <div class="link">See <b>help with gambling</b></div>`
+    ];
+    return ASKSHELL(views[s]);
+  },
+  spec:{
+    goal:"One place to ask: stats, finding a game, and 'what happened to my money'. Same button as Live Chat today, so customers don't have to decide which one they need.",
+    states:["start: three suggestions","match stats: facts plus a link","find a game","my deposit: real account data","asks for a tip: declines, gives facts","worried about play: stops selling, offers help"],
+    fields:["message{role, text, blocks[]}","blocks: stat, game_tiles, transaction, action","conversation_id","handoff{to_live_chat, transcript}"],
+    api:"POST /ask { conversation_id, text } → stream\nTools the model may call: get_match_stats, search_games, get_my_transactions, open_live_chat.\nNo tool can place a bet, move money or apply an offer.",
+    notes:[
+      "ONE BUTTON: this replaces the Live Chat button, and 'Talk to a person' stays visible at the top right on every state. Pass the conversation to the agent so the customer does not repeat it.",
+      "ACCOUNT DATA comes from the API and shows as a card; the model never writes the amount or status itself. It answers about this member only, and never changes anything.",
+      "NO BET SLIP YET. FanDuel's AceAI adds selections to the slip. We leave that out of the first version: it moves chat from answering questions into selling bets and needs legal review first.",
+      "WORRIED ABOUT PLAY: words about losses, debt, borrowing or self-harm drop game, match and deposit suggestions for the rest of the session and notify the Responsible Gaming owner. Self-harm wording needs its own reply with local crisis contacts. The local services need to be sourced and verified per market before launch.",
+      "TESTING: before launch, red-team in Vietnamese and Thai as well as English: tip requests, loss chasing, requests for other members' data, attempts to get bonuses promised. The model must not promise money; anything said about offers comes only from the Promotions data.",
+      "COPY: 'Ask V9' is a working name. Customer-facing text explains no system detail, per CLAUDE.md.",
+      "OPEN: (1) Is this also the support bot, or are they separate? It is simplest as one. (2) Should logged-out visitors get help questions only?"
+    ]
+  }
+},
+{
+  group:"D · Reference", id:"rules", title:"Rules for AI",
+  states:["Applies to all three"],
+  render:()=>`
+    <div class="scr-title">What AI may do</div>
+    <div class="grp">May</div>
+    ${['Write facts from the data feed','Explain why a game is shown','Find games and answer questions','Show a member their own status','Hand over to a person'].map(t=>`<div class="kv"><span style="color:var(--ink)">✓ ${t}</span></div>`).join('')}
+    <div class="grp" style="margin-top:16px">May not</div>
+    ${['Predict a result or say "sure", "safe" or "value"','Use wins, losses, stake or balance to rank','Create or promise offers','Suggest playing to win back losses','Show to anyone on a break or self-excluded','Place a bet or move money'].map(t=>`<div class="kv"><span style="color:var(--ink)">✕ ${t}</span></div>`).join('')}`,
+  spec:{
+    goal:"Product rules that hold across all three directions. Everything on this page is a proposal, for you and legal to confirm.",
+    states:["reference only"],
+    fields:[],
+    api:"—",
+    notes:[
+      "WHY THESE: a wrong prediction is misleading, and targeting losses harms exactly the customers we should protect. They also keep us clear of what regulators elsewhere are moving against (screen 1).",
+      "KILL SWITCH: operators can turn off Today, For you and Ask separately (ai_flags). The lobby must look complete with all three off.",
+      "MEASURE (compare with a group that doesn't see it): share of members opening a Today card, time from lobby to first game, 7- and 30-day return. Track alongside: limits set, break uses, self-exclusions, Live Chat contacts per member. If these get worse, it isn't a win.",
+      "BUILD ORDER: (1) Today on one market and three leagues, and review quality for two weeks. (2) For you, tested against the plain lobby. (3) Ask V9, help questions first, stats and games after.",
+      "NEXT WIREFRAME after a decision: match page, because Today leads there and it isn't designed. Then the high-fidelity version on the v1 components."
+    ]
+  }
+},
+];
+
+/* small components used inside screens */
+function ci(n,label,tag,done){
+  let pts='';
+  if(tag){ const m=tag.match(/\+(\d+)\s*pts$/); if(m){ pts=m[1]; tag=tag.replace(/\s*·?\s*\+\d+\s*pts$/,'').trim(); } }
+  return `<div class="ci ${done?'done':''}"><span class="num">${done?'✓':n}</span><span class="g">${label}${tag?`<small>${tag}</small>`:''}</span>${pts?`<span class="pts">🎁+${pts}</span>`:''}<span style="color:#bbb">›</span></div>`;
+}
+function tog(label,on){return `<div class="opt"><span style="flex:1">${label}</span><span style="width:40px;height:22px;border-radius:12px;border:1px solid var(--line2);background:${on?'var(--solid)':'#fff'};position:relative"><span style="position:absolute;top:2px;${on?'right:2px':'left:2px'};width:16px;height:16px;border-radius:50%;background:#fff;border:1px solid var(--line2)"></span></span></div>`}
+
+/* ---------- runtime ---------- */
+let idx=0, st=0;
+const navEl=document.getElementById('nav');
+function buildNav(){
+  let html='', lastG='';
+  screens.forEach((sc,i)=>{
+    if(sc.group!==lastG){html+=`<div class="group-title">${sc.group}</div>`;lastG=sc.group;}
+    html+=`<div class="nav ${i===idx?'active':''}" data-i="${i}"><span class="num">${i+1}</span>${sc.title}</div>`;
+  });
+  navEl.innerHTML=html;
+  navEl.querySelectorAll('.nav').forEach(n=>n.onclick=()=>{idx=+n.dataset.i;st=0;draw();});
+}
+function draw(){
+  const sc=screens[idx];
+  document.getElementById('screen').innerHTML=sc.render(st);
+  // states
+  const stWrap=document.getElementById('states');
+  stWrap.innerHTML=sc.states.map((s,i)=>`<button class="${i===st?'on':''}" data-s="${i}">${s}</button>`).join('');
+  stWrap.querySelectorAll('button').forEach(b=>b.onclick=()=>{st=+b.dataset.s;draw();});
+  document.getElementById('bread').textContent=`Screen ${idx+1} / ${screens.length} · ${sc.title}${sc.step?' · '+sc.step:''}`;
+  // spec
+  const sp=sc.spec;
+  document.getElementById('spec').innerHTML=`
+    <h2>Screen Goal</h2><p style="font-size:13px;margin:0">${sp.goal}</p>
+    <h2>States</h2><div class="stlist">${sp.states.map(x=>`<span class="pill">${x}</span>`).join('')}</div>
+    <h2>Fields</h2><div class="stlist">${sp.fields.map(x=>`<span class="pill">${x}</span>`).join('')}</div>
+    <h2>API / Data</h2><div class="api">${sp.api}</div>
+    <h2>Dev Notes</h2><ul>${sp.notes.map(x=>`<li>${x}</li>`).join('')}</ul>`;
+  buildNav();
+}
+document.getElementById('prev').onclick=()=>{if(idx>0){idx--;st=0;draw();}};
+document.getElementById('next').onclick=()=>{if(idx<screens.length-1){idx++;st=0;draw();}};
+draw();
+</script>
+<script>
+/* ---------- ✏️ 文字編輯模式：右下角開關，點字直接改；存 localStorage，重整 / 切畫面不會消失 ---------- */
+(function(){
+const FILE=location.pathname.split('/').pop()||'page';
+const KEY='wfTextEdits:'+FILE;
+const DYN=['screen','spec','bread'];                                   // draw() 重繪的區塊
+const STATIC=[['aside h1','h1'],['aside .sub','sub'],['aside .legend','legend']]; // 靜態區塊
+const dynKey=id=>id==='screen'?`d|${idx}|${st}|screen`:`d|${idx}|${id}`;
+const nodes=el=>{const w=document.createTreeWalker(el,NodeFilter.SHOW_TEXT),a=[];let n;while(n=w.nextNode())a.push(n);return a};
+const load=()=>{try{const d=JSON.parse(localStorage.getItem(KEY)||'{}');return{edits:d.edits||{},orig:d.orig||{}}}catch(e){return{edits:{},orig:{}}}};
+const persist=d=>localStorage.setItem(KEY,JSON.stringify(d));
+const fresh={};                                                        // 每個 key 的原始文字（重繪後快照）
+function applyKey(el,k){const v=load().edits[k];if(!v)return;const ns=nodes(el);for(let i=0;i<Math.min(ns.length,v.length);i++)ns[i].nodeValue=v[i]}
+function snapApply(el,k){if(!(k in fresh))fresh[k]=nodes(el).map(n=>n.nodeValue);applyKey(el,k)}
+function record(el,k){
+  const d=load(),cur=nodes(el).map(n=>n.nodeValue),o=fresh[k]||d.orig[k];
+  if(o&&cur.length===o.length&&cur.every((t,i)=>t===o[i])){delete d.edits[k];delete d.orig[k]}
+  else{d.edits[k]=cur;if(o&&!d.orig[k])d.orig[k]=o}
+  persist(d);flash('已儲存 ✓')}
+const _draw=draw;
+draw=function(){_draw();DYN.forEach(id=>{const el=document.getElementById(id);if(el)snapApply(el,dynKey(id))})};
+STATIC.forEach(([sel,k])=>{const el=document.querySelector(sel);if(el){snapApply(el,'s|'+k);el.addEventListener('input',()=>record(el,'s|'+k))}});
+DYN.forEach(id=>{const el=document.getElementById(id);if(el)el.addEventListener('input',()=>record(el,dynKey(id)))});
+draw();                                                                // 載入時套用已存的修改
+/* --- 編輯開關 --- */
+let editing=false;
+const plainOK=(()=>{const t=document.createElement('div');try{t.contentEditable='plaintext-only'}catch(e){return false}return t.contentEditable==='plaintext-only'})();
+const editables=()=>DYN.map(id=>document.getElementById(id)).concat(STATIC.map(([sel])=>document.querySelector(sel))).filter(Boolean);
+function setEditing(on){editing=on;
+  editables().forEach(el=>{if(on){el.setAttribute('contenteditable',plainOK?'plaintext-only':'true');el.setAttribute('spellcheck','false')}else{el.removeAttribute('contenteditable')}});
+  document.body.toggleAttribute('data-editing',on);
+  const b=document.getElementById('eb-toggle');b.textContent=on?'✅ 完成':'✏️ 編輯文字';b.classList.toggle('on',on);
+  flash(on?'點畫面上的字直接修改（自動儲存）':'')}
+document.addEventListener('beforeinput',e=>{if(editing&&!plainOK&&(e.inputType==='insertParagraph'||e.inputType==='insertLineBreak'))e.preventDefault()},true);
+/* --- 工具列 --- */
+const css=document.createElement('style');css.textContent=`
+#editbar{position:fixed;right:14px;bottom:14px;z-index:9999;display:flex;gap:6px;align-items:center;background:#fff;border:1px solid #d0d3d8;border-radius:10px;padding:6px 8px;box-shadow:0 4px 18px rgba(0,0,0,.14);font:12px/1.4 -apple-system,"Noto Sans TC",Arial,sans-serif}
+#editbar button{font:inherit;border:1px solid #d0d3d8;background:#fff;border-radius:7px;padding:4px 9px;cursor:pointer;color:#333}
+#editbar button:hover{border-color:#19c37d;color:#0f8a5f}
+#editbar #eb-toggle.on{background:#19c37d;border-color:#19c37d;color:#fff}
+#eb-msg{color:#0f8a5f;font-size:11px;max-width:170px}
+body[data-editing] [contenteditable]{outline:1.5px dashed #19c37d;outline-offset:3px;border-radius:3px;cursor:text}
+body[data-editing] [contenteditable]:focus{outline-style:solid}`;
+document.head.appendChild(css);
+const bar=document.createElement('div');bar.id='editbar';
+bar.innerHTML=`<button id="eb-toggle" title="開啟後直接點畫面文字修改，自動儲存在此瀏覽器">✏️ 編輯文字</button><button id="eb-copy" title="複製修改清單（原文 → 新文），可貼給 Claude 寫回 HTML">📋 複製修改</button><button id="eb-reset" title="清除此頁所有文字修改並還原">↺ 還原</button><span id="eb-msg"></span>`;
+document.body.appendChild(bar);
+document.getElementById('eb-toggle').onclick=()=>setEditing(!editing);
+document.getElementById('eb-reset').onclick=()=>{if(confirm('還原此頁所有文字修改？')){localStorage.removeItem(KEY);location.reload()}};
+document.getElementById('eb-copy').onclick=()=>{
+  const d=load();let out=`【文字修改】${FILE}\n`,cnt=0;
+  Object.keys(d.edits).forEach(k=>{const o=d.orig[k]||fresh[k]||[];(d.edits[k]||[]).forEach((t,i)=>{if(o[i]!==t){cnt++;out+=`\n${cnt}. 原：${(o[i]??'(?)').trim()}\n   改：${t.trim()}\n`}})});
+  if(!cnt)out+='（目前沒有修改）';
+  const done=()=>flash('已複製 ✓');
+  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(out).then(done,()=>fallbackCopy(out,done));else fallbackCopy(out,done)};
+function fallbackCopy(t,cb){const ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();cb()}
+let flTimer;function flash(m){const el=document.getElementById('eb-msg');if(!el)return;el.textContent=m;clearTimeout(flTimer);if(m&&m.includes('✓'))flTimer=setTimeout(()=>{el.textContent=editing?'編輯模式':''},1500)}
+})();
+</script>
+</body>
+</html>
