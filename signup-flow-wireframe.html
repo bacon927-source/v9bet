@@ -294,52 +294,46 @@ const screens = [
 },
 {
   group:"B · Account Setup", id:"checklist", title:"Setup Overview",
-  states:["Step 1 · Required","Step 2 · Security","Step 3 · Preferences","Step 1 · No contact on file"],
+  states:["New member · 6 steps","Existing member · 4 steps","Existing member · 2 steps"],
   render:(s)=>{
-  const nc = s===3;                                  // account has no verified email or phone
+  const ALL=[
+    ["Account currency","Required"],
+    ["Account ID","Required"],
+    ["Personal information","Set up later"],
+    ["Bank account / USDT","Set up later"],
+    ["Notifications + message channel","Set up later"],
+    ["Display: theme + text size","Set up later"]
+  ];
+  const skip=[0,2,4][s];                             // steps this member already has
+  const steps=ALL.slice(skip);
   return `
-    <div class="scr-title">Set Up Your Account</div>
-    <div class="scr-step">${nc?"Step 1 of 3 — this account has no email or phone yet, so a contact is required here":`Step ${s+1} of 3 — required first, the rest can be skipped`}</div>
-    <div class="grp">Step 1 · Required <span class="badge req">cannot skip</span></div>
+    <div class="scr-title">Setup Overview</div>
+    <div class="scr-step">Map for IT, not a screen: there is no checklist page. One page per thing, with a progress bar on top.</div>
+    <div class="grp">Before Setup · one page</div>
+    <div class="hint" style="margin-top:4px">${s===0?"Your account is ready · A few quick settings and you’re all set. → Continue":"We’ve improved V9Bet · Please complete the following settings for your account. → Continue"}</div>
+    <div class="grp">Setup · ${steps.length} steps</div>
     <div class="checklist">
-      ${ci(1,"Choose account currency","mandatory",s>0&&!nc)}
-      ${ci(2,"Personal information","mandatory",s>0&&!nc)}
-      ${nc?ci(4,"Add an email or phone","no contact on file",false):''}
+      ${steps.map((x,i)=>ci(i+1,x[0],`${x[1]} · bar ${Math.round((i+1)/steps.length*100)}%`,false)).join('')}
     </div>
-    <div class="grp">Step 2 · Security &amp; payout <span class="badge">can skip</span></div>
-    <div class="checklist">
-      ${ci(3,"Bank account / USDT","needed before withdrawal",s>1&&!nc)}
-      <div class="hint">＊ BEFORE SETUP (10-30, user: \"在 sign up 到 setup 中間會有一頁跟客人說 setup 開始，但不用寫開始\" / \"要跟舊客說明我們要更優化所以請做以下 setup\"): one full page between sign-up and Setup, the same for every way in — \"Your account is ready · A few quick settings and you’re all set.\" → Continue. An existing member, the first time Setup is on: \"We’ve improved V9Bet · Please complete the following settings for your account.\" No \"start\" anywhere. There is no \"New · Phone\" persona (10-30, user: \"這個角色沒有 new 了\"): sign-up is email only, so a member who comes in with a phone is an existing member.</div>
-      <div class="hint">＊ ACCOUNT ID RULE (10-30, UAT, RULES.md): 6–15 characters, A–Z a–z 0–9 only (all letters, all digits or both), no spaces / Chinese / symbols like _ - @, not already taken. Setup › Account ID says it under the field — \"6–15 letters or numbers. No spaces or symbols.\" — and checks on Save: \"Letters and numbers only.\" / \"Use 6–15 letters or numbers.\" / \"This Account ID is already taken.\" Log In does not check length (old Account IDs had no limit).</div>
-      <div class="hint">＊ ONLY WHAT IS MISSING (10-30, user): every member goes through Setup once — a new member right after sign-up, an existing member the first time Setup is switched on — and sees only the steps not done yet; the progress bar counts their own steps. An existing member already has a currency and an Account ID, so starts at Personal information (25% → 50% → 75% → 100%); one who also has personal info and a bank sees only Notifications and Display (50% → 100%). Personas in the test panel: Existing ×2, New · Google / LINE / Zalo / Email.</div>
-      <div class="hint">＊ Set a password and Security (2FA, email / phone) are out of Setup for now (10-30, user: "set password 在setup時拿掉" / "2fa在setup 時拿掉"). They stay in Settings.</div>
-    </div>
-    <div class="grp">Step 3 · Preferences <span class="badge">can skip</span></div>
-    <div class="checklist">
-      ${ci(6,"Notification permission","optional",false)}
-      ${ci(7,"Theme","dark / light / system",false)}
-      ${ci(8,"Message channel","how we contact you",false)}
-    </div>
-    ${CTA(s===0||nc?"Start Setup":"Continue")}
-    ${s>0&&!nc?`<div class="link"><b>Skip this step</b></div>`:''}
-    <div class="hint">＊ Setup ends on Home — Welcome + offers pops up over it (10-21) and the coach-mark tour follows; neither is part of this checklist. (Points removed 10-21.)</div>`;
+    ${skip?`<div class="hint">Already has: ${ALL.slice(0,skip).map(x=>x[0].toLowerCase()).join(', ').replace('account id','Account ID')}. These steps don't appear.</div>`:''}
+    <div class="grp">After Setup</div>
+    <div class="hint" style="margin-top:4px">${s===0?"Welcome banner (full page) → Home → tour":"Home"}</div>
+    <div class="hint">＊ BEFORE SETUP (10-30, user: \"在 sign up 到 setup 中間會有一頁跟客人說 setup 開始，但不用寫開始\" / \"要跟舊客說明我們要更優化所以請做以下 setup\"): one full page between sign-up and Setup, the same for every way in — \"Your account is ready · A few quick settings and you’re all set.\" → Continue. An existing member, the first time Setup is on: \"We’ve improved V9Bet · Please complete the following settings for your account.\" No \"start\" anywhere. There is no \"New · Phone\" persona (10-30, user: \"這個角色沒有 new 了\"): sign-up is email only, so a member who comes in with a phone is an existing member.</div>
+    <div class="hint">＊ ACCOUNT ID RULE (10-30, UAT, RULES.md): 6–15 characters, A–Z a–z 0–9 only (all letters, all digits or both), no spaces / Chinese / symbols like _ - @, not already taken. Setup › Account ID says it under the field — \"6–15 letters or numbers. No spaces or symbols.\" — and checks on Save: \"Letters and numbers only.\" / \"Use 6–15 letters or numbers.\" / \"This Account ID is already taken.\" Log In does not check length (old Account IDs had no limit).</div>
+    <div class="hint">＊ ONLY WHAT IS MISSING (10-30, user): every member goes through Setup once — a new member right after sign-up, an existing member the first time Setup is switched on — and sees only the steps not done yet; the progress bar counts their own steps. An existing member already has a currency and an Account ID, so starts at Personal information (25% → 50% → 75% → 100%); one who also has personal info and a bank sees only Notifications and Display (50% → 100%). Personas in the test panel: Existing ×2, New · Google / LINE / Zalo / Email.</div>
+    <div class="hint">＊ Set a password and Security (2FA, email / phone) are out of Setup for now (10-30, user: "set password 在setup時拿掉" / "2fa在setup 時拿掉"). They stay in Settings.</div>
+    `;
   },
   spec:{
-    goal:"Post-sign-up settings screen: 3 grouped steps with a progress bar on top — Step 1 Required (currency, profile+bank/USDT) cannot be skipped; Step 2 Security and Step 3 Preferences can be skipped. An account that arrived with NO verified contact (Zalo / LINE) gets a fourth required item in Step 1 instead.",
-    states:["step 1 · required (cannot skip)","step 2 · security (skippable)","step 3 · preferences (skippable)","step 1 · account has no verified contact → 'Add an email or phone' joins Step 1 as required","all done → tutorial & app download page"],
-    fields:["customer_id","setup_progress[{key,step(1|2|3),done,required}]","has_verified_contact(bool) — drives whether item 4 sits in Step 1 or Step 2"],
-    api:"GET /account/setup-status → { steps:[{key,step(1|2|3),done,required}], has_verified_contact }",
-    notes:["EMAIL ONLY WHEN THE SIGN-IN PROVIDER GAVE NONE, AND ALWAYS SKIPPABLE (10-21, user): Email sign-up → never asked for an email (it already has one). Third-party sign-in that returned an email (e.g. Google) → never asked. Third-party sign-in that returned no email (e.g. Zalo, or LINE without the email permission) → Setup shows one extra page, 'Add your email', which CAN BE SKIPPED. This replaces the 09-17 rule that made the contact item a required Step 1 item for no-contact accounts. One thing per page: the email page and the phone page are separate.","FACE ID / PASSKEY REMOVED FROM SETUP (09-20, business). Security methods — passkey and authenticator app — now live in Settings › Security only. Reason: setup is where we collect what the account needs to function, and neither of these is that; a brand-new member has nothing to protect yet, and the passkey lands far better right after a successful login, when the member has just experienced the thing it speeds up. See security-methods-wireframe.html › Passkey Upsell.","Setup is now 8 items, not 9. (Points removed 10-21.) Points kept the round 100: 8 × 10 plus a 20-point completion bonus. Every 'earn 100 points' string in the kit stays true, which is why the bonus absorbed the change rather than the total.","Items renumbered 1-8 (09-20) — the old 4 (Face ID) is gone and everything after it shifted down. This is a removal, not a move: leaving a permanent gap at 4 would read as a bug rather than a decision. The conditional contact item is now 4, and the message channel is 8.","CONTACT ITEM MOVES BY ACCOUNT STATE, NOT BY SIGN-UP METHOD (09-17). Item 4 normally sits in Step 2 and is skippable — that is right for an email sign-up, where the account already has a verified email and a phone is a genuine nice-to-have. But an account created through Zalo (or LINE without the email permission) has NO contact at all, and for that account item 4 is not a nice-to-have: without it we cannot send an OTP, which means the member cannot withdraw, and losing the social account loses this one. So when the account has no verified contact, item 4 joins Step 1 and becomes required. Server decides via has_verified_contact — the client must not infer it from which provider was used, because that stops being true the moment LINE's email permission is granted.",
-"This replaces the 'Add an email' button that used to live on the social welcome screen (09-17). That placement never actually required anything: it sat next to a 'Later' link, and Step 2 was skippable too, so a Zalo member could decline twice and finish setup with an account we had no way to reach. Putting the requirement in Step 1 is what makes it a requirement — Step 1 is the only part of setup with no escape.",
-"Item 4 keeps its number in both positions, so Step 1 reads 1 · 2 · 4 in the no-contact variant. Deliberate: the API keys and the progress records reference it, and renumbering per variant would make 'item 4' mean two different things depending on how the member signed up.",
-"Open (09-17, business): for a Zalo member, is the required contact an email or a phone? Phone may be the more natural ask in VN, but it carries SMS cost per OTP. The screen currently asks for an email; Contact Details would need a second required variant if this changes.",
-"docx: 'immediately run through account configuration settings'.","Item 8 = Message channel: Email / SMS / social messaging (WhatsApp · Zalo · Telegram · LINE) / opt-out. Default is EMAIL — sign-up is email-only (08-30), so a new member has no phone yet and SMS + social messaging stay gated behind adding one (item 4).","Cannot pass: account currency · personal information · bank/USDT (split into two items, Jul 16). Can pass: bank/USDT · add contact details · set-a-password (optional; no password at sign-up) · notifications · theme · message channel.","Step 1 genuinely cannot be skipped (08-30, still the rule): the label said 'cannot skip' while Personal Info and Bank/USDT both carried a 'Later' link, and Bank/USDT even said 'can complete later' in its own subtitle. Those escapes are gone — the only way past a Step 1 screen is to complete it. Step 2 and 3 keep their Later links and the overview keeps 'Skip this step' for those two.",
-"BANK / USDT LEFT STEP 1 (09-17, business). Step 1 is now currency + personal information only. The payout account did not get a Later link inside Step 1 — it moved to Step 2 — precisely so the 08-30 rule above stays true: 'cannot skip' has to mean it. What changed is which items are mandatory, not whether mandatory means mandatory. Step 2 renamed 'Security & payout' to match what it now holds. See Bank / USDT for why it stopped being mandatory and where it is enforced instead.",
-"POINTS REMOVED (10-21, user: \"這個 point 的機制先拿掉\"): no Setup rewards bar, no +10 per item, no completion bonus. Progress in the guided Setup is the Step top bar percentage only (step ÷ total).","Tutorial & app download moved out of the checklist — presented on the next page after Start setup completes."]
+    goal:"The whole Setup on one page, for IT. Every member goes through it once and sees only the steps they have not done. It is not a customer screen: customers never see this list, only one page at a time with a progress bar. Built version: setup-flow-tailwind.html.",
+    states:["new member: 6 steps, 17 / 33 / 50 / 67 / 83 / 100%","existing member with a currency and an Account ID: 4 steps, 25 / 50 / 75 / 100%","existing member who also has personal info and a bank: 2 steps, 50 / 100%"],
+    fields:["customer_id","is_new_member(bool)","done:{currency, account_id, profile, payout, message_channel, display}","setup_seen(bool): walked through, or Set up later pressed"],
+    api:"GET /account/setup-status → { is_new_member, done:{…}, setup_seen }\nField names are a proposal: IT to confirm.",
+    notes:["PROGRESS: the bar counts this member's own steps, step ÷ their total, rounded. Steps they already have are left out, not shown as ticked.","REQUIRED: only Account currency (Confirm Currency) and Account ID (Save) have no way past. The other four have Save or Continue, plus Set up later, which moves on to the next step.","ONCE ONLY (10-30, MACHINES.md item 22): the backend tells us, per member, which steps are done and whether Setup has been walked through. Walking through or pressing Set up later both count, so it does not come back at every login. An existing member's currency and Account ID came from the old site, so they start at step 3 at the earliest.","AFTER SETUP (10-30): a new member gets the full-page Welcome banner, then Home, then the coach-mark tour. An existing member goes straight to Home.","EMAIL IS NOT A SETUP STEP: a new third-party member with no email is asked on an Add Your Email page BEFORE Setup, and can Skip it (10-26, FIGMA.md Social row). Email sign-up and a provider that gave an email never see it.","PHONE IS NOT A SETUP STEP: it is added through a sheet from Notifications, when the member picks SMS without a phone.","MESSAGE CHANNEL shares a page with Notifications (10-26). Zalo, LINE and Telegram are each linked first (10-30, MACHINES.md item 21).","BANK / USDT can be skipped; the block comes at withdrawal, before an amount is entered.","FACE ID / PASSKEY REMOVED FROM SETUP (09-20, business). Security methods — passkey and authenticator app — now live in Settings › Security only. Reason: setup is where we collect what the account needs to function, and neither of these is that; a brand-new member has nothing to protect yet, and the passkey lands far better right after a successful login, when the member has just experienced the thing it speeds up. See security-methods-wireframe.html › Passkey Upsell.","Removed 11-02, because the flow changed; older versions are in git history: Step 1 / 2 / 3 groups, the eight items, has_verified_contact making a contact required, and points."]
   }
 },
 {
-  group:"B · Account Setup", id:"currency", title:"Choose Currency", step:"Step 1 · Required",
+  group:"B · Account Setup", id:"currency", title:"Choose Currency", step:"Step 1 of 6 · Required",
   states:["None selected","VND selected"],
   render:(s)=>`
     <div class="scr-title"><span class="x">←</span>Account Currency<span class="badge req">Required</span></div>
@@ -357,7 +351,7 @@ const screens = [
   }
 },
 {
-  group:"B · Account Setup", id:"notif", title:"Notifications", step:"Step 3 · Preferences (can skip)",
+  group:"B · Account Setup", id:"notif", title:"Notifications", step:"Step 5 of 6 · can skip",
   states:["Prompt"],
   render:()=>`
     <div class="scr-title"><span class="x">←</span>Notification Settings</div>
@@ -377,7 +371,7 @@ const screens = [
   }
 },
 {
-  group:"B · Account Setup", id:"profile", title:"Personal Info", step:"Step 1 · Required",
+  group:"B · Account Setup", id:"profile", title:"Personal Info", step:"Step 3 of 6 · can skip",
   states:["Empty","Filled"],
   render:(s)=>`
     <div class="scr-title"><span class="x">←</span>Personal Information</div>
@@ -394,7 +388,7 @@ const screens = [
   }
 },
 {
-  group:"B · Account Setup", id:"payout", title:"Bank / USDT", step:"Step 2 · Security &amp; payout (can skip)",
+  group:"B · Account Setup", id:"payout", title:"Bank / USDT", step:"Step 4 of 6 · can skip",
   states:["Bank account","USDT address"],
   render:(s)=>`
     <div class="scr-title"><span class="x">←</span>Bank Account / USDT<span class="badge">Optional</span></div>
@@ -412,7 +406,7 @@ const screens = [
   }
 },
 {
-  group:"B · Account Setup", id:"email", title:"Contact Details", step:"Can skip · email page only when the sign-in provider gave none (10-21)",
+  group:"B · Account Setup", id:"email", title:"Contact Details", step:"Not a Setup step: Add email comes before Setup, phone via a sheet from Notifications",
   states:["Add phone (email sign-up)","Enter code","Add email — only when the provider gave none (can skip)"],
   render:(s)=>`
     <div class="scr-title"><span class="x">←</span>${s===2?'Add Email':'Add Phone Number'}<span class="badge">Optional</span></div>
@@ -459,7 +453,7 @@ const screens = [
   }
 },
 {
-  group:"B · Account Setup", id:"theme", title:"Display (theme + text size)", step:"Last step of Setup (can skip)",
+  group:"B · Account Setup", id:"theme", title:"Display (theme + text size)", step:"Step 6 of 6 · can skip",
   states:["Default text","Large text"],
   render:(s)=>`
     <div class="scr-title"><span class="x">←</span>Display</div>
@@ -479,7 +473,7 @@ const screens = [
   }
 },
 {
-  group:"B · Account Setup", id:"channel", title:"Message Channel", step:"Step 3 · Preferences (can skip)",
+  group:"B · Account Setup", id:"channel", title:"Message Channel", step:"Part of Notifications (Step 5 of 6)",
   states:["Default (Email)","LINE linked and chosen","No phone yet → blocker","Opt out (confirm)","Saved"],
   render:(s)=>s===2?`
     <div class="scr-title"><span class="x">←</span>Message Channel</div>

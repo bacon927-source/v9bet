@@ -176,6 +176,16 @@ raw 路徑：`https://raw.githubusercontent.com/flutter/agent-plugins/main/skill
 
 首頁每份文件的更新日期來自 git：改過文件、commit 之後，先跑 `python3 scripts/update-index-dates.py`，再 commit `index.html`，然後推。
 
+## mockup 取代 wireframe 時
+
+使用者 2026-11-02：做出 mockup、打掉 wireframe 要備註。不直接刪：Dev Notes 有規則和決策原因，舊網址也可能分享出去了。
+
+- **先搬規則**：Dev Notes 裡還在用的規則移到 `RULES.md` 或 `ui-kit.html`
+- **首頁**：那一列標 `Replaced`、名稱變淡，說明寫「Replaced by <新頁>, <日期>」並連到新頁
+- **wireframe 頁面**：最上面加一條「已被 <新頁> 取代」並附連結
+- **`Old` 和 `Replaced` 分開**：`Old` 是內容過時但還沒有新版本；`Replaced` 是已有明確的新版本
+- **真的要刪檔**：首頁那一列留到大家都改用新網址，不然舊連結會 404
+
 ## 規格以哪裡為準
 
 - **業務規則（UAT）：`RULES.md`**——OTP（驗證碼有效時間、重送等待、次數上限、錯幾次重來）和 Account ID（6–15、只能英文數字、不可重複）。畫面和程式照這份；mockup 還沒跟上的地方寫在每段最後
