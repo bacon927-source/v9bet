@@ -172,6 +172,10 @@ raw 路徑：`https://raw.githubusercontent.com/flutter/agent-plugins/main/skill
 
 > 安裝正式 plugin 需要 `claude` CLI（`claude plugin marketplace add flutter/agent-plugins`），本機沒有 CLI 也沒有 node/npm，所以改為直接讀取。
 
+## 推上線之前
+
+首頁每份文件的更新日期來自 git：改過文件、commit 之後，先跑 `python3 scripts/update-index-dates.py`，再 commit `index.html`，然後推。
+
 ## 規格以哪裡為準
 
 - **業務規則（UAT）：`RULES.md`**——OTP（驗證碼有效時間、重送等待、次數上限、錯幾次重來）和 Account ID（6–15、只能英文數字、不可重複）。畫面和程式照這份；mockup 還沒跟上的地方寫在每段最後
