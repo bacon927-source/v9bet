@@ -3,319 +3,199 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>V9Bet · Live Site Optimization UX/Wireframe Delivery Kit</title>
+<title>V9Bet Documents</title>
+<link rel="stylesheet" href="variables.css">
+<script src="theme.js"></script>
 <style>
-  :root{--ink:#1c2128;--line:#d8dade;--muted:#6b7280;--paper:#fff;--bg:#f3f4f6;--grn:#19c37d;--soft:#eef7f2}
   *{box-sizing:border-box}
-  body{margin:0;font:14px/1.6 -apple-system,"Noto Sans TC",Arial,sans-serif;color:var(--ink);background:var(--bg)}
-  .layout{display:grid;grid-template-columns:260px minmax(0,1080px);justify-content:center}
-  .menu{position:sticky;top:0;align-self:start;max-height:100vh;overflow:auto;padding:34px 0 24px 22px}
-  .menu a{display:block;padding:7px 10px;border-radius:8px;color:var(--muted);font-size:13px;text-decoration:none}
-  .menu a:hover{background:#e7e9ec;color:var(--ink)}
-  .menu>a{font-weight:600;color:var(--ink);margin-top:8px}
-  .menu>a:first-child{margin-top:0}
-  .menu>a[aria-current]{background:var(--soft);color:#127a52}
-  .menu .sub{padding-left:10px}
-  .menu .sub a{padding:4px 10px;font-size:12px;line-height:1.4}
-  h2[id]{scroll-margin-top:14px}
-  .wrap{min-width:0;padding:34px 22px 60px}
-  header .kick{color:var(--grn);font-weight:700;font-size:12px;letter-spacing:.12em;text-transform:uppercase}
-  h1{font-size:26px;margin:6px 0 6px}
-  .lead{color:var(--muted);font-size:14px;max-width:680px;margin:0 0 18px}
-  /* pipeline */
-  .pipe{display:flex;flex-wrap:wrap;gap:8px;align-items:center;background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin:0 0 12px}
-  .pipe .s{font-size:12.5px;font-weight:600;background:var(--soft);border:1px solid #cfe9dd;color:#127a52;border-radius:20px;padding:5px 12px}
-  .pipe .a{color:var(--muted)}
-  .meta{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 26px;color:var(--muted);font-size:12.5px}
-  .meta b{color:var(--ink)}
-  h2{font-size:13px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin:26px 0 10px;border-bottom:1px solid var(--line);padding-bottom:6px}
-  .cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
-  .card{display:block;text-decoration:none;color:inherit;background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:16px 18px;transition:.12s}
-  .card:hover{border-color:var(--grn);box-shadow:0 6px 20px rgba(25,195,125,.12);transform:translateY(-1px)}
-  .card .t{font-size:15px;font-weight:700;display:flex;align-items:center;gap:8px}
-  .card .t .ar{margin-left:auto;color:var(--grn)}
-  .card .d{color:var(--muted);font-size:12.5px;margin:6px 0 9px}
-  .card .tags{display:flex;flex-wrap:wrap;gap:5px}
-  .card .d,.fname{overflow-wrap:anywhere}
-  .tag{font-size:10.5px;border:1px solid var(--line);border-radius:11px;padding:2px 9px;color:#555;background:#fafafa}
-  .tag.k{background:var(--soft);border-color:#cfe9dd;color:#127a52}
-  .tag.old{background:#fff4e5;border-color:#f0d3a8;color:#8a5a14}
-  .full{grid-column:1/-1}
-  .note{color:var(--muted);font-size:12px;margin-top:26px;border-top:1px solid var(--line);padding-top:14px}
-  .fname{font-family:ui-monospace,Menlo,monospace;font-size:11px;color:#8a94a0}
-  @media(max-width:900px){
-    .layout{display:block}
-    .menu{z-index:5;display:flex;gap:4px;max-height:none;overflow-x:auto;padding:8px 16px;background:var(--bg);border-bottom:1px solid var(--line)}
-    .menu a,.menu>a:first-child{flex:none;display:flex;align-items:center;min-height:44px;white-space:nowrap;margin:0;font-weight:400}
-    .menu .sub{display:none}
-    h2[id]{scroll-margin-top:72px}
-    .wrap{padding-top:22px}
+  body{margin:0;background:var(--color-bg-app);color:var(--color-text-primary);font:400 1rem/1.5rem -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans TC",sans-serif}
+  a{color:inherit;text-decoration:none}
+  :focus-visible{outline:2px solid var(--color-brand-secondary);outline-offset:-2px}
+  .layout{display:grid;grid-template-columns:14rem minmax(0,60rem);justify-content:center;gap:2.5rem;padding:0 1.5rem}
+  .menu{position:sticky;top:0;align-self:start;max-height:100vh;overflow:auto;padding:1.75rem 0}
+  .brand{display:block;font-weight:700;font-size:1.125rem;line-height:1.75rem;margin:0 0 1.25rem .75rem}
+  .menu a{display:flex;justify-content:space-between;align-items:center;gap:.75rem;min-height:2.75rem;padding:0 .75rem;border-radius:.5rem;color:var(--color-text-secondary);font-size:.875rem;line-height:1.25rem}
+  .menu a:hover{background:var(--color-bg-card)}
+  .menu a[aria-current]{background:var(--color-brand-secondary-subtle);color:var(--color-brand-secondary);font-weight:600}
+  .menu .n{font-size:.75rem;font-weight:400;font-variant-numeric:tabular-nums}
+  .menu a.empty{opacity:.45}
+  .find{position:sticky;top:0;z-index:2;background:var(--color-bg-app);border-bottom:2px solid var(--color-text-primary);display:flex;align-items:center;gap:1rem;padding:1.5rem 0 .75rem}
+  .find label{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+  .find input{flex:1;min-width:0;border:0;background:none;color:inherit;font-family:inherit;font-weight:700;font-size:1.875rem;line-height:2.25rem;padding:0;outline:0}
+  .find input::placeholder{color:var(--color-text-primary);opacity:1}
+  .find input:focus::placeholder{color:var(--color-text-muted)}
+  .find input::-webkit-search-cancel-button{display:none}
+  .find .tally{flex:none;color:var(--color-text-muted);font-size:.875rem;font-variant-numeric:tabular-nums}
+  .wrap{padding:0 0 4rem}
+  section{margin-top:2.5rem}
+  h2{margin:0 0 .25rem;padding:0 .75rem;font-size:.875rem;line-height:1.25rem;font-weight:600;color:var(--color-text-secondary);scroll-margin-top:7rem}
+  .doc{display:grid;grid-template-columns:15rem minmax(0,1fr) 4.5rem;gap:1rem;align-items:baseline;padding:.625rem .75rem;border-bottom:1px solid var(--color-border-subtle);border-radius:.25rem}
+  .doc:hover{background:var(--color-bg-card)}
+  .doc:hover .title{color:var(--color-brand-secondary)}
+  .title{font-weight:600;font-size:.9375rem}
+  .what{color:var(--color-text-secondary);font-size:.875rem;line-height:1.25rem;grid-column:2}
+  .ext{margin-left:.25rem;color:var(--color-text-muted);font-weight:400}
+  .status{grid-column:3;justify-self:end;font-size:.75rem;line-height:1.25rem;color:var(--color-text-secondary)}
+  .status.built{color:var(--color-brand-secondary);font-weight:600}
+  .status.proposal{color:var(--color-promo-accent)}
+  .doc:has(.status.old) .title{font-weight:400;color:var(--color-text-secondary)}
+  .none{margin:2.5rem .75rem 0;color:var(--color-text-secondary)}
+  .foot{margin:2.5rem .75rem 0;color:var(--color-text-muted);font-size:.75rem;line-height:1.25rem;max-width:40rem}
+  [hidden]{display:none!important}
+  @media(max-width:767px){
+    .layout{display:block;padding:0 1rem}
+    .menu{z-index:3;display:flex;gap:.25rem;margin:0 -1rem;padding:.25rem 1rem;max-height:none;overflow-x:auto;background:var(--color-bg-app);scrollbar-width:none}
+    .menu::-webkit-scrollbar{display:none}
+    .brand{display:none}
+    .menu a{flex:none;white-space:nowrap}
+    .find{top:3.25rem;padding:.5rem 0}
+    .find input{font-size:1.25rem;line-height:1.75rem}
+    h2{padding:0;scroll-margin-top:8.5rem}
+    .doc{grid-template-columns:minmax(0,1fr) auto;gap:0 .75rem;padding:.75rem 0}
+    .what{grid-column:1/-1;grid-row:2;margin-top:.125rem}
+    .status{grid-column:2;grid-row:1}
+    .none,.foot{margin-left:0;margin-right:0}
   }
-  @media(max-width:680px){.cards{grid-template-columns:minmax(0,1fr)}}
 </style>
 </head>
 <body>
 <div class="layout">
-<nav class="menu" aria-label="Sections">
-  <a href="#ui">UI</a>
-  <a href="#flows">① Confirmed Flows</a>
-  <a href="#docs">Flow Documents</a>
-  <a href="#compositions">② Compositions</a>
-  <a href="#foundations">③ Foundations</a>
-  <a href="#reference">④ Full Platform</a>
-  <a href="#notes">⑤ Meeting Notes</a>
-  <a href="#ideas">New Ideas</a>
-</nav>
-<div class="wrap">
-  <header>
-    <div class="kick">V9Bet · Live Site Optimization</div>
-    <h1>UX / Wireframe Delivery Kit</h1>
-    <p class="lead">Full-site optimization based on the complete "New customers sign up flow" docx (117 items) + real v9bet.com live-site captures. Flows were settled as <b>grayscale wireframes</b> first; the UI was then built in Figma by AI driving the file directly, on the live product's v1 look, and the mobile web is implemented in <b>Tailwind CSS</b> from the same variables and components. A single entry point below to browse all deliverables.</p>
-  </header>
-
-  <div class="pipe">
-    <span class="s">① Confirmed flows</span><span class="a">→</span>
-    <span class="s">② Compositions</span><span class="a">→</span>
-    <span class="s">③ Foundations / Components</span><span class="a">→</span>
-    <span class="s">④ Full-platform reference</span><span class="a">→</span>
-    <span class="s">⑤ Meeting notes</span>
-  </div>
-  <div class="meta"><span><b>docx</b> 117 items fully covered</span><span><b>12</b> confirmed flow pages</span><span><b>54</b> full-platform screens</span><span><b>17</b> page compositions</span><span><b>24</b> components</span><span>Mobile/App first · Desktop centered</span></div>
-
-  <h2 id="ui">📱 UI — Figma design + Tailwind CSS build</h2>
-  <div class="cards">
-    <a class="card full" href="https://www.figma.com/design/RQEyZIgfkCKHdzYmOwprvR" target="_blank" rel="noopener">
-      <div class="t">Figma · V9Bet Mobile Web — UI (v1 look)<span class="ar">↗</span></div>
-      <div class="d">The design source for every screen: variables (colour, spacing, radius) and components built on the live product's v1 look, with the screens laid out from the wireframes. Same variables and components as the Tailwind build below — change one side, change the other. Node ids and measured specs are in FIGMA.md.</div>
-      <div class="tags"><span class="tag k">Figma</span><span class="tag">Design source</span><span class="fname">RQEyZIgfkCKHdzYmOwprvR</span></div>
-    </a>
-    <a class="card" href="ui-kit.html">
-      <div class="t">UI Kit — for engineers<span class="ar">→</span></div>
-      <div class="d">The engineering reference: how to wire Tailwind to the tokens, the token table, and every component with its states, class API and copy-paste markup. Every example on the page is the real component, so it cannot drift from the product.</div>
-      <div class="tags"><span class="tag k">Tailwind components</span><span class="tag">EN</span><span class="fname">ui-kit.html</span></div>
-    </a>
-    <a class="card" href="ui-guideline.html">
-      <div class="t">UI Guideline · 設計規範<span class="ar">→</span></div>
-      <div class="d">The rules for building a screen: the visual source (the live product, Figma APP-V9Bet-v1), colour and type, page structure, when to use each component, copy, and what not to do.</div>
-      <div class="tags"><span class="tag k">Rules</span><span class="tag">中</span><span class="fname">ui-guideline.html</span></div>
-    </a>
-    <a class="card" href="login-flow-tailwind.html">
-      <div class="t">Login — built screen<span class="ar">→</span></div>
-      <div class="d">Social sign-in with a last-used marker, One-time code | Password tabs, keep me logged in. Flow from the Login wireframe, look from the live product.</div>
-      <div class="tags"><span class="tag k">Mobile web</span><span class="fname">login-flow-tailwind.html</span></div>
-    </a>
-    <a class="card" href="signup-flow-tailwind.html">
-      <div class="t">Sign Up — built screen<span class="ar">→</span></div>
-      <div class="d">Email plus an optional referral code; consent unlocks the button. Add ?ref=BH0943 to the address to see a code arriving from an invite link.</div>
-      <div class="tags"><span class="tag k">Mobile web</span><span class="fname">signup-flow-tailwind.html</span></div>
-    </a>
-  </div>
-
-  <h2 id="flows">① Confirmed Flow Wireframes — start here</h2>
-  <div class="cards">
-    <a class="card" href="signup-flow-wireframe.html">
-      <div class="t">Sign-up Wireframe (grayscale)<span class="ar">→</span></div>
-      <div class="d">15 screens + multiple states, IT spec on the right. Email only — one field plus a 6-digit code, with an optional referral code; no phone, no password, no Captcha. 3rd-party = Google / LINE / Zalo; a provider email that matches an existing account binds and logs in straight away, with no code. Set a password and Security are out of Setup for now and stay in Settings.</div>
-      <div class="tags"><span class="tag">Low-fidelity</span><span class="tag k">Email + OTP</span><span class="tag">Setup</span><span class="fname">signup-flow-wireframe.html</span></div>
-    </a>
-    <a class="card" href="login-flow-wireframe.html">
-      <div class="t">Login Flow (grayscale)<span class="ar">→</span></div>
-      <div class="d">5 screens: Login home (social icons on top w/ last-used badge, One-time code | Password tabs) → one-time code login (verified contact + channel) → biometric/passkey (WebAuthn + fallback) → forgot password (Unified OTP flow) → lockout & risk step-up + session rules. Single active session — a new login elsewhere ends the other device automatically.</div>
-      <div class="tags"><span class="tag">Low-fidelity</span><span class="tag k">Passwordless</span><span class="tag">Passkey</span><span class="fname">login-flow-wireframe.html</span></div>
-    </a>
-    <a class="card" href="verification-flow-wireframe.html">
-      <div class="t">Verification Flow — Unified OTP docx + design mockups<span class="ar">→</span></div>
-      <div class="d">8 screens: rules & mode matrix (both→select Email/SMS · one→auto · none→verify new contact inline, serves as OTP) → Select Verification Mode → First-time Verify → OTP code states → result → add/change contact (same-type rule) → forgot password (Account ID revealed after OTP) → entry points (change password, first-time payout account, promo claim).</div>
-      <div class="tags"><span class="tag">Low-fidelity</span><span class="tag k">Unified OTP</span><span class="tag">Email / SMS</span><span class="fname">verification-flow-wireframe.html</span></div>
-    </a>
-    <a class="card" href="home-flow-wireframe.html">
-      <div class="t">Lobby (grayscale)<span class="ar">→</span></div>
-      <div class="d">First pass from v1: logged in (returning, new member, tour, setup not finished, announcement) → logged out → Games tab → where each block leads. Changes from v1 are proposals, listed in Dev Notes.</div>
-      <div class="tags"><span class="tag">Low-fidelity</span><span class="tag k">Logged in · logged out</span><span class="tag">From v1</span><span class="fname">home-flow-wireframe.html</span></div>
-    </a>
-    <a class="card" href="profile-settings-flow-wireframe.html">
-      <div class="t">Profile &amp; Settings Flow (grayscale)<span class="ar">→</span></div>
-      <div class="d">7 screens: Settings home (no nudge card — each skipped setup item shows its status on its own row (Not added / Add / Not set) — no points since 10-21) → Personal Information → Phone · Email · Password → Security &amp; Sessions (biometrics, passkey, the one active session, linked Google / LINE / Zalo) → Bank Account / USDT → Notifications · Theme · Language · Product preferences → Setup ↔ Settings map.</div>
-      <div class="tags"><span class="tag">Low-fidelity</span><span class="tag k">Resume skipped setup</span><span class="tag">Reuse setup screens</span><span class="fname">profile-settings-flow-wireframe.html</span></div>
-    </a>
-    <a class="card" href="history-flow-wireframe.html">
-      <div class="t">History Flow (grayscale)<span class="ar">→</span></div>
-      <div class="d">9 screens: History home (timeline · category chips · date range · search · empty state) → 7 record categories — Deposits &amp; withdrawals, Bets &amp; results, Rewards &amp; promotions, Account &amp; security changes, Referrals, KYC &amp; profile, Responsible Gaming → retention &amp; visibility matrix. No Login &amp; Devices category — those records live solely in Profile &amp; Settings › Security &amp; Sessions.</div>
-      <div class="tags"><span class="tag">Low-fidelity</span><span class="tag k">7 categories</span><span class="tag">Retention matrix</span><span class="fname">history-flow-wireframe.html</span></div>
-    </a>
-    <a class="card" href="wallet-flow-wireframe.html">
-      <div class="t">Wallet Flow (grayscale)<span class="ar">→</span></div>
-      <div class="d">8 screens: Wallet home (VND/THB, withdrawable, bonus wallets w/ churn, USDT wrapped) → Deposit (method grid w/ per-tile minimums, offers and maintenance → third-party gateway handoff, redirect or iframe, with retry-safety split before/after handoff → pay instructions → pending / credited / unmatched, every state linking into History) → Withdrawal (saved accounts or add new w/ locked holder name, churn-unmet and KYC blockers → first-time-account OTP → processing / paid / rejected / delayed).</div>
-      <div class="tags"><span class="tag">Low-fidelity</span><span class="tag k">Deposit + Withdrawal</span><span class="tag">USDT wrapped</span><span class="fname">wallet-flow-wireframe.html</span></div>
-    </a>
-    <a class="card" href="promotion-flow-wireframe.html">
-      <div class="t">Promotion Flow (grayscale)<span class="ar">→</span></div>
-      <div class="d">5 screens: list (filters, claimable, my rewards) → detail (banner, max bonus / how to claim / turnover, full T&amp;C) → Claim → Personal Details sheet → OTP sheet (shared component) → result (bonus active w/ churn &amp; expiry · deposit-first · failed).</div>
-      <div class="tags"><span class="tag">Low-fidelity</span><span class="tag k">Claim → OTP</span><span class="fname">promotion-flow-wireframe.html</span></div>
-    </a>
-    <a class="card" href="growth-support-wireframe.html">
-      <div class="t">Growth &amp; Support Pages (grayscale)<span class="ar">→</span></div>
-      <div class="d">7 screens: Search · Favourites &amp; recently played · VIP / Loyalty · Refer a Friend · Responsible Gaming centre (limits, take a break, self-exclude) · KYC upload · App install &amp; onboarding.</div>
-      <div class="tags"><span class="tag">Low-fidelity</span><span class="tag k">RG · KYC · RAF</span><span class="fname">growth-support-wireframe.html</span></div>
-    </a>
-    <a class="card" href="system-pages-wireframe.html">
-      <div class="t">System &amp; Legal Pages (grayscale)<span class="ar">→</span></div>
-      <div class="d">4 screens: Terms / Privacy / RG policy (in-context sheet) · Help Center / FAQ / About / Contact · Error pages (404, offline, session-expired) · System states (maintenance, region block, soft vs hard app update).</div>
-      <div class="tags"><span class="tag">Low-fidelity</span><span class="tag k">Legal + errors</span><span class="fname">system-pages-wireframe.html</span></div>
-    </a>
-    <a class="card" href="security-methods-wireframe.html">
-      <div class="t">Passkey &amp; Authenticator (grayscale)<span class="ar">→</span></div>
-      <div class="d">12 screens / 37 states. Passkey as the way you sign IN (post-login upsell, autofill sign-in, cross-device QR, per-device management) and an authenticator app as the way you confirm money moving (QR enrolment, verify-before-enable, recovery codes, withdrawal step-up). Dev Notes carry the market pattern behind each screen and why the two are not interchangeable.</div>
-      <div class="tags"><span class="tag">Low-fidelity</span><span class="tag k">WebAuthn</span><span class="tag">TOTP</span><span class="fname">security-methods-wireframe.html</span></div>
-    </a>
-    <a class="card full" href="status-bubble-wireframe.html">
-      <div class="t">Live Status Bubble + LINE / Push deep links (grayscale)<span class="ar">→</span></div>
-      <div class="d">5 screens: floating progress bubble that exists only while a record is in flight — pending / step-changed / done / error → tap opens a bottom progress card → multiple records collapse to one bubble → LINE (TH) / Zalo (VN) / push messages carry deep links → placement, collision, suppression, priority &amp; auto-hide rules.</div>
-      <div class="tags"><span class="tag">Low-fidelity</span><span class="tag k">Floating bubble</span><span class="tag">LINE / push deep link</span><span class="fname">status-bubble-wireframe.html</span></div>
-    </a>
-  </div>
-
-  <h2 id="docs">📄 Flow Documents — bilingual, written to be shared</h2>
-  <div class="cards">
-    <a class="card" href="entry-routes.html">
-      <div class="t">進站三條路 · Three Ways In<span class="ar">→</span></div>
-      <div class="d">One diagram covering login, sign-up and setup together. Three routes leave the same Sign up | Login screen and end at the same home, but only one creates an account — and only that one goes through Setup. Includes the rules each route follows, the four rules shared across all three, and the copy contradiction between sign-up and login on whether an account exists.</div>
-      <div class="tags"><span class="tag k">Diagram</span><span class="tag">中／EN</span><span class="fname">entry-routes.html</span></div>
-    </a>
-    <a class="card" href="history-routes.html">
-      <div class="t">一條時間軸，七個類別 · One Timeline<span class="ar">→</span></div>
-      <div class="d">The History flow as one diagram: three entries (Profile, Wallet "View all", Promotions "My rewards"), one 30-day timeline filtered by seven category chips, four exits (fix it, Live Chat, Settings, Export), and the Ask AI citation loop. Includes the rules the whole timeline shares — window vs retention, the P&amp;L exception, bad news carrying why + next — and the three gaps still unspecified.</div>
-      <div class="tags"><span class="tag k">Diagram</span><span class="tag">中／EN</span><span class="fname">history-routes.html</span></div>
-    </a>
-    <a class="card" href="wallet-routes.html">
-      <div class="t">錢的三條路 · Three Roads<span class="ar">→</span></div>
-      <div class="d">The Wallet flow as one diagram: one Banking screen, two deposit roads (manual transfer reconciled by note; gateway handoff resolved only by the provider webhook) and the withdrawal road with its reasoned gates. Includes the retry-safety line before/after the bank handoff, the never-locked deposit model, the one-reference-three-views rule, and the three gaps still unspecified — member cancel, USDT rate expiry, the fee schedule.</div>
-      <div class="tags"><span class="tag k">Diagram</span><span class="tag">中／EN</span><span class="fname">wallet-routes.html</span></div>
-    </a>
-    <a class="card" href="passkey-totp.html">
-      <div class="t">Passkey 與 Authenticator · Two Methods<span class="ar">→</span></div>
-      <div class="d">Why the two are not interchangeable: a passkey's key is bound to the domain, so a fake site cannot raise the prompt; an authenticator's six digits are typed by a person who can be talked into typing them anywhere. What the market does with each, and where each one earns its place here — passkeys for signing in, an authenticator for withdrawal step-up instead of SMS.</div>
-      <div class="tags"><span class="tag k">Market practice</span><span class="tag">中／EN</span><span class="fname">passkey-totp.html</span></div>
-    </a>
-    <a class="card" href="setup-nine.html">
-      <div class="t">Setup 八項 · The Eight Setup Items<span class="ar">→</span></div>
-      <div class="d">What registration hands you over to, item by item. Step 1 is the only part with no exit, which is why anything that must actually be collected has to live there. For every skippable item, the page names the exact place skipping it catches up with you — the withdrawal wall, the locked message channels, the missing login method.</div>
-      <div class="tags"><span class="tag old">⚠ Old flow</span><span class="tag k">Required vs skip</span><span class="tag">中／EN</span><span class="fname">setup-nine.html</span></div>
-    </a>
-    <a class="card" href="signup-tracks.html">
-      <div class="t">註冊雙軌流程 · Registration Tracks<span class="ar">→</span></div>
-      <div class="d">Email sign-up, social sign-up, and a dormant account returning after a year — step by step, side by side. Covers what each provider hands over (Google returns a verified email, Zalo returns none), and the decision that followed: the missing contact is settled at Setup Step 1 by has_verified_contact, not by branching the welcome screen.</div>
-      <div class="tags"><span class="tag old">⚠ Old flow</span><span class="tag k">3 tracks</span><span class="tag">中／EN</span><span class="fname">signup-tracks.html</span></div>
-    </a>
-  </div>
-
-  <h2 id="compositions">② Page Compositions / Module Maps</h2>
-  <div class="cards">
-    <a class="card" href="v9bet-home-composition.html">
-      <div class="t">Home Composition<span class="ar">→</span></div>
-      <div class="d">Optimized home page, Desktop (top menu) / Mobile (bottom tab) switch, block numbers mapped to modules. Module-level companion to Home Flow above.</div>
-      <div class="tags"><span class="tag k">Live winners/jackpot</span><span class="tag">Personalization</span><span class="fname">v9bet-home-composition.html</span></div>
-    </a>
-    <a class="card" href="v9bet-flows-composition.html">
-      <div class="t">All Pages Composition<span class="ar">→</span></div>
-      <div class="d">17 pages / 8 groups: Entry · Account · Wallet Deposit/Withdrawal · Messages/Support · Promotions/Games · Products · Programs · Feedback. Multiple mobile storyboards + live-site pain point comparison.</div>
-      <div class="tags"><span class="tag k">Live → Optimized</span><span class="tag">Deposit/Wallet/wizard</span><span class="fname">v9bet-flows-composition.html</span></div>
-    </a>
-    <a class="card full" href="v9bet-campaign-flow.html">
-      <div class="t">Campaign Launch Flow<span class="ar">→</span></div>
-      <div class="d">When a campaign goes live: told → joins → claims. 6 views: launch flow (popup → campaign screen) · multi-channel reach (popup/push/inbox/marquee) · screen states (active/joined/completed/ended/ineligible) · two+ campaigns (one combined popup, never two) · types (missions / daily check-in / spin wheel / red packet 🧧) · button-only (TikTok-style floating 悬浮球). Frequency-cap & targeting rules included. docx 36/45/47.</div>
-      <div class="tags"><span class="tag k">Popup → Campaign</span><span class="tag">Multi-channel reach</span><span class="tag">Floating 悬浮球</span><span class="fname">v9bet-campaign-flow.html</span></div>
-    </a>
-  </div>
-
-  <h2 id="foundations">③ Foundations &amp; Components</h2>
-  <div class="cards">
-    <a class="card full" href="v9bet-foundations.html">
-      <div class="t">Foundations & Full Site<span class="ar">→</span></div>
-      <div class="d">Cross-site definitions beyond pages/components: Global Header/Footer, navigation, RWD breakpoints, form validation, i18n, system/error pages, Session, permissions, Responsible Gaming, event tracking, realtime connections.</div>
-      <div class="tags"><span class="tag k">Site-wide framework</span><span class="tag">RWD breakpoints</span><span class="tag">⚠ Responsible Gaming (legal)</span><span class="fname">v9bet-foundations.html</span></div>
-    </a>
-    <a class="card full" href="v9bet-components.html">
-      <div class="t">Component Library (Component Contract)<span class="ar">→</span></div>
-      <div class="d">24 cross-page shared components + Z-index layer order table. Each component defined by a 9-column contract (purpose/trigger/position/duration/blocking/layer/variants/source/a11y).</div>
-      <div class="tags"><span class="tag k">Toast/Popup/Banner</span><span class="tag">Panel/Overlay/Chat</span><span class="tag">Z-index order</span><span class="fname">v9bet-components.html</span></div>
-    </a>
-    <a class="card full" href="v9bet-analytics.html">
-      <div class="t">Analytics & Event Tracking<span class="ar">→</span></div>
-      <div class="d">Standalone analytics spec: 4 funnels (drop-off), full event taxonomy & naming, event-spec template, KPI scorecard, AARRR dashboards, segments/cohorts, and governance (incl. Responsible Gaming compliance). docx 51/55.</div>
-      <div class="tags"><span class="tag k">Funnels</span><span class="tag">Event taxonomy</span><span class="tag">Governance</span><span class="fname">v9bet-analytics.html</span></div>
-    </a>
-  </div>
-
-  <h2 id="reference">④ Full-Platform Reference (54 screens, per full docx)</h2>
-  <div class="cards">
-    <a class="card full" href="v9bet-full-wireframe.html">
-      <div class="t">Full Platform Wireframe (54 screens)<span class="ar">→</span></div>
-      <div class="d">Per-screen wireframes for all 117 docx items, each with IT spec (purpose/States/Fields/API/dev notes) + docx line numbers; pure rules collected under "Rules & Notes". Kept in sync with ① as a full-site mirror — for day-to-day work, the confirmed flow pages in ① are the single source of truth.</div>
-      <div class="tags"><span class="tag k">54 screens · 12 groups</span><span class="tag">Per-screen spec</span><span class="tag">docx line refs</span><span class="fname">v9bet-full-wireframe.html</span></div>
-    </a>
-  </div>
-
-  <h2 id="notes">⑤ Meeting Notes / Decision Log</h2>
-  <div class="cards">
-    <a class="card full" href="meeting-notes-signup-ux.html">
-      <div class="t">📝 Sign-up UX 決議記錄 (Jul 15 – Aug 30)<span class="ar">→</span></div>
-      <div class="d">Decision log: phone/email tabs, deferred language/currency/referral (+mitigations), G/LINE/X social sign-up (re-auth required to bind an existing account), OTP channels, login re-layout, single active session policy, reward-based Setup, Face ID/passkey mandatory-vs-skip, History category consolidation, open items.</div>
-      <div class="tags"><span class="tag k">Meeting notes</span><span class="tag">Decision log</span><span class="fname">meeting-notes-signup-ux.html</span></div>
-    </a>
-  </div>
-
-  <h2 id="ideas">💡 New Ideas / Explorations</h2>
-  <div class="cards">
-    <a class="card full" href="lobby-ai-wireframe.html">
-      <div class="t">AI Lobby (grayscale)<span class="ar">→</span></div>
-      <div class="d">Proposal: three AI directions for the lobby. Today (AI-written match and game news) → For you (explained game picks) → Ask V9 (chat, next phase) → rules for what AI may and may not do.</div>
-      <div class="tags"><span class="tag">Low-fidelity</span><span class="tag k">Exploration</span><span class="tag">AI</span><span class="fname">lobby-ai-wireframe.html</span></div>
-    </a>
-    <a class="card full" href="v9bet-sports-first-concept.html">
-      <div class="t">Sports-First Concept (social card-feed betting)<span class="ar">→</span></div>
-      <div class="d">Alternative direction (not the core spec): Sports & Live Casino co-primary, other games minimized. Replaces the dense odds grid with a readable, social, one-tap card feed — stories rail, likes/comments/share, live betting count, swipe, inline live-stream → PiP, stake-rail quick bet. 4 views incl. an Old-grid → New-card comparison.</div>
-      <div class="tags"><span class="tag k">Exploration</span><span class="tag">Card feed</span><span class="tag">One-tap + stake rail</span><span class="tag">Social</span><span class="fname">v9bet-sports-first-concept.html</span></div>
-    </a>
-  </div>
-
-  <div class="note">
-    All grayscale low-fidelity wireframes, intended to lock down UX and structure; UI visuals to follow once approved.<br>
-    ① is the confirmed, day-to-day source of truth. ② shows how pages compose from modules. ③/④ are shared/reference material. ⑤ is the decision history behind ①. Share this page's link directly when handing off to Dev.
-  </div>
-</div>
+  <nav class="menu" aria-label="Sections">
+    <span class="brand">V9Bet</span>
+    <a href="#ui">Design &amp; build <span class="n" data-count="ui">8</span></a>
+    <a href="#flows">① Confirmed flows <span class="n" data-count="flows">12</span></a>
+    <a href="#docs">Flow documents <span class="n" data-count="docs">6</span></a>
+    <a href="#compositions">② Compositions <span class="n" data-count="compositions">3</span></a>
+    <a href="#foundations">③ Foundations <span class="n" data-count="foundations">3</span></a>
+    <a href="#reference">④ Full platform <span class="n" data-count="reference">1</span></a>
+    <a href="#notes">⑤ Meeting notes <span class="n" data-count="notes">1</span></a>
+    <a href="#ideas">New ideas <span class="n" data-count="ideas">2</span></a>
+  </nav>
+  <main>
+    <h1 hidden>V9Bet Documents</h1>
+    <div class="find" role="search">
+      <label for="q">Find a document</label>
+      <input id="q" type="search" placeholder="Find a document" autocomplete="off" spellcheck="false">
+      <span class="tally" id="tally" aria-live="polite"></span>
+    </div>
+    <div class="wrap">
+  <section data-section aria-labelledby="ui">
+    <h2 id="ui">Design &amp; build</h2>
+    <a class="doc" href="https://www.figma.com/design/RQEyZIgfkCKHdzYmOwprvR" target="_blank" rel="noopener" data-more="The design source for every screen: variables (colour, spacing, radius) and components built on the live product&#x27;s v1 look, with the screens laid out from the wireframes. Same variables and components as the Tailwind build below — change one side, change the other. Node ids and measured specs are in FIGMA.md."><span class="title">Figma: V9Bet Mobile Web UI<span class="ext" aria-label="opens in a new tab">↗</span></span><span class="what">Design source for every screen: variables, components and layouts.</span></a>
+    <a class="doc" href="ui-kit.html" data-more="The engineering reference: how to wire Tailwind to the tokens, the token table, and every component with its states, class API and copy-paste markup. Every example on the page is the real component, so it cannot drift from the product."><span class="title">UI Kit</span><span class="what">For engineers: tokens, every component and its states, markup to copy.</span></a>
+    <a class="doc" href="ui-guideline.html" data-more="The rules for building a screen: the visual source (the live product, Figma APP-V9Bet-v1), colour and type, page structure, when to use each component, copy, and what not to do."><span class="title">UI Guideline 設計規範</span><span class="what">How to build a screen: colour, type, page structure, components, copy.</span></a>
+    <a class="doc" href="auth-flow-tailwind.html" data-more=""><span class="title">Sign Up and Log In</span><span class="what">Working mobile web screens, including the sign-up and login states.</span><span class="status built">Built</span></a>
+    <a class="doc" href="setup-flow-tailwind.html" data-more=""><span class="title">Setup</span><span class="what">Working mobile web screens: only the steps a member has not done.</span><span class="status built">Built</span></a>
+    <a class="doc" href="settings-tailwind.html" data-more=""><span class="title">Settings</span><span class="what">Working mobile web screens: account, security and display.</span><span class="status built">Built</span></a>
+    <a class="doc" href="login-flow-tailwind.html" data-more="Social sign-in with a last-used marker, One-time code | Password tabs, keep me logged in. Flow from the Login wireframe, look from the live product."><span class="title">Login, first build</span><span class="what">Replaced by Sign Up and Log In above.</span><span class="status old">Old</span></a>
+    <a class="doc" href="signup-flow-tailwind.html" data-more="Email plus an optional referral code; consent unlocks the button. Add ?ref=BH0943 to the address to see a code arriving from an invite link."><span class="title">Sign Up, first build</span><span class="what">Replaced by Sign Up and Log In above.</span><span class="status old">Old</span></a>
+  </section>
+  <section data-section aria-labelledby="flows">
+    <h2 id="flows">① Confirmed flows</h2>
+    <a class="doc" href="signup-flow-wireframe.html" data-more="15 screens + multiple states, IT spec on the right. Email only — one field plus a 6-digit code, with an optional referral code; no phone, no password, no Captcha. 3rd-party = Google / LINE / Zalo; a provider email that matches an existing account binds and logs in straight away, with no code. Set a password and Security are out of Setup for now and stay in Settings."><span class="title">Sign-up</span><span class="what">Email and code, third-party sign-up, Setup, welcome.</span></a>
+    <a class="doc" href="login-flow-wireframe.html" data-more="5 screens: Login home (social icons on top w/ last-used badge, One-time code | Password tabs) → one-time code login (verified contact + channel) → biometric/passkey (WebAuthn + fallback) → forgot password (Unified OTP flow) → lockout &amp; risk step-up + session rules. Single active session — a new login elsewhere ends the other device automatically."><span class="title">Login</span><span class="what">One-time code, password, passkey, lockout and sessions.</span></a>
+    <a class="doc" href="verification-flow-wireframe.html" data-more="8 screens: rules &amp; mode matrix (both→select Email/SMS · one→auto · none→verify new contact inline, serves as OTP) → Select Verification Mode → First-time Verify → OTP code states → result → add/change contact (same-type rule) → forgot password (Account ID revealed after OTP) → entry points (change password, first-time payout account, promo claim)."><span class="title">Verification</span><span class="what">The one-time code rules and screens used across the site.</span></a>
+    <a class="doc" href="home-flow-wireframe.html" data-more="First pass from v1: logged in (returning, new member, tour, setup not finished, announcement) → logged out → Games tab → where each block leads. Changes from v1 are proposals, listed in Dev Notes."><span class="title">Lobby</span><span class="what">Logged in, logged out, Games tab, and where each block leads.</span></a>
+    <a class="doc" href="profile-settings-flow-wireframe.html" data-more="7 screens: Settings home (no nudge card — each skipped setup item shows its status on its own row (Not added / Add / Not set) — no points since 10-21) → Personal Information → Phone · Email · Password → Security &amp; Sessions (biometrics, passkey, the one active session, linked Google / LINE / Zalo) → Bank Account / USDT → Notifications · Theme · Language · Product preferences → Setup ↔ Settings map."><span class="title">Profile and Settings</span><span class="what">Personal details, security, payout accounts, preferences.</span></a>
+    <a class="doc" href="history-flow-wireframe.html" data-more="9 screens: History home (timeline · category chips · date range · search · empty state) → 7 record categories — Deposits &amp; withdrawals, Bets &amp; results, Rewards &amp; promotions, Account &amp; security changes, Referrals, KYC &amp; profile, Responsible Gaming → retention &amp; visibility matrix. No Login &amp; Devices category — those records live solely in Profile &amp; Settings › Security &amp; Sessions."><span class="title">History</span><span class="what">One timeline with seven record categories and retention rules.</span></a>
+    <a class="doc" href="wallet-flow-wireframe.html" data-more="8 screens: Wallet home (VND/THB, withdrawable, bonus wallets w/ churn, USDT wrapped) → Deposit (method grid w/ per-tile minimums, offers and maintenance → third-party gateway handoff, redirect or iframe, with retry-safety split before/after handoff → pay instructions → pending / credited / unmatched, every state linking into History) → Withdrawal (saved accounts or add new w/ locked holder name, churn-unmet and KYC blockers → first-time-account OTP → processing / paid / rejected / delayed)."><span class="title">Wallet</span><span class="what">Balance, deposit, withdrawal and every payment state.</span></a>
+    <a class="doc" href="promotion-flow-wireframe.html" data-more="5 screens: list (filters, claimable, my rewards) → detail (banner, max bonus / how to claim / turnover, full T&amp;C) → Claim → Personal Details sheet → OTP sheet (shared component) → result (bonus active w/ churn &amp; expiry · deposit-first · failed)."><span class="title">Promotions</span><span class="what">Offer list, detail, claim and result.</span></a>
+    <a class="doc" href="growth-support-wireframe.html" data-more="7 screens: Search · Favourites &amp; recently played · VIP / Loyalty · Refer a Friend · Responsible Gaming centre (limits, take a break, self-exclude) · KYC upload · App install &amp; onboarding."><span class="title">Growth and support</span><span class="what">Search, VIP, Refer a Friend, Responsible Gaming, KYC, app install.</span></a>
+    <a class="doc" href="system-pages-wireframe.html" data-more="4 screens: Terms / Privacy / RG policy (in-context sheet) · Help Center / FAQ / About / Contact · Error pages (404, offline, session-expired) · System states (maintenance, region block, soft vs hard app update)."><span class="title">System and legal</span><span class="what">Terms, help, error pages, maintenance and region block.</span></a>
+    <a class="doc" href="security-methods-wireframe.html" data-more="12 screens / 37 states. Passkey as the way you sign IN (post-login upsell, autofill sign-in, cross-device QR, per-device management) and an authenticator app as the way you confirm money moving (QR enrolment, verify-before-enable, recovery codes, withdrawal step-up). Dev Notes carry the market pattern behind each screen and why the two are not interchangeable."><span class="title">Passkey and authenticator</span><span class="what">Signing in with a passkey, confirming money with an authenticator.</span></a>
+    <a class="doc" href="status-bubble-wireframe.html" data-more="5 screens: floating progress bubble that exists only while a record is in flight — pending / step-changed / done / error → tap opens a bottom progress card → multiple records collapse to one bubble → LINE (TH) / Zalo (VN) / push messages carry deep links → placement, collision, suppression, priority &amp; auto-hide rules."><span class="title">Live status bubble</span><span class="what">Floating progress for a deposit, withdrawal or KYC, plus message deep links.</span></a>
+  </section>
+  <section data-section aria-labelledby="docs">
+    <h2 id="docs">Flow documents</h2>
+    <a class="doc" href="entry-routes.html" data-more="One diagram covering login, sign-up and setup together. Three routes leave the same Sign up | Login screen and end at the same home, but only one creates an account — and only that one goes through Setup. Includes the rules each route follows, the four rules shared across all three, and the copy contradiction between sign-up and login on whether an account exists."><span class="title">進站三條路 Three Ways In</span><span class="what">Login, sign-up and Setup on one diagram.</span></a>
+    <a class="doc" href="history-routes.html" data-more="The History flow as one diagram: three entries (Profile, Wallet &quot;View all&quot;, Promotions &quot;My rewards&quot;), one 30-day timeline filtered by seven category chips, four exits (fix it, Live Chat, Settings, Export), and the Ask AI citation loop. Includes the rules the whole timeline shares — window vs retention, the P&amp;L exception, bad news carrying why + next — and the three gaps still unspecified."><span class="title">一條時間軸 One Timeline</span><span class="what">How History connects to the rest of the product.</span></a>
+    <a class="doc" href="wallet-routes.html" data-more="The Wallet flow as one diagram: one Banking screen, two deposit roads (manual transfer reconciled by note; gateway handoff resolved only by the provider webhook) and the withdrawal road with its reasoned gates. Includes the retry-safety line before/after the bank handoff, the never-locked deposit model, the one-reference-three-views rule, and the three gaps still unspecified — member cancel, USDT rate expiry, the fee schedule."><span class="title">錢的三條路 Three Roads</span><span class="what">Two ways to deposit and one way to withdraw.</span></a>
+    <a class="doc" href="passkey-totp.html" data-more="Why the two are not interchangeable: a passkey&#x27;s key is bound to the domain, so a fake site cannot raise the prompt; an authenticator&#x27;s six digits are typed by a person who can be talked into typing them anywhere. What the market does with each, and where each one earns its place here — passkeys for signing in, an authenticator for withdrawal step-up instead of SMS."><span class="title">Passkey 與 Authenticator</span><span class="what">Why the two are not interchangeable, and where each one fits.</span></a>
+    <a class="doc" href="setup-nine.html" data-more="What registration hands you over to, item by item. Step 1 is the only part with no exit, which is why anything that must actually be collected has to live there. For every skippable item, the page names the exact place skipping it catches up with you — the withdrawal wall, the locked message channels, the missing login method."><span class="title">Setup 八項 Eight Setup Items</span><span class="what">The earlier three-step Setup, and what skipping each item costs.</span><span class="status old">Old</span></a>
+    <a class="doc" href="signup-tracks.html" data-more="Email sign-up, social sign-up, and a dormant account returning after a year — step by step, side by side. Covers what each provider hands over (Google returns a verified email, Zalo returns none), and the decision that followed: the missing contact is settled at Setup Step 1 by has_verified_contact, not by branching the welcome screen."><span class="title">註冊雙軌 Registration Tracks</span><span class="what">Email, third-party and returning accounts, side by side.</span><span class="status old">Old</span></a>
+  </section>
+  <section data-section aria-labelledby="compositions">
+    <h2 id="compositions">② Compositions</h2>
+    <a class="doc" href="v9bet-home-composition.html" data-more="Optimized home page, Desktop (top menu) / Mobile (bottom tab) switch, block numbers mapped to modules. Module-level companion to Home Flow above."><span class="title">Home composition</span><span class="what">The earlier home page, as a list of modules.</span><span class="status old">Old</span></a>
+    <a class="doc" href="v9bet-flows-composition.html" data-more="17 pages / 8 groups: Entry · Account · Wallet Deposit/Withdrawal · Messages/Support · Promotions/Games · Products · Programs · Feedback. Multiple mobile storyboards + live-site pain point comparison."><span class="title">All pages composition</span><span class="what">17 pages in 8 groups, compared with the live site.</span><span class="status old">Old</span></a>
+    <a class="doc" href="v9bet-campaign-flow.html" data-more="When a campaign goes live: told → joins → claims. 6 views: launch flow (popup → campaign screen) · multi-channel reach (popup/push/inbox/marquee) · screen states (active/joined/completed/ended/ineligible) · two+ campaigns (one combined popup, never two) · types (missions / daily check-in / spin wheel / red packet 🧧) · button-only (TikTok-style floating 悬浮球). Frequency-cap &amp; targeting rules included. docx 36/45/47."><span class="title">Campaign launch</span><span class="what">How a member hears about, joins and claims a campaign.</span></a>
+  </section>
+  <section data-section aria-labelledby="foundations">
+    <h2 id="foundations">③ Foundations</h2>
+    <a class="doc" href="v9bet-foundations.html" data-more="Cross-site definitions beyond pages/components: Global Header/Footer, navigation, RWD breakpoints, form validation, i18n, system/error pages, Session, permissions, Responsible Gaming, event tracking, realtime connections."><span class="title">Foundations</span><span class="what">Header, navigation, forms, languages, errors and permissions.</span></a>
+    <a class="doc" href="v9bet-components.html" data-more="24 cross-page shared components + Z-index layer order table. Each component defined by a 9-column contract (purpose/trigger/position/duration/blocking/layer/variants/source/a11y)."><span class="title">Component contracts</span><span class="what">24 shared components and the layer order.</span></a>
+    <a class="doc" href="v9bet-analytics.html" data-more="Standalone analytics spec: 4 funnels (drop-off), full event taxonomy &amp; naming, event-spec template, KPI scorecard, AARRR dashboards, segments/cohorts, and governance (incl. Responsible Gaming compliance). docx 51/55."><span class="title">Analytics and events</span><span class="what">Funnels, event names, KPIs and dashboards.</span></a>
+  </section>
+  <section data-section aria-labelledby="reference">
+    <h2 id="reference">④ Full platform</h2>
+    <a class="doc" href="v9bet-full-wireframe.html" data-more="Per-screen wireframes for all 117 docx items, each with IT spec (purpose/States/Fields/API/dev notes) + docx line numbers; pure rules collected under &quot;Rules &amp; Notes&quot;. Kept in sync with ① as a full-site mirror — for day-to-day work, the confirmed flow pages in ① are the single source of truth."><span class="title">Full platform wireframe</span><span class="what">All 54 screens from the original docx.</span><span class="status old">Old</span></a>
+  </section>
+  <section data-section aria-labelledby="notes">
+    <h2 id="notes">⑤ Meeting notes</h2>
+    <a class="doc" href="meeting-notes-signup-ux.html" data-more="Decision log: phone/email tabs, deferred language/currency/referral (+mitigations), G/LINE/X social sign-up (re-auth required to bind an existing account), OTP channels, login re-layout, single active session policy, reward-based Setup, Face ID/passkey mandatory-vs-skip, History category consolidation, open items."><span class="title">Sign-up decisions, Jul 15 to Aug 30</span><span class="what">What was decided about sign-up, login and Setup, and why.</span></a>
+  </section>
+  <section data-section aria-labelledby="ideas">
+    <h2 id="ideas">New ideas</h2>
+    <a class="doc" href="lobby-ai-wireframe.html" data-more="Proposal: three AI directions for the lobby. Today (AI-written match and game news) → For you (explained game picks) → Ask V9 (chat, next phase) → rules for what AI may and may not do."><span class="title">AI lobby</span><span class="what">AI-written match news, game picks, chat, and rules for AI.</span><span class="status proposal">Proposal</span></a>
+    <a class="doc" href="v9bet-sports-first-concept.html" data-more="Alternative direction (not the core spec): Sports &amp; Live Casino co-primary, other games minimized. Replaces the dense odds grid with a readable, social, one-tap card feed — stories rail, likes/comments/share, live betting count, swipe, inline live-stream → PiP, stake-rail quick bet. 4 views incl. an Old-grid → New-card comparison."><span class="title">Sports-first concept</span><span class="what">A social card feed in place of the odds grid.</span><span class="status proposal">Proposal</span></a>
+  </section>
+      <p class="none" id="none" hidden></p>
+      <p class="foot">① is the source of truth for flows. Old pages no longer match the current flow and are kept for reference.</p>
+    </div>
+  </main>
 </div>
 <script>
-/* left menu: mark the section being read */
+/* find as you type, and mark the section being read */
 (function(){
-const links=[...document.querySelectorAll('.menu>a')];
+const q=document.getElementById('q'),tally=document.getElementById('tally'),none=document.getElementById('none');
+const docs=[...document.querySelectorAll('.doc')].map(el=>({el,text:(el.textContent+' '+el.dataset.more+' '+el.getAttribute('href')).toLowerCase()}));
+const sections=[...document.querySelectorAll('[data-section]')];
+const links=[...document.querySelectorAll('.menu a')];
 const heads=links.map(a=>document.querySelector(a.getAttribute('href')));
-/* list each section's documents under its menu link, read from the cards so the two can't drift */
-heads.forEach((h,i)=>{
-  const sub=document.createElement('div');sub.className='sub';
-  h.nextElementSibling.querySelectorAll('a.card').forEach(c=>{
-    const a=document.createElement('a');a.href=c.getAttribute('href');
-    a.textContent=c.querySelector('.t').firstChild.textContent.trim();
-    if(c.target)a.target=c.target,a.rel=c.rel;
-    sub.appendChild(a);
+function filter(){
+  const words=q.value.trim().toLowerCase().split(/\s+/).filter(Boolean);
+  let shown=0;
+  docs.forEach(d=>{const hit=words.every(w=>d.text.includes(w));d.el.hidden=!hit;if(hit)shown++});
+  sections.forEach((s,i)=>{
+    const n=s.querySelectorAll('.doc:not([hidden])').length;
+    s.hidden=!n;
+    links[i].querySelector('.n').textContent=n;
+    links[i].classList.toggle('empty',!n);
   });
-  links[i].after(sub);
-});
-function mark(){
-  let cur=0;
-  heads.forEach((h,i)=>{if(h.getBoundingClientRect().top<=window.innerHeight*.3)cur=i});
-  if(window.innerHeight+window.scrollY>=document.documentElement.scrollHeight-2)cur=heads.length-1;
-  links.forEach((a,i)=>{if(i===cur)a.setAttribute('aria-current','true');else a.removeAttribute('aria-current')});
-  if(window.innerWidth<=900){const m=links[cur].parentNode;m.scrollLeft=links[cur].offsetLeft-m.offsetLeft-16}
+  tally.textContent=words.length?shown+' of '+docs.length:docs.length+' documents';
+  none.hidden=shown>0;
+  none.textContent=shown?'':'No documents match "'+q.value.trim()+'". Try a topic, such as wallet or passkey.';
+  mark();
 }
-addEventListener('scroll',mark,{passive:true});addEventListener('resize',mark);mark();
+function mark(){
+  const line=q.getBoundingClientRect().bottom+window.innerHeight*.2;
+  let cur=-1;
+  heads.forEach((h,i)=>{if(!h.closest('section').hidden&&(cur<0||h.getBoundingClientRect().top<=line))cur=i});
+  links.forEach((a,i)=>{if(i===cur)a.setAttribute('aria-current','true');else a.removeAttribute('aria-current')});
+  const menu=links[0].parentNode;
+  if(cur>=0&&window.innerWidth<768)menu.scrollLeft=links[cur].offsetLeft-menu.offsetLeft-16;
+}
+q.addEventListener('input',filter);
+q.addEventListener('keydown',e=>{
+  if(e.isComposing)return;
+  if(e.key==='Escape'){q.value='';filter()}
+  if(e.key==='Enter'){const first=docs.find(d=>!d.el.hidden);if(first&&q.value.trim())first.el.click()}
+});
+document.addEventListener('keydown',e=>{
+  if(e.key!=='/'||e.metaKey||e.ctrlKey||e.altKey)return;
+  const t=e.target;
+  if(t.isContentEditable||/^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName))return;
+  e.preventDefault();q.focus();
+});
+addEventListener('scroll',mark,{passive:true});addEventListener('resize',mark);
+filter();
 })();
 </script>
 <script>
 /* ---------- ✏️ 文字編輯模式：右下角開關，點字直接改；存 localStorage，重整不會消失 ---------- */
 (function(){
 const FILE=location.pathname.split('/').pop()||'page';
-const KEY='wfTextEdits:'+FILE;
+const KEY='wfTextEdits:'+FILE+':directory';
 const AREA=document.querySelector('.wrap');
 const nodes=el=>{const w=document.createTreeWalker(el,NodeFilter.SHOW_TEXT),a=[];let n;while(n=w.nextNode())a.push(n);return a};
 const load=()=>{try{const d=JSON.parse(localStorage.getItem(KEY)||'{}');return{edits:d.edits||{},orig:d.orig||{}}}catch(e){return{edits:{},orig:{}}}};
