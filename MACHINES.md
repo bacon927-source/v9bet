@@ -123,4 +123,4 @@ Figma 檔不管在哪台改都是同一份，但 **`variables.css` 只有 commit
 | 日期 | 從 → 到 | 換手前做了什麼 | GitHub 是否同步 |
 |---|---|---|---|
 | 2026-10-20 | 另一台 → MacBook Pro (2) | 另一台一直出問題，改在這台做。10-08 到 10-19 的工作原本都沒 commit，已整理成 commit。這台的 Figma 連線已確認（v9 團隊 Full seat；Screens 9 區 54 張，與 `FIGMA.md` 一致） | ❌ 網路不穩還沒推（清單：`git log --oneline origin/main..HEAD`） |
-| 2026-11-02 | MacBook Pro (2) → BaconHung-MacBook-Pro | 這台 `main` 快轉到 `777e48f`。這台 10-19 未 commit 的內容存在本機分支 `local-2026-10-19`，比對過已全在 `main` 的歷史裡。發佈用的 clone `~/Documents/v9bet/sp-mockups` 重新建好。MacBook Pro (2) 有沒有沒推的東西，從這台看不到，尚未確認 | ✅ |
+| 2026-11-02 | MacBook Pro (2) → BaconHung-MacBook-Pro | 這台 `main` 快轉到 `777e48f`。這台 10-19 未 commit 的內容存在本機分支 `local-2026-10-19`，比對過已全在 `main` 的歷史裡。發佈用的 clone `~/Documents/v9bet/sp-mockups` 是 iCloud 同步過來的現成資料夾，在 `074a590`（10-30），不是新建的。MacBook Pro (2) 有沒有沒推的東西，從這台看不到，尚未確認 | ✅ |
